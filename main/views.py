@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CustomUserRegistrationForm
 from .forms import CustomUserLoginForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
@@ -17,7 +17,7 @@ def custom_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('../')  # Reemplaza 'home' con la URL de éxito adecuada
+                return redirect(reverse('home'))  # Reemplaza 'home' con la URL de éxito adecuada
     else:
         form = CustomUserLoginForm()
 
@@ -28,12 +28,14 @@ def home(request):
 
 def register(request):
     if request.method == 'POST':
-        print(request.POST)
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
             if request.POST['password'] == request.POST['password2']:
-                form.save()
-                return redirect('../login/')  # Redirige a una página de éxito
+                user = form.save(commit=False)  # Crear el usuario pero no guardarlo todavía
+                user.set_password(request.POST['password'])  # Encriptar la contraseña
+                user.save()  # Guardar el usuario en la base de datos
+                login(request, user)  # Iniciar sesión automáticamente después del registro
+                return redirect(reverse('home'))  # Redirige a una página de éxito
             else:
                 return render(request, 'register.html', {
                     'form': CustomUserRegistrationForm,
@@ -45,4 +47,4 @@ def register(request):
 @login_required
 def signout(request):
     logout(request)
-    return redirect('/')
+    return redirect(reverse('home'))
