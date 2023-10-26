@@ -28,14 +28,19 @@ def home(request):
 
 def register(request):
     if request.method == 'POST':
+        print(request.POST)
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('../login/')  # Redirige a una página de éxito
+            if request.POST['password'] == request.POST['password2']:
+                form.save()
+                return redirect('../login/')  # Redirige a una página de éxito
+            else:
+                return render(request, 'register.html', {
+                    'form': CustomUserRegistrationForm,
+                    "error": "Password doesn't match"
+                })
     else:
-        form = CustomUserRegistrationForm()
-
-    return render(request, 'register.html', {'form': form})
+        return render(request, 'register.html', {'form': CustomUserRegistrationForm})
 
 @login_required
 def signout(request):

@@ -3,9 +3,11 @@ from .models import CustomUser
 from django import forms
 
 class CustomUserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder':'Confirmar contraseña'}))
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'is_jefe', 'is_trabajador')
+        fields = ('username', 'email', 'password', 'password2', 'is_jefe', 'is_trabajador')
         
         
 class CustomUserLoginForm(AuthenticationForm):

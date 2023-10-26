@@ -10,6 +10,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        {{error}}
         <button type="submit">Registrarse</button>
     </form>
 </body>
