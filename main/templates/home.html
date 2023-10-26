@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Bienvenido a la página de inicio</h1>
+    
+    {% if user.is_jefe %}
+        <p>Este contenido es para jefes.</p>
+    {% elif user.is_trabajador %}
+        <p>Este contenido es para trabajadores.</p>
+    {% else %}
+        <p>Este es contenido genérico para otros usuarios.</p>
+    {% endif %}
+</body>
+</html>
