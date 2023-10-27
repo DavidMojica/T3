@@ -151,7 +151,7 @@ class Municipio(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.CharField(max_length=100)
     pertenece_departamento = models.ForeignKey(Departamento, on_delete=models.DO_NOTHING)
-    guardado_por = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, default=models.SET_NULL)
+    guardado_por = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, blank=True, null=True)
     
     def __str__(self):
         return self.description.capitalize()
@@ -159,8 +159,31 @@ class Municipio(models.Model):
 class DiaNombre(models.Model):
     id = models.AutoField(primary_key=True)   
     description = models.CharField(max_length=15) 
+    
+    def __str__(self):
+        return self.description.capitalize()
 
+class HPCSituacionContacto(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=15) 
+    
+    def __str__(self):
+        return self.description.capitalize()
 
+class HPCTiposDemandas(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=15) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
+class HPCTiposRespuestas(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=15) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
 """ 
 ##### MODELO DE INFORMACIÓN PARA USUARIOS #####
 En este modelo se guarda la información general de los usuarios que acuden
@@ -179,7 +202,10 @@ class InfoPacientes(models.Model):
     numero_hijos = models.IntegerField(null=False)
     sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING)
     direccion = models.TextField(max_length=150)
+    edad = models.IntegerField(null=True, blank=True)
+    municipio = models.ForeignKey(Municipio, on_delete=models.DO_NOTHING, null=True, blank=True,)
     barrio = models.CharField(max_length=100)
+    poblacion_vulnerable = models.CharField(null=True, max_length=100) 
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
     telefono = models.CharField(null=True)
     celular = models.CharField(null=True)
@@ -237,29 +263,21 @@ Aquí se guarda la información proveniente de las llamadas psicologicas.
 
 class PsiLlamadas(models.Model):
     id = models.AutoField(primary_key=True)
-    documento = models.CharField(max_length=30, default=models.SET_NULL)
+    documento = models.CharField(max_length=30, null=True, blank=True)
     nombre_paciente = models.CharField(null=True, max_length=100)
     id_psicologo = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
-    
     fecha_llamada = models.DateField(default=timezone.now)
-    dia_semana = models.ForeignKey(DiaNombre, on_delete=models.DO_NOTHING)
+    dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT)
     hora = models.TimeField(auto_now_add=True)
-    
-    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING)
-    edad = models.IntegerField(null=True, default=models.SET_NULL)
-    direccion = models.CharField(null=True, max_length=100)
-    municipio = models.ForeignKey(Municipio, on_delete=models.DO_NOTHING)
-    celular = models.CharField(null=True, max_length=30) 
-    poblacion_vulnerable = models.CharField(null=True, max_length=100) 
     motivo_llamada = models.TextField(null=True, max_length=5000) 
     conducta_a_seguir = models.TextField(null=True, max_length=5000) 
     observaciones = models.TextField(null=True, max_length=5000)
     seguimiento24 = models.TextField(null=True, max_length=5000)
     seguimiento48 = models.TextField(null=True, max_length=5000)
     seguimiento72 = models.TextField(null=True, max_length=5000)
+        
 
-    def save(self, *args, **kwargs):
-        # Obtener el número del día actual (1 para lunes, 2 para martes, etc.)
-        dia_actual = datetime.datetime.now().isoweekday()
-        self.dia_semana = dia_actual
-        super(PsiLlamadas, self).save(*args, **kwargs)
+""" 
+##### MODELO HPC #####
+En este modelo se recolectará la información proveniente de la hoja de primer contacto HPC
+"""
