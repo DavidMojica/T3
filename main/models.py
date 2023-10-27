@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission, BaseUserManager
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 """ 
@@ -129,6 +131,35 @@ class Pip(models.Model): #POBLACION IDENTIFICADA POR PARTICULARIDADES
     
     def __str__(self):
         return self.description.capitalize()
+    
+class Pais(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
+class Departamento(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=100)
+    pertenece_pais = models.ForeignKey(Pais, on_delete=models.DO_NOTHING)
+    
+    def __str__(self):
+        return self.description.capitalize()
+
+class Municipio(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=100)
+    pertenece_departamento = models.ForeignKey(Departamento, on_delete=models.DO_NOTHING)
+    guardado_por = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, default=models.SET_NULL)
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
+class DiaNombre(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=15) 
+
 
 """ 
 ##### MODELO DE INFORMACIÓN PARA USUARIOS #####
@@ -198,6 +229,37 @@ class InfoMiembros(models.Model):
     contador_llamadas_psicologicas = models.IntegerField(null=False, default=0)
     contador_asesorias_psicologicas = models.IntegerField(null=False, default=0)
     
+"""
+##### MODELO DE INFORMACIÓN DE LLAMADAS #####
+Aquí se guarda la información proveniente de las llamadas psicologicas.
+"""
+
+
+class PsiLlamadas(models.Model):
+    id = models.AutoField(primary_key=True)
+    documento = models.CharField(max_length=30, default=models.SET_NULL)
+    nombre_paciente = models.CharField(null=True, max_length=100)
+    id_psicologo = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
     
+    fecha_llamada = models.DateField(default=timezone.now)
+    dia_semana = models.ForeignKey(DiaNombre, on_delete=models.DO_NOTHING)
+    hora = models.TimeField(auto_now_add=True)
     
-    
+    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING)
+    edad = models.IntegerField(null=True, default=models.SET_NULL)
+    direccion = models.CharField(null=True, max_length=100)
+    municipio = models.ForeignKey(Municipio, on_delete=models.DO_NOTHING)
+    celular = models.CharField(null=True, max_length=30) 
+    poblacion_vulnerable = models.CharField(null=True, max_length=100) 
+    motivo_llamada = models.TextField(null=True, max_length=5000) 
+    conducta_a_seguir = models.TextField(null=True, max_length=5000) 
+    observaciones = models.TextField(null=True, max_length=5000)
+    seguimiento24 = models.TextField(null=True, max_length=5000)
+    seguimiento48 = models.TextField(null=True, max_length=5000)
+    seguimiento72 = models.TextField(null=True, max_length=5000)
+
+    def save(self, *args, **kwargs):
+        # Obtener el número del día actual (1 para lunes, 2 para martes, etc.)
+        dia_actual = datetime.datetime.now().isoweekday()
+        self.dia_semana = dia_actual
+        super(PsiLlamadas, self).save(*args, **kwargs)

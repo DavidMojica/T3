@@ -5,6 +5,16 @@ import django.contrib.auth.validators
 from django.db import migrations, models
 import django.utils.timezone
 
+def insert_initial_data(apps, schema_editor):
+    TipoUsuario = apps.get_model('main', 'TipoUsuario')
+    TipoUsuario.objects.create(id=1, description='supremo')
+    TipoUsuario.objects.create(id=10, description='coordinador de salud mental')
+    TipoUsuario.objects.create(id=11, description='coordinador de discapacidad')
+    TipoUsuario.objects.create(id=12, description='coordinador de calidad')
+    TipoUsuario.objects.create(id=20, description='trabajador de psicologia')
+    TipoUsuario.objects.create(id=21, description='trabajador de discapacidad')
+    TipoUsuario.objects.create(id=22, description='trabajador de calidad')
+
 
 class Migration(migrations.Migration):
 
@@ -43,4 +53,5 @@ class Migration(migrations.Migration):
                 ('objects', django.contrib.auth.models.UserManager()),
             ],
         ),
+        migrations.RunPython(insert_initial_data),
     ]
