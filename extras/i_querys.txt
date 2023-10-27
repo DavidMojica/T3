@@ -1,0 +1,9 @@
+main_tipousuario
+
+insert into main_tipousuario (id, description) values(1, 'supremo')
+insert into main_tipousuario (id, description) values(10, 'coordinador de salud mental')
+insert into main_tipousuario (id, description) values(11, 'coordinador de discapacidad')
+insert into main_tipousuario (id, description) values(12, 'coordinador de calidad')
+insert into main_tipousuario (id, description) values(20, 'trabajador de psicologia')
+insert into main_tipousuario (id, description) values(21, 'trabajador de discapacidad')
+insert into main_tipousuario (id, description) values(22, 'trabajador de calidad')
