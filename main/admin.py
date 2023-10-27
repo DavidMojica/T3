@@ -5,6 +5,6 @@ from .models import CustomUser
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
     # Otros campos personalizados
-    list_display = ('username', 'email', 'is_jefe', 'is_trabajador')
+    list_display = ('username', 'email', 'tipo_usuario')
 
 admin.site.register(CustomUser, CustomUserAdmin)

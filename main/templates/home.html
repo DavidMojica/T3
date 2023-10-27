@@ -6,12 +6,14 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Bienvenido a la página de inicio</h1>
+    <h1>HOME</h1>
     {% if user.is_authenticated %}
         {% if user.is_jefe %}
-            <p>Este contenido es para jefes.</p>
+            <p>Este contenido es para los coordinadores.</p>
         {% elif user.is_trabajador %}
-            <p>Este contenido es para trabajadores.</p>
+            <p>Este contenido es para Psicologos</p>
+        {% elif user.is_superuser %}
+            <p>Este contenido es para Superusuarios</p>
         {% else %}
             <p>Sesion iniciada pero no pertenece a nada</p>
         {% endif %}

@@ -22,10 +22,16 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(username, password, **extra_fields)
 
+class TipoUsuario(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.description.capitalize()
+
 class CustomUser(AbstractUser):
     groups = models.ManyToManyField(Group, related_name='customuser_set')
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set')
-    is_jefe = models.BooleanField(default=False)
-    is_trabajador = models.BooleanField(default=False)
+    tipo_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING, default=3)
     objects = CustomUserManager()
     
