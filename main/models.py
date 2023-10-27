@@ -138,7 +138,6 @@ Si hay un usuario que volvió a asistir a la asesoría y ya diligenció este for
 se le notificará al psicologo y le mostrará el formulario con los datos recolectados anteriormente,
 el objetivo es que el psicologo confirme la información del usuario y la actualice si es necesario.
 """
-
 class InfoPacientes(models.Model):
     documento = models.CharField(primary_key=True, max_length=20, null=False)
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING)
@@ -172,3 +171,33 @@ class PacienteCalculo(models.Model):
 class PacientePip(models.Model):
     documento_usuario = models.ForeignKey(InfoPacientes, on_delete=models.DO_NOTHING)
     id_pip = models.ForeignKey(Pip, on_delete=models.DO_NOTHING)
+    
+
+"""
+##### MODELO DE INFORMACIÓN PARA TRABAJADORES #####
+En este modelo se guarda la información de los trabajadores, es similar al de los pacientes
+sólo que con algunos campos menos que se consideraron innecesarios.
+"""
+class InfoMiembros(models.Model):
+    documento = models.CharField(primary_key=True, max_length=20, null=False)
+    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING)
+    id_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING)
+    nombre = models.CharField(max_length=100, null=False)
+    email = models.EmailField(max_length=255, null = True)
+    numero_hijos = models.IntegerField(null=False, default=0)
+    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING)
+    direccion = models.CharField(max_length=100, null = False)
+    barrio = models.CharField(max_length=100, null = False)
+    estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
+    telefono = models.CharField(null=True)
+    celular = models.CharField(null=True)
+    etnia = models.ForeignKey(Etnia, on_delete=models.DO_NOTHING)
+    regimen_seguridad = models.ForeignKey(RegimenSeguridad, on_delete=models.DO_NOTHING)
+    sisben = models.BooleanField(null=False)
+    nombre_eps = models.CharField(max_length=50)
+    contador_llamadas_psicologicas = models.IntegerField(null=False, default=0)
+    contador_asesorias_psicologicas = models.IntegerField(null=False, default=0)
+    
+    
+    
+    
