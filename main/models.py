@@ -9,6 +9,14 @@ import datetime
 El modelo CustomUser es usado para iniciar la sesión en el navegador.
 CustomUserManager es un handler que ayuda a la creación de un nuevo usuario que puede iniciar sesión.
 """
+#Tabla foránea
+class TipoUsuario(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
@@ -28,21 +36,14 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Los superusuarios deben tener is_superuser=True.')
 
         return self.create_user(username, password, **extra_fields)
-#Tabla foránea
-class TipoUsuario(models.Model):
-    id = models.IntegerField(primary_key=True)
-    description = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return self.description.capitalize()
-    
+
 class CustomUser(AbstractUser):
     groups = models.ManyToManyField(Group, related_name='customuser_set')
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set')
     tipo_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING, default=3)
     objects = CustomUserManager()
-    
-""" 
+
+    """ 
 ###### MODELOS FORÁNEOS GENERALES 1 a 1 ######
 Para normalizar la base de datos.
 Algunos vienen con información preestablecida
@@ -165,25 +166,56 @@ class DiaNombre(models.Model):
 
 class HPCSituacionContacto(models.Model):
     id = models.AutoField(primary_key=True)   
-    description = models.CharField(max_length=15) 
+    description = models.CharField(max_length=50) 
     
     def __str__(self):
         return self.description.capitalize()
 
 class HPCTiposDemandas(models.Model):
     id = models.AutoField(primary_key=True)   
-    description = models.CharField(max_length=15) 
+    description = models.CharField(max_length=50) 
     
     def __str__(self):
         return self.description.capitalize()
     
 class HPCTiposRespuestas(models.Model):
     id = models.AutoField(primary_key=True)   
-    description = models.CharField(max_length=15) 
+    description = models.CharField(max_length=50) 
     
     def __str__(self):
         return self.description.capitalize()
     
+class SPA(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=50) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+        
+class HPCMetodosSuicida(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=50) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+
+class EstatusPersona(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=50) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
+class SiNoNunca(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=50) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
+
+    
+
 """ 
 ##### MODELO DE INFORMACIÓN PARA USUARIOS #####
 En este modelo se guarda la información general de los usuarios que acuden
@@ -281,3 +313,74 @@ class PsiLlamadas(models.Model):
 ##### MODELO HPC #####
 En este modelo se recolectará la información proveniente de la hoja de primer contacto HPC
 """
+
+class HPC(models.Model):
+    id = models.AutoField(primary_key=True)
+    cedula_usuario = models.ForeignKey(InfoPacientes, on_delete=models.DO_NOTHING)
+    cedula_profesional = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
+    fecha_asesoria = models.DateField(default=timezone.now)
+    lugar = models.TextField(max_length=150, null=False)
+    edad_usuario_actual = models.IntegerField(null=False)
+    diag_trans_mental = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    diag_categoria = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    diag_por_profesional = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    tratamiento = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    medicamentos = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    adherencia = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    barreras_acceso = models.TextField(max_length=300, null=True, default=models.SET_NULL)
+    es_hasido_consumidor = models.BooleanField(default=False)
+    edad_inicio = models.IntegerField(null=True, default=models.SET_NULL)
+    spa_inicio = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_spa_inicio')
+    sustancia_impacto = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_sustancia_impacto')
+    metodo = models.ForeignKey(HPCMetodosSuicida,null=True, on_delete=models.DO_NOTHING)
+    periodo_ultimo_consumo = models.DateField(null=True)
+    conductas_sex_resgo = models.TextField(max_length=300, null=True)
+    intervenciones_previas = models.TextField(max_length=300, null=True)
+    consumo_familiar = models.BooleanField(default=False)
+    vinculo = models.TextField(max_length=300, null=True)
+    tendencia_suicida = models.ForeignKey(SiNoNunca, on_delete=models.CASCADE, related_name='hpc_tendencia_suicida')
+    presencia_planeacion = models.ForeignKey(SiNoNunca, on_delete=models.CASCADE, related_name='hpc_presencia_planeacion')
+    disponibilidad_medios = models.ForeignKey(SiNoNunca, on_delete=models.CASCADE, related_name='hpc_disponibilidad_medios')
+    intentos_previos = models.IntegerField(default=0)
+    fecha_ultimo_intento = models.DateField(null=True)
+    manejo_hospitalario = models.BooleanField(null=True)
+    #VIII
+    metodo = models.ForeignKey(HPCMetodosSuicida,null=True, on_delete=models.DO_NOTHING)
+    letalidad = models.TextField(max_length=300, null=True)
+    signos = models.TextField(max_length=300, null=True)
+    tratamiento_psiquiatrico = models.ForeignKey(SiNoNunca,null=True, on_delete=models.CASCADE, related_name='hpc_tratamiento_psiquiatrico')
+    estatus_persona = models.ForeignKey(EstatusPersona, on_delete=models.DO_NOTHING, null=True)
+    historial_familiar = models.BooleanField(default=False)
+    red_apoyo = models.TextField(max_length=300, null=True)
+    victima = models.BooleanField(default=False)
+    agresor = models.BooleanField(default=False)
+    inst_reporte_legal = models.TextField(max_length=300, null=True)
+    asistencia_cita = models.BooleanField(default=False)
+    contacto = models.BooleanField(default=False)
+    contacto_interrumpido = models.BooleanField(default=False)
+    inicia_otro_programa = models.BooleanField(default=False)
+    p_tamizaje = models.TextField(max_length=300, null=True)
+    cond_a_seguir = models.TextField(max_length=300, null=True)
+    c_o_d = models.TextField(max_length=300, null=True)
+    anotaciones_antecedentes_psiquiatricos = models.TextField(max_length=5000, null=True)
+    anotaciones_consumoPSA = models.TextField(max_length=5000, null=True)
+    anotaciones_comportamiento_suic = models.TextField(max_length=5000, null=True)
+    anotaciones_antecedentes_violencia = models.TextField(max_length=5000, null=True)
+    anotaciones_libres_profesional = models.TextField(max_length=5000, null=True)
+    
+#Rompimientos
+class RHPCSituacionContacto(models.Model):
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.DO_NOTHING)
+    id_situacion = models.ForeignKey(HPCSituacionContacto, on_delete=models.DO_NOTHING)
+    
+class RHPCTiposDemandas(models.Model):
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.DO_NOTHING)
+    id_tipo_demanda = models.ForeignKey(HPCTiposDemandas, on_delete=models.DO_NOTHING)
+    
+class RHPCTiposRespuestas(models.Model):
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.DO_NOTHING)
+    id_respuesta = models.ForeignKey(HPCTiposRespuestas, on_delete=models.DO_NOTHING)
+    
+class SPAActuales(models.Model):
+    id_paciente = models.ForeignKey(InfoPacientes, on_delete=models.DO_NOTHING)
+    id_sustancia = models.ForeignKey(SPA, on_delete=models.DO_NOTHING)

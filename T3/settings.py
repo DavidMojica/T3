@@ -79,7 +79,7 @@ AUTH_USER_MODEL = 'main.CustomUser'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ssbello6',
+        'NAME': 'ssbello7',
         'USER': 'postgres',
         'PASSWORD': '12345',
         'HOST': 'localhost', #Nombre del host o IP
