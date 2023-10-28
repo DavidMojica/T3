@@ -1,27 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>HOME</h1>
-    {% if user.is_authenticated %}
-        {% if user.is_jefe %}
-            <p>Este contenido es para los coordinadores.</p>
-        {% elif user.is_trabajador %}
-            <p>Este contenido es para Psicologos</p>
-        {% elif user.is_superuser %}
-            <p>Este contenido es para Superusuarios</p>
-        {% else %}
-            <p>Sesion iniciada pero no pertenece a nada</p>
-        {% endif %}
-    <a href="/logout">Cerrar sesion</a>
-    {% else %}
-    <p>Sesion no iniciada</p>
-    <a href="/register">Registrarse</a>
-    <a href="/login">Iniciar sesion</a>
-    {% endif %}
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% endblock %}
