@@ -49,5 +49,5 @@ def signout(request):
     logout(request)
     return redirect(reverse('home'))
 
-def b():
+def c():
     pass
