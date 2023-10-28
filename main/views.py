@@ -5,6 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 # Create your views here.
 
@@ -24,7 +25,9 @@ def custom_login(request):
     return render(request, 'login.html', {'form': form})
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html',{
+        'year': datetime.now
+    })
 
 def register(request):
     if request.method == 'POST':
