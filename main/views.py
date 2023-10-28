@@ -48,3 +48,6 @@ def register(request):
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
+
+def a():
+    pass
