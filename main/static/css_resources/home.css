@@ -1,7 +1,13 @@
 #main_home{
-    height: 77.3vh;
+    height: 71.4vh;
 }
 .row{
     place-items: center;
     text-align: center;
+}
+
+@media (max-width: 990px) {
+    #navbarNav ul li .dropdown-center button, .btn_star{
+        width: 100%;
+    }
 }
