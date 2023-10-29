@@ -5,9 +5,13 @@
     place-items: center;
     text-align: center;
 }
+#navbarNav ul li .dropdown-center button i, .btn_star i{
+    font-size: 18px;
+}
 
 @media (max-width: 990px) {
     #navbarNav ul li .dropdown-center button, .btn_star{
         width: 100%;
     }
+    
 }
