@@ -9,5 +9,5 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 
-def I():
+def j():
     pass
