@@ -8,6 +8,3 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'tipo_usuario')
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
-def l():
-    pass
