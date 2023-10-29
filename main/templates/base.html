@@ -12,41 +12,6 @@
 </head>
 
 <body>
-    {% if user.is_authenticated %}
-    {% if user.tipo_usuario_id == 1 %}
-    <!-- Supremo -->
-
-    {% elif user.tipo_usuario_id == 10 %}
-    <!-- coordinador salud mental -->
-
-
-    {% elif user.tipo_usuario_id == 11 %}
-    <!-- coordinador de calidad -->
-
-
-    {% elif user.tipo_usuario_id == 12 %}
-    <!-- coordinador discapacidad -->
-
-
-    {% elif user.tipo_usuario_id == 20 %}
-    <!-- trabajador psicologia -->
-
-
-    {% elif user.tipo_usuario_id == 21 %}
-    <!-- trabajador discapacidad -->
-
-
-    {% elif user.tipo_usuario_id == 22 %}
-    <!-- trabajador calidad -->
-    {% else %}
-    <!-- Vista de error para usuarios que no pertenecen a ninguna de las opciones anteriores -->
-
-    <p>Sesion iniciada pero no pertenece a nada</p>
-    {% endif %}
-
-    <a href="/logout">Cerrar sesion</a>
-    {% else %}
-    <!-- Vista para usuarios que no tengan sesion iniciada -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -61,27 +26,62 @@
                     <li class="nav-item">
                         <a href="/" class="nav-link active">Home</a>
                     </li>
-                    <!-- Logica para mostrar una cosa u otra en funcion de si tiene la sesión iniciada -->
+                    {% if user.is_authenticated %}
+                        {% if user.tipo_usuario_id == 1 %}
+                        <!-- Supremo -->
+
+                        {% elif user.tipo_usuario_id == 10 %}
+                        <!-- coordinador salud mental -->
+
+
+                        {% elif user.tipo_usuario_id == 11 %}
+                        <!-- coordinador de calidad -->
+
+
+                        {% elif user.tipo_usuario_id == 12 %}
+                        <!-- coordinador discapacidad -->
+
+
+                        {% elif user.tipo_usuario_id == 20 %}
+                        <!-- trabajador psicologia -->
+
+
+                        {% elif user.tipo_usuario_id == 21 %}
+                        <!-- trabajador discapacidad -->
+
+
+                        {% elif user.tipo_usuario_id == 22 %}
+                        <!-- trabajador calidad -->
+                        {% else %}
+                        <!-- Vista de error para usuarios que no pertenecen a ninguna de las opciones anteriores -->
+
+                        <p>Sesion iniciada pero no pertenece a nada</p>
+                        {% endif %}
                     <li class="nav-item">
-                        <a href="" class="nav-link active">Salud Mental</a>
+                        <a href="/logout" class="nav-link active">Cerrar sesion</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link active">Discapacidad</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/logout" class="nav-link active">Calidad</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/register" class="nav-link active">Registrarse</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/login" class="nav-link active">Iniciar sesion</a>
-                    </li>
+                    {% else %}
+                     <!-- Vista para usuarios que no tengan sesion iniciada -->
+                        <li class="nav-item">
+                            <a href="/login" class="nav-link active">Salud Mental</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/login" class="nav-link active">Discapacidad</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/logout" class="nav-link active">Calidad</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/register" class="nav-link active">Registrarse</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/login" class="nav-link active">Iniciar sesion</a>
+                        </li>
                     {% endif %}
-                </ul>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
     {% block content %}
     {% endblock %}
     <footer class="bg-dark text-light">
