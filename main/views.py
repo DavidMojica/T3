@@ -72,7 +72,7 @@ def register(request):
 
 @login_required
 def signout(request):
-   
+    logout(request)
     return redirect(reverse('home'))
 
 
