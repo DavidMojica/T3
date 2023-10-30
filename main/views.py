@@ -7,8 +7,14 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
-import errors as err
 
+######### Errors related to register ##########
+ERROR_100 = "Las contraseñas no coinciden."
+ERROR_101 = "Formulario inválido."
+ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
+
+####### Login #######
+ERROR_200 = "Nombre o contraseña inválido."
 # Create your views here.
 
 #LOGIN
@@ -19,7 +25,7 @@ def signin(request):
         user = authenticate(request, username=username, password=password)
         if user is None:
             return render(request, 'signin.html', {
-                'error': err.ERROR_200,
+                'error': ERROR_200,
                 'year': datetime.now(),
                 'posted_user': username
             })
@@ -48,17 +54,17 @@ def register(request):
                 except IntegrityError:
                     return render(request, 'register.html',{
                         'form': form,
-                        "error": err.ERROR_102
+                        "error": ERROR_102
                     })            
             else:
                 return render(request, 'register.html', {
                     'form': form,
-                    "error": err.ERROR_101
+                    "error": ERROR_101
                 })
         else:
             return render(request, 'register.html', {
                 'form': form,
-                "error": err.ERROR_100
+                "error": ERROR_100
             })
     else:
         form = CustomUserRegistrationForm()  # Crear una instancia del formulario
@@ -66,7 +72,7 @@ def register(request):
 
 @login_required
 def signout(request):
-    logout(request)
+   
     return redirect(reverse('home'))
 
 
