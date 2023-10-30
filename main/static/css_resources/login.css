@@ -1,0 +1,5 @@
+main{
+    height: 71.4vh;
+    display: grid;
+    place-items: center;
+}
