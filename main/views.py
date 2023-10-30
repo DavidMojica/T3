@@ -79,3 +79,9 @@ def restricted_area_404(request):
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
+    
+#Admin
+@login_required
+def admon(request):
+    if request.method == "GET":
+        return render(request, 'admon.html')
