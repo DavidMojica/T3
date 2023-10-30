@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'compressor'
 ]
 
 MIDDLEWARE = [
@@ -122,10 +123,16 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+COMPRESS_ENABLED = True
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'main/static')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -8,6 +8,9 @@
 #navbarNav ul li .dropdown-center button i, .btn_star i{
     font-size: 18px;
 }
+.logo{
+    border-radius: 1.8em 1em;
+}
 
 @media (max-width: 990px) {
     #navbarNav ul li .dropdown-center button, .btn_star{
