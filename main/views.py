@@ -55,12 +55,12 @@ def signout(request):
 
 #PSICOLOGIA VISTAS
 @login_required
-def sm_asesorias_psicologicas(request):
+def sm_HPC(request):
     if request.method == "GET":
-        return render(request, 'sm_asesorias_psicologicas.html')
+        return render(request, 'sm_HPC.html')
     
 @login_required
-def sm_atencion_urgencias(request):
+def sm_llamadas(request):
     if request.method == "GET":
         return render(request, 'sm_atencion_urgencias.html')
     

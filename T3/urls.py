@@ -24,5 +24,7 @@ urlpatterns = [
     path('register/', views.register),
     path('login/', views.custom_login),
     path('logout/', views.signout, name="signout"),
-    path('sm_asesorias_psicologicas/', views.sm_asesorias_psicologicas, name="sm_asesorias")
+    path('HPC/', views.sm_HPC, name="sm_asesorias"),
+    path('llamadas',views.sm_llamadas, name="sm_llamadas"),
+    path('sm_historial', views.sm_historial, name="sm_historial")
 ]
