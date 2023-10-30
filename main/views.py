@@ -51,3 +51,20 @@ def register(request):
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
+
+
+#Nuevas vistas
+@login_required
+def sm_asesorias_psicologicas(request):
+    if request.method == "GET":
+        return render(request, 'sm_asesorias_psicologicas.html')
+    
+@login_required
+def sm_atencion_urgencias(request):
+    if request.method == "GET":
+        return render(request, 'sm_atencion_urgencias.html')
+    
+@login_required
+def sm_historial(request):
+    if request.method == "GET":
+        return render(request, 'sm_historial.html')
