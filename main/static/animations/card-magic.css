@@ -3,27 +3,10 @@
     initial-value: 132deg;
     inherits: false;
 }
-:root {
-    --card-height:  95vh;
-    --card-width: 65%;
-}
 .card_magic_1 {
     background: rgb(26, 26, 26);
-    position: relative;
+    /* position: relative; */
     display: grid;
-}
-
-.card_magic_1::before {
-    content: "";
-    width: 102%;
-    height: 102%;
-    border-radius: 8px;
-    background-image: linear-gradient(var(--rotate), #5ddcff, #3c67e3, 43%, #4e00c2);
-    position: absolute;
-    z-index: -1;
-    top: -1%;
-    left: -1%;
-    animation: spin 3.5s linear infinite;
 }
 
 .card_magic_1::after {
@@ -36,12 +19,12 @@
     height: 100%;
     width: 100%;
     margin: 0 auto;
-    transform: scale(0.8);
+    /* transform: scale(0.8); */
     filter: blur(calc(var(--card-height)/6));
     background-image: linear-gradient(var(--rotate), #5ddcff, #3c67e3 43%, #4e00c2);
     opacity: 1;
     transition: opacity .5s;
-    animation: spin 3.5s linear infinite;
+    animation: spin 4.5s linear infinite;
 }
 
 @keyframes spin {
