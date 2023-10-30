@@ -6,16 +6,18 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.db import IntegrityError
 
 # Create your views here.
 
-def login(request):
+#LOGIN
+def signin(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is None:
-            return render(request, 'login.html', {
+            return render(request, 'signin.html', {
                 'error': "Nombre o contraseña inválido.",
                 'year': datetime.now(),
                 'posted_user': username
@@ -24,30 +26,48 @@ def login(request):
             login(request, user)
             return redirect(reverse('home'))
     else:
-        return render(request, 'login.html', {'year': datetime.now(),})
+        return render(request, 'signin.html', {'year': datetime.now(),})
 
 def home(request):
     return render(request, 'home.html',{
-        'year': datetime.now
+        'year': datetime.now()
     })
 
 def register(request):
+    ERROR_1 = "Contaseñas no coinciden"
+    ERROR_2 = "Formulario inválido"
+    ERROR_3 =  "Ya existe un usuario con el mismo nombre de usuario"
+    
+    
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
             if request.POST['password'] == request.POST['password2']:
-                user = form.save(commit=False)  # Crear el usuario pero no guardarlo todavía
-                user.set_password(request.POST['password'])  # Encriptar la contraseña
-                user.save()  # Guardar el usuario en la base de datos
-                login(request, user)  # Iniciar sesión automáticamente después del registro
-                return redirect(reverse('home'))  # Redirige a una página de éxito
+                try:
+                    user = form.save(commit=False)
+                    user.username = request.POST['username'].lower()
+                    user.set_password(request.POST['password'])
+                    user.save()
+                    return redirect(reverse('signin'))
+                except IntegrityError:
+                    return render(request, 'register.html',{
+                        'form': form,
+                        "error": ERROR_3
+                    })
+                    
             else:
                 return render(request, 'register.html', {
-                    'form': CustomUserRegistrationForm,
-                    "error": "Password doesn't match"
+                    'form': form,
+                    "error": ERROR_1
                 })
+        else:
+            return render(request, 'register.html', {
+                'form': form,
+                "error": ERROR_2
+            })
     else:
-        return render(request, 'register.html', {'form': CustomUserRegistrationForm})
+        form = CustomUserRegistrationForm()  # Crear una instancia del formulario
+        return render(request, 'register.html', {'form': form})
 
 @login_required
 def signout(request):

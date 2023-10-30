@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_login">
-    <form class="form_main card_magic_1" action="/login/" method="POST">
+    <form class="form_main card_magic_1" action="/signin/" method="POST">
         {% csrf_token %}
         <p class="heading">Iniciar sesion</p>
         <div class="inputContainer">
@@ -32,12 +32,5 @@
         </button>
         <p>¿Olvidó la contraseña? <b>Recuperala aqui</b> </p>
     </form>
-
-
-    <!-- <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Ingresar</button>
-    </form> -->
 </main>
 {% endblock %}
