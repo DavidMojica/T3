@@ -53,7 +53,7 @@ def signout(request):
     return redirect(reverse('home'))
 
 
-#Nuevas vistas
+#PSICOLOGIA VISTAS
 @login_required
 def sm_asesorias_psicologicas(request):
     if request.method == "GET":
@@ -68,3 +68,14 @@ def sm_atencion_urgencias(request):
 def sm_historial(request):
     if request.method == "GET":
         return render(request, 'sm_historial.html')
+
+#404 VISTAS 
+@login_required
+def restricted_area_404(request):
+    if request.method == "GET":
+        return render(request, '404_restricted_area.html')
+    
+@login_required
+def not_deployed_404(request):
+    if request.method == "GET":
+        return render(request, '404_not_deployed.html')
