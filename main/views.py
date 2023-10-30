@@ -9,20 +9,22 @@ from datetime import datetime
 
 # Create your views here.
 
-def custom_login(request):
+def login(request):
     if request.method == 'POST':
-        form = CustomUserLoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect(reverse('home'))  # Reemplaza 'home' con la URL de éxito adecuada
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is None:
+            return render(request, 'login.html', {
+                'error': "Nombre o contraseña inválido.",
+                'year': datetime.now(),
+                'posted_user': username
+            })
+        else:
+            login(request, user)
+            return redirect(reverse('home'))
     else:
-        form = CustomUserLoginForm()
-
-    return render(request, 'login.html', {'form': form})
+        return render(request, 'login.html', {'year': datetime.now(),})
 
 def home(request):
     return render(request, 'home.html',{
