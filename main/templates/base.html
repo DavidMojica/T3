@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'animations/btn_stars/style.css' %}">
     <link rel="stylesheet" href="{% static 'animations/btn_white_to_x/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="{% static 'media_resources/logos/log4.png' %}" type="image/x-icon">
     <title>Secretaría de Salud Mental de Bello</title>
 </head>
 
@@ -29,15 +30,45 @@
                     {% if user.is_authenticated %}
                         {% if user.tipo_usuario_id == 1 %}
                         <!-- Supremo -->
-                        <li class="nav-item">
-                            <a href="/login" class="nav-link active text-white">Salud Mental</a>
+                        <li class="nav-item m-1">
+                            <div class=" dropdown-center">
+                                <button type="button" class="btn btn_wt wtg dropdown-toggle" id="grad" data-bs-toggle="dropdown"  aria-expanded="false">
+                                    <i class="fa fa-heartbeat"></i>
+                                    Salud Mental
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/sm_atencion_urgencias" class="dropdown-item">Atención urgencias</a></li>
+                                    <li><a href="/sm_asesorias_psicologicas" class="dropdown-item">Asesorías psicológicas</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a href="/sm_historial" class="dropdown-item">Historial de asesorías</a></li>
+                                </ul>
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a href="/login" class="nav-link active text-white">Discapacidad</a>
+                        <li class="nav-item m-1">
+                            <div class=" dropdown-center">
+                                <a href="/not_deployed">
+                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
+                                        <i class="fa fa-wheelchair"></i>
+                                        Discapacidad
+                                    </button>
+                                </a>
+                                <!-- <ul class="dropdown-menu">
+                                </ul> -->
+                            </div>
+                        </li>                    
+                        <li class="nav-item m-1">
+                            <div class="dropdown-center">
+                                <a href="/not_deployed">
+                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
+                                        <i class="fa fa-certificate"></i>
+                                        Calidad
+                                    </button>
+                                </a>
+                                <!-- <ul class="dropdown-menu">
+                                </ul> -->
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a href="/logout" class="nav-link active text-white">Calidad</a>
-                        </li>
+                        
                         {% elif user.tipo_usuario_id == 10 %}
                         <!-- coordinador salud mental -->
 
@@ -66,7 +97,92 @@
                         <p>Sesion iniciada pero no pertenece a nada</p>
                         {% endif %}
                         <li class="nav-item">
-                            <a href="/logout" class="nav-link active text-white">Cerrar sesion</a>
+                            <li class="nav-item m-1">
+                                <a href="/login">
+                                    <button class="btn_star">
+                                        Cerrar Sesión
+                                        <i class="fa fa-sign-in"></i>
+                                        <div class="star-1">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                                                version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                                <defs></defs>
+                                                <g id="Layer_x0020_1">
+                                                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                    <path
+                                                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                        class="fil0"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="star-2">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                                                version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                                <defs></defs>
+                                                <g id="Layer_x0020_1">
+                                                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                    <path
+                                                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                        class="fil0"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="star-3">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                                                version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                                <defs></defs>
+                                                <g id="Layer_x0020_1">
+                                                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                    <path
+                                                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                        class="fil0"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="star-4">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                                                version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                                <defs></defs>
+                                                <g id="Layer_x0020_1">
+                                                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                    <path
+                                                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                        class="fil0"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="star-5">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                                                version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                                <defs></defs>
+                                                <g id="Layer_x0020_1">
+                                                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                    <path
+                                                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                        class="fil0"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="star-6">
+                                            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                                                version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                                <defs></defs>
+                                                <g id="Layer_x0020_1">
+                                                    <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                    <path
+                                                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                        class="fil0"></path>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </a>
+                            </li>
                         </li>
                     {% else %}
                         <!-- Vista para usuarios que no tengan sesion iniciada -->
@@ -93,8 +209,7 @@
                                 <!-- <ul class="dropdown-menu">
                                 </ul> -->
                             </div>
-                        </li>
-                        
+                        </li>                    
                         <li class="nav-item m-1">
                             <div class="dropdown-center">
                                 <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
@@ -191,7 +306,7 @@
                                 </button>
                             </a>
                         </li>
-                        {% endif %}
+                    {% endif %}
                     </ul>
                 </div>
             </div>
