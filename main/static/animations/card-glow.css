@@ -36,7 +36,7 @@
 }
 
 .turn-card-back {
-  background-color: rgba(220, 53, 69, 0.8);
+  background-color: rgba(220, 53, 69, 0.5);
   backdrop-filter: blur(2px);
   padding: 30px 30px 30px 30px;
   border-radius: 8px;

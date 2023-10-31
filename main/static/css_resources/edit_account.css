@@ -1,17 +1,29 @@
-.turn-card-front{
-    display: grid; 
-    grid-template-columns: 1fr; 
-    grid-template-rows: 1.3fr 1.6fr 1.1fr; 
-    gap: 0px 0px; 
+.turn-card-front {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1.3fr 1.6fr 1.1fr;
+    gap: 0px 0px;
     place-items: center;
     color: #fff;
 }
-.turn-card-front h3{
+.turn-card-front h3 {
     font-size: 36px;
 }
 
-.form-split{
+.form-split {
     place-items: center;
     display: grid;
+}
 
+.turn-card-back {
+    color: #fff;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.8fr .8fr 2fr .5fr;
+    gap: 0px 0px;
+    place-items: center;
+}
+
+.hidden_div{
+    display: block;
 }
