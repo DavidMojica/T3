@@ -45,3 +45,13 @@
   min-width: 420px;
   transform: rotateY(180deg);
 }
+
+
+@media (max-width: 768px){
+  .turn-card{
+    height: 100%;
+    width: 100%;
+    min-width: 0px;
+    min-height: 0px;
+  }
+}

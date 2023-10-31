@@ -15,8 +15,12 @@ ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
 ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
 
-####### Login #######
+####### Login - EDIT #######
 ERROR_200 = "Nombre o contraseña inválido."
+ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
+ERROR_202 = "Las contraseñas no coinciden"
+EVENT_200 = "Contraseña actualizada correctamente."
+
 # Create your views here.
 
 #LOGIN
@@ -86,9 +90,26 @@ def edit_account(request, user_id, user_type):
     user = get_object_or_404(CustomUser, pk=user_id)
     
     if request.method == "POST" and user_type in (20, 21, 22):
-        form = TrabajadorEditForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
+        if "account_data" in request.POST:
+            form = TrabajadorEditForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                event = "Se actualizaron sus datos correctamente :)."
+        elif "change_password" in request.POST:
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            new_password2 = request.POST.get('new_password2')
+            if user.check_password(old_password):
+                if new_password == new_password2:
+                    user.set_password(new_password)
+                    user.save
+                    event = EVENT_200
+                else:
+                    event = ERROR_202
+            else:
+                event = ERROR_201
+                
+        
     if request.method == "post" and user_type in (1, 10, 11, 12):
         form = AdministradorEditForm(request.POST, instance=user)
         if form.is_valid():
@@ -101,6 +122,7 @@ def edit_account(request, user_id, user_type):
             form = AdministradorEditForm
 
     return render(request, 'edit_account.html', {'form': form,
+                                                 'event' : event,
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 

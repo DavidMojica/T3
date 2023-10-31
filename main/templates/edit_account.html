@@ -23,7 +23,7 @@
                     {{event}}
                     <p>
                         <button type="button" id="btn_mostrar_info" class="btn btn-warning">Tus detalles</button>
-                        <button type="submit" class="btn btn-success">Actualizar Datos</button>
+                        <button type="submit" name="account_data" class="btn btn-success">Actualizar Datos</button>
                     </p>
                 </form>
                 <div class="hidden_div" id="hidden_div">
@@ -40,8 +40,6 @@
                 </div>
             </div>
 
-
-
             <div class="turn-card-back">
                 <div>
                     <h3 class="text-warning">Zona de peligro</h3>
@@ -49,10 +47,10 @@
                 </div>
                 <h3>Cambiar contraseña</h3>
                 <form action="" method="POST">
-                    <p><input type="password" placeholder="Contraseña" class="blackout-input"></p>
-                    <p><input type="password" placeholder="Contraseña nueva" class="blackout-input"></p>
-                    <p><input type="password" placeholder="Confirmar contraseña nueva" class="blackout-input"></p>
-                    <p><button type="submit" class="btn btn-danger">Actualizar Contraseña</button></p>
+                    <p><input type="password" name="old_password" placeholder="Contraseña" class="blackout-input"></p>
+                    <p><input type="password" name="new_password" placeholder="Contraseña nueva" class="blackout-input"></p>
+                    <p><input type="password" name="new_password2" placeholder="Confirmar contraseña nueva" class="blackout-input"></p>
+                    <p><button type="submit" name="change_password" class="btn btn-danger">Actualizar Contraseña</button></p>
                 </form>
                 <button type="button" id="btn-turn-0" class="btn btn-warning">Regresar</button>
             </div>
