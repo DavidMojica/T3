@@ -12,9 +12,9 @@
   transition: transform 0.999s;
 }
 
-.turn-card:hover .turn-card-inner {
+/* .turn-card:hover .turn-card-inner {
   transform: rotateY(180deg);
-}
+} */
 
 .turn-card-front,
 .turn-card-back {

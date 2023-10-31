@@ -12,25 +12,25 @@
         <li></li>
         <li></li>
         <li></li>
-</ul>
-    <div class="turn-card">
-        <div class="turn-card-inner">
+    </ul>
+    <div class="turn-card" id="id-turn-card">
+        <div class="turn-card-inner" id="id-turn-card-inner">
             <div class="turn-card-front">
                 <h3>Datos de la cuenta</h3>
                 <form action="" method="POST" class="form-split">
                     {% csrf_token %}
                     {{form.as_p}}
                     {{event}}
-                    <button type="submit" class="btn btn-success">Actualizar Datos</button> 
+                    <button type="submit" class="btn btn-success">Actualizar Datos</button>
                 </form>
                 <div>
                     <button type="button" id="btn-active-details" class="btn btn-warning">Tus detalles</button>
-                <button type="button" id="btn-turn-180" class="btn btn-danger">Cambiar contraseña</button>
+                    <button type="button" id="btn_turn_180" class="btn btn-danger">Cambiar contraseña</button>
                 </div>
             </div>
-            
-            
-            
+
+
+
             <div class="turn-card-back">
                 <h3>Cambiar contraseña</h3>
                 <form action="" method="POST">
@@ -39,7 +39,7 @@
                     <input type="password" placeholder="Confirmar contraseña nueva">
                     <button type="submit">Actualizar Contraseña</button>
                     <button type="button" id="btn-turn-0">Regresar</button>
-            </form>
+                </form>
             </div>
         </div>
     </div>
