@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_edit_account">
-
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Actualizar Datos</button>
+    </form>
 </main>
 {% endblock %}

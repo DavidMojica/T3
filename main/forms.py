@@ -14,11 +14,20 @@ class CustomUserRegistrationForm(forms.ModelForm):
         model = CustomUser
         fields = ('username', 'email', 'password', 'password2', 'tipo_usuario')
         
-class CustomUserEditForm(UserChangeForm):
+class TrabajadorEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('first_name','last_name', 'email')
-        exclude = ('id', 'last_login', 'is_superuser','username', 'is_staff', 'is_active', 'date_joined', 'tipo_usuario_id')
+        
+class AdministradorEditForm(forms.ModelForm):
+    tipo_usuario = forms.ModelChoiceField(
+        queryset = TipoUsuario.objects.all(),
+        widget = forms.Select(attrs={'class': 'custom-class', 'id': 'custom-id'}),
+        empty_label="Selecciona un tipo de usuario"
+    )
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'email', 'is_active', 'tipo_usuario')
     
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))

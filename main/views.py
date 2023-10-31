@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
-from .forms import CustomUserLoginForm, CustomUserEditForm
+from .forms import CustomUserLoginForm, TrabajadorEditForm, AdministradorEditForm
 from .models import CustomUser
 
 
@@ -85,15 +85,20 @@ def signout(request):
 def edit_account(request, user_id, user_type):
     user = get_object_or_404(CustomUser, pk=user_id)
     
-    if request.method == "POST" : #and user_type in (20, 21, 22)
-        # Si se envió un formulario, crea una instancia del formulario con los datos del usuario
-        form = CustomUserEditForm(request.POST, instance=user)
+    if request.method == "POST" and user_type in (20, 21, 22):
+        form = TrabajadorEditForm(request.POST, instance=user)
         if form.is_valid():
-            # Procesa y guarda los datos del formulario si es válido
             form.save()
-    else:
-        # Si es una solicitud GET, crea una instancia del formulario con los datos del usuario
-        form = CustomUserEditForm(instance=user)
+    if request.method == "post" and user_type in (1, 10, 11, 12):
+        form = AdministradorEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+    
+    else: #GET
+        if user_type in (20,21,22):
+            form = TrabajadorEditForm(instance=user)
+        elif user_type in (1, 10, 11, 12):
+            form = AdministradorEditForm
 
     return render(request, 'edit_account.html', {'form': form,
                                                  'year': datetime.now(),

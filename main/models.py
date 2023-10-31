@@ -42,6 +42,11 @@ class CustomUser(AbstractUser):
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set')
     tipo_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING, default=3)
     objects = CustomUserManager()
+    
+    def save(self, *args, **kwargs):
+        if not self.password:
+            self.set_unusable_password()
+        super().save(*args, **kwargs)
 
     """ 
 ###### MODELOS FORÁNEOS GENERALES 1 a 1 ######
