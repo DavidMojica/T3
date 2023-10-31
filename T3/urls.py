@@ -29,6 +29,6 @@ urlpatterns = [
     path('sm_historial/', views.sm_historial, name="sm_historial"),
     path('404_restricted_area/', views.restricted_area_404, name="404_restricted_area"),
     path('404_not_deployed/', views.not_deployed_404, name="404_not_deployed"),
-    path('admon/', views.admon, name="admon")
-    
+    path('admon/', views.admon, name="admon"),
+    path('edit_account/', views.edit_account, name="edit_account")
 ]

@@ -75,6 +75,10 @@ def signout(request):
     logout(request)
     return redirect(reverse('home'))
 
+@login_required
+def edit_account(request):
+    if request.method == "GET":
+        return render(request, 'edit_account.html')
 
 #PSICOLOGIA VISTAS
 @login_required
