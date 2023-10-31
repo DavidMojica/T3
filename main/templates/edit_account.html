@@ -10,18 +10,22 @@
     </div> -->
     <div class="glow-cardBox">
         <div class="glow-card">
-           <div class="glow-h4">Datos de la cuenta</div>
-         
+            <h3>Datos de la cuenta</h3>
+           <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Actualizar Datos</button>
+        </form>
         </div>
       </div>
-    <div class="glow-cardBox">
+    <!-- <div class="glow-cardBox">
         <h3>Datos de la cuenta</h3>
         <form action="" method="POST">
             {% csrf_token %}
             {{form.as_p}}
             <button type="submit">Actualizar Datos</button>
         </form>
-    </div>
+    </div> -->
     <div>
         <h3>Cambiar contraseña</h3>
         <form action="" method="POST">

@@ -17,15 +17,9 @@
     background: #FFF;
     border-radius: 20px;
     z-index: 5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
     text-align: center;
-    color: #ffffff;
     overflow: hidden;
     padding: 20px;
-    cursor: pointer;
   }
   
   .glow-card .glow-h4 {
