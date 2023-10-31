@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from .models import CustomUser, TipoUsuario
 from django import forms
 
@@ -14,8 +14,11 @@ class CustomUserRegistrationForm(forms.ModelForm):
         model = CustomUser
         fields = ('username', 'email', 'password', 'password2', 'tipo_usuario')
         
-class CustomUserEditForm(forms.ModelForm):
-    pass
+class CustomUserEditForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name','last_name','old_password', 'new_password', 'new_password2', 'email')
+        exclude = ('id', 'last_login', 'is_superuser','username', 'is_staff', 'is_active', 'date_joined', 'tipo_usuario_id')
     
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))

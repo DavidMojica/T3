@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
-from .forms import CustomUserLoginForm
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
+from .forms import CustomUserLoginForm, CustomUserEditForm
 from .models import CustomUser
 
 
@@ -78,12 +78,20 @@ def signout(request):
     return redirect(reverse('home'))
 
 @login_required
-def edit_account(request, account_id):
-    if request.method == "GET":
-        query_user = get_object_or_404(CustomUser, pk=account_id)
-        
-        
-        return render(request, 'edit_account.html')
+def edit_account(request, account_id, user_type_id):
+    user = get_object_or_404(CustomUser, pk=account_id)
+    
+    if request.method == "POST" and user_type_id in (20, 21, 22):
+        # Si se envió un formulario, crea una instancia del formulario con los datos del usuario
+        form = CustomUserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            # Procesa y guarda los datos del formulario si es válido
+            form.save()
+    else:
+        # Si es una solicitud GET, crea una instancia del formulario con los datos del usuario
+        form = CustomUserEditForm(instance=user)
+
+    return render(request, 'edit_account.html', {'form': form})
 
 
 
