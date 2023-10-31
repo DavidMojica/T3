@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
 from .forms import CustomUserLoginForm
 from django.urls import reverse_lazy, reverse
@@ -7,6 +7,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
+from .models import CustomUser
+
 
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -76,9 +78,15 @@ def signout(request):
     return redirect(reverse('home'))
 
 @login_required
-def edit_account(request):
+def edit_account(request, account_id):
     if request.method == "GET":
+        query_user = get_object_or_404(CustomUser, pk=account_id)
+        
+        
         return render(request, 'edit_account.html')
+
+
+
 
 #PSICOLOGIA VISTAS
 @login_required

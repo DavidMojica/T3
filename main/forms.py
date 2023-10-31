@@ -14,7 +14,9 @@ class CustomUserRegistrationForm(forms.ModelForm):
         model = CustomUser
         fields = ('username', 'email', 'password', 'password2', 'tipo_usuario')
         
-        
+class CustomUserEditForm(forms.ModelForm):
+    pass
+    
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
