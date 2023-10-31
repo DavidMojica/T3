@@ -1,6 +1,6 @@
 .turn-card {
   height: 52vh;
-    width: 25vw;
+  width: 25vw;
   perspective: 1000px;
 }
 
@@ -25,22 +25,21 @@
 }
 
 .turn-card-front {
-  background-color: #6A2C70;
-  color: #fff;
-  border: 10px solid #6A2C70;
-  border-radius: 10px;
-  font-size: 24px;
+  background-color: #fff;
+  padding: 30px 30px 30px 30px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.62);
+  min-height: 400px;
+  min-width: 420px;
   transform: rotateY(0deg);
 }
 
 .turn-card-back {
-  background-color: #F08A5D;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  border: 10px solid #F08A5D;
-  border-radius: 10px;
-  justify-content: center;
-  font-size: 24px;
+  background-color: #dc3545;
+  padding: 30px 30px 30px 30px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.62);
+  min-height: 400px;
+  min-width: 420px;
   transform: rotateY(180deg);
 }

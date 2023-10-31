@@ -1,6 +1,9 @@
 #main_home{
     height: 71.4vh;
 }
+.navbar{
+    z-index: 1000;
+}
 .row{
     place-items: center;
     text-align: center;

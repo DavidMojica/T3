@@ -1,0 +1,27 @@
+.blackout-input {
+    --input-focus: #2d8cf0;
+    --font-color: #fefefe;
+    --font-color-sub: #7e7e7e;
+    --bg-color: #111111;
+    --main-color: #fefefe;
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 4px 4px var(--main-color);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--font-color);
+    padding: 5px 10px;
+    outline: none;
+  }
+  
+  .blackout-input::placeholder {
+    color: var(--font-color-sub);
+    opacity: 0.8;
+  }
+  
+  .blackout-input:focus {
+    border: 2px solid var(--input-focus);
+  }
