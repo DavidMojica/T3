@@ -24,6 +24,11 @@
     place-items: center;
 }
 
-.hidden_div{
-    display: block;
+#hidden_div{
+    display: none;
+    place-items: center;
+}
+
+#hidden_div p{
+    text-align: center;
 }
