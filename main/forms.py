@@ -15,6 +15,11 @@ class CustomUserRegistrationForm(forms.ModelForm):
         fields = ('username', 'email', 'password', 'password2', 'tipo_usuario')
         
 class TrabajadorEditForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su(s) nombre(s)'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su(s) apellido(s)'}))
+    email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su email'}))
+
+    
     class Meta:
         model = CustomUser
         fields = ('first_name','last_name', 'email')

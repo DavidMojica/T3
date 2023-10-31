@@ -1,0 +1,17 @@
+.turn-card-front{
+    display: grid; 
+    grid-template-columns: 1fr; 
+    grid-template-rows: 1.3fr 1.6fr 1.1fr; 
+    gap: 0px 0px; 
+    place-items: center;
+    color: #fff;
+}
+.turn-card-front h3{
+    font-size: 36px;
+}
+
+.form-split{
+    place-items: center;
+    display: grid;
+
+}

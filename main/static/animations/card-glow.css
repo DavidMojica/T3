@@ -25,7 +25,8 @@
 }
 
 .turn-card-front {
-  background-color: #fff;
+  background-color: rgb(255 255 255 / 0.1);
+  backdrop-filter: blur(4px);
   padding: 30px 30px 30px 30px;
   border-radius: 8px;
   box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.62);
@@ -35,7 +36,8 @@
 }
 
 .turn-card-back {
-  background-color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.8);
+  backdrop-filter: blur(2px);
   padding: 30px 30px 30px 30px;
   border-radius: 8px;
   box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.62);
