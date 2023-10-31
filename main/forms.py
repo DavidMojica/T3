@@ -17,7 +17,7 @@ class CustomUserRegistrationForm(forms.ModelForm):
 class CustomUserEditForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('first_name','last_name','old_password', 'new_password', 'new_password2', 'email')
+        fields = ('first_name','last_name', 'email')
         exclude = ('id', 'last_login', 'is_superuser','username', 'is_staff', 'is_active', 'date_joined', 'tipo_usuario_id')
     
 class CustomUserLoginForm(AuthenticationForm):

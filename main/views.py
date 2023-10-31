@@ -38,9 +38,13 @@ def signin(request):
         return render(request, 'signin.html', {'year': datetime.now(),})
 
 def home(request):
-    return render(request, 'home.html',{
-        'year': datetime.now()
-    })
+    if request.user.is_authenticated:
+        # El usuario está autenticado
+        return render(request, 'home.html', {'year': datetime.now(),
+                                             'CustomUser': request.user})
+    else:
+        # El usuario no está autenticado
+        return render(request, 'home.html', {'year': datetime.now()})
 
 def register(request):
     if request.method == 'POST':
@@ -78,10 +82,10 @@ def signout(request):
     return redirect(reverse('home'))
 
 @login_required
-def edit_account(request, account_id, user_type_id):
-    user = get_object_or_404(CustomUser, pk=account_id)
+def edit_account(request, user_id, user_type):
+    user = get_object_or_404(CustomUser, pk=user_id)
     
-    if request.method == "POST" and user_type_id in (20, 21, 22):
+    if request.method == "POST" : #and user_type in (20, 21, 22)
         # Si se envió un formulario, crea una instancia del formulario con los datos del usuario
         form = CustomUserEditForm(request.POST, instance=user)
         if form.is_valid():
@@ -91,7 +95,9 @@ def edit_account(request, account_id, user_type_id):
         # Si es una solicitud GET, crea una instancia del formulario con los datos del usuario
         form = CustomUserEditForm(instance=user)
 
-    return render(request, 'edit_account.html', {'form': form})
+    return render(request, 'edit_account.html', {'form': form,
+                                                 'year': datetime.now(),
+                                                 'CustomUser': request.user})
 
 
 

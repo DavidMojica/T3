@@ -166,7 +166,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="/admon" class="dropdown-item">Administración</a></li>
                                     <hr class="dropdown-divider">
-                                    <li><a href="{% url 'edit_account' %}" class="dropdown-item">Editar cuenta</a></li>
+                                    <li><a href="{% url 'edit_account' user_id=CustomUser.id user_type=CustomUser.tipo_usuario_id %}" class="dropdown-item">Editar cuenta</a></li>
                                     <li><a href="/admon" class="dropdown-item">Datos personales</a></li>
                                     <hr class="dropdown-divider">
                                     <li><a href="/signout" class="dropdown-item">Cerrar Sesión</a></li>

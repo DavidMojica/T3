@@ -30,5 +30,5 @@ urlpatterns = [
     path('404_restricted_area/', views.restricted_area_404, name="404_restricted_area"),
     path('404_not_deployed/', views.not_deployed_404, name="404_not_deployed"),
     path('admon/', views.admon, name="admon"),
-    path('edit_account/<int:account_id>/<int:user_type_id>/', views.edit_account, name="edit_account")
+    path('edit_account/<int:user_id>/<int:user_type>/', views.edit_account, name="edit_account")
 ]
