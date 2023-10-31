@@ -1,10 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_edit_account">
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Actualizar Datos</button>
-    </form>
+    <!-- <div>
+        <h3>Información de la cuenta</h3>
+        <p>Su ID es: <b>{{CustomUser.id}}</b></p><br>
+        <p>Nombre de usuario: <b>{{CustomUser.username}}</b></p><br>
+        <p>Creado el: <b>{{CustomUser.date_joined}}</b></p><br>
+        <p>Último acceso: <b>{{CustomUser.last_login}}</b></p><br>
+    </div> -->
+    <div class="glow-cardBox">
+        <div class="glow-card">
+           <div class="glow-h4">Datos de la cuenta</div>
+         
+        </div>
+      </div>
+    <div class="glow-cardBox">
+        <h3>Datos de la cuenta</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Actualizar Datos</button>
+        </form>
+    </div>
+    <div>
+        <h3>Cambiar contraseña</h3>
+        <form action="" method="POST">
+            <input type="password" placeholder="Contraseña">
+            <input type="password" placeholder="Contraseña nueva">
+            <input type="password" placeholder="Confirmar contraseña nueva">
+            <button type="submit">Actualizar Contraseña</button>
+        </form>
+    </div>
 </main>
 {% endblock %}
