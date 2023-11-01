@@ -39,7 +39,7 @@ def signin(request):
             login(request, user)
             return redirect(reverse('home'))
     else:
-        return render(request, 'signin.html', {'year': datetime.now(),})
+        return render(request, 'signin.html', {'year': datetime.now()})
 
 def home(request):
     if request.user.is_authenticated:
@@ -79,6 +79,12 @@ def register(request):
     else:
         form = CustomUserRegistrationForm()  # Crear una instancia del formulario
         return render(request, 'register.html', {'form': form})
+
+@login_required
+def autodata(request, user_id):
+    user = get_object_or_404(CustomUser, pk=user_id)
+    
+
 
 @login_required
 def signout(request):
