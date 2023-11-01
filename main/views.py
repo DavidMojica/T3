@@ -107,7 +107,7 @@ def edit_account(request, user_id, user_type):
             if user.check_password(old_password):
                 if new_password == new_password2:
                     user.set_password(new_password)
-                    user.save
+                    user.save()
                     pass_event = EVENT_200
                 else:
                     pass_event = ERROR_202
