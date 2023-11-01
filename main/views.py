@@ -85,9 +85,14 @@ def signout(request):
     logout(request)
     return redirect(reverse('home'))
 
+
+##########CHECK THE PASSWORDD FUNCION
+
 @login_required
 def edit_account(request, user_id, user_type):
     user = get_object_or_404(CustomUser, pk=user_id)
+    event = ""
+    pass_event = ""
     
     if request.method == "POST" and user_type in (20, 21, 22):
         if "account_data" in request.POST:
@@ -103,11 +108,11 @@ def edit_account(request, user_id, user_type):
                 if new_password == new_password2:
                     user.set_password(new_password)
                     user.save
-                    event = EVENT_200
+                    pass_event = EVENT_200
                 else:
-                    event = ERROR_202
+                    pass_event = ERROR_202
             else:
-                event = ERROR_201
+                pass_event = ERROR_201
                 
         
     if request.method == "post" and user_type in (1, 10, 11, 12):
@@ -123,6 +128,7 @@ def edit_account(request, user_id, user_type):
 
     return render(request, 'edit_account.html', {'form': form,
                                                  'event' : event,
+                                                 'pass_event' : pass_event,
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 

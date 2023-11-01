@@ -36,8 +36,9 @@
                     </p>
                 </div>
                 <div>
-                    <button type="button" id="btn_turn_180" class="btn btn-danger">Cambiar contraseña</button>
+                    <button type="button" id="btn_turn_180" class="btn btn-danger">Cambiar contraseña</button> <br>
                 </div>
+                {{pass_event}}
             </div>
 
             <div class="turn-card-back">
@@ -47,6 +48,7 @@
                 </div>
                 <h3>Cambiar contraseña</h3>
                 <form action="" method="POST">
+                    {% csrf_token %}
                     <p><input type="password" name="old_password" placeholder="Contraseña" class="blackout-input"></p>
                     <p><input type="password" name="new_password" placeholder="Contraseña nueva" class="blackout-input"></p>
                     <p><input type="password" name="new_password2" placeholder="Confirmar contraseña nueva" class="blackout-input"></p>
