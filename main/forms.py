@@ -15,15 +15,22 @@ class CustomUserRegistrationForm(forms.ModelForm):
         fields = ('username', 'email', 'password', 'password2', 'tipo_usuario')
         
 class TrabajadorEditForm(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su(s) nombre(s)'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su(s) apellido(s)'}))
-    email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su email'}))
+    first_name = forms.CharField(label="Nombre(s)",
+        widget=forms.TextInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su(s) nombre(s)'}))
+    last_name = forms.CharField(label="Apellido(s)",
+        widget=forms.TextInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su(s) apellido(s)'}))
+    email = forms.CharField(label="Correo electronico",
+        widget=forms.EmailInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su email'}))
 
-    
     class Meta:
         model = CustomUser
         fields = ('first_name','last_name', 'email')
         
+        
+# class AutodataForm(forms.ModelForm):
+            
+        
+
 class AdministradorEditForm(forms.ModelForm):
     tipo_usuario = forms.ModelChoiceField(
         queryset = TipoUsuario.objects.all(),

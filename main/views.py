@@ -83,6 +83,11 @@ def register(request):
 @login_required
 def autodata(request, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
+    if request.method == "GET":
+        return render(request, 'autodata.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+        })
     
 
 
