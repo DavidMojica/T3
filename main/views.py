@@ -173,8 +173,6 @@ def edit_account(request, user_id, user_type):
                                                  'CustomUser': request.user})
 
 
-a = 16
-
 #PSICOLOGIA VISTAS
 @login_required
 def sm_HPC(request):
