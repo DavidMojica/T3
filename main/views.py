@@ -8,6 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import CustomUser, InfoMiembros
+import pytz
 
 
 ######### Errors related to register ##########
@@ -109,7 +110,7 @@ def edit_account(request, user_id, user_type):
     user = get_object_or_404(CustomUser, pk=user_id)
     event = ""
     pass_event = ""
-    
+
     if request.method == "POST" and user_type in (20, 21, 22):
         if "account_data" in request.POST:
             form = TrabajadorEditForm(request.POST, instance=user)

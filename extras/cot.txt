@@ -1,0 +1,75 @@
+Men que tal, como vas
+
+Haciéndole el tanteo a la página, calculo que van a ser necesarias aproximadamente 18 imágenes, 6 videos y 6 audios.
+
+*Forma de trabajo*
+Trabajo todos los días, al proyecto le dedicaré de 5 a 6 horas díarias excepto sabados y domingos, que le dediraré de 3 a 4 horas al proyecto.
+Primero se realizarán todos los diagramas de la aplicación, asegurando que la base de datos quede bien estructurada desde un principio para que 
+pese lo menos posible a lo largo del tiempo.
+Luego, se desarrollará todo lo que tenga que ver con backend y nos aseguramos de que quede funcionando todo perfectamente antes de pasar a la siguiente etapa.
+La siguiente etapa es la etapa del frontend, momento donde vamos a integrar todos los videos, audios, animaciones etc para que quede bien estructurada,
+agradable a la vista y agradablemente interactiva.
+Posteriormente pasaremos a la etapa de testing, donde el equipo intentará quebrar los sistemas de la página para capturar errores, bugs y se anotarán.
+Después de esto, debemos de corregir estos errores (si hay) para finalmente cuando esté todo bien estructurado, desplegar la aplicación y 
+capacitar al cliente sobre el uso de la aplicación.
+
+*Cronograma*
+Viendo la estructura de la página, la cantidad de datos y el propósito principal que es desarrollar un frontend muy bien elaborado, 
+estimo que será necesario al rededor de 15 días para desarrollar todo lo que tenga que ver con la base de datos, inicio de sesiones segiuras,
+todo lo que tenga que ver con el backend de la página y otros 30 días para desarrollar lo que tiene que ver con el frontend y UIX (experiencia del usuario).
+3 Días de testing a la aplicación, 3 días de corrección de errores y de pulir detalles finales y 3 días de despliegue con capacitación al usuario final.
+
+En total, al rededor de un mes y 3 semanas para desarrollar todas estas actividades.
+
+*Cotización*
+
+El total es $4.200.000
+La página requiere un enfoque de diversas técnicas y tecnologías para realizar todo lo que queremos realizar.
+
+El precio incluye: 
+
+->10 módulos:
+-Landing page (Home/index).
+-Introducción.
+-La magia.
+-Acto I agua.
+-Acto II tierra.
+-Acto III aire.
+-Acto IV fuego.
+-Módulo de registro de usuarios.
+-Módulo de inicio de sesión.
+-Módulo de edición de usuario para los usuarios.
+
+Cada uno de los módulos incluirán lo siguiente:
+
+->Funcionamiento, responsividad y experiencia de usuario(UI/UIX).
+-Animaciones, formularios, controles, resguardo de datos funcional.
+-100% responsividad.
+
+->Escalabilidad
+-Se documentará el código, lo que hace cada elemento y se construirá de una forma escalable 
+para asegurarnos de poder incluir módulos adicionales de forma rápida y segura.
+Por ejemplo, un módulo de inteligencia de datos donde los administradores pueden ver gráficos e información 
+sobre datos muy útiles para el marketing y otras áreas de la empresa. (También lo trabajo yo, pero no está incluído actualmente).
+
+->Seguridad informática:
+-Encriptación de contraseñas, datos sensibles e información que necesitemos.
+-anti-Cross-Site-Request-Forgery (CSRF): Se utilizarán tokens en todos los formularios que envíen o precesen información para 
+que los atacantes no engañen a los usuarios y que realicen acciones no deseadas en su nombre. 
+-Clickjacking: Podemos controlar si nuestra web puede ser incluída en i-frames de otros sitios web, con el objetivo de
+proteger y que no puedan acceder a las rutas que son para usuarios que ya pagaron y se registraron.
+-Rutas Protegidas: Nos aseguraremos que usuarios que no tengan la sesión iniciada no puedan navegar por distintos lugares de pago de nuestra web.
+-Anti Inyecciones SQL: No podrán hacer operaciones o cambios a nuestra base de datos a través de formularios y otros lugares donde se introducen datos.
+-Anti Secuestro de sesión: Se usarán cookies seguras y HttpOnly para proteger las sesiones de los usuarios.
+-Directory Transversal: Gestionaremos las rutas de archivos de forma segura para evitar ataques a los archivos de la página.
+-Y más elementos de seguridad.
+
+
+*Forma de pago*
+Cada 15 y 30 de cada mes, me cancelarían el 15% del precio final (con un mínimo de $500.000) en este caso $630.000 que se irán restando al precio final y yo les entrego todos los avances, datos,
+archivos y repositorios que haya desarrollado hasta ese momento, los evaluaremos juntos, analizaremos qué otros requisitos hay pendientes y pasos a seguir.
+Si cuando el proyecto finalice y sea entregado en su totalidad aún queda por restar, por favor restar el resto del monto pendiente.
+
+Si tienes alguna duda, inquietud, contraoferta por favor hazmelo saber, la idea es que todos nos apoyemos y seamos justos entre todos :)
+
+Feliz día men
