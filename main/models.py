@@ -245,7 +245,6 @@ class InfoPacientes(models.Model):
     barrio = models.CharField(max_length=100)
     poblacion_vulnerable = models.CharField(null=True, max_length=100) 
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
-    telefono = models.CharField(null=True)
     celular = models.CharField(null=True)
     lectoescritura_indicador = models.ForeignKey(Lecto1, on_delete=models.DO_NOTHING)
     lectoescritura_nivel = models.ForeignKey(Lecto2, on_delete=models.DO_NOTHING)
@@ -282,7 +281,6 @@ class InfoMiembros(models.Model):
     direccion = models.CharField(max_length=100, null = False)
     barrio = models.CharField(max_length=100, null = False)
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING, null=True) #
-    telefono = models.CharField(null=True)
     celular = models.CharField(null=True)
     etnia = models.ForeignKey(Etnia, on_delete=models.DO_NOTHING, null=True) #
     regimen_seguridad = models.ForeignKey(RegimenSeguridad, on_delete=models.DO_NOTHING, null=True) #

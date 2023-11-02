@@ -58,7 +58,7 @@ class AutodataForm(forms.ModelForm):
     )
     class Meta:
         model = InfoMiembros
-        fields = ('tipo_documento','documento','estado_civil', 'numero_hijos', 'direccion', 'barrio', 'telefono', 'celular', 'sisben', 'regimen_seguridad','sexo',)
+        fields = ('tipo_documento','documento','estado_civil', 'numero_hijos', 'direccion', 'barrio', 'celular', 'sisben', 'regimen_seguridad','sexo',)
             
         
 

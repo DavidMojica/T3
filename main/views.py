@@ -93,15 +93,15 @@ def autodata(request, user_id):
     if request.method == "GET":
         pass
     elif request.method == "POST":
+        #Server Validations
+        
+        #End validations
         form.save()
-        
-        
-        pass
     
     return render(request, 'autodata.html',{
             'CustomUser': request.user,
             'year': datetime.now(),
-            'form': AutodataForm
+            'form': form
         })
         
     
