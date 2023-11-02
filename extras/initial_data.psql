@@ -39,4 +39,4 @@ insert into main_regimenseguridad(description) values('especial');
 insert into main_regimenseguridad(description) values('sin información');
 insert into main_regimenseguridad(description) values('no asegurado');
 
-D
+DA
