@@ -24,3 +24,18 @@ insert into main_estadocivil(description) values('unión libre');
 
 insert into main_sexo(description) values('masculino');
 insert into main_sexo(description) values('femenino');
+
+insert into main_etnia(description) values('indigena');
+insert into main_etnia(description) values('rom');
+insert into main_etnia(description) values('raizal');
+insert into main_etnia(description) values('palenquero');
+insert into main_etnia(description) values('negro/afro');
+insert into main_etnia(description) values('ninguna');
+
+insert into main_regimenseguridad(description) values('contributivo');
+insert into main_regimenseguridad(description) values('subsidiado');
+insert into main_regimenseguridad(description) values('excepción');
+insert into main_regimenseguridad(description) values('especial');
+insert into main_regimenseguridad(description) values('sin información');
+insert into main_regimenseguridad(description) values('no asegurado');
+
