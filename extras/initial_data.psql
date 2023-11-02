@@ -14,3 +14,13 @@ insert into main_tipodocumento(description) values('menor sin identificar (MS)')
 insert into main_tipodocumento(description) values('adulto sin identificar (AS)');
 insert into main_tipodocumento(description) values('numero único de identificación (NU)');
 insert into main_tipodocumento(description) values('seguro de responsabilidad civil (RC)');
+
+insert into main_estadocivil(description) values('soltero/a');
+insert into main_estadocivil(description) values('casado/a');
+insert into main_estadocivil(description) values('separado/a');
+insert into main_estadocivil(description) values('divorciado/a');
+insert into main_estadocivil(description) values('viudo/a');
+insert into main_estadocivil(description) values('unión libre');
+
+insert into main_sexo(description) values('masculino');
+insert into main_sexo(description) values('femenino');

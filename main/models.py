@@ -282,7 +282,7 @@ class InfoMiembros(models.Model):
     sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING) #
     direccion = models.CharField(max_length=100, null = False)
     barrio = models.CharField(max_length=100, null = False)
-    estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
+    estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING) #
     telefono = models.CharField(null=True)
     celular = models.CharField(null=True)
     etnia = models.ForeignKey(Etnia, on_delete=models.DO_NOTHING) #
