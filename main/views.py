@@ -8,7 +8,6 @@ from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import CustomUser, InfoMiembros
-import pytz
 
 
 ######### Errors related to register ##########
@@ -62,8 +61,10 @@ def register(request):
                     user.set_password(request.POST['password'])
                     user.save()
 
-                    info_miembros = InfoMiembros(id_usuario_id=user.id)
-                    info_miembros.save()
+                    info_miembros, created = InfoMiembros.objects.get_or_create(id_usuario=user)
+
+                    if created:
+                        info_miembros.save()  # Solo guardar si es un objeto nuevo
 
                     return redirect(reverse('signin'))
                 except IntegrityError:
@@ -88,12 +89,21 @@ def register(request):
 @login_required
 def autodata(request, user_id):
     user = get_object_or_404(CustomUser, pk=user_id)
+    form = AutodataForm(request.POST, instance=user)
     if request.method == "GET":
-        return render(request, 'autodata.html',{
+        pass
+    elif request.method == "POST":
+        form.save()
+        
+        
+        pass
+    
+    return render(request, 'autodata.html',{
             'CustomUser': request.user,
             'year': datetime.now(),
             'form': AutodataForm
         })
+        
     
 
 

@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_home">
-    <form action="">
+    <form action="/autodata" method="POST">
         {% csrf_token %}
         {{form.as_p}}
+        <button type="submit">Guardar datos</button>
     </form>
 </main>
 {% endblock %}
