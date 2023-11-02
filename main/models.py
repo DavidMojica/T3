@@ -226,6 +226,14 @@ class ConductasASeguir(models.Model):
     
     def __str__(self):
         return self.description.capitalize()
+    
+class PsiMotivos(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=80) 
+    
+    def __str__(self):
+        return self.description.capitalize()
+    
 
 """ 
 ##### MODELO DE INFORMACIÓN PARA USUARIOS #####
@@ -243,7 +251,7 @@ class InfoPacientes(models.Model):
     fecha_nacimiento = models.DateField()
     escolaridad = models.ForeignKey(Escolaridad, on_delete=models.DO_NOTHING)
     numero_hijos = models.IntegerField(null=False)
-    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING)
+    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING) #
     direccion = models.TextField(max_length=150)
     edad = models.IntegerField(null=True, blank=True)
     municipio = models.ForeignKey(Municipio, on_delete=models.DO_NOTHING, null=True, blank=True,)
@@ -308,7 +316,6 @@ class PsiLlamadas(models.Model):
     fecha_llamada = models.DateField(default=timezone.now)
     dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT) #
     hora = models.TimeField(auto_now_add=True)
-    motivo_llamada = models.TextField(null=True, max_length=5000) 
     observaciones = models.TextField(null=True, max_length=5000)
     seguimiento24 = models.TextField(null=True, max_length=5000)
     seguimiento48 = models.TextField(null=True, max_length=5000)
@@ -318,6 +325,10 @@ class PsiLlamadas(models.Model):
 class PsiLlamadasConductas(models.Model):
     id_llamada = models.ForeignKey(PsiLlamadas, on_delete=models.CASCADE)
     id_conducta = models.ForeignKey(ConductasASeguir, on_delete=models.CASCADE)
+    
+class PsiLlamadasMotivos(models.Model):
+    id_llamada = models.ForeignKey(PsiLlamadas, on_delete=models.CASCADE)
+    id_motivo = models.ForeignKey(PsiMotivos, on_delete=models.CASCADE)
     
 
 """ 

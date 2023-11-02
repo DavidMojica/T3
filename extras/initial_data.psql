@@ -59,6 +59,9 @@ insert into main_dianombre(description) values('sábado');
 insert into main_dianombre(description) values('domingo');
 
 
+
+
+
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento
 -- ALTER SEQUENCE main_tipodocumento_id_seq RESTART WITH 1;
