@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
-from .models import CustomUser, TipoUsuario
+from .models import CustomUser, TipoUsuario, InfoMiembros
 from django import forms
 
 class CustomUserRegistrationForm(forms.ModelForm):
@@ -27,7 +27,10 @@ class TrabajadorEditForm(forms.ModelForm):
         fields = ('first_name','last_name', 'email')
         
         
-# class AutodataForm(forms.ModelForm):
+class AutodataForm(forms.ModelForm):
+    class Meta:
+        model = InfoMiembros
+        fields = ('tipo_documento','documento', 'nombre', 'email','estado_civil', 'numero_hijos', 'direccion', 'barrio', 'telefono', 'celular', 'sisben', 'regimen_seguridad','sexo',)
             
         
 

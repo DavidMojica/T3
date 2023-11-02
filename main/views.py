@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
-from .forms import CustomUserLoginForm, TrabajadorEditForm, AdministradorEditForm
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import CustomUser
 
 
@@ -87,6 +87,7 @@ def autodata(request, user_id):
         return render(request, 'autodata.html',{
             'CustomUser': request.user,
             'year': datetime.now(),
+            'form': AutodataForm
         })
     
 

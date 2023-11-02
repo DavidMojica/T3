@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_home">
-
+    <form action="">
+        {% csrf_token %}
+        {{form.as_p}}
+    </form>
 </main>
 {% endblock %}

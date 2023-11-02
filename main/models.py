@@ -276,8 +276,8 @@ class InfoMiembros(models.Model):
     documento = models.CharField(primary_key=True, max_length=20, null=False)
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING) #
     id_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING)
-    # nombre = models.CharField(max_length=100, null=False)
-    # email = models.EmailField(max_length=255, null = True)
+    nombre = models.CharField(max_length=100, null=False)
+    email = models.EmailField(max_length=255, null = True)
     numero_hijos = models.IntegerField(null=False, default=0)
     sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING) #
     direccion = models.CharField(max_length=100, null = False)
