@@ -147,7 +147,7 @@ class Pais(models.Model):
         return self.description.capitalize()
     
 class Departamento(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=100)
     pertenece_pais = models.ForeignKey(Pais, on_delete=models.DO_NOTHING)
     
