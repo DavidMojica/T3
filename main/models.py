@@ -274,23 +274,23 @@ sólo que con algunos campos menos que se consideraron innecesarios.
 """
 class InfoMiembros(models.Model):
     documento = models.CharField(primary_key=True, max_length=20, null=False)
-    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING)
+    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING) #
     id_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING)
     # nombre = models.CharField(max_length=100, null=False)
     # email = models.EmailField(max_length=255, null = True)
     numero_hijos = models.IntegerField(null=False, default=0)
-    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING)
+    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING) #
     direccion = models.CharField(max_length=100, null = False)
     barrio = models.CharField(max_length=100, null = False)
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
     telefono = models.CharField(null=True)
     celular = models.CharField(null=True)
-    etnia = models.ForeignKey(Etnia, on_delete=models.DO_NOTHING)
-    regimen_seguridad = models.ForeignKey(RegimenSeguridad, on_delete=models.DO_NOTHING)
+    etnia = models.ForeignKey(Etnia, on_delete=models.DO_NOTHING) #
+    regimen_seguridad = models.ForeignKey(RegimenSeguridad, on_delete=models.DO_NOTHING) #
     sisben = models.BooleanField(null=False)
     nombre_eps = models.CharField(max_length=50)
-    contador_llamadas_psicologicas = models.IntegerField(null=False, default=0)
-    contador_asesorias_psicologicas = models.IntegerField(null=False, default=0)
+    contador_llamadas_psicologicas = models.IntegerField(null=False, default=0) #tr
+    contador_asesorias_psicologicas = models.IntegerField(null=False, default=0) #tr
     
 """
 ##### MODELO DE INFORMACIÓN DE LLAMADAS #####

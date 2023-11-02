@@ -1,9 +1,16 @@
-main_tipousuario
+insert into main_tipousuario (id, description) values(1, 'supremo');
+insert into main_tipousuario (id, description) values(10, 'coordinador de salud mental');
+insert into main_tipousuario (id, description) values(11, 'coordinador de discapacidad');
+insert into main_tipousuario (id, description) values(12, 'coordinador de calidad');
+insert into main_tipousuario (id, description) values(20, 'trabajador de psicologia');
+insert into main_tipousuario (id, description) values(21, 'trabajador de discapacidad');
+insert into main_tipousuario (id, description) values(22, 'trabajador de calidad');
 
-insert into main_tipousuario (id, description) values(1, 'supremo')
-insert into main_tipousuario (id, description) values(10, 'coordinador de salud mental')
-insert into main_tipousuario (id, description) values(11, 'coordinador de discapacidad')
-insert into main_tipousuario (id, description) values(12, 'coordinador de calidad')
-insert into main_tipousuario (id, description) values(20, 'trabajador de psicologia')
-insert into main_tipousuario (id, description) values(21, 'trabajador de discapacidad')
-insert into main_tipousuario (id, description) values(22, 'trabajador de calidad')
+insert into main_tipodocumento(description) values('cédula de ciudadanía (CC)');
+insert into main_tipodocumento(description) values('tarjeta de identidad (TI)');
+insert into main_tipodocumento(description) values('cédula de extranjería (CE)');
+insert into main_tipodocumento(description) values('pasaporte (PA)');
+insert into main_tipodocumento(description) values('menor sin identificar (MS)');
+insert into main_tipodocumento(description) values('adulto sin identificar (AS)');
+insert into main_tipodocumento(description) values('numero único de identificación (NU)');
+insert into main_tipodocumento(description) values('seguro de responsabilidad civil (RC)');
