@@ -60,13 +60,10 @@ def register(request):
                     user.username = request.POST['username'].lower()
                     user.set_password(request.POST['password'])
                     user.save()
-                    try:
-                        info_miembros = InfoMiembros(id_usuario_id=user.id)
-                        info_miembros.save()
-                    except IntegrityError as e:
-                        print(e)
-                   
-                    
+
+                    info_miembros = InfoMiembros(id_usuario_id=user.id)
+                    info_miembros.save()
+
                     return redirect(reverse('signin'))
                 except IntegrityError:
                     return render(request, 'register.html',{

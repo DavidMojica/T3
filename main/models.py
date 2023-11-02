@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission, BaseUserManager
 from django.utils import timezone
 import datetime
+import pytz
 
 # Create your models here.
 """ 
@@ -42,11 +43,14 @@ class CustomUser(AbstractUser):
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set')
     tipo_usuario = models.ForeignKey(TipoUsuario, on_delete=models.DO_NOTHING, default=3)
     objects = CustomUserManager()
+
     
     def save(self, *args, **kwargs):
         if not self.password:
             self.set_unusable_password()
-        super().save(*args, **kwargs)
+        if not self.date_joined:
+            self.date_joined = timezone.now().astimezone(pytz.timezone("America/Bogota"))
+        super(CustomUser, self).save(*args, **kwargs)
 
     """ 
 ###### MODELOS FORÁNEOS GENERALES 1 a 1 ######
@@ -275,7 +279,7 @@ sólo que con algunos campos menos que se consideraron innecesarios.
 class InfoMiembros(models.Model):
     documento = models.CharField(primary_key=True, max_length=20, null=False)
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING, null=True) #
-    id_usuario = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+    id_usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     numero_hijos = models.IntegerField(null=False, default=0)
     sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING,null=True) #
     direccion = models.CharField(max_length=100, null = False)

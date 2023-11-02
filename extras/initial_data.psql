@@ -38,3 +38,9 @@ insert into main_regimenseguridad(description) values('excepción');
 insert into main_regimenseguridad(description) values('especial');
 insert into main_regimenseguridad(description) values('sin información');
 insert into main_regimenseguridad(description) values('no asegurado');
+
+-- select * from main_tipodocumento
+-- delete from main_tipodocumento
+-- ALTER SEQUENCE main_tipodocumento_id_seq RESTART WITH 1;
+-- select * from main_customuser
+-- select * from main_infomiembros
