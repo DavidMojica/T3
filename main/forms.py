@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
-from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo
+from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
 
 class CustomUserRegistrationForm(forms.ModelForm):
@@ -56,9 +56,17 @@ class AutodataForm(forms.ModelForm):
         }),
         empty_label="Selecciona tu sexo"
     )
+    etnia = forms.ModelChoiceField(
+        queryset=Etnia.objects.all(),
+        widget=forms.Select(attrs={
+            'class': '',
+            'id': ''
+        }),
+        empty_label="Selecciona tu Etnia"
+    )
     class Meta:
         model = InfoMiembros
-        fields = ('tipo_documento','documento','estado_civil', 'numero_hijos', 'direccion', 'barrio', 'celular', 'sisben', 'regimen_seguridad','sexo',)
+        fields = ('tipo_documento','documento','estado_civil', 'numero_hijos','etnia', 'direccion', 'barrio', 'celular', 'sisben','nombre_eps', 'regimen_seguridad','sexo',)
             
         
 

@@ -19,7 +19,8 @@ ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
 ERROR_200 = "Nombre o contraseña inválido."
 ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
 ERROR_202 = "Las contraseñas no coinciden"
-EVENT_200 = "Contraseña actualizada correctamente."
+SUCCESS_100 = "Contraseña actualizada correctamente."
+SUCCESS_101 = "Datos guardados correctamente."
 
 # Create your views here.
 
@@ -88,22 +89,34 @@ def register(request):
 
 @login_required
 def autodata(request, user_id):
-    user = get_object_or_404(CustomUser, pk=user_id)
-    form = AutodataForm(request.POST, instance=user)
-    if request.method == "GET":
-        pass
-    elif request.method == "POST":
-        #Server Validations
-        
-        #End validations
-        form.save()
-    
-    return render(request, 'autodata.html',{
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'form': form
-        })
-        
+    user = get_object_or_404(InfoMiembros, pk=user_id)
+    if request.method == "POST":
+        form = AutodataForm(request.POST, instance=user)
+
+        if form.is_valid():
+            form.save()  # Guarda los datos si el formulario es válido
+        # Si el formulario no es válido, puedes agregar manejo de errores o validaciones personalizadas aquí
+            return render(request, 'autodata.html', {
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'form': form,
+                'event' : SUCCESS_101
+            })
+        else:
+            return render(request, 'autodata.html', {
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'form': form,
+                'event' : ERROR_101
+            })
+    else:
+        form = AutodataForm(instance=user)  # En el caso de una solicitud GET, simplemente muestra el formulario
+
+    return render(request, 'autodata.html', {
+        'CustomUser': request.user,
+        'year': datetime.now(),
+        'form': form
+    })
     
 
 
@@ -135,7 +148,7 @@ def edit_account(request, user_id, user_type):
                 if new_password == new_password2:
                     user.set_password(new_password)
                     user.save()
-                    pass_event = EVENT_200
+                    pass_event = SUCCESS_100
                 else:
                     pass_event = ERROR_202
             else:
