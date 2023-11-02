@@ -277,14 +277,14 @@ class InfoMiembros(models.Model):
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING, null=True) #
     id_usuario = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
     numero_hijos = models.IntegerField(null=False, default=0)
-    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING) #
+    sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING,null=True) #
     direccion = models.CharField(max_length=100, null = False)
     barrio = models.CharField(max_length=100, null = False)
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING, null=True) #
     telefono = models.CharField(null=True)
     celular = models.CharField(null=True)
     etnia = models.ForeignKey(Etnia, on_delete=models.DO_NOTHING, null=True) #
-    regimen_seguridad = models.ForeignKey(RegimenSeguridad, on_delete=models.DO_NOTHING) #
+    regimen_seguridad = models.ForeignKey(RegimenSeguridad, on_delete=models.DO_NOTHING, null=True) #
     sisben = models.BooleanField(null=True, default=False)
     nombre_eps = models.CharField(max_length=50)
     contador_llamadas_psicologicas = models.IntegerField(null=False, default=0) #tr
