@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, sm_llamadasForm
 from .models import CustomUser, InfoMiembros
 
 
@@ -189,7 +189,8 @@ def sm_llamadas(request):
         pass
     
     return render(request, 'sm_llamadas.html',{'year': datetime.now(),
-                                             'CustomUser': request.user})
+                                             'CustomUser': request.user,
+                                             'form': sm_llamadasForm})
         
     
 @login_required

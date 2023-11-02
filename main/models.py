@@ -220,7 +220,12 @@ class SiNoNunca(models.Model):
         return self.description.capitalize()
     
 
+class ConductasASeguir(models.Model):
+    id = models.AutoField(primary_key=True)   
+    description = models.CharField(max_length=80) 
     
+    def __str__(self):
+        return self.description.capitalize()
 
 """ 
 ##### MODELO DE INFORMACIÓN PARA USUARIOS #####
@@ -301,15 +306,19 @@ class PsiLlamadas(models.Model):
     nombre_paciente = models.CharField(null=True, max_length=100)
     id_psicologo = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
     fecha_llamada = models.DateField(default=timezone.now)
-    dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT)
+    dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT) #
     hora = models.TimeField(auto_now_add=True)
     motivo_llamada = models.TextField(null=True, max_length=5000) 
-    conducta_a_seguir = models.TextField(null=True, max_length=5000) 
     observaciones = models.TextField(null=True, max_length=5000)
     seguimiento24 = models.TextField(null=True, max_length=5000)
     seguimiento48 = models.TextField(null=True, max_length=5000)
     seguimiento72 = models.TextField(null=True, max_length=5000)
-        
+            
+#Rompimientos
+class PsiLlamadasConductas(models.Model):
+    id_llamada = models.ForeignKey(PsiLlamadas, on_delete=models.CASCADE)
+    id_conducta = models.ForeignKey(ConductasASeguir, on_delete=models.CASCADE)
+    
 
 """ 
 ##### MODELO HPC #####
