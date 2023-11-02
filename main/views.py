@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser
+from .models import CustomUser, InfoMiembros
 
 
 ######### Errors related to register ##########
@@ -60,6 +60,13 @@ def register(request):
                     user.username = request.POST['username'].lower()
                     user.set_password(request.POST['password'])
                     user.save()
+                    try:
+                        info_miembros = InfoMiembros(id_usuario_id=user.id)
+                        info_miembros.save()
+                    except IntegrityError as e:
+                        print(e)
+                   
+                    
                     return redirect(reverse('signin'))
                 except IntegrityError:
                     return render(request, 'register.html',{
