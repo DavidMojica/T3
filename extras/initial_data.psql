@@ -24,6 +24,7 @@ insert into main_estadocivil(description) values('unión libre');
 
 insert into main_sexo(description) values('masculino');
 insert into main_sexo(description) values('femenino');
+insert into main_sexo(description) values('otro...');
 
 insert into main_etnia(description) values('indigena');
 insert into main_etnia(description) values('rom');
@@ -38,6 +39,28 @@ insert into main_regimenseguridad(description) values('excepción');
 insert into main_regimenseguridad(description) values('especial');
 insert into main_regimenseguridad(description) values('sin información');
 insert into main_regimenseguridad(description) values('no asegurado');
+
+insert into main_conductasaseguir(description) values('continuar proceso de asesoría');
+insert into main_conductasaseguir(description) values('invitar al GAP (Grupo de apoyo profesional)');
+insert into main_conductasaseguir(description) values('derivar a la EPS');
+insert into main_conductasaseguir(description) values('derivar a secretaría de Cultura');
+insert into main_conductasaseguir(description) values('derivar a secretaría de Educación');
+insert into main_conductasaseguir(description) values('derivar al INDER');
+insert into main_conductasaseguir(description) values('derivar a gerencia de desarrollo económico');
+insert into main_conductasaseguir(description) values('derivar a E.A.P.B');
+insert into main_conductasaseguir(description) values('ninguna');
+
+insert into main_dianombre(description) values('lunes');
+insert into main_dianombre(description) values('martes');
+insert into main_dianombre(description) values('miércoles');
+insert into main_dianombre(description) values('jueves');
+insert into main_dianombre(description) values('viernes');
+insert into main_dianombre(description) values('sábado');
+insert into main_dianombre(description) values('domingo');
+
+
+
+
 
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento

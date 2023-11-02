@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_home">
-    <form action="/autodata" method="POST">
+    <form action="" method="POST">
         {% csrf_token %}
-        {{form.as_p}}
+        <ul>
+            {% for field in form %}
+              <li>
+                {{ field.label_tag }} {{ field }}
+              </li>
+            {% endfor %}
+          </ul>
         <button type="submit">Guardar datos</button>
+        {{event}}
     </form>
 </main>
 {% endblock %}
