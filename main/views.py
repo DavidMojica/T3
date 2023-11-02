@@ -183,8 +183,14 @@ def sm_HPC(request):
     
 @login_required
 def sm_llamadas(request):
-    if request.method == "GET":
-        return render(request, 'sm_atencion_urgencias.html')
+    if request.method == "POST":
+        pass
+    else:
+        pass
+    
+    return render(request, 'sm_llamadas.html',{'year': datetime.now(),
+                                             'CustomUser': request.user})
+        
     
 @login_required
 def sm_historial(request):
