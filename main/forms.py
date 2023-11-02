@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
-from .models import CustomUser, TipoUsuario, InfoMiembros
+from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo
 from django import forms
 
 class CustomUserRegistrationForm(forms.ModelForm):
@@ -28,6 +28,38 @@ class TrabajadorEditForm(forms.ModelForm):
         
         
 class AutodataForm(forms.ModelForm):
+    tipo_documento = forms.ModelChoiceField(
+        queryset = TipoDocumento.objects.all(),
+        widget = forms.Select(attrs = {
+            'class': '',
+            'id': ''
+        }),
+        empty_label = "Selecciona tu tipo de documento"
+    )
+    estado_civil = forms.ModelChoiceField(
+        queryset = EstadoCivil.objects.all(),
+        widget = forms.Select(attrs={
+            'class': '',
+            'id': ''
+        }),
+        empty_label = "Selecciona tu estado civil"
+    )
+    regimen_seguridad = forms.ModelChoiceField(
+        queryset = RegimenSeguridad.objects.all(),
+        widget = forms.Select(attrs = {
+            'class': '',
+            'id': ''
+        }),
+        empty_label = "Selecciona tu régimen de seguridad"
+    )
+    sexo = forms.ModelChoiceField(
+        queryset=Sexo.objects.all(),
+        widget=forms.Select(attrs={
+            'class': '',
+            'id': ''
+        }),
+        empty_label="Selecciona tu sexo"
+    )
     class Meta:
         model = InfoMiembros
         fields = ('tipo_documento','documento', 'nombre', 'email','estado_civil', 'numero_hijos', 'direccion', 'barrio', 'telefono', 'celular', 'sisben', 'regimen_seguridad','sexo',)
