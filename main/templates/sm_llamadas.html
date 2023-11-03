@@ -69,7 +69,31 @@
       {% endfor %}
     </select>    
 
+    <label for="in_motivo">Motivo de la llamada</label>
+    <select name="motivo" id="in_motivo">
+      {% for motivo in motivos %}
+      <option value="{{motivo.id}}">{{motivo.description}}</option>
+      {% endfor %}
+    </select>
 
+    <label for="in_conduta">Conducta a seguir</label>
+    <select name="conducta" id="in_conducta">
+      {% for conducta in conductas %}
+      <option value="{{conducta.id}}">{{conducta.description}}</option>
+      {% endfor %}
+    </select>
+
+    <label for="in_observaciones">Observaciones</label>
+    <textarea name="observaciones" id="in_observaciones" cols="30" rows="10"></textarea>
+
+    <label for="in_seguimiento24">Seguimiento 24 horas</label>
+    <textarea name="seguimiento24" id="in_seguimiento24" cols="30" rows="10"></textarea>
+
+    <label for="in_seguimiento48">Seguimiento 48 horas</label>
+    <textarea name="seguimiento48" id="in_seguimiento48" cols="30" rows="10"></textarea>
+
+    <label for="in_seguimiento72">Seguimiento 72 horas</label>
+    <textarea name="seguimiento72" id="in_seguimiento72" cols="30" rows="10"></textarea>
 
   </form>
 </main>
