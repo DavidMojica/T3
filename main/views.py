@@ -6,8 +6,9 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, sm_llamadasForm
-from .models import CustomUser, InfoMiembros
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
+from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio
+
 
 
 ######### Errors related to register ##########
@@ -181,6 +182,10 @@ def sm_HPC(request):
     
 @login_required
 def sm_llamadas(request):
+    paises = Pais.objects.all()
+    departamentos = Departamento.objects.all()
+    municipios = Municipio.objects.all()
+    
     if request.method == "POST":
         pass
     else:
@@ -188,7 +193,9 @@ def sm_llamadas(request):
     
     return render(request, 'sm_llamadas.html',{'year': datetime.now(),
                                              'CustomUser': request.user,
-                                             'form': sm_llamadasForm})
+                                             'paises': paises,
+                                             'departamentos': departamentos,
+                                             'municipios': municipios})
         
     
 @login_required

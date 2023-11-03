@@ -3,13 +3,7 @@
 <main id="main_home">
     <form action="" method="post">
         {% csrf_token %}
-        <ul>
-            {% for field in form %}
-              <li>
-                {{ field.label_tag }} {{ field }}
-              </li>
-            {% endfor %}
-          </ul>
+        
     </form>
 </main>
 {% endblock %}
