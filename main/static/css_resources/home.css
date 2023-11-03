@@ -21,3 +21,73 @@
     }
     
 }
+
+
+:root {
+    --blue: #0255f0;
+    --lt-gray: #cccccc;
+    --dk-gray: #767676;
+}
+
+.mult-fieldset {
+    border: none;
+}
+.mult-fieldset > .mult-label {
+    display: inline-block;
+    width: 100px;
+    font-weight: bold;
+    vertical-align: top;
+    font-size: 1rem;
+    line-height: 28px;
+}
+.mult-fieldset > .mult-label::after {
+    content: ":";
+}
+.mult-select,
+.mult-details {
+    display: inline-block;
+    width: 250px;
+    background-color: white;
+    cursor: pointer;
+}
+.mult-select,
+.mult-summary {
+    border: 1px solid var(--lt-gray);
+    border-collapse: collapse;
+    border-radius: 4px;
+    padding: 4px;
+    width: 250px;
+    background-color: white;
+    cursor: pointer;
+}
+.mult-details[open] > .mult-summary::marker {
+    color: var(--blue);
+}
+.mult-select:focus,
+.mult-summary:focus,
+.mult-summary:active {
+    box-shadow: 0 0 5px 1px var(--blue);
+}
+
+.mult-ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    margin-top: 2px;
+    border: 1px solid var(--dk-gray);
+    box-shadow: 0 0 5px 1px var(--lt-gray);
+}
+.mult-li {
+    margin: 0px;
+    padding: 0px;
+}
+.mult-li > .mult-label {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+}
+.mult-li > .mult-label:hover,
+.mult-li > .mult-label:has(input:checked) {
+    background-color: var(--dk-gray);
+    color: white;
+}
