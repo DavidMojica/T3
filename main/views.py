@@ -7,21 +7,112 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS
+from .models import CustomUser, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos
 
 
 
 @login_required
-def sm_llamadas(request):
+def sm_llamadas(request, user):
     paises = Pais.objects.all()
     departamentos = Departamento.objects.all()
     municipios = Municipio.objects.all()
     tipos_documento = TipoDocumento.objects.all()
     sexos = Sexo.objects.all()
     EPSS = EPS.objects.all()
+    poblacion_vulnerable = PoblacionVulnerable.objects.all()
+    motivos = PsiMotivos.objects.all()
+    conductas = ConductasASeguir.objects.all()
     
     if request.method == "POST":
-        pass
+        print(request.POST)
+        nombre = request.POST['nombre']
+        tipo_documento = request.POST['tipo_documento']
+        documento = request.POST['documento']
+        sexo = request.POST['sexo']
+        edad = request.POST['edad']
+        eps = request.POST['eps']
+        direccion = request.POST['direccion']
+        pais = request.POST['pais']
+        departamento = request.POST['departamento']
+        municipio = request.POST['municipio']
+        telefono = request.POST['telefono']
+        pob_vulnerable = request.POST['poblacion_vulnerable']
+        observaciones = request.POST['observaciones']
+        seguimiento24= request.POST['seguimiento24']
+        seguimiento48= request.POST['seguimiento48']
+        seguimiento72= request.POST['seguimiento72']
+    
+        conductas_seleccionadas = []
+        motivos_seleccionados = []
+        
+        
+        llamada = PsiLlamadas(
+            documento = documento,
+            nombre_paciente = nombre,
+            fecha_llamada = datetime.now().date(),
+            hora = datetime.now().hour,
+            observaciones = observaciones,
+            seguimiento24 = seguimiento24,
+            seguimiento48 = seguimiento48,
+            seguimiento72 = seguimiento72,
+            dia_semana_id = datetime.now().weekday(),
+            id_psicologo_id = user.id,
+            sexo = sexo,
+            edad = edad
+        )
+        llamada.save()
+        id_llamada = llamada.id
+        
+        ##conductas y motivos
+        for conducta in ConductasASeguir.objects.all():
+            checkbox_name = f'cond_{conducta.id}'
+            if checkbox_name in request.POST:
+                llamada_conducta = PsiLlamadasConductas(
+                    id_llamada=id_llamada,
+                    id_conducta = conducta
+                )
+                llamada_conducta.save()
+
+        for motivo in PsiMotivos.objects.all():
+            checkbox_name = f'mot_{motivo.id}'
+            if checkbox_name in request.POST:
+                llamada_motivo = PsiLlamadasMotivos(
+                    id_llamada = id_llamada,
+                    id_motivo = motivo
+                )
+                llamada_motivo.save()
+
+        ##paciente
+        paciente_existe = InfoPacientes.objects.filter(documento = documento).first()
+
+        if paciente_existe:
+            #Si el paciente existe se actualizan los datos
+            paciente_existe.nombre = nombre
+            paciente_existe.tipo_documento = tipo_documento
+            paciente_existe.sexo = sexo
+            paciente_existe.edad = edad
+            paciente_existe.nombre_eps = eps
+            paciente_existe.direccion = direccion
+            paciente_existe.municipio = municipio
+            paciente_existe.poblacion_vulnerable = pob_vulnerable
+            paciente_existe.celular = telefono
+            paciente_existe.save()
+        else:
+            ##Si no existe, se crea un paciente nuevo
+            nuevo_paciente = InfoPacientes(
+                nombre=nombre,
+                tipo_documento = tipo_documento,
+                sexo = sexo,
+                edad = edad,
+                nombre_epos = eps,
+                direccion = direccion,
+                municipio = municipio,
+                poblacion_vulnerable = pob_vulnerable,
+                celular = telefono
+            )
+            nuevo_paciente.save()
+        
+
     else:
         pass
     
@@ -32,7 +123,11 @@ def sm_llamadas(request):
                                              'municipios': municipios,
                                              'tipos_documento': tipos_documento,
                                              'sexos': sexos,
-                                             'EPSS': EPS})
+                                             'EPSS': EPSS,
+                                             'poblacion_vulnerable': poblacion_vulnerable,
+                                             'motivos':motivos,
+                                             'conductas':conductas,
+                                             'CustomUser': request.user})
 
 
 ######### Errors related to register ##########

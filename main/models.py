@@ -139,6 +139,13 @@ class Pip(models.Model): #POBLACION IDENTIFICADA POR PARTICULARIDADES
     def __str__(self):
         return self.description.capitalize()
     
+class PoblacionVulnerable(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.description.capitalize()
+
 class Pais(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.CharField(max_length=100)
@@ -164,7 +171,7 @@ class Municipio(models.Model):
         return self.description.capitalize()
     
 class DiaNombre(models.Model):
-    id = models.AutoField(primary_key=True)   
+    id = models.IntegerField(primary_key=True)   
     description = models.CharField(max_length=15) 
     
     def __str__(self):
@@ -263,7 +270,7 @@ class InfoPacientes(models.Model):
     edad = models.IntegerField(null=True, blank=True)
     municipio = models.ForeignKey(Municipio, on_delete=models.DO_NOTHING, null=True, blank=True,)
     barrio = models.CharField(max_length=100)
-    poblacion_vulnerable = models.CharField(null=True, max_length=100) 
+    poblacion_vulnerable = models.ForeignKey(PoblacionVulnerable, null=True, on_delete=models.CASCADE)
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
     celular = models.CharField(null=True)
     lectoescritura_indicador = models.ForeignKey(Lecto1, on_delete=models.DO_NOTHING)
@@ -323,6 +330,8 @@ class PsiLlamadas(models.Model):
     fecha_llamada = models.DateField(default=timezone.now)
     dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT) #
     hora = models.TimeField(auto_now_add=True)
+    sexo = models.ForeignKey(Sexo, null=True, on_delete=models.CASCADE)
+    edad = models.IntegerField(null=True)
     observaciones = models.TextField(null=True, max_length=5000)
     seguimiento24 = models.TextField(null=True, max_length=5000)
     seguimiento48 = models.TextField(null=True, max_length=5000)

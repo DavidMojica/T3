@@ -1,62 +1,62 @@
 insert into main_tipousuario (id, description) values(1, 'supremo');
 insert into main_tipousuario (id, description) values(10, 'coordinador de salud mental');
-insert into main_tipousuario (id, description) values(11, 'coordinador de discapacidad');
-insert into main_tipousuario (id, description) values(12, 'coordinador de calidad');
 insert into main_tipousuario (id, description) values(20, 'trabajador de psicologia');
-insert into main_tipousuario (id, description) values(21, 'trabajador de discapacidad');
-insert into main_tipousuario (id, description) values(22, 'trabajador de calidad');
 
-insert into main_tipodocumento(description) values('cédula de ciudadanía (CC)');
-insert into main_tipodocumento(description) values('tarjeta de identidad (TI)');
-insert into main_tipodocumento(description) values('cédula de extranjería (CE)');
-insert into main_tipodocumento(description) values('pasaporte (PA)');
-insert into main_tipodocumento(description) values('menor sin identificar (MS)');
-insert into main_tipodocumento(description) values('adulto sin identificar (AS)');
-insert into main_tipodocumento(description) values('numero único de identificación (NU)');
-insert into main_tipodocumento(description) values('seguro de responsabilidad civil (RC)');
 
-insert into main_estadocivil(description) values('soltero/a');
-insert into main_estadocivil(description) values('casado/a');
-insert into main_estadocivil(description) values('separado/a');
-insert into main_estadocivil(description) values('divorciado/a');
-insert into main_estadocivil(description) values('viudo/a');
-insert into main_estadocivil(description) values('unión libre');
+insert into main_tipodocumento(description) values('Cédula de ciudadanía (CC)');
+insert into main_tipodocumento(description) values('Tarjeta de identidad (TI)');
+insert into main_tipodocumento(description) values('Cédula de extranjería (CE)');
+insert into main_tipodocumento(description) values('Pasaporte (PA)');
+insert into main_tipodocumento(description) values('Menor sin identificar (MS)');
+insert into main_tipodocumento(description) values('Adulto sin identificar (AS)');
+insert into main_tipodocumento(description) values('Numero único de identificación (NU)');
+insert into main_tipodocumento(description) values('Seguro de responsabilidad civil (RC)');
 
-insert into main_sexo(description) values('masculino');
-insert into main_sexo(description) values('femenino');
-insert into main_sexo(description) values('otro...');
+-- delete from main_tipodocumento
+-- ALTER SEQUENCE main_tipodocumento_id_seq RESTART WITH 1;
 
-insert into main_etnia(description) values('indigena');
-insert into main_etnia(description) values('rom');
-insert into main_etnia(description) values('raizal');
-insert into main_etnia(description) values('palenquero');
-insert into main_etnia(description) values('negro/afro');
-insert into main_etnia(description) values('ninguna');
+insert into main_estadocivil(description) values('Soltero/a');
+insert into main_estadocivil(description) values('Casado/a');
+insert into main_estadocivil(description) values('Separado/a');
+insert into main_estadocivil(description) values('Divorciado/a');
+insert into main_estadocivil(description) values('Viudo/a');
+insert into main_estadocivil(description) values('Unión libre');
 
-insert into main_regimenseguridad(description) values('contributivo');
-insert into main_regimenseguridad(description) values('subsidiado');
-insert into main_regimenseguridad(description) values('excepción');
-insert into main_regimenseguridad(description) values('especial');
-insert into main_regimenseguridad(description) values('sin información');
-insert into main_regimenseguridad(description) values('no asegurado');
+insert into main_sexo(description) values('Masculino');
+insert into main_sexo(description) values('Femenino');
+insert into main_sexo(description) values('Otro...');
 
-insert into main_conductasaseguir(description) values('continuar proceso de asesoría');
-insert into main_conductasaseguir(description) values('invitar al GAP (Grupo de apoyo profesional)');
-insert into main_conductasaseguir(description) values('derivar a la EPS');
-insert into main_conductasaseguir(description) values('derivar a secretaría de Cultura');
-insert into main_conductasaseguir(description) values('derivar a secretaría de Educación');
-insert into main_conductasaseguir(description) values('derivar al INDER');
-insert into main_conductasaseguir(description) values('derivar a gerencia de desarrollo económico');
-insert into main_conductasaseguir(description) values('derivar a E.A.P.B');
-insert into main_conductasaseguir(description) values('ninguna');
+insert into main_etnia(description) values('Indigena');
+insert into main_etnia(description) values('Rom');
+insert into main_etnia(description) values('Raizal');
+insert into main_etnia(description) values('Palenquero');
+insert into main_etnia(description) values('Negro/afro');
+insert into main_etnia(description) values('Ninguna');
 
-insert into main_dianombre(description) values('lunes');
-insert into main_dianombre(description) values('martes');
-insert into main_dianombre(description) values('miércoles');
-insert into main_dianombre(description) values('jueves');
-insert into main_dianombre(description) values('viernes');
-insert into main_dianombre(description) values('sábado');
-insert into main_dianombre(description) values('domingo');
+insert into main_regimenseguridad(description) values('Contributivo');
+insert into main_regimenseguridad(description) values('Subsidiado');
+insert into main_regimenseguridad(description) values('Excepción');
+insert into main_regimenseguridad(description) values('Especial');
+insert into main_regimenseguridad(description) values('Sin información');
+insert into main_regimenseguridad(description) values('No asegurado');
+
+insert into main_conductasaseguir(description) values('Continuar proceso de asesoría');
+insert into main_conductasaseguir(description) values('Invitar al GAP (Grupo de apoyo profesional)');
+insert into main_conductasaseguir(description) values('Derivar a la EPS');
+insert into main_conductasaseguir(description) values('Derivar a secretaría de Cultura');
+insert into main_conductasaseguir(description) values('Derivar a secretaría de Educación');
+insert into main_conductasaseguir(description) values('Derivar al INDER');
+insert into main_conductasaseguir(description) values('Derivar a gerencia de desarrollo económico');
+insert into main_conductasaseguir(description) values('Derivar a E.A.P.B');
+insert into main_conductasaseguir(description) values('Ninguna');
+
+insert into main_dianombre(id, description) values(0, 'Lunes');
+insert into main_dianombre(id, description) values(1, 'Martes');
+insert into main_dianombre(id, description) values(2, 'Miércoles');
+insert into main_dianombre(id, description) values(3, 'Jueves');
+insert into main_dianombre(id, description) values(4, 'Viernes');
+insert into main_dianombre(id, description) values(5, 'Sábado');
+insert into main_dianombre(id, description) values(6, 'Domingo');
 
 
 

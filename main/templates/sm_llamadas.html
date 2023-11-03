@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_home">
-  <form action="" method="post">
+  <form action="" method="POST">
     {% csrf_token %}
     <label for="in_nombre">Nombre</label>
     <input type="text" name="nombre" id="in_nombre" placeholder="Nombre del paciente">
@@ -64,25 +64,35 @@
 
     <label for="in_poblacion_vulnerable">Población vulnerable</label>
     <select name="poblacion_vulnerable" id="in_poblacion_vulnerable">
+      <option value="-1">Seleccione...</option>
       {% for poblacion in poblacion_vulnerable %}
       <option value="{{poblacion.id}}">{{poblacion.description}}</option>
       {% endfor %}
     </select>    
 
-    <label for="in_motivo">Motivo de la llamada</label>
-    <select name="motivo" id="in_motivo">
-      {% for motivo in motivos %}
-      <option value="{{motivo.id}}">{{motivo.description}}</option>
-      {% endfor %}
-    </select>
+    <details class="mult-details">
+      <summary class="mult-summary">Motivo de la llamada</summary>
+      <ul class="mult-ul">
+        {% for motivo in motivos %}
+        <li class="mult-li">
+          <label class="mult-label"><input class="mult-input" type="checkbox" name="mot_{{motivo.id}}" value="{{motivo.id}}" />{{motivo.description}}</label> 
+        </li>
+        {% endfor %}
+      </ul>
+  </details>
 
-    <label for="in_conduta">Conducta a seguir</label>
-    <select name="conducta" id="in_conducta">
-      {% for conducta in conductas %}
-      <option value="{{conducta.id}}">{{conducta.description}}</option>
-      {% endfor %}
-    </select>
-
+   
+    <details class="mult-details">
+        <summary class="mult-summary">Conductas a seguir</summary>
+        <ul class="mult-ul">
+          {% for conducta in conductas %}
+          <li class="mult-li">
+            <label class="mult-label"><input class="mult-input" type="checkbox" name="cond_{{conducta.id}}" value="{{conducta.id}}" />{{conducta.description}}</label> 
+          </li>
+          {% endfor %}
+        </ul>
+    </details>
+    <br>
     <label for="in_observaciones">Observaciones</label>
     <textarea name="observaciones" id="in_observaciones" cols="30" rows="10"></textarea>
 
@@ -95,6 +105,8 @@
     <label for="in_seguimiento72">Seguimiento 72 horas</label>
     <textarea name="seguimiento72" id="in_seguimiento72" cols="30" rows="10"></textarea>
 
+
+    <input type="submit" value="Guardar">
   </form>
 </main>
 {% endblock %}
