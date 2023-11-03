@@ -7,12 +7,12 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir
+from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas
 
 
 
 @login_required
-def sm_llamadas(request):
+def sm_llamadas(request, user):
     paises = Pais.objects.all()
     departamentos = Departamento.objects.all()
     municipios = Municipio.objects.all()
@@ -37,6 +37,40 @@ def sm_llamadas(request):
         municipio = request.POST['municipio']
         telefono = request.POST['telefono']
         pob_vulnerable = request.POST['poblacion_vulnerable']
+        observaciones = request.POST['observaciones']
+        seguimiento24= request.POST['seguimiento24']
+        seguimiento48= request.POST['seguimiento48']
+        seguimiento72= request.POST['seguimiento72']
+    
+        conductas_seleccionadas = []
+        motivos_seleccionados = []
+        
+        
+        llamada = PsiLlamadas(
+            documento = documento,
+            nombre_paciente = nombre,
+            fecha_llamada = datetime.now().date(),
+            hora = datetime.now().hour,
+            observaciones = observaciones,
+            seguimiento24 = seguimiento24,
+            seguimiento48 = seguimiento48,
+            seguimiento72 = seguimiento72,
+            dia_semana_id = datetime.now().weekday(),
+            id_psicologo_id = user.id
+        )
+        
+        
+        
+        for conducta in ConductasASeguir.objects.all():
+            checkbox_name = f'cond_{conducta.id}'
+            if checkbox_name in request.POST:
+                conductas_seleccionadas.append(conducta)
+
+        for motivo in PsiMotivos.objects.all():
+            checkbox_name = f'mot_{motivo.id}'
+            if checkbox_name in request.POST:
+                motivos_seleccionados.append(motivo)
+
     else:
         pass
     
