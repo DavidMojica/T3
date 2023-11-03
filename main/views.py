@@ -6,8 +6,33 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, sm_llamadasForm
-from .models import CustomUser, InfoMiembros
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
+from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS
+
+
+
+@login_required
+def sm_llamadas(request):
+    paises = Pais.objects.all()
+    departamentos = Departamento.objects.all()
+    municipios = Municipio.objects.all()
+    tipos_documento = TipoDocumento.objects.all()
+    sexos = Sexo.objects.all()
+    EPSS = EPS.objects.all()
+    
+    if request.method == "POST":
+        pass
+    else:
+        pass
+    
+    return render(request, 'sm_llamadas.html',{'year': datetime.now(),
+                                             'CustomUser': request.user,
+                                             'paises': paises,
+                                             'departamentos': departamentos,
+                                             'municipios': municipios,
+                                             'tipos_documento': tipos_documento,
+                                             'sexos': sexos,
+                                             'EPSS': EPS})
 
 
 ######### Errors related to register ##########
@@ -179,17 +204,7 @@ def sm_HPC(request):
     if request.method == "GET":
         return render(request, 'sm_HPC.html')
     
-@login_required
-def sm_llamadas(request):
-    if request.method == "POST":
-        pass
-    else:
-        pass
-    
-    return render(request, 'sm_llamadas.html',{'year': datetime.now(),
-                                             'CustomUser': request.user,
-                                             'form': sm_llamadasForm})
-        
+
     
 @login_required
 def sm_historial(request):

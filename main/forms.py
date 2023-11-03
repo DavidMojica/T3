@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
-from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia, PsiLlamadas
+from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
+
 
 class CustomUserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
@@ -80,10 +81,7 @@ class AdministradorEditForm(forms.ModelForm):
         model = CustomUser
         fields = ('email', 'is_active', 'tipo_usuario')
     
-class sm_llamadasForm(forms.ModelForm):
-    class Meta:
-        model = PsiLlamadas
-        fields = '__all__'
+
 
 
 class CustomUserLoginForm(AuthenticationForm):
