@@ -3,14 +3,34 @@
 <main id="main_home">
   <form action="" method="post">
     {% csrf_token %}
-    <label for="in_nombre">Nombre del paciente</label>
-    <input type="text" name="nombre" id="in_nombre">
-    
+    <label for="in_nombre">Nombre</label>
+    <input type="text" name="nombre" id="in_nombre" placeholder="Nombre del paciente">
+
     <label for="in_tipo_documento">Tipo de documento</label>
-    
+    <select name="tipo_documento" id="in_tipo_documento">
+      <option value="-1">Seleccione...</option>
+      {% for tipo_doc in tipos_documento %}
+          <option value="{{tipo_doc.id}}">{{tipo_doc.description}}</option>
+      {% endfor %}
+    </select>
 
     <label for="in_nombre">No. de documento</label>
     <input type="text" name="documento" id="in_documento">
+
+
+    <label for="in_sexo">Sexo</label>
+    <select name="sexo" id="in_sexo">
+      <select name="tipo_documento" id="in_tipo_documento">
+      {% for sexo in sexos %}
+          <option value="{{sexo.id}}">{{sexo.description}}</option>
+      {% endfor %}
+    </select>
+
+
+    <label for="in_edad">Edad</label>
+    <input type="number" name="edad" id="in_edad">
+
+    
 
   </form>
 </main>
