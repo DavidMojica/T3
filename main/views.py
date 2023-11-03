@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio, TipoDocumento
+from .models import CustomUser, InfoMiembros, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS
 
 
 
@@ -17,6 +17,8 @@ def sm_llamadas(request):
     departamentos = Departamento.objects.all()
     municipios = Municipio.objects.all()
     tipos_documento = TipoDocumento.objects.all()
+    sexos = Sexo.objects.all()
+    EPSS = EPS.objects.all()
     
     if request.method == "POST":
         pass
@@ -28,7 +30,9 @@ def sm_llamadas(request):
                                              'paises': paises,
                                              'departamentos': departamentos,
                                              'municipios': municipios,
-                                             'tipos_documento': tipos_documento})
+                                             'tipos_documento': tipos_documento,
+                                             'sexos': sexos,
+                                             'EPSS': EPS})
 
 
 ######### Errors related to register ##########
