@@ -330,6 +330,8 @@ class PsiLlamadas(models.Model):
     fecha_llamada = models.DateField(default=timezone.now)
     dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT) #
     hora = models.TimeField(auto_now_add=True)
+    sexo = models.ForeignKey(Sexo, null=True, on_delete=models.CASCADE)
+    edad = models.IntegerField(null=True)
     observaciones = models.TextField(null=True, max_length=5000)
     seguimiento24 = models.TextField(null=True, max_length=5000)
     seguimiento48 = models.TextField(null=True, max_length=5000)
