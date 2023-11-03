@@ -126,7 +126,8 @@ def sm_llamadas(request, user):
                                              'EPSS': EPSS,
                                              'poblacion_vulnerable': poblacion_vulnerable,
                                              'motivos':motivos,
-                                             'conductas':conductas})
+                                             'conductas':conductas,
+                                             'CustomUser': request.user})
 
 
 ######### Errors related to register ##########
