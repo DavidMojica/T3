@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_home">
-  <form action="" method="post">
+  <form action="" method="POST">
     {% csrf_token %}
     <label for="in_nombre">Nombre</label>
     <input type="text" name="nombre" id="in_nombre" placeholder="Nombre del paciente">
@@ -63,25 +63,19 @@
     <input type="text" name="telefono" id="in_telefono" placeholder="Teléfono del paciente">
 
     <label for="in_poblacion_vulnerable">Población vulnerable</label>
-    <select name="poblacion_vulnerable" id="in_poblacion_vulnerable"multiple>
+    <select name="poblacion_vulnerable" id="in_poblacion_vulnerable">
+      <option value="-1">Seleccione...</option>
       {% for poblacion in poblacion_vulnerable %}
       <option value="{{poblacion.id}}">{{poblacion.description}}</option>
       {% endfor %}
     </select>    
 
-    <label for="in_motivo">Motivo de la llamada</label>
-    <select name="motivo" id="in_motivo" multiple>
-      {% for motivo in motivos %}
-      <option value="{{motivo.id}}">{{motivo.description}}</option>
-      {% endfor %}
-    </select>
-    
     <details class="mult-details">
-      <summary class="mult-summary">Conductas a seguir</summary>
+      <summary class="mult-summary">Motivo de la llamada</summary>
       <ul class="mult-ul">
-        {% for conducta in conductas %}
+        {% for motivo in motivos %}
         <li class="mult-li">
-          <label class="mult-label"><input class="mult-input" type="checkbox" name="cond_{{conducta.id}}" value="{{conducta.id}}" />{{conducta.description}}</label> 
+          <label class="mult-label"><input class="mult-input" type="checkbox" name="mot_{{motivo.id}}" value="{{motivo.id}}" />{{motivo.description}}</label> 
         </li>
         {% endfor %}
       </ul>
@@ -98,11 +92,7 @@
           {% endfor %}
         </ul>
     </details>
-
-
-
     <br>
-
     <label for="in_observaciones">Observaciones</label>
     <textarea name="observaciones" id="in_observaciones" cols="30" rows="10"></textarea>
 
@@ -115,6 +105,8 @@
     <label for="in_seguimiento72">Seguimiento 72 horas</label>
     <textarea name="seguimiento72" id="in_seguimiento72" cols="30" rows="10"></textarea>
 
+
+    <input type="submit" value="Guardar">
   </form>
 </main>
 {% endblock %}

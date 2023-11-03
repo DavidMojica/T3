@@ -24,7 +24,19 @@ def sm_llamadas(request):
     conductas = ConductasASeguir.objects.all()
     
     if request.method == "POST":
-        pass
+        print(request.POST)
+        nombre = request.POST['nombre']
+        tipo_documento = request.POST['tipo_documento']
+        documento = request.POST['documento']
+        sexo = request.POST['sexo']
+        edad = request.POST['edad']
+        eps = request.POST['eps']
+        direccion = request.POST['direccion']
+        pais = request.POST['pais']
+        departamento = request.POST['departamento']
+        municipio = request.POST['municipio']
+        telefono = request.POST['telefono']
+        pob_vulnerable = request.POST['poblacion_vulnerable']
     else:
         pass
     
