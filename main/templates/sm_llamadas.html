@@ -63,21 +63,21 @@
     <input type="text" name="telefono" id="in_telefono" placeholder="Teléfono del paciente">
 
     <label for="in_poblacion_vulnerable">Población vulnerable</label>
-    <select name="poblacion_vulnerable" id="in_poblacion_vulnerable">
+    <select name="poblacion_vulnerable" id="in_poblacion_vulnerable"multiple>
       {% for poblacion in poblacion_vulnerable %}
       <option value="{{poblacion.id}}">{{poblacion.description}}</option>
       {% endfor %}
     </select>    
 
     <label for="in_motivo">Motivo de la llamada</label>
-    <select name="motivo" id="in_motivo">
+    <select name="motivo" id="in_motivo" multiple>
       {% for motivo in motivos %}
       <option value="{{motivo.id}}">{{motivo.description}}</option>
       {% endfor %}
     </select>
 
     <label for="in_conduta">Conducta a seguir</label>
-    <select name="conducta" id="in_conducta">
+    <select name="conducta" id="in_conducta" multiple>
       {% for conducta in conductas %}
       <option value="{{conducta.id}}">{{conducta.description}}</option>
       {% endfor %}

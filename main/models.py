@@ -139,6 +139,13 @@ class Pip(models.Model): #POBLACION IDENTIFICADA POR PARTICULARIDADES
     def __str__(self):
         return self.description.capitalize()
     
+class PoblacionVulnerable(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.description.capitalize()
+
 class Pais(models.Model):
     id = models.AutoField(primary_key=True)
     description = models.CharField(max_length=100)
@@ -263,7 +270,7 @@ class InfoPacientes(models.Model):
     edad = models.IntegerField(null=True, blank=True)
     municipio = models.ForeignKey(Municipio, on_delete=models.DO_NOTHING, null=True, blank=True,)
     barrio = models.CharField(max_length=100)
-    poblacion_vulnerable = models.CharField(null=True, max_length=100) 
+    poblacion_vulnerable = models.ForeignKey(PoblacionVulnerable, null=True, on_delete=models.CASCADE)
     estado_civil = models.ForeignKey(EstadoCivil, on_delete=models.DO_NOTHING)
     celular = models.CharField(null=True)
     lectoescritura_indicador = models.ForeignKey(Lecto1, on_delete=models.DO_NOTHING)
