@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <main id="main_home">
-    <form action="" method="post">
-        {% csrf_token %}
-        
-    </form>
+  <form action="" method="post">
+    {% csrf_token %}
+    <label for="in_nombre">Nombre del paciente</label>
+    <input type="text" name="nombre" id="in_nombre">
+    
+    <label for="in_tipo_documento">Tipo de documento</label>
+    
+
+    <label for="in_nombre">No. de documento</label>
+    <input type="text" name="documento" id="in_documento">
+
+  </form>
 </main>
 {% endblock %}
