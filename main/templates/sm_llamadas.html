@@ -33,7 +33,7 @@
     <label for="in_eps">Eps</label>
     <select name="eps" id="in_eps">
         <option value="-1">Seleccione...</option>
-        {% for eps in EPSS %}
+        {% for eps in epss %}
         <option value="{{eps.id}}">{{eps.description}}</option>
         {% endfor %}
     </select>
@@ -58,6 +58,16 @@
     <select name="municipio" id="in_municipio">
         <option value="-1">Seleccione...</option>
     </select>
+
+    <label for="in_telefono">Telefono</label>
+    <input type="text" name="telefono" id="in_telefono" placeholder="Teléfono del paciente">
+
+    <label for="in_poblacion_vulnerable">Población vulnerable</label>
+    <select name="poblacion_vulnerable" id="in_poblacion_vulnerable">
+      {% for poblacion in poblacion_vulnerable %}
+      <option value="{{poblacion.id}}">{{poblacion.description}}</option>
+      {% endfor %}
+    </select>    
 
 
 
