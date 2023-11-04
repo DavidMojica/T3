@@ -8,8 +8,13 @@ $(document).ready(function () {
                 method: 'GET',
                 data: { pais_id: selectedPais },
                 success: function (data) {
-                    // Llena el campo de selección de departamentos con los datos recibidos
-                    $("#in_departamento").html(data);
+                    $("#in_departamento").empty();  // Limpia el campo de selección antes de agregar nuevas opciones
+                    $.each(data, function (index, item) {
+                        $("#in_departamento").append($('<option>', {
+                            value: item.id,
+                            text: item.description
+                        }));
+                    });
                 }
             });
         }
@@ -25,9 +30,16 @@ $(document).ready(function () {
                 data: { departamento_id: selectedDepartamento },
                 success: function (data) {
                     // Llena el campo de selección de municipios con los datos recibidos
-                    $("#in_municipio").html(data);
+                    $("#in_municipio").empty();  // Limpia el campo de selección antes de agregar nuevas opciones
+                    $.each(data, function (index, item) {
+                        $("#in_municipio").append($('<option>', {
+                            value: item.id,
+                            text: item.description
+                        }));
+                    });
                 }
             });
         }
     });
+    
 });

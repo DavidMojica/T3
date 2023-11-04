@@ -153,11 +153,13 @@ def get_departamentos(request):
 
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
+    print(departamento_id)
     if departamento_id:
         try:
             departamento = get_object_or_404(Departamento, id=departamento_id)
             municipios = Municipio.objects.filter(pertenece_departamento_id=departamento)
             data = [{'id': municipio.id, 'description': municipio.description} for municipio in municipios]
+            print(data)
             return JsonResponse(data, safe=False)
         except Departamento.DoesNotExist:
             return JsonResponse([], safe=False)
