@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import CustomUser, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos
-
+from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -137,6 +137,32 @@ def sm_llamadas(request):
                                              'conductas':conductas,
                                              'CustomUser': request.user})
 
+
+def get_departamentos(request):
+    pais_id = request.GET.get('pais_id')
+    if pais_id:
+        try:
+            pais = get_object_or_404(Pais, id=pais_id)
+            departamentos = Departamento.objects.filter(pertenece_pais_id=pais)
+            data = [{'id': departamento.id, 'description': departamento.description} for departamento in departamentos]
+            return JsonResponse(data, safe=False)
+        except Pais.DoesNotExist:
+            return JsonResponse([], safe=False)
+
+    return JsonResponse([], safe=False)
+
+def get_municipios(request):
+    departamento_id = request.GET.get('departamento_id')
+    if departamento_id:
+        try:
+            departamento = get_object_or_404(Departamento, id=departamento_id)
+            municipios = Municipio.objects.filter(pertenece_departamento_id=departamento)
+            data = [{'id': municipio.id, 'description': municipio.description} for municipio in municipios]
+            return JsonResponse(data, safe=False)
+        except Departamento.DoesNotExist:
+            return JsonResponse([], safe=False)
+
+    return JsonResponse([], safe=False)
 #LOGIN
 def signin(request):
     if request.method == 'POST':
