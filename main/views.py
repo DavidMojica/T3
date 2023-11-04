@@ -131,7 +131,7 @@ def sm_llamadas(request):
                                              'municipios': municipios,
                                              'tipos_documento': tipos_documento,
                                              'sexos': sexos,
-                                             'EPSS': EPSS,
+                                             'epss': EPSS,
                                              'poblacion_vulnerable': poblacion_vulnerable,
                                              'motivos':motivos,
                                              'conductas':conductas,
