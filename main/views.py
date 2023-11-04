@@ -37,7 +37,6 @@ def sm_llamadas(request):
     conductas = ConductasASeguir.objects.all()
     
     if request.method == "POST":
-        print(request.POST)
         nombre = request.POST['nombre']
         tipo_documento = request.POST['tipo_documento']
         documento = request.POST['documento']
@@ -137,12 +136,13 @@ def sm_llamadas(request):
         
         if paciente_existe:
             #Si el paciente existe se actualizan los datos
-            paciente_existe.nombre = nombre
+            paciente_existe.nombre = nombre.lower()
             paciente_existe.tipo_documento = tipo_documento_instance
+            
             paciente_existe.sexo = sexo_instance
             paciente_existe.edad = edad
             paciente_existe.eps = eps_instance
-            paciente_existe.direccion = direccion
+            paciente_existe.direccion = direccion.lower()
             paciente_existe.municipio = municipio_instance
             paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
             paciente_existe.celular = telefono
@@ -150,17 +150,28 @@ def sm_llamadas(request):
         else:
             ##Si no existe, se crea un paciente nuevo
             nuevo_paciente = InfoPacientes(
-                nombre=nombre,
+                nombre=nombre.lower(),
+                documento = documento,
                 tipo_documento = tipo_documento_instance,
                 sexo = sexo_instance,
                 edad = edad,
                 eps = eps_instance,
-                direccion = direccion,
+                direccion = direccion.lower(),
                 municipio = municipio_instance,
                 poblacion_vulnerable = pob_vulnerable_instance,
                 celular = telefono
             )
             nuevo_paciente.save()
+            
+            # select * from main_infopacientes
+            # select * from main_psillamadasconductas
+            # select * from main_psillamadasmotivos
+            # select * from main_psillamadas
+
+            # delete from main_psillamadas;
+            # delete from main_psillamadasmotivos;
+            # delete from main_psillamadasconductas;
+            # delete from main_infopacientes;
         
     else:
         pass
@@ -194,13 +205,11 @@ def get_departamentos(request):
 
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
-    print(departamento_id)
     if departamento_id:
         try:
             departamento = get_object_or_404(Departamento, id=departamento_id)
             municipios = Municipio.objects.filter(pertenece_departamento_id=departamento)
             data = [{'id': municipio.id, 'description': municipio.description} for municipio in municipios]
-            print(data)
             return JsonResponse(data, safe=False)
         except Departamento.DoesNotExist:
             return JsonResponse([], safe=False)
