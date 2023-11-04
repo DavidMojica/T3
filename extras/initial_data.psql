@@ -60,6 +60,18 @@ insert into main_dianombre(id, description) values(6, 'Domingo');
 
 insert into main_eps(description) values('Nueva EPS');
 
+insert into main_poblacionvulnerable(description) values('Población Afro');
+insert into main_poblacionvulnerable(description) values('Población Indígena');
+insert into main_poblacionvulnerable(description) values('Discapacitados');
+insert into main_poblacionvulnerable(description) values('Víctima del conflicto armado');
+insert into main_poblacionvulnerable(description) values('Víctima de violencia intrafamiliar');
+insert into main_poblacionvulnerable(description) values('Adulto mayor');
+insert into main_poblacionvulnerable(description) values('Ninguna');
+
+
+
+
+
 
 
 
