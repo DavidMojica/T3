@@ -141,7 +141,7 @@ def sm_llamadas(request):
             paciente_existe.tipo_documento = tipo_documento_instance
             paciente_existe.sexo = sexo_instance
             paciente_existe.edad = edad
-            paciente_existe.nombre_eps = eps_instance
+            paciente_existe.eps = eps_instance
             paciente_existe.direccion = direccion
             paciente_existe.municipio = municipio_instance
             paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
@@ -151,13 +151,13 @@ def sm_llamadas(request):
             ##Si no existe, se crea un paciente nuevo
             nuevo_paciente = InfoPacientes(
                 nombre=nombre,
-                tipo_documento = tipo_documento,
-                sexo = sexo,
+                tipo_documento = tipo_documento_instance,
+                sexo = sexo_instance,
                 edad = edad,
-                nombre_epos = eps,
+                eps = eps_instance,
                 direccion = direccion,
-                municipio = municipio,
-                poblacion_vulnerable = pob_vulnerable,
+                municipio = municipio_instance,
+                poblacion_vulnerable = pob_vulnerable_instance,
                 celular = telefono
             )
             nuevo_paciente.save()
