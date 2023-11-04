@@ -172,7 +172,6 @@ def sm_llamadas(request):
             # delete from main_psillamadasmotivos;
             # delete from main_psillamadasconductas;
             # delete from main_infopacientes;
-        
     else:
         pass
     
