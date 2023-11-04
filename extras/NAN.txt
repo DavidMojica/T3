@@ -1,0 +1,56 @@
+ANÁLISIS:
+Requisitos funcionales:
+-El sistema debe permitir a los administradores y coordinadores agregar, editar, restringir y eliminar usuarios así como sus datos.
+-El sistema debe de impedir a cualquier visitante de la página registrarse y solamente permitir el registro a través de coordinadores y/o administradores.
+-El sistema debe de detectar a los pacientes nuevos y viejos, tanto de llamadas como de citas de asesorías psicologicas de forma automática y añadirlos a
+la base de datos si son nuevos o actualizar sus datos si son usuarios que ya han usado nuestros servicios antes.
+-El sistema debe de encriptar las contraseñas así como la información que se considere sensible.
+-El sistema debe de generar un historial de llamadas y de citas que pueda proveer información detallada de esa llamada o cita a los coordinadores o trabajadores cuando se necesite.
+-El sistema debe de implementar un panel de usuario que permita modificar los datos de inicio de sesión de los trabajadores/administradores.
+-El sistema debe de implementar un panel de usuario que permita ingresar y modificar los datos personales de los trabajadores/administradores.
+-El sistema debe de recopilar información determinante de la base de datos y analizarla, procesarla y graficarla a través de distintos tipos de gráficos y estadísticas.
+
+Requisitos NO funcionales:
+-El sistema debe de ser capaz de manejar multiples usuarios dentro de la plataforma a la vez.
+-El sistema debe de ser capaz de procesar información proveniente de distintos formularios, peticiones y protocolos HTTP a la vez.
+-La interfaz del usuario debe de ser fácil de usar y accesible para las personas con discapacidades.
+
+Requisitos de interfaz:
+-El sistema debe de ser compatible con los navegadores web más comunes.
+-La interfaz debe de ser 100% responsive y compatible con distintos tipos de pantallas y tamaños de pantallas.
+-La interfaz debe de tener UIX/UI permitiendo una experiencia del usuario gráficamente agradable y fácil de manejar.
+
+Requisitos de Datos:
+-El sistema debe de almacenar la información de los pacientes, de los trabajadores y de los coordinadores, incluyendo el nombre, documento, correo, contraseñas cifradas y más información personal.
+-La base de datos debe generar backups (copias de seguridad) diariamente.
+-El sistema debe de cifrar información que se considere sensible para protegerla ante usuarios malintencionados.
+
+Requisitos de Rendimiento:
+Estos requisitos dependen más del servidor, en este caso el NAS, sobre el que la aplicación web se encuentra montada.
+-Cualquier página de la aplicación debe de cargar la página en menos de 2 segundos.
+-El sistema debe de ser capaz de manejar un pico de tráfico de 500 solicitudes por segundo.
+-El sistema debe de optimizar los gráficos que maneja.
+-El sistema debe de tener un codigo limpio y optimizado.
+
+Requisitos de Seguridad:
+-Se debe de implementar un sistema de autenticación robusto para prevenir acceso no autorizado.
+-El sistema debe de ser anti-Cross-Site-Request-Forgery (CSRF). Se utilizarán tokens en todos los formularios que envíen o precesen información para que los atacantes no engañen a los usuarios y que realicen acciones no deseadas en su nombre. 
+-El sistema debe de ser anti-Clickjacking. Podemos controlar si nuestra web puede ser incluída en i-frames de otros sitios web, con el objetivo de proteger las rutas y evitar que usuarios fuera de nuestra página revelen información confidencial a terceros malintencionados pensando que nos la están otorgando a nosotros.
+-El sistema debe de tener rutas protegidas. Nos aseguraremos que usuarios que no tengan la sesión iniciada no puedan navegar por distintos lugares de nuestra aplicación.
+-El sistema debe de tener Anti Inyecciones SQL. No podrán hacer operaciones o cambios a nuestra base de datos a través de formularios y otros lugares donde se introducen datos gracias al modelo ORM de Django.
+-El sistema debe tener Anti Secuestro de sesión. Se usarán cookies seguras y HttpOnly para proteger las sesiones de los usuarios.
+-El sistema debe de tener anti-Directory Transversal. Gestionaremos las rutas de archivos de forma segura para evitar ataques a los archivos de la página.
+-El sistema debe de cifrar las contraseñas de usuario en la base de datos.
+-El sistema debe de cifrar la información sensible en la base de datos.
+-Y más elementos de seguridad.
+
+Requisitos Legales:
+-El sistema debe de cumplir con la Ley de Proteccion de Datos Personales.
+-Debe de mantenerse registros de auditoría para cumplir con los requisitos legales.
+
+Requisitos de documentación:
+-Se creará un documento indicando las dependencias de la aplicación.
+-Se documentará el código de una forma feaciente para que se pueda entender el código fácilmente independientemente de quien esté manejando el código.
+
+Requisitos de mantenimiento:
+-El sistema deberá de ser apagado mientras se suben los nuevos archivos actualizados/corregidos (se estima 2/3 min).

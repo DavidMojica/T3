@@ -58,6 +58,8 @@ insert into main_dianombre(id, description) values(4, 'Viernes');
 insert into main_dianombre(id, description) values(5, 'Sábado');
 insert into main_dianombre(id, description) values(6, 'Domingo');
 
+insert into main_eps(description) values('Nueva EPS');
+
 
 
 

@@ -9,7 +9,20 @@ from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import CustomUser, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos
 
+######### Errors related to register ##########
+ERROR_100 = "Las contraseñas no coinciden."
+ERROR_101 = "Formulario inválido."
+ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
 
+####### Login - EDIT #######
+ERROR_200 = "Nombre o contraseña inválido."
+ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
+ERROR_202 = "Las contraseñas no coinciden"
+SUCCESS_100 = "Contraseña actualizada correctamente."
+SUCCESS_101 = "Datos guardados correctamente."
+
+
+# Create your views here.
 
 @login_required
 def sm_llamadas(request):
@@ -42,10 +55,6 @@ def sm_llamadas(request):
         seguimiento48= request.POST['seguimiento48']
         seguimiento72= request.POST['seguimiento72']
     
-        conductas_seleccionadas = []
-        motivos_seleccionados = []
-        
-        
         llamada = PsiLlamadas(
             documento = documento,
             nombre_paciente = nombre,
@@ -56,7 +65,7 @@ def sm_llamadas(request):
             seguimiento48 = seguimiento48,
             seguimiento72 = seguimiento72,
             dia_semana_id = datetime.now().weekday(),
-            id_psicologo_id = user.id,
+            id_psicologo_id = request.user.id,
             sexo = sexo,
             edad = edad
         )
@@ -112,7 +121,6 @@ def sm_llamadas(request):
             )
             nuevo_paciente.save()
         
-
     else:
         pass
     
@@ -128,21 +136,6 @@ def sm_llamadas(request):
                                              'motivos':motivos,
                                              'conductas':conductas,
                                              'CustomUser': request.user})
-
-
-######### Errors related to register ##########
-ERROR_100 = "Las contraseñas no coinciden."
-ERROR_101 = "Formulario inválido."
-ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
-
-####### Login - EDIT #######
-ERROR_200 = "Nombre o contraseña inválido."
-ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
-ERROR_202 = "Las contraseñas no coinciden"
-SUCCESS_100 = "Contraseña actualizada correctamente."
-SUCCESS_101 = "Datos guardados correctamente."
-
-# Create your views here.
 
 #LOGIN
 def signin(request):
@@ -238,15 +231,10 @@ def autodata(request, user_id):
         'form': form
     })
     
-
-
 @login_required
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
-
-
-##########CHECK THE PASSWORDD FUNCION
 
 @login_required
 def edit_account(request, user_id, user_type):
@@ -292,14 +280,11 @@ def edit_account(request, user_id, user_type):
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 
-
 #PSICOLOGIA VISTAS
 @login_required
 def sm_HPC(request):
     if request.method == "GET":
         return render(request, 'sm_HPC.html')
-    
-
     
 @login_required
 def sm_historial(request):
