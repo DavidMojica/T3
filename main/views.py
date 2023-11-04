@@ -37,7 +37,6 @@ def sm_llamadas(request):
     conductas = ConductasASeguir.objects.all()
     
     if request.method == "POST":
-        print(request.POST)
         nombre = request.POST['nombre']
         tipo_documento = request.POST['tipo_documento']
         documento = request.POST['documento']
@@ -54,6 +53,12 @@ def sm_llamadas(request):
         seguimiento24= request.POST['seguimiento24']
         seguimiento48= request.POST['seguimiento48']
         seguimiento72= request.POST['seguimiento72']
+        
+        try:
+            sexo_instance = Sexo.objects.get(id=sexo)
+        except Sexo.DoesNotExist:
+            # Manejar el caso donde no se encontró una instancia de Sexo
+            sexo_instance = None
     
         llamada = PsiLlamadas(
             documento = documento,
@@ -66,60 +71,107 @@ def sm_llamadas(request):
             seguimiento72 = seguimiento72,
             dia_semana_id = datetime.now().weekday(),
             id_psicologo_id = request.user.id,
-            sexo = sexo,
+            sexo = sexo_instance,
             edad = edad
         )
         llamada.save()
         id_llamada = llamada.id
         
+        try:
+            psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
+        except PsiLlamadas.DoesNotExist:
+            psi_llamada_instance = None
+            
         ##conductas y motivos
         for conducta in ConductasASeguir.objects.all():
             checkbox_name = f'cond_{conducta.id}'
             if checkbox_name in request.POST:
+                try:
+                    conducta_instance = ConductasASeguir.objects.get(id=conducta.id)
+                except ConductasASeguir.DoesNotExist:
+                    conducta_instance = None
+                     
                 llamada_conducta = PsiLlamadasConductas(
-                    id_llamada=id_llamada,
-                    id_conducta = conducta
+                    id_llamada=psi_llamada_instance,
+                    id_conducta=conducta_instance
                 )
                 llamada_conducta.save()
 
         for motivo in PsiMotivos.objects.all():
             checkbox_name = f'mot_{motivo.id}'
             if checkbox_name in request.POST:
+                try:
+                    motivo_instace = PsiMotivos.objects.get(id=motivo.id)
+                except PsiMotivos.DoesNotExist:
+                    motivo_instace = None
+                
                 llamada_motivo = PsiLlamadasMotivos(
-                    id_llamada = id_llamada,
-                    id_motivo = motivo
+                    id_llamada=psi_llamada_instance,
+                    id_motivo=motivo_instace
                 )
                 llamada_motivo.save()
 
         ##paciente
         paciente_existe = InfoPacientes.objects.filter(documento = documento).first()
 
+        try:
+            tipo_documento_instance = TipoDocumento.objects.get(id=tipo_documento)
+        except TipoDocumento.DoesNotExist:
+            tipo_documento_instance = None
+
+        try:
+            eps_instance = EPS.objects.get(id=eps)
+        except EPS.DoesNotExist:
+            eps_instance = None
+            
+        try:
+            municipio_instance = Municipio.objects.get(id=municipio)
+        except Municipio.DoesNotExist:
+            municipio_instance = None
+            
+        try:
+            pob_vulnerable_instance = PoblacionVulnerable.objects.get(id=pob_vulnerable)
+        except PoblacionVulnerable.DoesNotExist:
+            pob_vulnerable_instance = None    
+        
         if paciente_existe:
             #Si el paciente existe se actualizan los datos
-            paciente_existe.nombre = nombre
-            paciente_existe.tipo_documento = tipo_documento
-            paciente_existe.sexo = sexo
+            paciente_existe.nombre = nombre.lower()
+            paciente_existe.tipo_documento = tipo_documento_instance
+            
+            paciente_existe.sexo = sexo_instance
             paciente_existe.edad = edad
-            paciente_existe.nombre_eps = eps
-            paciente_existe.direccion = direccion
-            paciente_existe.municipio = municipio
-            paciente_existe.poblacion_vulnerable = pob_vulnerable
+            paciente_existe.eps = eps_instance
+            paciente_existe.direccion = direccion.lower()
+            paciente_existe.municipio = municipio_instance
+            paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
             paciente_existe.celular = telefono
             paciente_existe.save()
         else:
             ##Si no existe, se crea un paciente nuevo
             nuevo_paciente = InfoPacientes(
-                nombre=nombre,
-                tipo_documento = tipo_documento,
-                sexo = sexo,
+                nombre=nombre.lower(),
+                documento = documento,
+                tipo_documento = tipo_documento_instance,
+                sexo = sexo_instance,
                 edad = edad,
-                nombre_epos = eps,
-                direccion = direccion,
-                municipio = municipio,
-                poblacion_vulnerable = pob_vulnerable,
+                eps = eps_instance,
+                direccion = direccion.lower(),
+                municipio = municipio_instance,
+                poblacion_vulnerable = pob_vulnerable_instance,
                 celular = telefono
             )
             nuevo_paciente.save()
+            
+            # select * from main_infopacientes
+            # select * from main_psillamadasconductas
+            # select * from main_psillamadasmotivos
+            # select * from main_psillamadas
+
+            # delete from main_psillamadas;
+            # delete from main_psillamadasmotivos;
+            # delete from main_psillamadasconductas;
+            # delete from main_infopacientes;
         
     else:
         pass
@@ -153,13 +205,11 @@ def get_departamentos(request):
 
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
-    print(departamento_id)
     if departamento_id:
         try:
             departamento = get_object_or_404(Departamento, id=departamento_id)
             municipios = Municipio.objects.filter(pertenece_departamento_id=departamento)
             data = [{'id': municipio.id, 'description': municipio.description} for municipio in municipios]
-            print(data)
             return JsonResponse(data, safe=False)
         except Departamento.DoesNotExist:
             return JsonResponse([], safe=False)
