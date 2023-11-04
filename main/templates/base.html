@@ -61,30 +61,6 @@
                             </div>
                         </li>
                         <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
                             <div class="dropdown-center">
                                 <button class="btn btn_star dropdown-toggle" type="button"  data-bs-toggle="dropdown"  aria-expanded="false">
                                     <i class="fa fa-diamond"></i>
@@ -195,148 +171,22 @@
                             </div>
                         </li>
                         <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
                             <div class="dropdown-center">
-                                <a href="/404_not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/admon">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
+                                    <button type="button" class="btn btn_wt wtg dropdown-toggle"  data-bs-toggle="dropdown"  aria-expanded="false">
                                         <i class="fa fa-diamond"></i>
-                                        Administración
+                                        Coordinador
                                     </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/admon" class="dropdown-item">Editar usuarios</a></li>
+                                        <li><a href="/admon" class="dropdown-item">Gráficos</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a href="{% url 'edit_account' user_id=CustomUser.id user_type=CustomUser.tipo_usuario_id %}" class="dropdown-item">Editar cuenta</a></li>
+                                        <li><a href="/admon" class="dropdown-item">Datos personales</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a href="/signout" class="dropdown-item">Cerrar Sesión</a></li>
+                                    </ul>
                             </div>
                         </li>
-
-                        {% elif user.tipo_usuario_id == 11 %}
-                        <!-- coordinador de calidad -->
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <button type="button" class="btn btn_wt wtg dropdown-toggle" id="grad" data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-heartbeat"></i>
-                                    Salud Mental
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Atención urgencias</a></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Asesorías psicológicas</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Historial de asesorías</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/404_not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/admon">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-diamond"></i>
-                                        Administración
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-
-                        {% elif user.tipo_usuario_id == 12 %}
-                        <!-- coordinador discapacidad -->
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <button type="button" class="btn btn_wt wtg dropdown-toggle" id="grad" data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-heartbeat"></i>
-                                    Salud Mental
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Atención urgencias</a></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Asesorías psicológicas</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Historial de asesorías</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/admon">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-diamond"></i>
-                                        Administración
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-
                         {% elif user.tipo_usuario_id == 20 %}
                         <!-- trabajador psicologia -->
                         <li class="nav-item m-1">
@@ -354,34 +204,10 @@
                             </div>
                         </li>
                         <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
                             <div class="dropdown-center">
                                 <button class="btn btn_star dropdown-toggle" type="button"  data-bs-toggle="dropdown"  aria-expanded="false">
                                     <i class="fa fa-user-circle"></i>
-                                    Usuario
+                                    Psicólogo
                                     <div class="star-1">
                                         <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
                                             style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
@@ -469,88 +295,6 @@
                                 </ul>
                             </div>
                         </li>
-
-                        {% elif user.tipo_usuario_id == 21 %}
-                        <!-- trabajador discapacidad -->
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <button type="button" class="btn btn_wt wtg dropdown-toggle" id="grad" data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-heartbeat"></i>
-                                    Salud Mental
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Atención urgencias</a></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Asesorías psicológicas</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Historial de asesorías</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-
-                        {% elif user.tipo_usuario_id == 22 %}
-                        <!-- trabajador calidad -->
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <button type="button" class="btn btn_wt wtg dropdown-toggle" id="grad" data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-heartbeat"></i>
-                                    Salud Mental
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Atención urgencias</a></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Asesorías psicológicas</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a href="/404_restricted_area" class="dropdown-item">Historial de asesorías</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/404_not_deployed">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
                         {% else %}
                         <!-- Vista de error para usuarios que no pertenecen a ninguna de las opciones anteriores -->
                         <li class="nav-item m-1">
@@ -567,69 +311,9 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-wheelchair"></i>
-                                        Discapacidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <a href="/404_restricted_area">
-                                    <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                        <i class="fa fa-certificate"></i>
-                                        Calidad
-                                    </button>
-                                </a>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
-
-                        
                         {% endif %}
                     {% else %}
                         <!-- Vista para usuarios que no tengan sesion iniciada -->
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <button type="button" class="btn btn_wt wtg dropdown-toggle" id="grad" data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-heartbeat"></i>
-                                    Salud Mental
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="" class="dropdown-item">Atención urgencias</a></li>
-                                    <li><a href="" class="dropdown-item">Asesorías psicológicas</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a href="" class="dropdown-item">Historial de asesorías</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item m-1">
-                            <div class=" dropdown-center">
-                                <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-wheelchair"></i>
-                                    Discapacidad
-                                </button>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>                    
-                        <li class="nav-item m-1">
-                            <div class="dropdown-center">
-                                <button type="button" class="btn btn_wt wtr"  data-bs-toggle="dropdown"  aria-expanded="false">
-                                    <i class="fa fa-certificate"></i>
-                                    Calidad
-                                </button>
-                                <!-- <ul class="dropdown-menu">
-                                </ul> -->
-                            </div>
-                        </li>
                         <li class="nav-item m-1">
                             <a href="/signin">
                                 <button class="btn_star">

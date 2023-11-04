@@ -12,7 +12,7 @@ from .models import CustomUser, InfoMiembros, InfoPacientes, Pais, Departamento,
 
 
 @login_required
-def sm_llamadas(request, user):
+def sm_llamadas(request):
     paises = Pais.objects.all()
     departamentos = Departamento.objects.all()
     municipios = Municipio.objects.all()
