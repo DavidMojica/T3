@@ -8,11 +8,24 @@ from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import CustomUser, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos
+from django.http import JsonResponse
+######### Errors related to register ##########
+ERROR_100 = "Las contraseñas no coinciden."
+ERROR_101 = "Formulario inválido."
+ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
+
+####### Login - EDIT #######
+ERROR_200 = "Nombre o contraseña inválido."
+ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
+ERROR_202 = "Las contraseñas no coinciden"
+SUCCESS_100 = "Contraseña actualizada correctamente."
+SUCCESS_101 = "Datos guardados correctamente."
 
 
+# Create your views here.
 
 @login_required
-def sm_llamadas(request, user):
+def sm_llamadas(request):
     paises = Pais.objects.all()
     departamentos = Departamento.objects.all()
     municipios = Municipio.objects.all()
@@ -42,10 +55,6 @@ def sm_llamadas(request, user):
         seguimiento48= request.POST['seguimiento48']
         seguimiento72= request.POST['seguimiento72']
     
-        conductas_seleccionadas = []
-        motivos_seleccionados = []
-        
-        
         llamada = PsiLlamadas(
             documento = documento,
             nombre_paciente = nombre,
@@ -56,7 +65,7 @@ def sm_llamadas(request, user):
             seguimiento48 = seguimiento48,
             seguimiento72 = seguimiento72,
             dia_semana_id = datetime.now().weekday(),
-            id_psicologo_id = user.id,
+            id_psicologo_id = request.user.id,
             sexo = sexo,
             edad = edad
         )
@@ -112,7 +121,6 @@ def sm_llamadas(request, user):
             )
             nuevo_paciente.save()
         
-
     else:
         pass
     
@@ -123,27 +131,40 @@ def sm_llamadas(request, user):
                                              'municipios': municipios,
                                              'tipos_documento': tipos_documento,
                                              'sexos': sexos,
-                                             'EPSS': EPSS,
+                                             'epss': EPSS,
                                              'poblacion_vulnerable': poblacion_vulnerable,
                                              'motivos':motivos,
                                              'conductas':conductas,
                                              'CustomUser': request.user})
 
 
-######### Errors related to register ##########
-ERROR_100 = "Las contraseñas no coinciden."
-ERROR_101 = "Formulario inválido."
-ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
+def get_departamentos(request):
+    pais_id = request.GET.get('pais_id')
+    if pais_id:
+        try:
+            pais = get_object_or_404(Pais, id=pais_id)
+            departamentos = Departamento.objects.filter(pertenece_pais_id=pais)
+            data = [{'id': departamento.id, 'description': departamento.description} for departamento in departamentos]
+            return JsonResponse(data, safe=False)
+        except Pais.DoesNotExist:
+            return JsonResponse([], safe=False)
 
-####### Login - EDIT #######
-ERROR_200 = "Nombre o contraseña inválido."
-ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
-ERROR_202 = "Las contraseñas no coinciden"
-SUCCESS_100 = "Contraseña actualizada correctamente."
-SUCCESS_101 = "Datos guardados correctamente."
+    return JsonResponse([], safe=False)
 
-# Create your views here.
+def get_municipios(request):
+    departamento_id = request.GET.get('departamento_id')
+    print(departamento_id)
+    if departamento_id:
+        try:
+            departamento = get_object_or_404(Departamento, id=departamento_id)
+            municipios = Municipio.objects.filter(pertenece_departamento_id=departamento)
+            data = [{'id': municipio.id, 'description': municipio.description} for municipio in municipios]
+            print(data)
+            return JsonResponse(data, safe=False)
+        except Departamento.DoesNotExist:
+            return JsonResponse([], safe=False)
 
+    return JsonResponse([], safe=False)
 #LOGIN
 def signin(request):
     if request.method == 'POST':
@@ -238,15 +259,10 @@ def autodata(request, user_id):
         'form': form
     })
     
-
-
 @login_required
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
-
-
-##########CHECK THE PASSWORDD FUNCION
 
 @login_required
 def edit_account(request, user_id, user_type):
@@ -292,14 +308,11 @@ def edit_account(request, user_id, user_type):
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 
-
 #PSICOLOGIA VISTAS
 @login_required
 def sm_HPC(request):
     if request.method == "GET":
         return render(request, 'sm_HPC.html')
-    
-
     
 @login_required
 def sm_historial(request):
