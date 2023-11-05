@@ -33,6 +33,25 @@
             <label for="apellido">Apellido</label>
             <input type="text" name="apellido" id="apellido" placeholder="Apellido">
             <!-- Otros campos del formulario para la creación de un paciente -->
+            
+            <label for="fecha_nacimiento">Fecha de nacimiento</label>
+            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
+
+            <label for="edad">Edad</label>
+            <input type="number" placeholder="Edad del paciente" name="edad" id="edad">
+            
+            
+            <label for="hijos">Número de hijos</label>
+            <input type="number" name="hijos" id="hijos" placeholder="No. de hijos del paciente">
+
+            <label for="in_sexo">Sexo</label>
+            <select name="sexo" id="in_sexo">
+                <option value="-1">Seleccione...</option>
+                {% for sexo in sexos %}
+                <option value="{{sexo.id}}">{{sexo.description}}</option>
+                {% endfor %}
+            </select>
+
             <button type="submit" name="crear_paciente">Crear Paciente</button>
         </form>
     {% endif %}
