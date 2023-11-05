@@ -364,17 +364,25 @@ def sm_HPC(request):
         if "comprobar_documento" in request.POST:
             documento = request.POST['documento']
             try:
-                usuario = InfoPacientes.objects.get(documento=documento)
+                paciente = InfoPacientes.objects.get(documento=documento)
             except InfoPacientes.DoesNotExist:
-                usuario = None
-            
+                paciente = None
+            return render(request, 'sm_HPC.html',{
+                'CustomUser': request.user,
+                'paciente': paciente,
+                'step' : 1
+            })
+        
         
     else:
-        pass
-    
-    
+        return render(request, 'sm_HPC.html',{
+        'CustomUser': request.user,
+        'step': 0
+    })
+        
     return render(request, 'sm_HPC.html',{
-        'CustomUser': request.user
+        'CustomUser': request.user,
+        'paciente': paciente
     })
     
 @login_required

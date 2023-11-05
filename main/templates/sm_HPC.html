@@ -1,11 +1,40 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <main id="main_home">
+    {% if step == 0 %}
     <form action="" method="POST">
+        {% csrf_token %}
         <h2>Por favor ingrese el documento del paciente</h2>
         <label for="in_documento">No. documento</label>
         <input type="text" name="documento" id="in_documento" placeholder="Documento del paciente">
         <button type="submit" name="comprobar_documento">Continuar</button>
     </form>
+    {% endif %}
+
+    {% if paciente and step == 1 %}
+        <!-- Agregar aquí el código para mostrar los detalles del paciente si existe -->
+        <h1>PACIENTE EXISTENTE</h1>
+        <h2>Detalles del paciente</h2>
+        <p>Nombre: {{ paciente.nombre }}</p>
+        <p>Apellido: {{ paciente.apellido }}</p>
+        <!-- Otros campos del paciente -->
+    {% endif %}
+
+    {% if not paciente and step == 1 %}
+        <!-- Agregar aquí el código para mostrar el formulario en blanco para la creación de un nuevo paciente -->
+        <form action="" method="POST">
+            <h1>PACIENTE NO EXISTE</h1>
+
+            {% csrf_token %}
+            <h2>Registro de un nuevo paciente</h2>
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre" placeholder="Nombre">
+            <label for="apellido">Apellido</label>
+            <input type="text" name="apellido" id="apellido" placeholder="Apellido">
+            <!-- Otros campos del formulario para la creación de un paciente -->
+            <button type="submit" name="crear_paciente">Crear Paciente</button>
+        </form>
+    {% endif %}
 </main>
 {% endblock %}
