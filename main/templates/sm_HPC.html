@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main id="main_home">
+    {% if step == 0 %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        <h2>Por favor ingrese el documento del paciente</h2>
+        <label for="in_documento">No. documento</label>
+        <input type="text" name="documento" id="in_documento" placeholder="Documento del paciente">
+        <button type="submit" name="comprobar_documento">Continuar</button>
+    </form>
+    {% endif %}
+
+    {% if paciente and step == 1 %}
+        <!-- Agregar aquí el código para mostrar los detalles del paciente si existe -->
+        <h1>PACIENTE EXISTENTE</h1>
+        <h2>Detalles del paciente</h2>
+        <p>Nombre: {{ paciente.nombre }}</p>
+        <p>Apellido: {{ paciente.apellido }}</p>
+        <!-- Otros campos del paciente -->
+    {% endif %}
+
+    {% if not paciente and step == 1 %}
+        <!-- Agregar aquí el código para mostrar el formulario en blanco para la creación de un nuevo paciente -->
+        <form action="" method="POST">
+            <h1>PACIENTE NO EXISTE</h1>
+
+            {% csrf_token %}
+            <h2>Registro de un nuevo paciente</h2>
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre" placeholder="Nombre">
+            <label for="apellido">Apellido</label>
+            <input type="text" name="apellido" id="apellido" placeholder="Apellido">
+            <!-- Otros campos del formulario para la creación de un paciente -->
+            
+            <label for="fecha_nacimiento">Fecha de nacimiento</label>
+            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
+
+            <label for="edad">Edad</label>
+            <input type="number" placeholder="Edad del paciente" name="edad" id="edad">
+            
+
+            <label for="escolaridad">Escolaridad</label>
+            <select name="sexo" id="in_sexo">
+                <option value="-1">Seleccione...</option>
+                {% for escolaridad in escolaridades %}
+                <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="hijos">Número de hijos</label>
+            <input type="number" name="hijos" id="hijos" placeholder="No. de hijos del paciente">
+
+            <label for="in_sexo">Sexo</label>
+            <select name="sexo" id="in_sexo">
+                <option value="-1">Seleccione...</option>
+                {% for sexo in sexos %}
+                <option value="{{sexo.id}}">{{sexo.description}}</option>
+                {% endfor %}
+            </select>
+            
+            
+            <label for="direccion">Dirección</label>
+            <input type="text" name="direccion" id="direccion" placeholder="Dirección de residencia">
+            
+            <label for="barrio">Barrio</label>
+            <input type="text" name="barrio" id="barrio" placeholder="Barrio de residencia">
+            
+            <label for="estado_civil">Estado civil</label>
+            <select name="estado_civil" id="estado_civil">
+                <option value="-1">Seleccione...</option>
+                {% for estado in estados_civil %}
+                <option value="{{estado.id}}">{{estado.description}}</option>
+                {% endfor %}
+            </select>
+
+            <label for="celular">No. Celular</label>
+            <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
+
+            <label for="correo">Correo</label>
+            <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+
+            <label for="lectoescritura">Lectoescritura</label>
+            <select name="estado_civil" id="estado_civil">
+                <option value="-1">Seleccione...</option>
+                {% for estado in estados_civil %}
+                <option value="{{estado.id}}">{{estado.description}}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" name="crear_paciente">Crear Paciente</button>
+        </form>
+    {% endif %}
+</main>
+{% endblock %}
