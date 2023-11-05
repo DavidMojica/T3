@@ -40,6 +40,14 @@
             <label for="edad">Edad</label>
             <input type="number" placeholder="Edad del paciente" name="edad" id="edad">
             
+
+            <label for="escolaridad">Escolaridad</label>
+            <select name="sexo" id="in_sexo">
+                <option value="-1">Seleccione...</option>
+                {% for escolaridad in escolaridades %}
+                <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
+                {% endfor %}
+            </select>
             
             <label for="hijos">Número de hijos</label>
             <input type="number" name="hijos" id="hijos" placeholder="No. de hijos del paciente">
@@ -49,6 +57,35 @@
                 <option value="-1">Seleccione...</option>
                 {% for sexo in sexos %}
                 <option value="{{sexo.id}}">{{sexo.description}}</option>
+                {% endfor %}
+            </select>
+            
+            
+            <label for="direccion">Dirección</label>
+            <input type="text" name="direccion" id="direccion" placeholder="Dirección de residencia">
+            
+            <label for="barrio">Barrio</label>
+            <input type="text" name="barrio" id="barrio" placeholder="Barrio de residencia">
+            
+            <label for="estado_civil">Estado civil</label>
+            <select name="estado_civil" id="estado_civil">
+                <option value="-1">Seleccione...</option>
+                {% for estado in estados_civil %}
+                <option value="{{estado.id}}">{{estado.description}}</option>
+                {% endfor %}
+            </select>
+
+            <label for="celular">No. Celular</label>
+            <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
+
+            <label for="correo">Correo</label>
+            <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+
+            <label for="lectoescritura">Lectoescritura</label>
+            <select name="estado_civil" id="estado_civil">
+                <option value="-1">Seleccione...</option>
+                {% for estado in estados_civil %}
+                <option value="{{estado.id}}">{{estado.description}}</option>
                 {% endfor %}
             </select>
 
