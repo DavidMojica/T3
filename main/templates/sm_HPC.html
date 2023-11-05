@@ -137,16 +137,26 @@
 
         
         <details class="mult-details">
-            <summary class="mult-summary">Cálculo del paciente</summary>
+            <summary class="mult-summary">Población identificada por particularidades</summary>
             <ul class="mult-ul">
-                {% for calculo in calculos %}
+                {% for pip in pips %}
                 <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
-                            value="{{calculo.id}}" />{{calculo.description}}</label>
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
+                            value="{{pip.id}}" />{{pip.description}}</label>
                 </li>
                 {% endfor %}
             </ul>
         </details>
+
+        <label for="lectoescritura_nivel">Regimen de seguridad social</label>
+        <select name="rss" id="rss">
+            <option value="-1">Seleccione...</option>
+            {% for rss in rsss %}
+            <option value="{{rss.id}}">{{rss.description}}</option>
+            {% endfor %}
+        </select>
+
+        
 
 
         <button type="submit" name="crear_paciente">Crear Paciente</button>
