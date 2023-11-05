@@ -360,8 +360,22 @@ def edit_account(request, user_id, user_type):
 #PSICOLOGIA VISTAS
 @login_required
 def sm_HPC(request):
-    if request.method == "GET":
-        return render(request, 'sm_HPC.html')
+    if request.method == "POST":
+        if "comprobar_documento" in request.POST:
+            documento = request.POST['documento']
+            try:
+                usuario = InfoPacientes.objects.get(documento=documento)
+            except InfoPacientes.DoesNotExist:
+                usuario = None
+            
+        
+    else:
+        pass
+    
+    
+    return render(request, 'sm_HPC.html',{
+        'CustomUser': request.user
+    })
     
 @login_required
 def sm_historial(request):
