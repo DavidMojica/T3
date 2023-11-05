@@ -423,5 +423,3 @@ class SPAActuales(models.Model):
     id_paciente = models.ForeignKey(InfoPacientes, on_delete=models.DO_NOTHING)
     id_sustancia = models.ForeignKey(SPA, on_delete=models.DO_NOTHING)
     
-def sum(a,b):
-    return a+b
