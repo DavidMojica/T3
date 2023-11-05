@@ -156,7 +156,16 @@
             {% endfor %}
         </select>
 
-        
+        <label for="Sisben">¿Tiene sisbén?</label>
+        <input type="checkbox" name="sisben" id="sisben">
+
+        <label for="eps">Nombre de la EPS</label>
+        <select name="eps" id="eps">
+            <option value="-1">Seleccione...</option>
+            {% for eps in epss %}
+            <option value="{{eps.id}}">{{eps.description}}</option>
+            {% endfor %}
+        </select>
 
 
         <button type="submit" name="crear_paciente">Crear Paciente</button>
