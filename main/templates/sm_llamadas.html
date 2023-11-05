@@ -8,10 +8,10 @@
 
     <label for="in_tipo_documento">Tipo de documento</label>
     <select name="tipo_documento" id="in_tipo_documento">
-        <option value="-1">Seleccione...</option>
-        {% for tipo_doc in tipos_documento %}
-        <option value="{{tipo_doc.id}}">{{tipo_doc.description}}</option>
-        {% endfor %}
+      <option value="-1">Seleccione...</option>
+      {% for tipo_doc in tipos_documento %}
+      <option value="{{tipo_doc.id}}">{{tipo_doc.description}}</option>
+      {% endfor %}
     </select>
 
     <label for="in_nombre">No. de documento</label>
@@ -20,10 +20,10 @@
 
     <label for="in_sexo">Sexo</label>
     <select name="sexo" id="in_sexo">
-        <option value="-1">Seleccione...</option>
-        {% for sexo in sexos %}
-        <option value="{{sexo.id}}">{{sexo.description}}</option>
-        {% endfor %}
+      <option value="-1">Seleccione...</option>
+      {% for sexo in sexos %}
+      <option value="{{sexo.id}}">{{sexo.description}}</option>
+      {% endfor %}
     </select>
 
 
@@ -32,10 +32,10 @@
 
     <label for="in_eps">Eps</label>
     <select name="eps" id="in_eps">
-        <option value="-1">Seleccione...</option>
-        {% for eps in epss %}
-        <option value="{{eps.id}}">{{eps.description}}</option>
-        {% endfor %}
+      <option value="-1">Seleccione...</option>
+      {% for eps in epss %}
+      <option value="{{eps.id}}">{{eps.description}}</option>
+      {% endfor %}
     </select>
 
     <label for="in_direccion">Dirección</label>
@@ -43,20 +43,20 @@
 
     <label for="in_pais">País</label>
     <select name="pais" id="in_pais">
-        <option value="-1">Seleccione...</option>
-        {% for pais in paises %}
-        <option value="{{pais.id}}">{{pais.description}}</option>
-        {% endfor %}
+      <option value="-1">Seleccione...</option>
+      {% for pais in paises %}
+      <option value="{{pais.id}}">{{pais.description}}</option>
+      {% endfor %}
     </select>
-    
+
     <label for="in_departamento"></label>
     <select name="departamento" id="in_departamento">
-        <option value="-1">Seleccione...</option>
+      <option value="-1">Seleccione...</option>
     </select>
 
     <label for="in_municipio"></label>
     <select name="municipio" id="in_municipio">
-        <option value="-1">Seleccione...</option>
+      <option value="-1">Seleccione...</option>
     </select>
 
     <label for="in_telefono">Telefono</label>
@@ -68,29 +68,31 @@
       {% for poblacion in poblacion_vulnerable %}
       <option value="{{poblacion.id}}">{{poblacion.description}}</option>
       {% endfor %}
-    </select>    
+    </select>
 
     <details class="mult-details">
       <summary class="mult-summary">Motivo de la llamada</summary>
       <ul class="mult-ul">
         {% for motivo in motivos %}
         <li class="mult-li">
-          <label class="mult-label"><input class="mult-input" type="checkbox" name="mot_{{motivo.id}}" value="{{motivo.id}}" />{{motivo.description}}</label> 
+          <label class="mult-label"><input class="mult-input" type="checkbox" name="mot_{{motivo.id}}"
+              value="{{motivo.id}}" />{{motivo.description}}</label>
         </li>
         {% endfor %}
       </ul>
-  </details>
+    </details>
 
-   
+
     <details class="mult-details">
-        <summary class="mult-summary">Conductas a seguir</summary>
-        <ul class="mult-ul">
-          {% for conducta in conductas %}
-          <li class="mult-li">
-            <label class="mult-label"><input class="mult-input" type="checkbox" name="cond_{{conducta.id}}" value="{{conducta.id}}" />{{conducta.description}}</label> 
-          </li>
-          {% endfor %}
-        </ul>
+      <summary class="mult-summary">Conductas a seguir</summary>
+      <ul class="mult-ul">
+        {% for conducta in conductas %}
+        <li class="mult-li">
+          <label class="mult-label"><input class="mult-input" type="checkbox" name="cond_{{conducta.id}}"
+              value="{{conducta.id}}" />{{conducta.description}}</label>
+        </li>
+        {% endfor %}
+      </ul>
     </details>
     <br>
     <label for="in_observaciones">Observaciones</label>

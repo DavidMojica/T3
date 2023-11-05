@@ -13,84 +13,163 @@
     {% endif %}
 
     {% if paciente and step == 1 %}
-        <!-- Agregar aquí el código para mostrar los detalles del paciente si existe -->
-        <h1>PACIENTE EXISTENTE</h1>
-        <h2>Detalles del paciente</h2>
-        <p>Nombre: {{ paciente.nombre }}</p>
-        <p>Apellido: {{ paciente.apellido }}</p>
-        <!-- Otros campos del paciente -->
+    <!-- Agregar aquí el código para mostrar los detalles del paciente si existe -->
+    <h1>PACIENTE EXISTENTE</h1>
+    <h2>Detalles del paciente</h2>
+    <p>Nombre: {{ paciente.nombre }}</p>
+    <p>Apellido: {{ paciente.apellido }}</p>
+    <!-- Otros campos del paciente -->
     {% endif %}
 
     {% if not paciente and step == 1 %}
-        <!-- Agregar aquí el código para mostrar el formulario en blanco para la creación de un nuevo paciente -->
-        <form action="" method="POST">
-            <h1>PACIENTE NO EXISTE</h1>
+    <!-- Agregar aquí el código para mostrar el formulario en blanco para la creación de un nuevo paciente -->
+    <form action="" method="POST">
+        <h1>PACIENTE NO EXISTE</h1>
 
-            {% csrf_token %}
-            <h2>Registro de un nuevo paciente</h2>
-            <label for="nombre">Nombre</label>
-            <input type="text" name="nombre" id="nombre" placeholder="Nombre">
-            <label for="apellido">Apellido</label>
-            <input type="text" name="apellido" id="apellido" placeholder="Apellido">
-            <!-- Otros campos del formulario para la creación de un paciente -->
-            
-            <label for="fecha_nacimiento">Fecha de nacimiento</label>
-            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
+        {% csrf_token %}
+        <h2>Registro de un nuevo paciente</h2>
+        <label for="nombre">Nombre</label>
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre">
+        <label for="apellido">Apellido</label>
+        <input type="text" name="apellido" id="apellido" placeholder="Apellido">
+        <!-- Otros campos del formulario para la creación de un paciente -->
 
-            <label for="edad">Edad</label>
-            <input type="number" placeholder="Edad del paciente" name="edad" id="edad">
-            
+        <label for="fecha_nacimiento">Fecha de nacimiento</label>
+        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
 
-            <label for="escolaridad">Escolaridad</label>
-            <select name="sexo" id="in_sexo">
-                <option value="-1">Seleccione...</option>
-                {% for escolaridad in escolaridades %}
-                <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
+        <label for="edad">Edad</label>
+        <input type="number" placeholder="Edad del paciente" name="edad" id="edad">
+
+
+        <label for="escolaridad">Escolaridad</label>
+        <select name="sexo" id="in_sexo">
+            <option value="-1">Seleccione...</option>
+            {% for escolaridad in escolaridades %}
+            <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="hijos">Número de hijos</label>
+        <input type="number" name="hijos" id="hijos" placeholder="No. de hijos del paciente">
+
+        <label for="in_sexo">Sexo</label>
+        <select name="sexo" id="sexo">
+            <option value="-1">Seleccione...</option>
+            {% for sexo in sexos %}
+            <option value="{{sexo.id}}">{{sexo.description}}</option>
+            {% endfor %}
+        </select>
+
+
+        <label for="direccion">Dirección</label>
+        <input type="text" name="direccion" id="direccion" placeholder="Dirección de residencia">
+
+        <label for="barrio">Barrio</label>
+        <input type="text" name="barrio" id="barrio" placeholder="Barrio de residencia">
+
+        <label for="estado_civil">Estado civil</label>
+        <select name="estado_civil" id="estado_civil">
+            <option value="-1">Seleccione...</option>
+            {% for estado in estados_civil %}
+            <option value="{{estado.id}}">{{estado.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="celular">No. Celular</label>
+        <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
+
+        <label for="correo">Correo</label>
+        <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+
+        <label for="lectoescritura">Lectoescritura</label>
+        <select name="lectoescritura" id="lectoescritura">
+            <option value="-1">Seleccione...</option>
+            {% for lec in lectoescrituras %}
+            <option value="{{lec.id}}">{{lec.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="lectoescritura_nivel">Nivel de lectoescritura</label>
+        <select name="lectoescritura_nivel" id="lectoescritura_nivel">
+            <option value="-1">Seleccione...</option>
+            {% for lec_n in lectoescritura_nivel %}
+            <option value="{{lec_n.id}}">{{lec_n.description}}</option>
+            {% endfor %}
+        </select>
+
+        <details class="mult-details">
+            <summary class="mult-summary">Cálculo del paciente</summary>
+            <ul class="mult-ul">
+                {% for calculo in calculos %}
+                <li class="mult-li">
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
+                            value="{{calculo.id}}" />{{calculo.description}}</label>
+                </li>
                 {% endfor %}
-            </select>
-            
-            <label for="hijos">Número de hijos</label>
-            <input type="number" name="hijos" id="hijos" placeholder="No. de hijos del paciente">
+            </ul>
+        </details>
 
-            <label for="in_sexo">Sexo</label>
-            <select name="sexo" id="in_sexo">
-                <option value="-1">Seleccione...</option>
-                {% for sexo in sexos %}
-                <option value="{{sexo.id}}">{{sexo.description}}</option>
+
+        <label for="lectoescritura_nivel">Razonamiento analítico</label>
+        <select name="raz_analitico" id="raz_analitico">
+            <option value="-1">Seleccione...</option>
+            {% for raz in razonamiento_analitico %}
+            <option value="{{raz.id}}">{{raz.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="lectoescritura_nivel">Etnia</label>
+        <select name="lect_nivel" id="lect_nivel">
+            <option value="-1">Seleccione...</option>
+            {% for etnia in etnias %}
+            <option value="{{etnia.id}}">{{etnia.description}}</option>
+            {% endfor %}
+        </select>
+
+
+        <label for="lectoescritura_nivel">Ocupación</label>
+        <select name="ocupacion" id="ocupacion">
+            <option value="-1">Seleccione...</option>
+            {% for etnia in etnias %}
+            <option value="{{etnia.id}}">{{etnia.description}}</option>
+            {% endfor %}
+        </select>
+
+        
+        <details class="mult-details">
+            <summary class="mult-summary">Población identificada por particularidades</summary>
+            <ul class="mult-ul">
+                {% for pip in pips %}
+                <li class="mult-li">
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
+                            value="{{pip.id}}" />{{pip.description}}</label>
+                </li>
                 {% endfor %}
-            </select>
-            
-            
-            <label for="direccion">Dirección</label>
-            <input type="text" name="direccion" id="direccion" placeholder="Dirección de residencia">
-            
-            <label for="barrio">Barrio</label>
-            <input type="text" name="barrio" id="barrio" placeholder="Barrio de residencia">
-            
-            <label for="estado_civil">Estado civil</label>
-            <select name="estado_civil" id="estado_civil">
-                <option value="-1">Seleccione...</option>
-                {% for estado in estados_civil %}
-                <option value="{{estado.id}}">{{estado.description}}</option>
-                {% endfor %}
-            </select>
+            </ul>
+        </details>
 
-            <label for="celular">No. Celular</label>
-            <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
+        <label for="lectoescritura_nivel">Regimen de seguridad social</label>
+        <select name="rss" id="rss">
+            <option value="-1">Seleccione...</option>
+            {% for rss in rsss %}
+            <option value="{{rss.id}}">{{rss.description}}</option>
+            {% endfor %}
+        </select>
 
-            <label for="correo">Correo</label>
-            <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+        <label for="Sisben">¿Tiene sisbén?</label>
+        <input type="checkbox" name="sisben" id="sisben">
 
-            <label for="lectoescritura">Lectoescritura</label>
-            <select name="estado_civil" id="estado_civil">
-                <option value="-1">Seleccione...</option>
-                {% for estado in estados_civil %}
-                <option value="{{estado.id}}">{{estado.description}}</option>
-                {% endfor %}
-            </select>
+        <label for="eps">Nombre de la EPS</label>
+        <select name="eps" id="eps">
+            <option value="-1">Seleccione...</option>
+            {% for eps in epss %}
+            <option value="{{eps.id}}">{{eps.description}}</option>
+            {% endfor %}
+        </select>
 
-            <button type="submit" name="crear_paciente">Crear Paciente</button>
-        </form>
+
+        <button type="submit" name="crear_paciente">Crear Paciente</button>
+    </form>
     {% endif %}
 </main>
 {% endblock %}
