@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos
+from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -21,21 +21,30 @@ ERROR_202 = "Las contraseñas no coinciden"
 SUCCESS_100 = "Contraseña actualizada correctamente."
 SUCCESS_101 = "Datos guardados correctamente."
 
+paises = Pais.objects.all()
+departamentos = Departamento.objects.all()
+municipios = Municipio.objects.all()
+tipos_documento = TipoDocumento.objects.all()
+sexos = Sexo.objects.all()
+EPSS = EPS.objects.all()
+poblacion_vulnerable = PoblacionVulnerable.objects.all()
+motivos = PsiMotivos.objects.all()
+conductas = ConductasASeguir.objects.all()
+escolaridades = Escolaridad.objects.all()
+estados_civiles = EstadoCivil.objects.all()
+lectoescritura1 = Lecto1.objects.all()
+lectoescritura2 = Lecto2.objects.all()
+calculos = Calculo.objects.all()
+razonamiento = Razonamiento.objects.all()
+etnias = Etnia.objects.all()
+ocupaciones = Ocupacion.objects.all()
+pips = Pip.objects.all()
+regimenes = RegimenSeguridad.objects.all()
 
 # Create your views here.
 
 @login_required
 def sm_llamadas(request):
-    paises = Pais.objects.all()
-    departamentos = Departamento.objects.all()
-    municipios = Municipio.objects.all()
-    tipos_documento = TipoDocumento.objects.all()
-    sexos = Sexo.objects.all()
-    EPSS = EPS.objects.all()
-    poblacion_vulnerable = PoblacionVulnerable.objects.all()
-    motivos = PsiMotivos.objects.all()
-    conductas = ConductasASeguir.objects.all()
-    
     if request.method == "POST":
         nombre = request.POST['nombre']
         tipo_documento = request.POST['tipo_documento']
@@ -370,7 +379,19 @@ def sm_HPC(request):
             return render(request, 'sm_HPC.html',{
                 'CustomUser': request.user,
                 'paciente': paciente,
-                'step' : 1
+                'step' : 1,
+                'escolaridades':escolaridades,
+                'sexos': sexos,
+                'estados_civil':estados_civiles,
+                'lectoescrituras':lectoescritura1,
+                'lectoescritura_nivel': lectoescritura2,
+                'calculos':calculos,
+                'razonamiento_analitico':razonamiento,
+                'etnias':etnias,
+                'ocupaciones':ocupaciones,
+                'pips': pips,
+                'rsss':regimenes,
+                'epss':EPS
             })
         
         
