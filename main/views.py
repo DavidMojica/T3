@@ -411,6 +411,9 @@ def sm_HPC(request):
             correo = request.POST['correo']
             lectoescritura_nivel = request.POST['lectoescritura_nivel']
             raz_analitico = request.POST['raz_analitico']
+            lect_nivel = request.POST['lect_nivel']
+            ocupacion = request.POST['ocupacion']
+            
             
             
                  
