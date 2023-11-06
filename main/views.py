@@ -394,7 +394,7 @@ def sm_HPC(request):
                 'epss':EPSS,
                 'year': datetime.now(),
             })
-        if "crear_usuario" in request.POST:
+        elif "crear_usuario" in request.POST:
             nombre = request.POST['nombre']
             tipo_documento = request.POST['tipo_documento']
             documento = request.POST['documento']
@@ -402,9 +402,18 @@ def sm_HPC(request):
             edad = request.POST['edad']
             eps = request.POST['eps']
             direccion = request.POST['direccion']
-            telefono = request.POST['telefono']
+            celular = request.POST['celular']
+            fecha_nacimiento = request.POST['fecha_nacimiento']
+            escolaridad = request.POST['escolaridad']
+            hijos = request.POST['hijos']
+            barrio = request.POST['barrio']
+            estado_civil= request.POST['estado_civil']
+            correo = request.POST['correo']
+            lectoescritura_nivel = request.POST['lectoescritura_nivel']
+            raz_analitico = request.POST['raz_analitico']
             
             
+                 
             nuevo_usuario = InfoPacientes(
                 
             )
