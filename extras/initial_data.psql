@@ -68,7 +68,13 @@ insert into main_poblacionvulnerable(description) values('Víctima de violencia 
 insert into main_poblacionvulnerable(description) values('Adulto mayor');
 insert into main_poblacionvulnerable(description) values('Ninguna');
 
-
+insert into main_escolaridad(description) values('Ninguna');
+insert into main_escolaridad(description) values('Primaria');
+insert into main_escolaridad(description) values('Secundaria');
+insert into main_escolaridad(description) values('Técnica');
+insert into main_escolaridad(description) values('Tecnóloga');
+insert into main_escolaridad(description) values('Profesional');
+insert into main_escolaridad(description) values('Posgrado');
 
 
 
