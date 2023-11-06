@@ -76,7 +76,17 @@ insert into main_escolaridad(description) values('Tecnóloga');
 insert into main_escolaridad(description) values('Profesional');
 insert into main_escolaridad(description) values('Posgrado');
 
+insert into main_lecto1(description) values('Sabe leer');
+insert into main_lecto1(description) values('Sabe escribir');
+insert into main_lecto1(description) values('Ambas');
+insert into main_lecto1(description) values('Ninguna');
 
+insert into main_lecto2(description) values('Nivel 0');
+insert into main_lecto2(description) values('Nivel 1');
+insert into main_lecto2(description) values('Nivel 2');
+insert into main_lecto2(description) values('Nivel 3');
+insert into main_lecto2(description) values('Nivel 4');
+insert into main_lecto2(description) values('Nivel 5');
 
 
 
