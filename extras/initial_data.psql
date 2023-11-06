@@ -102,6 +102,23 @@ insert into main_razonamiento(description) values('Nivel 3');
 insert into main_razonamiento(description) values('Nivel 4');
 insert into main_razonamiento(description) values('Nivel 5');
 
+insert into main_ocupacion(description) values('Estudiante');
+insert into main_ocupacion(description) values('Trabajador');
+insert into main_ocupacion(description) values('Oficios del hogar');
+insert into main_ocupacion(description) values('Desempleado');
+insert into main_ocupacion(description) values('Jubilado');
+insert into main_ocupacion(description) values('Rentista');
+insert into main_ocupacion(description) values('Pensionado');
+insert into main_ocupacion(description) values('No aplica');
+
+
+insert into main_pip(description) values('Persona con discapacidad');
+insert into main_pip(description) values('Madres cabeza de familia');
+insert into main_pip(description) values('Persona LGTBIQ+');
+insert into main_pip(description) values('Persona desplazada');
+insert into main_pip(description) values('Persona reinsertada');
+insert into main_pip(description) values('Ninguna de las anteriores');
+insert into main_pip(description) values('Otra');
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento
 -- ALTER SEQUENCE main_tipodocumento_id_seq RESTART WITH 1;
