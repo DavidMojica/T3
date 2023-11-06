@@ -28,6 +28,16 @@
 
         {% csrf_token %}
         <h2>Registro de un nuevo paciente</h2>
+        <input type="text" name="documento" id="documento" readonly value="{{documento}}">
+        <select name="tipo_documento" id="tipo_documento">
+            <option value="-1">Seleccione...</option>
+            {% for tipo_documento in tipos_documento %}
+            <option value="{{tipo_documento.id}}">{{tipo_documento.description}}</option>
+            {% endfor %}
+
+        </select>
+
+
         <label for="nombre">Nombre</label>
         <input type="text" name="nombre" id="nombre" placeholder="Nombre">
         <label for="apellido">Apellido</label>
@@ -42,7 +52,7 @@
 
 
         <label for="escolaridad">Escolaridad</label>
-        <select name="sexo" id="in_sexo">
+        <select name="escolaridad" id="escolaridad">
             <option value="-1">Seleccione...</option>
             {% for escolaridad in escolaridades %}
             <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
@@ -156,7 +166,7 @@
             {% endfor %}
         </select>
 
-        <label for="Sisben">¿Tiene sisbén?</label>
+        <label for="sisben">¿Tiene sisbén?</label>
         <input type="checkbox" name="sisben" id="sisben">
 
         <label for="eps">Nombre de la EPS</label>
@@ -168,7 +178,7 @@
         </select>
 
 
-        <button type="submit" name="crear_paciente">Crear Paciente</button>
+        <button type="submit" name="crear_usuario">Crear Paciente</button>
     </form>
     {% endif %}
 </main>
