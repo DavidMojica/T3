@@ -88,9 +88,19 @@ insert into main_lecto2(description) values('Nivel 3');
 insert into main_lecto2(description) values('Nivel 4');
 insert into main_lecto2(description) values('Nivel 5');
 
+insert into main_calculo(description) values('Sumar');
+insert into main_calculo(description) values('Restar');
+insert into main_calculo(description) values('Multiplicar');
+insert into main_calculo(description) values('Dividir');
+insert into main_calculo(description) values('Porcentaje');
+insert into main_calculo(description) values('Promedio');
 
-
-
+insert into main_razonamiento(description) values('Nivel 0');
+insert into main_razonamiento(description) values('Nivel 1');
+insert into main_razonamiento(description) values('Nivel 2');
+insert into main_razonamiento(description) values('Nivel 3');
+insert into main_razonamiento(description) values('Nivel 4');
+insert into main_razonamiento(description) values('Nivel 5');
 
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento
