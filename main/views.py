@@ -391,9 +391,23 @@ def sm_HPC(request):
                 'ocupaciones':ocupaciones,
                 'pips': pips,
                 'rsss':regimenes,
-                'epss':EPS
+                'epss':EPSS,
+                'year': datetime.now(),
             })
-        
+        if "crear_usuario" in request.POST:
+            nombre = request.POST['nombre']
+            tipo_documento = request.POST['tipo_documento']
+            documento = request.POST['documento']
+            sexo = request.POST['sexo']
+            edad = request.POST['edad']
+            eps = request.POST['eps']
+            direccion = request.POST['direccion']
+            telefono = request.POST['telefono']
+            
+            
+            nuevo_usuario = InfoPacientes(
+                
+            )
         
     else:
         return render(request, 'sm_HPC.html',{
@@ -403,7 +417,8 @@ def sm_HPC(request):
         
     return render(request, 'sm_HPC.html',{
         'CustomUser': request.user,
-        'paciente': paciente
+        'paciente': paciente,
+        'year': datetime.now(),
     })
     
 @login_required
