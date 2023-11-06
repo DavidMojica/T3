@@ -130,8 +130,8 @@
         <label for="lectoescritura_nivel">Ocupación</label>
         <select name="ocupacion" id="ocupacion">
             <option value="-1">Seleccione...</option>
-            {% for etnia in etnias %}
-            <option value="{{etnia.id}}">{{etnia.description}}</option>
+            {% for ocupacion in ocupaciones %}
+            <option value="{{ocupacion.id}}">{{ocupacion.description}}</option>
             {% endfor %}
         </select>
 

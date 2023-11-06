@@ -34,8 +34,12 @@ escolaridades = Escolaridad.objects.all()
 estados_civiles = EstadoCivil.objects.all()
 lectoescritura1 = Lecto1.objects.all()
 lectoescritura2 = Lecto2.objects.all()
-
-
+calculos = Calculo.objects.all()
+razonamiento = Razonamiento.objects.all()
+etnias = Etnia.objects.all()
+ocupaciones = Ocupacion.objects.all()
+pips = Pip.objects.all()
+regimenes = RegimenSeguridad.objects.all()
 
 # Create your views here.
 
@@ -375,7 +379,19 @@ def sm_HPC(request):
             return render(request, 'sm_HPC.html',{
                 'CustomUser': request.user,
                 'paciente': paciente,
-                'step' : 1
+                'step' : 1,
+                'escolaridades':escolaridades,
+                'sexos': sexos,
+                'estados_civil':estados_civiles,
+                'lectoescrituras':lectoescritura1,
+                'lectoescritura_nivel': lectoescritura2,
+                'calculos':calculos,
+                'razonamiento_analitico':razonamiento,
+                'etnias':etnias,
+                'ocupaciones':ocupaciones,
+                'pips': pips,
+                'rsss':regimenes,
+                'epss':EPS
             })
         
         
