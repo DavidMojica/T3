@@ -416,7 +416,10 @@ def sm_HPC(request):
             lect_nivel = request.POST['lect_nivel']
             ocupacion = request.POST['ocupacion']
             regimen = request.POST['rss']
-            sisben = request.POST['sisben']
+            if 'sisben' in request.POST:
+                sisben = True
+            else:
+                sisben = False
             eps = request.POST['eps']
             etnia = request.POST['etnia']
                 
@@ -490,7 +493,8 @@ def sm_HPC(request):
                 etnia = etnia_instance,
                 ocupacion = ocupacion_instance,
                 regimen_seguridad = regimen_seguridad_instance,
-                eps = eps_instance
+                eps = eps_instance,
+                sisben = sisben
             )
             nuevo_usuario.save()
         
@@ -507,7 +511,20 @@ def sm_HPC(request):
                         id_calculo = calculo_instance
                     )
                     calc.save()
+                
+            for p in Pip.objects.all():
+                checkbox_name = f'pip_{p.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        pip_instance = Pip.objects.get(id=p.id)
+                    except Pip.DoesNotExist:
+                        pip_instance = None
                         
+                    pp = PacientePip(
+                        documento_usuario = documento,
+                        id_pip = pip_instance
+                    )
+                    pp.save()
                 
         
     else:
