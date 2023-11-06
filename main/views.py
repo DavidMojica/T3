@@ -369,6 +369,7 @@ def edit_account(request, user_id, user_type):
 #PSICOLOGIA VISTAS
 @login_required
 def sm_HPC(request):
+    documento = ""
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             documento = request.POST['documento']
@@ -393,11 +394,12 @@ def sm_HPC(request):
                 'rsss':regimenes,
                 'epss':EPSS,
                 'year': datetime.now(),
+                'documento': documento,
+                'tipos_documento':tipos_documento
             })
         elif "crear_usuario" in request.POST:
-            nombre = request.POST['nombre']
+            nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             tipo_documento = request.POST['tipo_documento']
-            documento = request.POST['documento']
             sexo = request.POST['sexo']
             edad = request.POST['edad']
             eps = request.POST['eps']
@@ -413,11 +415,60 @@ def sm_HPC(request):
             raz_analitico = request.POST['raz_analitico']
             lect_nivel = request.POST['lect_nivel']
             ocupacion = request.POST['ocupacion']
+            rss = request.POST['rss']
+            sisben = request.POST['sisben']
+            eps = request.POST['eps']
+            etnia = request.POST['etnia']
+                
+            #INSTANCIAS
+            try:
+                escolaridad_instance  = escolaridad.objects.get(id=escolaridad)
+            except Escolaridad.DoesNotExist:
+                escolaridad_instance = None
+                
+            try:
+                sexo_instance = escolaridad_instance.objects.get(id=sexo)
+            except Sexo.DoesNotExist:
+                sexo_instance = None
+                
+            try:
+                estado_civil_instace = EstadoCivil.objects.get(id=estado_civil)
+            except EstadoCivil.DoesNotExist:
+                estado_civil_instace = None
+                
+            try:
+                lecto1_instance = Lecto1.objects.get(id=lectoescritura1)
+            except Lecto1.DoesNotExist:
+                lecto1_instance = None
+            try:
+                lecto2_instance = Lecto2.objects.get(id=lectoescritura2)
+            except Lecto2.DoesNotExist:
+                lecto2_instance = None
+                
+            try:
+                razonamiento_instance = Razonamiento.objects.get(id=lectoescritura1)
+            except Razonamiento.DoesNotExist:
+                razonamiento_instance = None
+                
+            try:
+                etnia_instance = Etnia.objects.get(id=etnia)
+            except:
+                etnia_instance = None
+                
             
             
-            
-                 
             nuevo_usuario = InfoPacientes(
+                nombre = nombre,
+                documento = documento,
+                tipo_documento = tipo_documento,
+                fecha_nacimiento = fecha_nacimiento,
+                edad = edad,
+                escolaridad = escolaridad_instance,
+                numero_hijos = hijos,
+                sexo = sexo_instance,
+                direccion = direccion,
+                barrio = barrio,
+                estado_civil = estado_civil_instance
                 
             )
         

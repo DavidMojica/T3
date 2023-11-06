@@ -28,6 +28,16 @@
 
         {% csrf_token %}
         <h2>Registro de un nuevo paciente</h2>
+        <input type="text" name="documento" id="documento" readonly value="{{documento}}">
+        <select name="tipo_documento" id="tipo_documento">
+            <option value="-1">Seleccione...</option>
+            {% for tipo_documento in tipos_documento %}
+            <option value="{{tipo_documento.id}}">{{tipo_documento.description}}</option>
+            {% endfor %}
+
+        </select>
+
+
         <label for="nombre">Nombre</label>
         <input type="text" name="nombre" id="nombre" placeholder="Nombre">
         <label for="apellido">Apellido</label>
