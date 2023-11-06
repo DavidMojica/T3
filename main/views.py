@@ -415,7 +415,7 @@ def sm_HPC(request):
             raz_analitico = request.POST['raz_analitico']
             lect_nivel = request.POST['lect_nivel']
             ocupacion = request.POST['ocupacion']
-            rss = request.POST['rss']
+            regimen = request.POST['rss']
             sisben = request.POST['sisben']
             eps = request.POST['eps']
             etnia = request.POST['etnia']
@@ -432,9 +432,9 @@ def sm_HPC(request):
                 sexo_instance = None
                 
             try:
-                estado_civil_instace = EstadoCivil.objects.get(id=estado_civil)
+                estado_civil_instance = EstadoCivil.objects.get(id=estado_civil)
             except EstadoCivil.DoesNotExist:
-                estado_civil_instace = None
+                estado_civil_instance = None
                 
             try:
                 lecto1_instance = Lecto1.objects.get(id=lectoescritura1)
@@ -455,7 +455,20 @@ def sm_HPC(request):
             except:
                 etnia_instance = None
                 
-            
+            try:
+                ocupacion_instance = Ocupacion.objects.get(id=ocupacion)
+            except:
+                ocupacion_instance = None
+                
+            try:
+                regimen_seguridad_instance = RegimenSeguridad.objects.get(id=regimen)
+            except:
+                regimen_seguridad_instance = None
+                
+            try:
+                eps_instance = EPS.objects.get(id=eps)
+            except EPS.DoesNotExist:
+                eps_instance = None
             
             nuevo_usuario = InfoPacientes(
                 nombre = nombre,
@@ -468,9 +481,34 @@ def sm_HPC(request):
                 sexo = sexo_instance,
                 direccion = direccion,
                 barrio = barrio,
-                estado_civil = estado_civil_instance
-                
+                estado_civil = estado_civil_instance,
+                celular = celular,
+                email = correo,
+                lectoescritura_indicador = lecto1_instance,
+                lectoescritura_nivel = lecto2_instance,
+                razonamiento_analitico =razonamiento_instance,
+                etnia = etnia_instance,
+                ocupacion = ocupacion_instance,
+                regimen_seguridad = regimen_seguridad_instance,
+                eps = eps_instance
             )
+            nuevo_usuario.save()
+        
+            for c in Calculo.objects.all():
+                checkbox_name = f'calc_{c.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        calculo_instance = Calculo.objects.get(id=c.id)
+                    except Calculo.DoesNotExist:
+                        calculo_instance = None
+                        
+                    calc = PacienteCalculo(
+                        documento_usuario = documento,
+                        id_calculo = calculo_instance
+                    )
+                    calc.save()
+                        
+                
         
     else:
         return render(request, 'sm_HPC.html',{
