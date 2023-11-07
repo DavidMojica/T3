@@ -26,3 +26,5 @@ btn_ocultar_info.addEventListener('click', function(){
     form_split_id.style.display = "block";
     hidden_div.style.display = "none";
 });
+
+Function()
