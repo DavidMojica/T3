@@ -28,7 +28,10 @@
 
         {% csrf_token %}
         <h2>Registro de un nuevo paciente</h2>
-        <input type="text" name="documento" id="documento" readonly value="{{documento}}">
+        <label for="documento">Documento:</label>
+        <input type="text" name="documento" id="documento" disabled readonly value="{{documento}}">
+
+        <label for="tipo_documento">Tipo de documento:</label>
         <select name="tipo_documento" id="tipo_documento">
             <option value="-1">Seleccione...</option>
             {% for tipo_documento in tipos_documento %}
@@ -99,8 +102,8 @@
             {% endfor %}
         </select>
 
-        <label for="lectoescritura_nivel">Nivel de lectoescritura</label>
-        <select name="lectoescritura_nivel" id="lectoescritura_nivel">
+        <label for="lect_nivel">Nivel de lectoescritura</label>
+        <select name="lect_nivel" id="lectoescritura_nivel">
             <option value="-1">Seleccione...</option>
             {% for lec_n in lectoescritura_nivel %}
             <option value="{{lec_n.id}}">{{lec_n.description}}</option>
@@ -128,8 +131,8 @@
             {% endfor %}
         </select>
 
-        <label for="lectoescritura_nivel">Etnia</label>
-        <select name="lect_nivel" id="lect_nivel">
+        <label for="etnia">Etnia</label>
+        <select name="etnia" id="etnia">
             <option value="-1">Seleccione...</option>
             {% for etnia in etnias %}
             <option value="{{etnia.id}}">{{etnia.description}}</option>
@@ -137,7 +140,7 @@
         </select>
 
 
-        <label for="lectoescritura_nivel">Ocupación</label>
+        <label for="ocupacion">Ocupación</label>
         <select name="ocupacion" id="ocupacion">
             <option value="-1">Seleccione...</option>
             {% for ocupacion in ocupaciones %}

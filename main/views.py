@@ -411,7 +411,7 @@ def sm_HPC(request):
             barrio = request.POST['barrio']
             estado_civil= request.POST['estado_civil']
             correo = request.POST['correo']
-            lectoescritura_nivel = request.POST['lectoescritura_nivel']
+            lectoescritura = request.POST['lectoescritura']
             raz_analitico = request.POST['raz_analitico']
             lect_nivel = request.POST['lect_nivel']
             ocupacion = request.POST['ocupacion']
@@ -424,8 +424,10 @@ def sm_HPC(request):
             etnia = request.POST['etnia']
                 
             #INSTANCIAS
+            
+            
             try:
-                escolaridad_instance  = escolaridad.objects.get(id=escolaridad)
+                escolaridad_instance  = Escolaridad.objects.get(id=escolaridad)
             except Escolaridad.DoesNotExist:
                 escolaridad_instance = None
                 
@@ -440,16 +442,16 @@ def sm_HPC(request):
                 estado_civil_instance = None
                 
             try:
-                lecto1_instance = Lecto1.objects.get(id=lectoescritura1)
+                lecto1_instance = Lecto1.objects.get(id=lectoescritura)
             except Lecto1.DoesNotExist:
                 lecto1_instance = None
             try:
-                lecto2_instance = Lecto2.objects.get(id=lectoescritura2)
+                lecto2_instance = Lecto2.objects.get(id=lect_nivel)
             except Lecto2.DoesNotExist:
                 lecto2_instance = None
                 
             try:
-                razonamiento_instance = Razonamiento.objects.get(id=lectoescritura1)
+                razonamiento_instance = Razonamiento.objects.get(id=raz_analitico)
             except Razonamiento.DoesNotExist:
                 razonamiento_instance = None
                 
