@@ -424,6 +424,10 @@ def sm_HPC(request):
             etnia = request.POST['etnia']
                 
             #INSTANCIAS
+            # try:
+            #     paciente = InfoPacientes.objects.get(documento=documento)
+            # except InfoPacientes.DoesNotExist:
+            #     paciente = None
             
             try:
                 tipo_documento_instance = TipoDocumento.objects.get(id=tipo_documento)
@@ -513,7 +517,7 @@ def sm_HPC(request):
                         calculo_instance = None
                         
                     calc = PacienteCalculo(
-                        documento_usuario = documento,
+                        documento_usuario = nuevo_usuario,
                         id_calculo = calculo_instance
                     )
                     calc.save()
@@ -527,7 +531,7 @@ def sm_HPC(request):
                         pip_instance = None
                         
                     pp = PacientePip(
-                        documento_usuario = documento,
+                        documento_usuario = nuevo_usuario,
                         id_pip = pip_instance
                     )
                     pp.save()
