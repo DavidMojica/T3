@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad
+from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -40,6 +40,10 @@ etnias = Etnia.objects.all()
 ocupaciones = Ocupacion.objects.all()
 pips = Pip.objects.all()
 regimenes = RegimenSeguridad.objects.all()
+hpcsituaciones = HPCSituacionContacto.objects.all()
+hpcdemandas = HPCTiposDemandas.objects.all()
+hpcrespuestas = HPCTiposRespuestas.objects.all()
+
 
 # Create your views here.
 
@@ -472,11 +476,11 @@ def sm_HPC(request):
             return render(request, 'sm_HPC.html',{
                 'CustomUser': request.user,
                 'year': datetime.now(),
-                'step': 2
-            })
-
-            
-            
+                'step': 2,
+                'hpcsituaciones': hpcsituaciones,
+                'hpcdemandas':hpcdemandas,
+                'hpcrespuestas': hpcrespuestas
+            })           
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
