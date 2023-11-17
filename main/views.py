@@ -399,6 +399,7 @@ def sm_HPC(request):
             })
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
+            documento = request.POST['documento']
             tipo_documento = request.POST['tipo_documento']
             sexo = request.POST['sexo']
             edad = request.POST['edad']
@@ -422,6 +423,7 @@ def sm_HPC(request):
                 sisben = False
             eps = request.POST['eps']
             etnia = request.POST['etnia']
+            
                 
             #INSTANCIAS
             # try:

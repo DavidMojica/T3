@@ -45,7 +45,9 @@
         {% csrf_token %}
         <h2>Registro de un nuevo paciente</h2>
         <label for="documento">Documento:</label>
-        <input type="text" name="documento" id="documento" disabled readonly value="{{documento}}">
+        
+        <input type="text" name="documento_bait" id="documento_bait" value="{{documento}}">
+        <input type="hidden" name="documento" id="documento" value="{{documento}}">
 
         <label for="tipo_documento">Tipo de documento:</label>
         <select name="tipo_documento" id="tipo_documento">
