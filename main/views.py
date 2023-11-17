@@ -397,6 +397,34 @@ def sm_HPC(request):
                 'documento': documento,
                 'tipos_documento':tipos_documento
             })
+        elif "actualizar_usuario" in request.POST:
+            paciente = get_object_or_404(InfoPacientes, documento=documento)
+            
+            paciente.nombre = request.POST['e_nombre']
+            paciente.tipo_documento = request.POST['e_tipo_documento']
+            paciente.fecha_nacimiento = request.POST['e_fecha_nacimiento']
+            paciente.edad = request.POST['e_edad']
+            paciente.escolaridad_id = request.POST['e_escolaridad']
+            paciente.numero_hijos = request.POST['e_hijos']
+            paciente.sexo_id = request.POST['e_sexo']
+            paciente.direccion = request.POST['e_direccion']
+            paciente.barrio = request.POST['e_barrio']
+            paciente.estado_civil_id = request.POST['e_estado_civil']
+            paciente.celular = request.POST['e_celular']
+            paciente.correo = request.POST['e_correo']
+            paciente.lectoescritura_indicador_id = request.POST['e_lect']
+            paciente.lectoescritura_nivel_id = request.POST['e_lect2']
+            paciente.razonamiento_analitico_id = request.POST['e_raz_analitico']
+            paciente.etnia_id = request.POST['e_etnia']
+            paciente.ocupacion_id = request.POST['e_ocupacion']
+            paciente.regimen_seguridad_id = request.POST['e_rss']
+            paciente.sisben = request.POST['e_sisben']
+            paciente.eps_id = request.POST['eps']
+            
+            paciente.save()
+            
+            
+
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
@@ -540,7 +568,7 @@ def sm_HPC(request):
                         id_pip = pip_instance
                     )
                     pp.save()
-                
+             
         
     else:
         return render(request, 'sm_HPC.html',{

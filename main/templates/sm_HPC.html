@@ -25,8 +25,6 @@
         <label for="e_nombre">Nombre</label>
         <input type="text" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
 
-
-
         <label for="e_tipo_documento">Tipo de documento:</label>
         <select name="e_tipo_documento" id="e_tipo_documento">
             {% for tipo_documento in tipos_documento %}
@@ -37,14 +35,14 @@
         </select>
 
         <label for="e_fecha_nacimiento">Fecha de nacimiento</label>
-        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento"
+        <input type="date" name="e_fecha_nacimiento" id="fecha_nacimiento"
             value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
 
         <label for="e_edad">Edad:</label>
         <input type="text" name="e_edad" id="e_edad" value="{{paciente.edad}}">
 
         <label for="e_escolaridad">Escolaridad</label>
-        <select name="escolaridad" id="escolaridad">
+        <select name="e_escolaridad" id="e_escolaridad">
             {% for escolaridad in escolaridades %}
             <option value="{{escolaridad.id}}" {% if escolaridad.id == paciente.escolaridad_id %}selected{% endif %}>
                 {{escolaridad.description}}</option>
@@ -85,7 +83,7 @@
         <input type="email" name="e_correo" id="e_correo" value="{{paciente.correo}}" placeholder="Correo electrónico">
 
         <label for="e_lectoescritura">Lectoescritura</label>
-        <select name="e_lectoescritura" id="e_lectoescritura">
+        <select name="e_lect" id="e_lectoescritura">
             {% for lec in lectoescrituras %}
             <option value="{{lec.id}}" {% if lec.id == paciente.lectoescritura_indicador_id %}selected{% endif %}>
                 {{lec.description}}</option>
@@ -93,7 +91,7 @@
         </select>
 
         <label for="e_lect_nivel">Nivel de lectoescritura</label>
-        <select name="e_lect_nivel" id="e_lectoescritura_nivel">
+        <select name="e_lect2" id="e_lect_nivel">
             {% for lec_n in lectoescritura_nivel %}
             <option value="{{lec_n.id}}" {% if lec_n.id == paciente.lectoescritura_nivel_id %}selected{% endif %}>
                 {{lec_n.description}}</option>
@@ -318,6 +316,7 @@
         <h2></h2>
 
     </form>
+    {% endif %}
     {% endif %}
 </main>
 {% endblock %}
