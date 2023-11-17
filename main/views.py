@@ -425,6 +425,10 @@ def sm_HPC(request):
                 
             #INSTANCIAS
             
+            try:
+                tipo_documento_instance = TipoDocumento.objects.get(id=tipo_documento)
+            except TipoDocumento.DoesNotExist:
+                tipo_documento_instance = None
             
             try:
                 escolaridad_instance  = Escolaridad.objects.get(id=escolaridad)
@@ -432,7 +436,7 @@ def sm_HPC(request):
                 escolaridad_instance = None
                 
             try:
-                sexo_instance = escolaridad_instance.objects.get(id=sexo)
+                sexo_instance = Sexo.objects.get(id=sexo)
             except Sexo.DoesNotExist:
                 sexo_instance = None
                 
@@ -478,7 +482,7 @@ def sm_HPC(request):
             nuevo_usuario = InfoPacientes(
                 nombre = nombre,
                 documento = documento,
-                tipo_documento = tipo_documento,
+                tipo_documento = tipo_documento_instance,
                 fecha_nacimiento = fecha_nacimiento,
                 edad = edad,
                 escolaridad = escolaridad_instance,

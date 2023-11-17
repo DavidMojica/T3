@@ -15,9 +15,25 @@
     {% if paciente and step == 1 %}
     <!-- Agregar aquí el código para mostrar los detalles del paciente si existe -->
     <h1>PACIENTE EXISTENTE</h1>
+    <h4>Por favor verifique los datos del paciente. (actualicelo si es necesario).</h4>
+
+    <label for="e_documento">Documento:</label>
+    <input type="text" name="e_documento" id="e_documento" disabled readonly value="{{paciente.documento}}">
+
     <h2>Detalles del paciente</h2>
     <p>Nombre: {{ paciente.nombre }}</p>
     <p>Apellido: {{ paciente.apellido }}</p>
+
+    <label for="e_tipo_documento">Tipo de documento:</label>
+    <select name="tipo_documento" id="tipo_documento">
+        <option value="-1">Seleccione...</option>
+        {% for tipo_documento in tipos_documento %}
+            <option value="{{ tipo_documento.id }}" {% if tipo_documento.id == paciente.tipo_documento %}selected{% endif %}>
+                {{ tipo_documento.description }}
+            </option>
+        {% endfor %}
+    </select>
+
     <!-- Otros campos del paciente -->
     {% endif %}
 
