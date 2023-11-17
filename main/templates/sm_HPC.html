@@ -20,7 +20,7 @@
         <h4>Por favor verifique los datos del paciente. (actualicelo si es necesario).</h4>
 
         <label for="e_documento">Documento:</label>
-        <input type="text" name="e_documento" id="e_documento" disabled readonly value="{{paciente.documento}}">
+        <input type="text" name="e_documento" id="e_documento" readonly value="{{paciente.documento}}">
 
         <label for="e_nombre">Nombre</label>
         <input type="text" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
@@ -312,11 +312,14 @@
     </form>
 
     {% if step == 2 %}
+    <h2>Zorgon</h2>
     <form action="">
         <h2>Formulario de la cita paso 2</h2>
 
     </form>
     {% endif %}
     {% endif %}
+
+    {{step}}
 </main>
 {% endblock %}

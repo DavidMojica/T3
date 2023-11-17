@@ -398,8 +398,8 @@ def sm_HPC(request):
                 'tipos_documento':tipos_documento
             })
         elif "actualizar_usuario" in request.POST:
-
             try:
+                documento = request.POST['e_documento']
                 print(documento)
                 paciente = get_object_or_404(InfoPacientes, documento=documento)
 
