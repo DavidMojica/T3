@@ -13,7 +13,6 @@
     {% endif %}
 
     {% if paciente and step == 1 %}
-    <!-- Agregar aquí el código para mostrar los detalles del paciente si existe -->
     <form action="" method="POST">
         {% csrf_token %}
         <h1>PACIENTE EXISTENTE</h1>
@@ -143,12 +142,9 @@
 
         <button type="submit" name="actualizar_usuario">Continuar</button>
     </form>
-
-    <!-- Otros campos del paciente -->
     {% endif %}
 
     {% if not paciente and step == 1 %}
-    <!-- Agregar aquí el código para mostrar el formulario en blanco para la creación de un nuevo paciente -->
     <form action="" method="POST">
         <h1>PACIENTE NO EXISTE</h1>
 
@@ -310,15 +306,21 @@
 
         <button type="submit" name="crear_usuario">Crear Paciente</button>
     </form>
+    {% endif %}
 
     {% if step == 2 %}
-    <h2>Zorgon</h2>
     <form action="">
-        <h2>Formulario de la cita paso 2</h2>
+        <h2>Asesoría Psicológica</h2>
+        <label for="a_lugar">Lugar de la asesoría</label>
+        <input type="text" name="a_lugar" id="a_lugar">
+
+        
+
+
 
     </form>
     {% endif %}
-    {% endif %}
+
 
     {{step}}
 </main>
