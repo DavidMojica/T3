@@ -21,18 +21,152 @@
     <input type="text" name="e_documento" id="e_documento" disabled readonly value="{{paciente.documento}}">
 
     <h2>Detalles del paciente</h2>
-    <p>Nombre: {{ paciente.nombre }}</p>
-    <p>Apellido: {{ paciente.apellido }}</p>
+    <input type="text" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
 
+    <label for="e_nombre"></label>
     <label for="e_tipo_documento">Tipo de documento:</label>
-    <select name="tipo_documento" id="tipo_documento">
-        <option value="-1">Seleccione...</option>
+    <select name="e_tipo_documento" id="e_tipo_documento">
         {% for tipo_documento in tipos_documento %}
-            <option value="{{ tipo_documento.id }}" {% if tipo_documento.id == paciente.tipo_documento %}selected{% endif %}>
-                {{ tipo_documento.description }}
-            </option>
+        <option value="{{ tipo_documento.id }}" {% if tipo_documento.id==paciente.tipo_documento_id %}selected{% endif
+            %}>
+            {{ tipo_documento.description }}
+        </option>
         {% endfor %}
     </select>
+
+    <label for="e_fecha_nacimiento">Fecha de nacimiento</label>
+    <input type="date" name="fecha_nacimiento" id="fecha_nacimiento"
+        value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
+
+    <label for="e_edad">Edad:</label>
+    <input type="text" name="e_edad" id="e_edad" value="{{paciente.edad}}">
+
+    <label for="e_escolaridad">Escolaridad</label>
+    <select name="escolaridad" id="escolaridad">
+        {% for escolaridad in escolaridades %}
+        <option value="{{escolaridad.id}}" {% if escolaridad.id==paciente.escolaridad_id %}selected{% endif %}>
+            {{escolaridad.description}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="e_hijos">Numero de hijos</label>
+    <input type="number" name="e_hijos" id="e_hijos" value="{{paciente.numero_hijos}}">
+
+    <label for="e_sexo">Sexo</label>
+    <select name="e_sexo" id="e_sexo">
+        {% for sexo in sexos %}
+        <option value="{{sexo.id}}" {% if sexo.id==paciente.sexo_id %}selected{% endif %}>
+            {{sexo.description}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="e_direccion">Dirección</label>
+    <input type="text" name="e_direccion" id="e_direccion" placeholder="Dirección de residencia" value="{{paciente.direccion}}">
+
+    <label for="e_barrio">Barrio</label>
+    <input type="text" name="e_barrio" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
+
+    <label for="e_estado_civil">Estado civil</label>
+    <select name="e_estado_civil" id="e_estado_civil">
+        {% for estado in estados_civil %}
+        <option value="{{estado.id}}" {% if estado.id==paciente.estado_id %}selected{% endif %}>
+            {{estado.description}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="celular">No. Celular</label>
+    <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
+
+    <label for="correo">Correo</label>
+    <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+
+    <label for="lectoescritura">Lectoescritura</label>
+    <select name="lectoescritura" id="lectoescritura">
+        <option value="-1">Seleccione...</option>
+        {% for lec in lectoescrituras %}
+        <option value="{{lec.id}}">{{lec.description}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="lect_nivel">Nivel de lectoescritura</label>
+    <select name="lect_nivel" id="lectoescritura_nivel">
+        <option value="-1">Seleccione...</option>
+        {% for lec_n in lectoescritura_nivel %}
+        <option value="{{lec_n.id}}">{{lec_n.description}}</option>
+        {% endfor %}
+    </select>
+
+    <details class="mult-details">
+        <summary class="mult-summary">Cálculo del paciente</summary>
+        <ul class="mult-ul">
+            {% for calculo in calculos %}
+            <li class="mult-li">
+                <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
+                        value="{{calculo.id}}" />{{calculo.description}}</label>
+            </li>
+            {% endfor %}
+        </ul>
+    </details>
+
+
+    <label for="lectoescritura_nivel">Razonamiento analítico</label>
+    <select name="raz_analitico" id="raz_analitico">
+        <option value="-1">Seleccione...</option>
+        {% for raz in razonamiento_analitico %}
+        <option value="{{raz.id}}">{{raz.description}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="etnia">Etnia</label>
+    <select name="etnia" id="etnia">
+        <option value="-1">Seleccione...</option>
+        {% for etnia in etnias %}
+        <option value="{{etnia.id}}">{{etnia.description}}</option>
+        {% endfor %}
+    </select>
+
+
+    <label for="ocupacion">Ocupación</label>
+    <select name="ocupacion" id="ocupacion">
+        <option value="-1">Seleccione...</option>
+        {% for ocupacion in ocupaciones %}
+        <option value="{{ocupacion.id}}">{{ocupacion.description}}</option>
+        {% endfor %}
+    </select>
+
+
+    <details class="mult-details">
+        <summary class="mult-summary">Población identificada por particularidades</summary>
+        <ul class="mult-ul">
+            {% for pip in pips %}
+            <li class="mult-li">
+                <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
+                        value="{{pip.id}}" />{{pip.description}}</label>
+            </li>
+            {% endfor %}
+        </ul>
+    </details>
+
+    <label for="lectoescritura_nivel">Regimen de seguridad social</label>
+    <select name="rss" id="rss">
+        <option value="-1">Seleccione...</option>
+        {% for rss in rsss %}
+        <option value="{{rss.id}}">{{rss.description}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="sisben">¿Tiene sisbén?</label>
+    <input type="checkbox" name="sisben" id="sisben">
+
+    <label for="eps">Nombre de la EPS</label>
+    <select name="eps" id="eps">
+        <option value="-1">Seleccione...</option>
+        {% for eps in epss %}
+        <option value="{{eps.id}}">{{eps.description}}</option>
+        {% endfor %}
+    </select>
+
+    
 
     <!-- Otros campos del paciente -->
     {% endif %}
@@ -45,7 +179,7 @@
         {% csrf_token %}
         <h2>Registro de un nuevo paciente</h2>
         <label for="documento">Documento:</label>
-        
+
         <input type="text" name="documento_bait" id="documento_bait" value="{{documento}}">
         <input type="hidden" name="documento" id="documento" value="{{documento}}">
 
@@ -55,7 +189,6 @@
             {% for tipo_documento in tipos_documento %}
             <option value="{{tipo_documento.id}}">{{tipo_documento.description}}</option>
             {% endfor %}
-
         </select>
 
 
@@ -166,7 +299,7 @@
             {% endfor %}
         </select>
 
-        
+
         <details class="mult-details">
             <summary class="mult-summary">Población identificada por particularidades</summary>
             <ul class="mult-ul">
