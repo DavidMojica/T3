@@ -458,8 +458,8 @@
         <label for="">Método</label>
         <select name="cs_dm" id="cs_dm">
             <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
+            {% for m in metodos %}
+            <option value="{{m.id}}">{{m.description}}</option>
             {% endfor %}
         </select>
 

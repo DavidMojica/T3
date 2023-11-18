@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -44,6 +44,7 @@ hpcsituaciones = HPCSituacionContacto.objects.all()
 hpcdemandas = HPCTiposDemandas.objects.all()
 hpcrespuestas = HPCTiposRespuestas.objects.all()
 spa = SPA.objects.all()
+snn = SiNoNunca.objects.all()
 
 
 # Create your views here.
@@ -201,7 +202,6 @@ def sm_llamadas(request):
                                              'motivos':motivos,
                                              'conductas':conductas,
                                              'CustomUser': request.user})
-
 
 def get_departamentos(request):
     pais_id = request.GET.get('pais_id')
@@ -481,7 +481,9 @@ def sm_HPC(request):
                 'hpcsituaciones': hpcsituaciones,
                 'hpcdemandas':hpcdemandas,
                 'hpcrespuestas': hpcrespuestas,
-                'spa': spa
+                'spa': spa,
+                'snn': snn
+                
             })           
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"

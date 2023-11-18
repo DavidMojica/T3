@@ -376,6 +376,7 @@ class HPC(models.Model):
     intervenciones_previas = models.TextField(max_length=300, null=True)
     consumo_familiar = models.BooleanField(default=False)
     vinculo = models.TextField(max_length=300, null=True)
+   
     tendencia_suicida = models.ForeignKey(SiNoNunca, on_delete=models.CASCADE, related_name='hpc_tendencia_suicida')
     presencia_planeacion = models.ForeignKey(SiNoNunca, on_delete=models.CASCADE, related_name='hpc_presencia_planeacion')
     disponibilidad_medios = models.ForeignKey(SiNoNunca, on_delete=models.CASCADE, related_name='hpc_disponibilidad_medios')

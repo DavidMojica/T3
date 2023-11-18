@@ -167,7 +167,7 @@
                                     Salud Mental
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="/sm_atencion_urgencias" class="dropdown-item">Atención urgencias</a></li>
+                                    <li><a href="/sm_llamadas" class="dropdown-item">Atención urgencias</a></li>
                                     <li><a href="/sm_HPC" class="dropdown-item">Asesorías psicológicas</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a href="/sm_historial" class="dropdown-item">Historial de asesorías</a></li>
@@ -182,10 +182,9 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a href="/admon" class="dropdown-item">Editar usuarios</a></li>
-                                        <li><a href="/admon" class="dropdown-item">Gráficos</a></li>
                                         <hr class="dropdown-divider">
                                         <li><a href="{% url 'edit_account' user_id=CustomUser.id user_type=CustomUser.tipo_usuario_id %}" class="dropdown-item">Editar cuenta</a></li>
-                                        <li><a href="/admon" class="dropdown-item">Datos personales</a></li>
+                                        <li><a href="{% url 'autodata' user_id=CustomUser.id %}" class="dropdown-item">Datos personales</a></li>
                                         <hr class="dropdown-divider">
                                         <li><a href="/signout" class="dropdown-item">Cerrar Sesión</a></li>
                                     </ul>
