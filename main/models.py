@@ -403,7 +403,7 @@ class HPC(models.Model):
     contacto_interrumpido = models.BooleanField(default=False)
     inicia_otro_programa = models.BooleanField(default=False)
     p_tamizaje = models.TextField(max_length=300, null=True)
-    cond_a_seguir = models.TextField(max_length=300, null=True)
+    cond_a_seguir = models.ForeignKey(ConductasASeguir, null=True, on_delete=models.CASCADE)
     c_o_d = models.TextField(max_length=300, null=True)
     anotaciones_antecedentes_psiquiatricos = models.TextField(max_length=5000, null=True)
     anotaciones_consumoPSA = models.TextField(max_length=5000, null=True)
