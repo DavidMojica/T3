@@ -5,9 +5,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad
+from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -40,6 +40,11 @@ etnias = Etnia.objects.all()
 ocupaciones = Ocupacion.objects.all()
 pips = Pip.objects.all()
 regimenes = RegimenSeguridad.objects.all()
+hpcsituaciones = HPCSituacionContacto.objects.all()
+hpcdemandas = HPCTiposDemandas.objects.all()
+hpcrespuestas = HPCTiposRespuestas.objects.all()
+spa = SPA.objects.all()
+
 
 # Create your views here.
 
@@ -397,8 +402,93 @@ def sm_HPC(request):
                 'documento': documento,
                 'tipos_documento':tipos_documento
             })
+        elif "actualizar_usuario" in request.POST:
+            try:
+                documento = request.POST['e_documento']
+                print(documento)
+                paciente = get_object_or_404(InfoPacientes, documento=documento)
+
+                nombre = request.POST['e_nombre']
+                tipo_documento = request.POST['e_tipo_documento']
+                fecha_nacimiento = request.POST['e_fecha_nacimiento']
+                edad = request.POST['e_edad']
+                escolaridad = request.POST['e_escolaridad']
+                numero_hijos = request.POST['e_hijos']
+                sexo = request.POST['e_sexo']
+                direccion = request.POST['e_direccion']
+                barrio = request.POST['e_barrio']
+                estado_civil = request.POST['e_estado_civil']
+                celular = request.POST['e_celular']
+                correo = request.POST['e_correo']
+                lectoescritura = request.POST['e_lect']
+                lect_nivel = request.POST['e_lect2']
+                raz_analitico = request.POST['e_raz_analitico']
+                etnia = request.POST['e_etnia']
+                ocupacion = request.POST['e_ocupacion']
+                regimen = request.POST['e_rss']
+
+                # Validación simplificada de sisben
+                sisben = request.POST.get('e_sisben') == 'on'
+
+                # Instancias simplificadas usando get_object_or_404
+                tipo_documento_instance = get_object_or_404(TipoDocumento, id=tipo_documento)
+                escolaridad_instance = get_object_or_404(Escolaridad, id=escolaridad)
+                sexo_instance = get_object_or_404(Sexo, id=sexo)
+                estado_civil_instance = get_object_or_404(EstadoCivil, id=estado_civil)
+                lecto1_instance = get_object_or_404(Lecto1, id=lectoescritura)
+                lecto2_instance = get_object_or_404(Lecto2, id=lect_nivel)
+                razonamiento_instance = get_object_or_404(Razonamiento, id=raz_analitico)
+                etnia_instance = get_object_or_404(Etnia, id=etnia)
+                ocupacion_instance = get_object_or_404(Ocupacion, id=ocupacion)
+                regimen_seguridad_instance = get_object_or_404(RegimenSeguridad, id=regimen)
+                eps_instance = get_object_or_404(EPS, id=request.POST['eps'])
+
+                # Iniciar una transacción
+                with transaction.atomic():
+                    paciente.nombre = nombre
+                    paciente.tipo_documento = tipo_documento_instance
+                    paciente.fecha_nacimiento = fecha_nacimiento
+                    paciente.edad = int(edad)
+                    paciente.escolaridad = escolaridad_instance
+                    paciente.numero_hijos = numero_hijos
+                    paciente.sexo = sexo_instance
+                    paciente.direccion = direccion
+                    paciente.barrio = barrio
+                    paciente.estado_civil = estado_civil_instance
+                    paciente.celular = celular
+                    paciente.correo = correo
+                    paciente.lectoescritura_indicador = lecto1_instance
+                    paciente.lectoescritura_nivel = lecto2_instance
+                    paciente.razonamiento_analitico = razonamiento_instance
+                    paciente.etnia = etnia_instance
+                    paciente.ocupacion = ocupacion_instance
+                    paciente.regimen_seguridad = regimen_seguridad_instance
+                    paciente.sisben = sisben
+                    paciente.eps = eps_instance
+
+                    paciente.save()
+
+            except (TipoDocumento.DoesNotExist, Escolaridad.DoesNotExist, Sexo.DoesNotExist, EstadoCivil.DoesNotExist, Lecto1.DoesNotExist, Lecto2.DoesNotExist, Razonamiento.DoesNotExist, Etnia.DoesNotExist, Ocupacion.DoesNotExist, RegimenSeguridad.DoesNotExist, EPS.DoesNotExist):
+                # Manejar excepciones específicas según sea necesario
+                # Puedes agregar un manejo de errores más específico aquí
+                pass
+
+            # Redirigir a una página de detalles del paciente u otra vista después de la actualización
+            return render(request, 'sm_HPC.html',{
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'step': 2,
+                'hpcsituaciones': hpcsituaciones,
+                'hpcdemandas':hpcdemandas,
+                'hpcrespuestas': hpcrespuestas,
+                'spa': spa
+            })           
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
+            documento = request.POST.get('documento_bait', None)
+            if not documento:
+                documento = request.POST.get('documento', None)
+            documento = request.POST['documento']
             tipo_documento = request.POST['tipo_documento']
             sexo = request.POST['sexo']
             edad = request.POST['edad']
@@ -411,7 +501,7 @@ def sm_HPC(request):
             barrio = request.POST['barrio']
             estado_civil= request.POST['estado_civil']
             correo = request.POST['correo']
-            lectoescritura_nivel = request.POST['lectoescritura_nivel']
+            lectoescritura = request.POST['lectoescritura']
             raz_analitico = request.POST['raz_analitico']
             lect_nivel = request.POST['lect_nivel']
             ocupacion = request.POST['ocupacion']
@@ -422,15 +512,26 @@ def sm_HPC(request):
                 sisben = False
             eps = request.POST['eps']
             etnia = request.POST['etnia']
+            
                 
             #INSTANCIAS
+            # try:
+            #     paciente = InfoPacientes.objects.get(documento=documento)
+            # except InfoPacientes.DoesNotExist:
+            #     paciente = None
+            
             try:
-                escolaridad_instance  = escolaridad.objects.get(id=escolaridad)
+                tipo_documento_instance = TipoDocumento.objects.get(id=tipo_documento)
+            except TipoDocumento.DoesNotExist:
+                tipo_documento_instance = None
+            
+            try:
+                escolaridad_instance  = Escolaridad.objects.get(id=escolaridad)
             except Escolaridad.DoesNotExist:
                 escolaridad_instance = None
                 
             try:
-                sexo_instance = escolaridad_instance.objects.get(id=sexo)
+                sexo_instance = Sexo.objects.get(id=sexo)
             except Sexo.DoesNotExist:
                 sexo_instance = None
                 
@@ -440,16 +541,16 @@ def sm_HPC(request):
                 estado_civil_instance = None
                 
             try:
-                lecto1_instance = Lecto1.objects.get(id=lectoescritura1)
+                lecto1_instance = Lecto1.objects.get(id=lectoescritura)
             except Lecto1.DoesNotExist:
                 lecto1_instance = None
             try:
-                lecto2_instance = Lecto2.objects.get(id=lectoescritura2)
+                lecto2_instance = Lecto2.objects.get(id=lect_nivel)
             except Lecto2.DoesNotExist:
                 lecto2_instance = None
                 
             try:
-                razonamiento_instance = Razonamiento.objects.get(id=lectoescritura1)
+                razonamiento_instance = Razonamiento.objects.get(id=raz_analitico)
             except Razonamiento.DoesNotExist:
                 razonamiento_instance = None
                 
@@ -476,7 +577,7 @@ def sm_HPC(request):
             nuevo_usuario = InfoPacientes(
                 nombre = nombre,
                 documento = documento,
-                tipo_documento = tipo_documento,
+                tipo_documento = tipo_documento_instance,
                 fecha_nacimiento = fecha_nacimiento,
                 edad = edad,
                 escolaridad = escolaridad_instance,
@@ -507,7 +608,7 @@ def sm_HPC(request):
                         calculo_instance = None
                         
                     calc = PacienteCalculo(
-                        documento_usuario = documento,
+                        documento_usuario = nuevo_usuario,
                         id_calculo = calculo_instance
                     )
                     calc.save()
@@ -521,12 +622,16 @@ def sm_HPC(request):
                         pip_instance = None
                         
                     pp = PacientePip(
-                        documento_usuario = documento,
+                        documento_usuario = nuevo_usuario,
                         id_pip = pip_instance
                     )
                     pp.save()
-                
-        
+                    
+            return render(request, 'sm_HPC.html',{
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'step': 2
+            })
     else:
         return render(request, 'sm_HPC.html',{
         'CustomUser': request.user,
