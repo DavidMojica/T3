@@ -351,8 +351,6 @@
             </ul>
         </details>
 
-
-
         <h4>Antecedentes psiquiatricos</h4>
 
         <label for="">Diagnóstico de transtorno mental</label>
@@ -384,7 +382,30 @@
         <label for="">Es o ha sido consumidor</label>
         <input type="checkbox" name="sp_eoa" id="sp_eoa">
 
-        
+        <label for="">Edad de inicio</label>
+        <input type="number" name="sp_edad" id="sp_edad">
+
+        <label for="">Sustancia de inicio</label>
+        <select name="sp_susi" id="sp_susi">
+            <option value="-1">Seleccione...</option>
+            {% for s in spa %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <details class="mult-details">
+            <summary class="mult-summary">Situación que origina el contacto</summary>
+            <ul class="mult-ul">
+                {% for r in spa %}
+                <li class="mult-li">
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
+                            value="{{r.id}}" />{{r.description}}</label>
+                </li>
+                {% endfor %}
+            </ul>
+        </details>
+
+
     
     </form>
     {% endif %}

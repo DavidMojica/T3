@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas
+from .models import CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -43,6 +43,7 @@ regimenes = RegimenSeguridad.objects.all()
 hpcsituaciones = HPCSituacionContacto.objects.all()
 hpcdemandas = HPCTiposDemandas.objects.all()
 hpcrespuestas = HPCTiposRespuestas.objects.all()
+spa = SPA.objects.all()
 
 
 # Create your views here.
@@ -479,7 +480,8 @@ def sm_HPC(request):
                 'step': 2,
                 'hpcsituaciones': hpcsituaciones,
                 'hpcdemandas':hpcdemandas,
-                'hpcrespuestas': hpcrespuestas
+                'hpcrespuestas': hpcrespuestas,
+                'spa': spa
             })           
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
