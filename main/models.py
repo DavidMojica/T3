@@ -390,6 +390,8 @@ class HPC(models.Model):
     estatus_persona = models.ForeignKey(EstatusPersona, on_delete=models.DO_NOTHING, null=True)
     acontecimientos_estresantes = models.TextField(max_length=300, null=True)
     historial_familiar = models.BooleanField(default=False)
+    factores_protectores = models.TextField(max_length=300, null=True)
+    
     red_apoyo = models.TextField(max_length=300, null=True)
     victima = models.BooleanField(default=False)
     agresor = models.BooleanField(default=False)
