@@ -391,11 +391,13 @@ class HPC(models.Model):
     acontecimientos_estresantes = models.TextField(max_length=300, null=True)
     historial_familiar = models.BooleanField(default=False)
     factores_protectores = models.TextField(max_length=300, null=True)
-    
     red_apoyo = models.TextField(max_length=300, null=True)
+    
     victima = models.BooleanField(default=False)
-    agresor = models.BooleanField(default=False)
+    tipo_violencia = models.TextField(max_length=300, null=True)
+    agresor = models.TextField(max_length=300, null=True)
     inst_reporte_legal = models.TextField(max_length=300, null=True)
+    
     asistencia_cita = models.BooleanField(default=False)
     contacto = models.BooleanField(default=False)
     contacto_interrumpido = models.BooleanField(default=False)
