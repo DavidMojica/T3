@@ -309,6 +309,7 @@
     {% endif %}
 
     {% if step == 2 %}
+    <!-- STEP 2----------------------------- -->
     <form action="">
         <h2>Asesoría Psicológica</h2>
         <label for="a_lugar">Lugar de la asesoría</label>
@@ -546,9 +547,19 @@
         <label for="">Canalización o derivación (en blanco para ninguna)</label>
         <textarea name="cs_cd" id="cs_cd" cols="30" rows="10"></textarea>
 
+        <label for="">Anotaciones libres del profesional</label>
+        <textarea name="re_notas" id="re_notas" cols="30" rows="10"></textarea>
+
+        <label for="">Seguimiento del caso</label>
+
+        <label for="">Seguimiento #1</label>
+        <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
         
-
-
+        <label for="">Seguimiento #2</label>
+        <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
+        
+        
+        <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
     </form>
     {% endif %}
 
