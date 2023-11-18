@@ -413,8 +413,87 @@
         <label for="">Consumo núcleo familiar</label>
         <input type="checkbox" name="sp_cf" id="sp_cf">
 
-        
+        <label for="">Vínculo</label>
+        <textarea name="sp_vi" id="sp_vi" cols="30" rows="10"></textarea>
 
+        <label for="">Notas de atención</label>
+        <textarea name="sp_notas" id="sp_notas" cols="30" rows="10"></textarea>
+   
+        <h2>Comportamiento Suicida</h2>
+   
+        <label for="">Presencia de ideación suicida. Magnitud y persistencia</label>
+        <select name="cs_pi" id="cs_pi">
+            <option value="-1">Seleccione...</option>
+            {% for s in snn %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Presencia de planeación</label>
+        <select name="cs_pp" id="cs_pp">
+            <option value="-1">Seleccione...</option>
+            {% for s in snn %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Disponibilidad de medios</label>
+        <select name="cs_dm" id="cs_dm">
+            <option value="-1">Seleccione...</option>
+            {% for s in snn %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Intentos previos</label>
+        <input type="number" name="cs_ip" id="cs_ip">
+   
+        <label for="">Fecha último intento</label>
+        <input type="date" name="cs_fu" id="cs_fu">
+
+        <label for="">Manejo hospitalario</label>
+        <input type="checkbox" name="cs_mh" id="cs_mh">
+   
+        <label for="">Método</label>
+        <select name="cs_dm" id="cs_dm">
+            <option value="-1">Seleccione...</option>
+            {% for s in snn %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Letalidad</label>
+        <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>
+
+        <label for="">Signos y síntomas psiquiatricos</label>
+        <textarea name="cs_ss" id="cs_ss" cols="30" rows="10"></textarea>
+   
+        <label for="">Está bajo tratamiento psiquiátrico</label>
+        <select name="cs_eb" id="cs_eb">
+            <option value="-1">Seleccione...</option>
+            {% for s in snn %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Vive solo/Divorciado/Desempleado</label>
+        <select name="cs_ep" id="cs_ep">
+            <option value="-1">Seleccione...</option>
+            {% for s in ep %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="">Acontecimientos estresantes</label>
+        <textarea name="cs_ae" id="cs_ae" cols="30" rows="10"></textarea>
+   
+   
+   
+   
+   
+   
+   
+   
     </form>
     {% endif %}
 

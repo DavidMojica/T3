@@ -388,6 +388,7 @@ class HPC(models.Model):
     signos = models.TextField(max_length=300, null=True)
     tratamiento_psiquiatrico = models.ForeignKey(SiNoNunca,null=True, on_delete=models.CASCADE, related_name='hpc_tratamiento_psiquiatrico')
     estatus_persona = models.ForeignKey(EstatusPersona, on_delete=models.DO_NOTHING, null=True)
+    acontecimientos_estresantes = models.TextField(max_length=300, null=True)
     historial_familiar = models.BooleanField(default=False)
     red_apoyo = models.TextField(max_length=300, null=True)
     victima = models.BooleanField(default=False)
