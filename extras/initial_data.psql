@@ -119,6 +119,11 @@ insert into main_pip(description) values('Persona desplazada');
 insert into main_pip(description) values('Persona reinsertada');
 insert into main_pip(description) values('Ninguna de las anteriores');
 insert into main_pip(description) values('Otra');
+
+insert into main_sinonunca(description) values('Nunca');
+insert into main_sinonunca(description) values('Sí');
+insert into main_sinonunca(description) values('No');
+
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento
 -- ALTER SEQUENCE main_tipodocumento_id_seq RESTART WITH 1;
