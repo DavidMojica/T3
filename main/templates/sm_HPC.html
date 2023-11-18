@@ -393,20 +393,28 @@
             {% endfor %}
         </select>
 
-        <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
-            <ul class="mult-ul">
-                {% for r in spa %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
-                            value="{{r.id}}" />{{r.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+        <label for="">Periodo último consumo</label>
+        <input type="date" name="sp_ulco" id="sp_ulco">
 
+        <label for="">Sustancia de impacto</label>
+        <select name="sp_susim" id="sp_susim">
+            <option value="-1">Seleccione...</option>
+            {% for s in spa %}
+            <option value="{{s.id}}">{{s.description}}</option>
+            {% endfor %}
+        </select>
 
-    
+        <label for="">Conductas sexuales de riesgo</label>
+        <textarea name="sp_csr" id="sp_csr" cols="30" rows="10"></textarea>
+
+        <label for="">Intervenciones previas</label>
+        <textarea name="sp_ip" id="sp_ip" cols="30" rows="10"></textarea>
+
+        <label for="">Consumo núcleo familiar</label>
+        <input type="checkbox" name="sp_cf" id="sp_cf">
+
+        
+
     </form>
     {% endif %}
 
