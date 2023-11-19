@@ -111,7 +111,6 @@ insert into main_ocupacion(description) values('Rentista');
 insert into main_ocupacion(description) values('Pensionado');
 insert into main_ocupacion(description) values('No aplica');
 
-
 insert into main_pip(description) values('Persona con discapacidad');
 insert into main_pip(description) values('Madres cabeza de familia');
 insert into main_pip(description) values('Persona LGTBIQ+');
