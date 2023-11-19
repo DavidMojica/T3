@@ -1,6 +1,10 @@
 #main_home{
     height: 71.4vh;
 }
+
+.s_index{
+    z-index: 10000;
+}
 .navbar{
     z-index: 1000;
 }
