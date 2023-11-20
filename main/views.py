@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca,RHPCConductasASeguir, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -485,7 +485,7 @@ def sm_HPC(request):
                 'snn': snn
                 
             })           
-        elif "crear_usuario" in request.POST:
+        elif "crear_usuario" in request.POST:      
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
             if not documento:
@@ -634,6 +634,120 @@ def sm_HPC(request):
                 'year': datetime.now(),
                 'step': 2
             })
+        elif "detalles_asesoria" in request.POST:
+            a_lugar = request.POST['a_lugar']
+            ap_trans = request.POST['ap_trans']
+            ap_cate = request.POST['ap_cate']
+            ap_trat = request.POST['ap_trat']
+            ap_med = request.POST['ap_med']
+            ap_adh = request.POST['ap_adh']
+            ap_barr = request.POST['ap_barr']
+            ap_notas = request.POST['ap_notas'] 
+            sp_eoa = request.POST['sp_eoa']
+            sp_edad = request.POST['sp_edad']
+            sp_susi = request.POST['sp_susi'] #i
+            sp_ulco = request.POST['sp_ulco']
+            sp_susim = request.POST['sp_susim'] #i
+            sp_csr = request.POST['sp_csr']
+            sp_ip = request.POST['sp_ip']
+            sp_cf = request.POST['sp_cf']
+            sp_vi = request.POST['sp_vi']
+            sp_notas = request.POST['sp_notas']
+            cs_pi = request.POST['cs_pi'] #i snn
+            cs_pp = request.POST['cs_pp'] #i snn
+            cs_dm = request.POST['cs_dm'] #i snn
+            cs_ip = request.POST['cs_ip']
+            cs_fu = request.POST['cs_fu']
+            cs_mh = request.POST['cs_mh']
+            cs_dm = request.POST['cs_dm'] #i metodos
+            cs_let = request.POST['cs_let']
+            cs_ss = request.POST['cs_ss']
+            cs_eb = request.POST['cs_eb'] #i
+            cs_ep = request.POST['cs_ep'] #i
+            cs_ae = request.POST['cs_ae']   
+            cs_hf = request.POST['cs_hf']
+            cs_fp = request.POST['cs_fp']
+            cs_ra = request.POST['cs_ra']         
+            cs_notas = request.POST['cs_notas']
+            av_vict = request.POST['av_vict']
+            av_tv = request.POST['av_tv']
+            av_agre = request.POST['av_agre']
+            av_ir = request.POST['av_ir']
+            av_notas = request.POST['av_notas']
+            re_ac = request.POST['re_ac']
+            re_sc = request.POST['re_sc']
+            re_ic = request.POST['re_ic']
+            re_pt = request.POST['re_pt']
+            re_cd = request.POST['re_cd']
+            re_notas = request.POST['re_notas']
+            seg_1 = request.POST['seg_1']
+            seg_2 = request.POST['seg_2']
+            
+            ##Hacer el save y después generar el id
+            id_asesoria = asesoria.id
+            
+            try:
+                as_instance = HPC.objects.get(id=id_asesoria)
+            except HPC.DoesNotExist:
+                as_instance = None
+            
+            
+            for sit in hpcsituaciones:
+                checkbox_name = f'sit_{sit.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        sitInstance = HPCSituacionContacto.objects.get(id=sit.id)
+                    except HPCSituacionContacto.DoesNotExist:
+                        sitInstance = None
+
+                    situacion_contacto = RHPCSituacionContacto(
+                        id_asesoria = as_instance,
+                        id_situacion = sitInstance
+                    )
+                    situacion_contacto.save()
+                    
+            for dem in hpcdemandas:
+                checkbox_name = f'dem_{dem.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        demInstance = HPCTiposDemandas.objects.get(id=dem.id)
+                    except HPCTiposDemandas.DoesNotExist:
+                        demInstance = None
+                    demi = RHPCTiposDemandas(
+                        id_asesoria = as_instance,
+                        id_tipo_demanda = demInstance
+                    )    
+                    demi.save()
+                    
+            for tpr in hpcrespuestas:
+                checkbox_name = f'r_{tpr.id}'
+                if checkbox_name in request.post:
+                    try:
+                        resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
+                    except HPCTiposRespuestas.DoesNotExist:
+                        resInstance = None
+                    resTp = RHPCTiposRespuestas(
+                        id_asesoria = as_instance,
+                        id_respuesta = resInstance
+                    )
+                    resTp.save()
+
+
+            for cs in conductas:
+                checkbox_name = f'cs_{cs.id}'
+                if checkbox_name in request.post:
+                    try:
+                        conInstance = ConductasASeguir.objects.get(id=cs.id)
+                    except ConductasASeguir.DoesNotExist:
+                        conInstance = None
+                    cond_s = RHPCConductasASeguir(
+                        id_asesoria = as_instance,
+                        id_conducta = conInstance
+                    ) 
+                    cond_s.save()
+                        
+                     
+                           
     else:
         return render(request, 'sm_HPC.html',{
         'CustomUser': request.user,

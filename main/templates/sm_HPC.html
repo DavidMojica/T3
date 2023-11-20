@@ -315,33 +315,35 @@
         <label for="a_lugar">Lugar de la asesoría</label>
         <input type="text" name="a_lugar" id="a_lugar">
 
-        
+        <!-- Multi -->
         <details class="mult-details">
             <summary class="mult-summary">Situación que origina el contacto</summary>
             <ul class="mult-ul">
                 {% for s in hpcsituaciones %}
                 <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="s_{{s.id}}"
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
                             value="{{s.id}}" />{{s.description}}</label>
                 </li>
                 {% endfor %}
             </ul>
         </details>
 
+        <!-- Multi -->
         <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
+            <summary class="mult-summary">Tipos de demandas</summary>
             <ul class="mult-ul">
                 {% for d in hpcdemandas %}
                 <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="d_{{s.id}}"
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
                             value="{{d.id}}" />{{d.description}}</label>
                 </li>
                 {% endfor %}
             </ul>
         </details>
 
+        <!-- Multi -->
         <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
+            <summary class="mult-summary">Tipos de respuestas</summary>
             <ul class="mult-ul">
                 {% for r in hpcrespuestas %}
                 <li class="mult-li">
@@ -353,7 +355,6 @@
         </details>
 
         <h4>Antecedentes psiquiatricos</h4>
-
         <label for="">Diagnóstico de transtorno mental</label>
         <textarea name="ap_trans" id="ap_trans" cols="30" rows="10"></textarea>
 
@@ -545,7 +546,7 @@
         </details>
 
         <label for="">Canalización o derivación (en blanco para ninguna)</label>
-        <textarea name="cs_cd" id="cs_cd" cols="30" rows="10"></textarea>
+        <textarea name="re_cd" id="re_cd" cols="30" rows="10"></textarea>
 
         <label for="">Anotaciones libres del profesional</label>
         <textarea name="re_notas" id="re_notas" cols="30" rows="10"></textarea>

@@ -404,7 +404,6 @@ class HPC(models.Model):
     contacto_interrumpido = models.BooleanField(default=False)
     inicia_otro_programa = models.BooleanField(default=False)
     p_tamizaje = models.TextField(max_length=300, null=True)
-    cond_a_seguir = models.ForeignKey(ConductasASeguir, null=True, on_delete=models.CASCADE)
     c_o_d = models.TextField(max_length=300, null=True)
     anotaciones_antecedentes_psiquiatricos = models.TextField(max_length=5000, null=True)
     anotaciones_consumoPSA = models.TextField(max_length=5000, null=True)
@@ -414,18 +413,22 @@ class HPC(models.Model):
     
 #Rompimientos
 class RHPCSituacionContacto(models.Model):
-    id_asesoria = models.ForeignKey(HPC, on_delete=models.DO_NOTHING)
-    id_situacion = models.ForeignKey(HPCSituacionContacto, on_delete=models.DO_NOTHING)
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.CASCADE)
+    id_situacion = models.ForeignKey(HPCSituacionContacto, on_delete=models.CASCADE)
     
 class RHPCTiposDemandas(models.Model):
-    id_asesoria = models.ForeignKey(HPC, on_delete=models.DO_NOTHING)
-    id_tipo_demanda = models.ForeignKey(HPCTiposDemandas, on_delete=models.DO_NOTHING)
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.CASCADE)
+    id_tipo_demanda = models.ForeignKey(HPCTiposDemandas, on_delete=models.CASCADE)
     
 class RHPCTiposRespuestas(models.Model):
-    id_asesoria = models.ForeignKey(HPC, on_delete=models.DO_NOTHING)
-    id_respuesta = models.ForeignKey(HPCTiposRespuestas, on_delete=models.DO_NOTHING)
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.CASCADE)
+    id_respuesta = models.ForeignKey(HPCTiposRespuestas, on_delete=models.CASCADE)
     
 class SPAActuales(models.Model):
-    id_paciente = models.ForeignKey(InfoPacientes, on_delete=models.DO_NOTHING)
-    id_sustancia = models.ForeignKey(SPA, on_delete=models.DO_NOTHING)
+    id_paciente = models.ForeignKey(InfoPacientes, on_delete=models.CASCADE)
+    id_sustancia = models.ForeignKey(SPA, on_delete=models.CASCADE)
+
+class RHPCConductasASeguir(models.Model):
+    id_asesoria = models.ForeignKey(InfoPacientes, on_delete=models.CASCADE)
+    id_conducta = models.ForeignKey(ConductasASeguir, on_delete=models.CASCADE)
     
