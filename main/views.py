@@ -485,7 +485,7 @@ def sm_HPC(request):
                 'snn': snn
                 
             })           
-        elif "crear_usuario" in request.POST:
+        elif "crear_usuario" in request.POST:      
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
             if not documento:
@@ -634,6 +634,41 @@ def sm_HPC(request):
                 'year': datetime.now(),
                 'step': 2
             })
+        elif "detalles_asesoria" in request.POST:
+            lugar = request.POST['a_lugar']
+            transtorno = request.POST['ap_trans']
+            categoria_trans = request.POST['ap_cate']
+            tratamiento = request.POST['ap_trat']
+            medicamentos = request.POST['ap_med']
+            adherencia = request.POST['ap_adh']
+            barreras = request.POST['ap_barr']
+            notas_ap = request.POST['ap_notas'] 
+            eoha = request.POST['sp_eoa']
+            edad_inicio = request.POST['sp_edad']
+            spa_inicio = request.POST['sp_susi'] #i
+            periodo_uc = request.POST['sp_ulco']
+            spa_impacto = request.POST['sp_susim'] #i
+            cond_s_riesgo = request.POST['sp_csr']
+            int_previas = request.POST['sp_ip']
+            cons_familiar = request.POST['sp_cf']
+            vinculo = request.POST['sp_vi']
+            notas_sp = request.POST['sp_notas']
+            presencia = request.POST['cs_pi'] #i snn
+            p_planeacion = request.POST['cs_pp'] #i snn
+            disp_medios = request.POST['cs_dm'] #i snn
+            int_previos = request.POST['cs_ip']
+            fech_ulin = request.POST['cs_fu']
+            man_hosp = request.POST['cs_mh']
+            metodo = request.POST['cs_dm'] #i metodos
+            letalidad = request.POST['cs_let']
+            sig_sint = request.POST['cs_ss']
+                        
+            
+            
+            
+            
+            
+    
     else:
         return render(request, 'sm_HPC.html',{
         'CustomUser': request.user,
