@@ -635,36 +635,53 @@ def sm_HPC(request):
                 'step': 2
             })
         elif "detalles_asesoria" in request.POST:
-            lugar = request.POST['a_lugar']
-            transtorno = request.POST['ap_trans']
-            categoria_trans = request.POST['ap_cate']
-            tratamiento = request.POST['ap_trat']
-            medicamentos = request.POST['ap_med']
-            adherencia = request.POST['ap_adh']
-            barreras = request.POST['ap_barr']
-            notas_ap = request.POST['ap_notas'] 
-            eoha = request.POST['sp_eoa']
-            edad_inicio = request.POST['sp_edad']
-            spa_inicio = request.POST['sp_susi'] #i
-            periodo_uc = request.POST['sp_ulco']
-            spa_impacto = request.POST['sp_susim'] #i
-            cond_s_riesgo = request.POST['sp_csr']
-            int_previas = request.POST['sp_ip']
-            cons_familiar = request.POST['sp_cf']
-            vinculo = request.POST['sp_vi']
-            notas_sp = request.POST['sp_notas']
-            presencia = request.POST['cs_pi'] #i snn
-            p_planeacion = request.POST['cs_pp'] #i snn
-            disp_medios = request.POST['cs_dm'] #i snn
-            int_previos = request.POST['cs_ip']
-            fech_ulin = request.POST['cs_fu']
-            man_hosp = request.POST['cs_mh']
-            metodo = request.POST['cs_dm'] #i metodos
-            letalidad = request.POST['cs_let']
-            sig_sint = request.POST['cs_ss']
-                        
-            
-            
+            a_lugar = request.POST['a_lugar']
+            ap_trans = request.POST['ap_trans']
+            ap_cate = request.POST['ap_cate']
+            ap_trat = request.POST['ap_trat']
+            ap_med = request.POST['ap_med']
+            ap_adh = request.POST['ap_adh']
+            ap_barr = request.POST['ap_barr']
+            ap_notas = request.POST['ap_notas'] 
+            sp_eoa = request.POST['sp_eoa']
+            sp_edad = request.POST['sp_edad']
+            sp_susi = request.POST['sp_susi'] #i
+            sp_ulco = request.POST['sp_ulco']
+            sp_susim = request.POST['sp_susim'] #i
+            sp_csr = request.POST['sp_csr']
+            sp_ip = request.POST['sp_ip']
+            sp_cf = request.POST['sp_cf']
+            sp_vi = request.POST['sp_vi']
+            sp_notas = request.POST['sp_notas']
+            cs_pi = request.POST['cs_pi'] #i snn
+            cs_pp = request.POST['cs_pp'] #i snn
+            cs_dm = request.POST['cs_dm'] #i snn
+            cs_ip = request.POST['cs_ip']
+            cs_fu = request.POST['cs_fu']
+            cs_mh = request.POST['cs_mh']
+            cs_dm = request.POST['cs_dm'] #i metodos
+            cs_let = request.POST['cs_let']
+            cs_ss = request.POST['cs_ss']
+            cs_eb = request.POST['cs_eb'] #i
+            cs_ep = request.POST['cs_ep'] #i
+            cs_ae = request.POST['cs_ae']   
+            cs_hf = request.POST['cs_hf']
+            cs_fp = request.POST['cs_fp']
+            cs_ra = request.POST['cs_ra']         
+            cs_notas = request.POST['cs_notas']
+            av_vict = request.POST['av_vict']
+            av_tv = request.POST['av_tv']
+            av_agre = request.POST['av_agre']
+            av_ir = request.POST['av_ir']
+            av_notas = request.POST['av_notas']
+            re_ac = request.POST['re_ac']
+            re_sc = request.POST['re_sc']
+            re_ic = request.POST['re_ic']
+            re_pt = request.POST['re_pt']
+            re_cd = request.POST['re_cd']
+            re_notas = request.POST['re_notas']
+            seg_1 = request.POST['seg_1']
+            seg_2 = request.POST['seg_2']
             
             
             
