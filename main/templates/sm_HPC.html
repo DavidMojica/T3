@@ -321,7 +321,7 @@
             <ul class="mult-ul">
                 {% for s in hpcsituaciones %}
                 <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="s_{{s.id}}"
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
                             value="{{s.id}}" />{{s.description}}</label>
                 </li>
                 {% endfor %}
@@ -330,11 +330,11 @@
 
         <!-- Multi -->
         <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
+            <summary class="mult-summary">Tipos de demandas</summary>
             <ul class="mult-ul">
                 {% for d in hpcdemandas %}
                 <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="d_{{s.id}}"
+                    <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
                             value="{{d.id}}" />{{d.description}}</label>
                 </li>
                 {% endfor %}
@@ -343,7 +343,7 @@
 
         <!-- Multi -->
         <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
+            <summary class="mult-summary">Tipos de respuestas</summary>
             <ul class="mult-ul">
                 {% for r in hpcrespuestas %}
                 <li class="mult-li">

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca,RHPCConductasASeguir, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -683,9 +683,71 @@ def sm_HPC(request):
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
             
+            ##Hacer el save y después generar el id
+            id_asesoria = asesoria.id
+            
+            try:
+                as_instance = HPC.objects.get(id=id_asesoria)
+            except HPC.DoesNotExist:
+                as_instance = None
             
             
-    
+            for sit in hpcsituaciones:
+                checkbox_name = f'sit_{sit.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        sitInstance = HPCSituacionContacto.objects.get(id=sit.id)
+                    except HPCSituacionContacto.DoesNotExist:
+                        sitInstance = None
+
+                    situacion_contacto = RHPCSituacionContacto(
+                        id_asesoria = as_instance,
+                        id_situacion = sitInstance
+                    )
+                    situacion_contacto.save()
+                    
+            for dem in hpcdemandas:
+                checkbox_name = f'dem_{dem.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        demInstance = HPCTiposDemandas.objects.get(id=dem.id)
+                    except HPCTiposDemandas.DoesNotExist:
+                        demInstance = None
+                    demi = RHPCTiposDemandas(
+                        id_asesoria = as_instance,
+                        id_tipo_demanda = demInstance
+                    )    
+                    demi.save()
+                    
+            for tpr in hpcrespuestas:
+                checkbox_name = f'r_{tpr.id}'
+                if checkbox_name in request.post:
+                    try:
+                        resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
+                    except HPCTiposRespuestas.DoesNotExist:
+                        resInstance = None
+                    resTp = RHPCTiposRespuestas(
+                        id_asesoria = as_instance,
+                        id_respuesta = resInstance
+                    )
+                    resTp.save()
+
+
+            for cs in conductas:
+                checkbox_name = f'cs_{cs.id}'
+                if checkbox_name in request.post:
+                    try:
+                        conInstance = ConductasASeguir.objects.get(id=cs.id)
+                    except ConductasASeguir.DoesNotExist:
+                        conInstance = None
+                    cond_s = RHPCConductasASeguir(
+                        id_asesoria = as_instance,
+                        id_conducta = conInstance
+                    ) 
+                    cond_s.save()
+                        
+                     
+                           
     else:
         return render(request, 'sm_HPC.html',{
         'CustomUser': request.user,
