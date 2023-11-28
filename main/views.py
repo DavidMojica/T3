@@ -375,6 +375,7 @@ def edit_account(request, user_id, user_type):
 @login_required
 def sm_HPC(request):
     documento = ""
+    fecha_nacimiento = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             documento = request.POST['documento']
@@ -482,8 +483,8 @@ def sm_HPC(request):
                 'hpcdemandas':hpcdemandas,
                 'hpcrespuestas': hpcrespuestas,
                 'spa': spa,
-                'snn': snn
-                
+                'snn': snn,
+                'fecha_nacimiento': fecha_nacimiento
             })           
         elif "crear_usuario" in request.POST:      
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
@@ -632,9 +633,12 @@ def sm_HPC(request):
             return render(request, 'sm_HPC.html',{
                 'CustomUser': request.user,
                 'year': datetime.now(),
-                'step': 2
+                'step': 2,
+                'fecha_nacimiento': fecha_nacimiento
             })
         elif "detalles_asesoria" in request.POST:
+            documento = request.POST['documento']
+            id_profesional = request.POST['id_prof']
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
@@ -682,6 +686,15 @@ def sm_HPC(request):
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
+            
+            print(fecha_nacimiento)
+            asesoria = HPC(
+                cedula_usuario = documento,
+                id_profesional = id_profesional,
+                fecha_asesoria = datetime.now().date(),
+                lugar = a_lugar,
+                edad_usuario_actual = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+            )
             
             ##Hacer el save y después generar el id
             id_asesoria = asesoria.id
