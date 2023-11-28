@@ -409,6 +409,8 @@ class HPC(models.Model):
     anotaciones_comportamiento_suic = models.TextField(max_length=5000, null=True)
     anotaciones_antecedentes_violencia = models.TextField(max_length=5000, null=True)
     anotaciones_libres_profesional = models.TextField(max_length=5000, null=True)
+    seguimiento1 = models.TextField(max_length=5000, null=True)
+    seguimiento2 = models.TextField(max_length=5000, null=True)
     
 #Rompimientos
 class RHPCSituacionContacto(models.Model):

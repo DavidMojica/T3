@@ -656,7 +656,7 @@ def sm_HPC(request):
             ap_adh = request.POST['ap_adh']
             ap_barr = request.POST['ap_barr']
             ap_notas = request.POST['ap_notas'] 
-            sp_eoa = request.POST['sp_eoa']
+            # sp_eoa = request.POST['sp_eoa']
             sp_edad = request.POST['sp_edad']
             sp_susi = request.POST['sp_susi'] #i
             sp_ulco = request.POST['sp_ulco']
@@ -664,7 +664,7 @@ def sm_HPC(request):
             
             sp_csr = request.POST['sp_csr']
             sp_ip = request.POST['sp_ip']
-            sp_cf = request.POST['sp_cf']
+            # sp_cf = request.POST['sp_cf']
             sp_vi = request.POST['sp_vi']
             sp_notas = request.POST['sp_notas']
             
@@ -673,7 +673,7 @@ def sm_HPC(request):
             cs_dm = request.POST['cs_dm'] #i snn
             cs_ip = request.POST['cs_ip']
             cs_fu = request.POST['cs_fu']
-            cs_mh = request.POST['cs_mh']
+            # cs_mh = request.POST['cs_mh']
             cs_metodo = request.POST['cs_metodo'] 
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
@@ -685,7 +685,7 @@ def sm_HPC(request):
             cs_ra = request.POST['cs_ra']         
             cs_notas = request.POST['cs_notas']
             
-            av_vict = request.POST['av_vict']
+            # av_vict = request.POST['av_vict']
             av_tv = request.POST['av_tv']
             av_agre = request.POST['av_agre']
             av_ir = request.POST['av_ir']
@@ -741,6 +741,16 @@ def sm_HPC(request):
             except EstatusPersona.DoesNotExist:
                 cs_epins = None    
                 
+            if 'sp_eoa' in request.POST:
+                sp_eoa = True
+            else:
+                sp_eoa = False
+                
+            if 'cs_mh' in request.POST:
+                cs_mh = True
+            else:
+                cs_mh = False
+            
             if 'cs_hf' in request.POST:
                 cs_hf = True
             else:
@@ -822,13 +832,14 @@ def sm_HPC(request):
                 p_tamizaje = re_pt,
                 c_o_d = re_cd,
                 anotaciones_libres_profesional = re_notas,
-                seguimiento1 = None,
-                seguimiento2 = None
+                seguimiento1 = seg_1,
+                seguimiento2 = seg_2
             )
-            
             asesoria.save()
+                
             ##Hacer el save y después generar el id
             id_asesoria = asesoria.id
+            print(f"id asesoria {id_asesoria}")
             
             try:
                 as_instance = HPC.objects.get(id=id_asesoria)
