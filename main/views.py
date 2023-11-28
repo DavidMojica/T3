@@ -913,8 +913,6 @@ def sm_HPC(request):
                     ) 
                     cond_s.save()
                         
-                     
-                           
     else:
         return render(request, 'sm_HPC.html',{
         'CustomUser': request.user,
