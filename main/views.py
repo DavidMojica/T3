@@ -647,6 +647,7 @@ def sm_HPC(request):
         elif "detalles_asesoria" in request.POST:
             documento = request.POST['documento']
             id_profesional = request.POST['id_prof']
+            fecha_nacimiento = request.POST['fecha_nacimiento']
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
@@ -698,6 +699,11 @@ def sm_HPC(request):
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
+            
+            try:
+                pacienteInstance = InfoPacientes.objects.get(documento=documento)
+            except InfoPacientes.DoesNotExist:
+                pacienteInstance = None
             
             try:
                 spa_instance = SPA.objects.get(id=sp_susi)
