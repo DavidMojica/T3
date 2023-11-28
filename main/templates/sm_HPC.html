@@ -310,7 +310,8 @@
 
     {% if step == 2 %}
     <!-- STEP 2----------------------------- -->
-    <form action="">
+    <form action="" method="POST">
+        {% csrf_token %}
         <h2>Asesoría Psicológica</h2>
         <input type="hidden" name="documento" value="{{documento}}">
         <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
@@ -555,7 +556,7 @@
         <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
         
         <label for="">Seguimiento #2</label>
-        <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
+        <textarea name="seg_2" id="seg_2" cols="30" rows="10"></textarea>
         
         
         <button type="submit" name="detalles_asesoria">Guardar asesoría</button>

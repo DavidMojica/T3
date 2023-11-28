@@ -647,6 +647,7 @@ def sm_HPC(request):
         elif "detalles_asesoria" in request.POST:
             documento = request.POST['documento']
             id_profesional = request.POST['id_prof']
+            fecha_nacimiento = request.POST['fecha_nacimiento']
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
@@ -656,7 +657,7 @@ def sm_HPC(request):
             ap_adh = request.POST['ap_adh']
             ap_barr = request.POST['ap_barr']
             ap_notas = request.POST['ap_notas'] 
-            sp_eoa = request.POST['sp_eoa']
+            # sp_eoa = request.POST['sp_eoa']
             sp_edad = request.POST['sp_edad']
             sp_susi = request.POST['sp_susi'] #i
             sp_ulco = request.POST['sp_ulco']
@@ -664,7 +665,7 @@ def sm_HPC(request):
             
             sp_csr = request.POST['sp_csr']
             sp_ip = request.POST['sp_ip']
-            sp_cf = request.POST['sp_cf']
+            # sp_cf = request.POST['sp_cf']
             sp_vi = request.POST['sp_vi']
             sp_notas = request.POST['sp_notas']
             
@@ -673,7 +674,7 @@ def sm_HPC(request):
             cs_dm = request.POST['cs_dm'] #i snn
             cs_ip = request.POST['cs_ip']
             cs_fu = request.POST['cs_fu']
-            cs_mh = request.POST['cs_mh']
+            # cs_mh = request.POST['cs_mh']
             cs_metodo = request.POST['cs_metodo'] 
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
@@ -685,7 +686,7 @@ def sm_HPC(request):
             cs_ra = request.POST['cs_ra']         
             cs_notas = request.POST['cs_notas']
             
-            av_vict = request.POST['av_vict']
+            # av_vict = request.POST['av_vict']
             av_tv = request.POST['av_tv']
             av_agre = request.POST['av_agre']
             av_ir = request.POST['av_ir']
@@ -698,6 +699,17 @@ def sm_HPC(request):
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
+            
+            try:
+                pacienteInstance = InfoPacientes.objects.get(documento=documento)
+            except InfoPacientes.DoesNotExist:
+                pacienteInstance = None
+            
+            try:
+                id_profesionalInstance = InfoMiembros.objects.get(id_usuario=id_profesional)
+            except InfoMiembros.DoesNotExist:
+                id_profesionalInstance = None
+            
             
             try:
                 spa_instance = SPA.objects.get(id=sp_susi)
@@ -741,6 +753,16 @@ def sm_HPC(request):
             except EstatusPersona.DoesNotExist:
                 cs_epins = None    
                 
+            if 'sp_eoa' in request.POST:
+                sp_eoa = True
+            else:
+                sp_eoa = False
+                
+            if 'cs_mh' in request.POST:
+                cs_mh = True
+            else:
+                cs_mh = False
+            
             if 'cs_hf' in request.POST:
                 cs_hf = True
             else:
@@ -772,8 +794,8 @@ def sm_HPC(request):
                 re_io = False
             
             asesoria = HPC(
-                cedula_usuario = documento,
-                id_profesional = id_profesional,
+                cedula_usuario = pacienteInstance,
+                id_profesional = id_profesionalInstance,
                 lugar = a_lugar,
                 edad_usuario_actual = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day)),
                 diag_trans_mental = ap_trans,
@@ -783,7 +805,7 @@ def sm_HPC(request):
                 medicamentos = ap_med,
                 adherencia = ap_adh,
                 barreras_acceso = ap_barr,
-                anotaciones_antecedentes_psiquatricos = ap_notas,
+                anotaciones_antecedentes_psiquiatricos = ap_notas,
                 es_hasido_consumidor = sp_eoa,
                 edad_inicio = sp_edad,
                 spa_inicio = spa_instance,
@@ -795,7 +817,7 @@ def sm_HPC(request):
                 vinculo = sp_vi,
                 anotaciones_consumoPSA = sp_notas,
                 tendencia_suicida = cs_pins,
-                precencia_planeacion = cs_ppins,
+                presencia_planeacion = cs_ppins,
                 disponibilidad_medios = cs_dmins,
                 intentos_previos = cs_ip,
                 fecha_ultimo_intento = cs_fu,
@@ -822,13 +844,14 @@ def sm_HPC(request):
                 p_tamizaje = re_pt,
                 c_o_d = re_cd,
                 anotaciones_libres_profesional = re_notas,
-                seguimiento1 = None,
-                seguimiento2 = None
+                seguimiento1 = seg_1,
+                seguimiento2 = seg_2
             )
-            
             asesoria.save()
+                
             ##Hacer el save y después generar el id
             id_asesoria = asesoria.id
+            print(f"id asesoria {id_asesoria}")
             
             try:
                 as_instance = HPC.objects.get(id=id_asesoria)
@@ -865,7 +888,7 @@ def sm_HPC(request):
                     
             for tpr in hpcrespuestas:
                 checkbox_name = f'r_{tpr.id}'
-                if checkbox_name in request.post:
+                if checkbox_name in request.POST:
                     try:
                         resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
                     except HPCTiposRespuestas.DoesNotExist:
@@ -879,7 +902,7 @@ def sm_HPC(request):
 
             for cs in conductas:
                 checkbox_name = f'cs_{cs.id}'
-                if checkbox_name in request.post:
+                if checkbox_name in request.POST:
                     try:
                         conInstance = ConductasASeguir.objects.get(id=cs.id)
                     except ConductasASeguir.DoesNotExist:
