@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca,RHPCConductasASeguir, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca,RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -680,10 +680,11 @@ def sm_HPC(request):
             cs_eb = request.POST['cs_eb'] #i
             cs_ep = request.POST['cs_ep'] #i
             cs_ae = request.POST['cs_ae']   
-            cs_hf = request.POST['cs_hf']
+            # cs_hf = request.POST['cs_hf']
             cs_fp = request.POST['cs_fp']
             cs_ra = request.POST['cs_ra']         
             cs_notas = request.POST['cs_notas']
+            
             av_vict = request.POST['av_vict']
             av_tv = request.POST['av_tv']
             av_agre = request.POST['av_agre']
@@ -735,7 +736,21 @@ def sm_HPC(request):
             except SiNoNunca.DoesNotExist:
                 cs_ebins = None
                 
+            try:
+                cs_epins = EstatusPersona.objects.get(id=cs_ep)
+            except EstatusPersona.DoesNotExist:
+                cs_epins = None    
                 
+            if 'cs_hf' in request.POST:
+                cs_hf = True
+            else:
+                cs_hf = False
+                
+            if 'av_vict' in request.POST:
+                av_vict = True
+            else:
+                av_vict = False
+            
             asesoria = HPC(
                 cedula_usuario = documento,
                 id_profesional = id_profesional,
@@ -769,6 +784,17 @@ def sm_HPC(request):
                 letalidad = cs_let,
                 signos = cs_ss,
                 tratamiento_psiquiatrico = cs_ebins,
+                estatus_persona = cs_epins,
+                acontecimientos_estresantes = cs_ae,
+                historial_familiar = cs_hf,
+                factores_protectores = cs_fp,
+                red_apoyo = cs_ra,
+                anotaciones_comportamiento_suic = cs_notas,
+                victima = av_vict,
+                tipo_violencia = av_tv,
+                agresor = av_agre,
+                inst_reporte_legal = av_ir
+                anotaciones_antecedentes_violencia = av_notas,
                 
                    
             )
