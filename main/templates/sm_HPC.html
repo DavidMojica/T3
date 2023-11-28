@@ -312,6 +312,9 @@
     <!-- STEP 2----------------------------- -->
     <form action="">
         <h2>Asesoría Psicológica</h2>
+        <input type="hidden" name="documento" value="{{documento}}">
+        <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
+        <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
         <label for="a_lugar">Lugar de la asesoría</label>
         <input type="text" name="a_lugar" id="a_lugar">
 
@@ -456,13 +459,8 @@
         <label for="">Manejo hospitalario</label>
         <input type="checkbox" name="cs_mh" id="cs_mh">
    
-        <label for="">Método</label>
-        <select name="cs_dm" id="cs_dm">
-            <option value="-1">Seleccione...</option>
-            {% for m in metodos %}
-            <option value="{{m.id}}">{{m.description}}</option>
-            {% endfor %}
-        </select>
+        <label for="">Método de suicidio</label>
+        <input type="text" name="cs_metodo" id="cs_metodo">
 
         <label for="">Letalidad</label>
         <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>

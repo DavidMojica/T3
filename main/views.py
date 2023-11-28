@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca,RHPCConductasASeguir, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca,RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -371,10 +371,19 @@ def edit_account(request, user_id, user_type):
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 
+def boolInputs(request, i):
+    if i in request.POST:
+        return True
+    else:
+        return False
+
 #PSICOLOGIA VISTAS
+
 @login_required
 def sm_HPC(request):
     documento = ""
+    fecha_actual = datetime.now()
+    fecha_nacimiento = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             documento = request.POST['documento']
@@ -482,8 +491,8 @@ def sm_HPC(request):
                 'hpcdemandas':hpcdemandas,
                 'hpcrespuestas': hpcrespuestas,
                 'spa': spa,
-                'snn': snn
-                
+                'snn': snn,
+                'fecha_nacimiento': fecha_nacimiento
             })           
         elif "crear_usuario" in request.POST:      
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
@@ -632,12 +641,16 @@ def sm_HPC(request):
             return render(request, 'sm_HPC.html',{
                 'CustomUser': request.user,
                 'year': datetime.now(),
-                'step': 2
+                'step': 2,
+                'fecha_nacimiento': fecha_nacimiento
             })
         elif "detalles_asesoria" in request.POST:
+            documento = request.POST['documento']
+            id_profesional = request.POST['id_prof']
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
+            ap_diag = request.POST['ap_diag']
             ap_trat = request.POST['ap_trat']
             ap_med = request.POST['ap_med']
             ap_adh = request.POST['ap_adh']
@@ -648,41 +661,172 @@ def sm_HPC(request):
             sp_susi = request.POST['sp_susi'] #i
             sp_ulco = request.POST['sp_ulco']
             sp_susim = request.POST['sp_susim'] #i
+            
             sp_csr = request.POST['sp_csr']
             sp_ip = request.POST['sp_ip']
             sp_cf = request.POST['sp_cf']
             sp_vi = request.POST['sp_vi']
             sp_notas = request.POST['sp_notas']
+            
             cs_pi = request.POST['cs_pi'] #i snn
             cs_pp = request.POST['cs_pp'] #i snn
             cs_dm = request.POST['cs_dm'] #i snn
             cs_ip = request.POST['cs_ip']
             cs_fu = request.POST['cs_fu']
             cs_mh = request.POST['cs_mh']
-            cs_dm = request.POST['cs_dm'] #i metodos
+            cs_metodo = request.POST['cs_metodo'] 
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
             cs_eb = request.POST['cs_eb'] #i
             cs_ep = request.POST['cs_ep'] #i
             cs_ae = request.POST['cs_ae']   
-            cs_hf = request.POST['cs_hf']
+            # cs_hf = request.POST['cs_hf']
             cs_fp = request.POST['cs_fp']
             cs_ra = request.POST['cs_ra']         
             cs_notas = request.POST['cs_notas']
+            
             av_vict = request.POST['av_vict']
             av_tv = request.POST['av_tv']
             av_agre = request.POST['av_agre']
             av_ir = request.POST['av_ir']
             av_notas = request.POST['av_notas']
-            re_ac = request.POST['re_ac']
-            re_sc = request.POST['re_sc']
-            re_ic = request.POST['re_ic']
+            # re_ac = request.POST['re_ac']
+            # re_sc = request.POST['re_sc']
+            # re_ic = request.POST['re_ic']
             re_pt = request.POST['re_pt']
             re_cd = request.POST['re_cd']
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
             
+            try:
+                spa_instance = SPA.objects.get(id=sp_susi)
+            except SPA.DoesNotExist:
+                spa_instance = None
+            
+            try:
+                spa_instance2 = SPA.objects.get(id=sp_susim)
+            except SPA.DoesNotExist:
+                spa_instance2 = None
+                
+            if 'sp_cf' in request.POST:
+                sp_cfins = True
+            else:
+                sp_cfins = False
+                
+            fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+            
+            try:
+                cs_pins = SiNoNunca.objects.get(id=cs_pi)
+            except SiNoNunca.DoesNotExist:
+                cs_pins = None
+                
+            try:
+                cs_ppins = SiNoNunca.objects.get(id=cs_pp)
+            except SiNoNunca.DoesNotExist:
+                cs_ppins = None
+            
+            try:
+                cs_dmins = SiNoNunca.objects.get(id=cs_dm)
+            except SiNoNunca.DoesNotExist:
+                cs_dmins = None
+                
+            try:
+                cs_ebins = SiNoNunca.objects.get(id=cs_eb)
+            except SiNoNunca.DoesNotExist:
+                cs_ebins = None
+                
+            try:
+                cs_epins = EstatusPersona.objects.get(id=cs_ep)
+            except EstatusPersona.DoesNotExist:
+                cs_epins = None    
+                
+            if 'cs_hf' in request.POST:
+                cs_hf = True
+            else:
+                cs_hf = False
+                
+            if 'av_vict' in request.POST:
+                av_vict = True
+            else:
+                av_vict = False
+                
+            if 're_ac' in request.POST:
+                re_ac = True
+            else:
+                re_ac = False
+                
+            if 're_sc' in request.POST:
+                re_sc = True
+            else:
+                re_sc = False
+                
+            if 're_ic' in request.POST:
+                re_ic = True
+            else:
+                re_ic = False
+                
+            if 're_io' in request.POST:
+                re_io = True
+            else:
+                re_io = False
+            
+            asesoria = HPC(
+                cedula_usuario = documento,
+                id_profesional = id_profesional,
+                lugar = a_lugar,
+                edad_usuario_actual = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day)),
+                diag_trans_mental = ap_trans,
+                diag_categoria = ap_cate,
+                diag_por_profesional = ap_diag,
+                tratamiento = ap_trat,
+                medicamentos = ap_med,
+                adherencia = ap_adh,
+                barreras_acceso = ap_barr,
+                anotaciones_antecedentes_psiquatricos = ap_notas,
+                es_hasido_consumidor = sp_eoa,
+                edad_inicio = sp_edad,
+                spa_inicio = spa_instance,
+                sustancia_impacto = spa_instance2,
+                periodo_ultimo_consumo = sp_ulco,
+                conductas_sex_riesgo = sp_csr,
+                intervenciones_previas = sp_ip,
+                consumo_familiar = sp_cfins,
+                vinculo = sp_vi,
+                anotaciones_consumoPSA = sp_notas,
+                tendencia_suicida = cs_pins,
+                precencia_planeacion = cs_ppins,
+                disponibilidad_medios = cs_dmins,
+                intentos_previos = cs_ip,
+                fecha_ultimo_intento = cs_fu,
+                manejo_hospitalario = cs_mh,
+                metodo = cs_metodo,
+                letalidad = cs_let,
+                signos = cs_ss,
+                tratamiento_psiquiatrico = cs_ebins,
+                estatus_persona = cs_epins,
+                acontecimientos_estresantes = cs_ae,
+                historial_familiar = cs_hf,
+                factores_protectores = cs_fp,
+                red_apoyo = cs_ra,
+                anotaciones_comportamiento_suic = cs_notas,
+                victima = av_vict,
+                tipo_violencia = av_tv,
+                agresor = av_agre,
+                inst_reporte_legal = av_ir,
+                anotaciones_antecedentes_violencia = av_notas,
+                asistencia_cita = re_ac,
+                contacto = re_sc,
+                contacto_interrumpido = re_ic,
+                inicia_otro_programa = re_io,
+                p_tamizaje = re_pt,
+                c_o_d = re_cd,
+                anotaciones_libres_profesional = re_notas,
+                seguimiento1 = None,
+                seguimiento2 = None
+            )
+            
+            asesoria.save()
             ##Hacer el save y después generar el id
             id_asesoria = asesoria.id
             

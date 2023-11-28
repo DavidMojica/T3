@@ -302,7 +302,7 @@ sólo que con algunos campos menos que se consideraron innecesarios.
 class InfoMiembros(models.Model):
     documento = models.CharField(max_length=20, null=False)
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.DO_NOTHING, null=True) #
-    id_usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, primary_key=True)
+    id_usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, primary_key=True, unique=True)
     numero_hijos = models.IntegerField(null=False, default=0)
     sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING,null=True) #
     direccion = models.CharField(max_length=100, null = False)
@@ -355,7 +355,7 @@ En este modelo se recolectará la información proveniente de la hoja de primer 
 class HPC(models.Model):
     id = models.AutoField(primary_key=True)
     cedula_usuario = models.ForeignKey(InfoPacientes, on_delete=models.DO_NOTHING)
-    cedula_profesional = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
+    id_profesional = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
     fecha_asesoria = models.DateField(default=timezone.now)
     lugar = models.TextField(max_length=150, null=False)
     edad_usuario_actual = models.IntegerField(null=False)
@@ -370,9 +370,8 @@ class HPC(models.Model):
     edad_inicio = models.IntegerField(null=True, default=models.SET_NULL)
     spa_inicio = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_spa_inicio')
     sustancia_impacto = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_sustancia_impacto')
-    metodo = models.ForeignKey(HPCMetodosSuicida,null=True, on_delete=models.DO_NOTHING)
     periodo_ultimo_consumo = models.DateField(null=True)
-    conductas_sex_resgo = models.TextField(max_length=300, null=True)
+    conductas_sex_riesgo = models.TextField(max_length=300, null=True)
     intervenciones_previas = models.TextField(max_length=300, null=True)
     consumo_familiar = models.BooleanField(default=False)
     vinculo = models.TextField(max_length=300, null=True)
@@ -384,7 +383,7 @@ class HPC(models.Model):
     fecha_ultimo_intento = models.DateField(null=True)
     manejo_hospitalario = models.BooleanField(null=True)
     #VIII
-    metodo = models.ForeignKey(HPCMetodosSuicida,null=True, on_delete=models.DO_NOTHING)
+    metodo = models.TextField(max_length=300, null=True)
     letalidad = models.TextField(max_length=300, null=True)
     signos = models.TextField(max_length=300, null=True)
     tratamiento_psiquiatrico = models.ForeignKey(SiNoNunca,null=True, on_delete=models.CASCADE, related_name='hpc_tratamiento_psiquiatrico')
