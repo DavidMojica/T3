@@ -409,9 +409,6 @@
             {% endfor %}
         </select>
 
-        <label for="">Método de suicidio</label>
-        <input type="text" name="sp_metodo" id="sp_metodo">
-
         <label for="">Conductas sexuales de riesgo</label>
         <textarea name="sp_csr" id="sp_csr" cols="30" rows="10"></textarea>
 
@@ -462,13 +459,8 @@
         <label for="">Manejo hospitalario</label>
         <input type="checkbox" name="cs_mh" id="cs_mh">
    
-        <label for="">Método</label>
-        <select name="cs_dm" id="cs_dm">
-            <option value="-1">Seleccione...</option>
-            {% for m in metodos %}
-            <option value="{{m.id}}">{{m.description}}</option>
-            {% endfor %}
-        </select>
+        <label for="">Método de suicidio</label>
+        <input type="text" name="cs_metodo" id="cs_metodo">
 
         <label for="">Letalidad</label>
         <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>

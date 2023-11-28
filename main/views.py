@@ -661,19 +661,20 @@ def sm_HPC(request):
             sp_susi = request.POST['sp_susi'] #i
             sp_ulco = request.POST['sp_ulco']
             sp_susim = request.POST['sp_susim'] #i
-            sp_metodo = request.POST['sp_metodo'] #i
+            
             sp_csr = request.POST['sp_csr']
             sp_ip = request.POST['sp_ip']
             sp_cf = request.POST['sp_cf']
             sp_vi = request.POST['sp_vi']
             sp_notas = request.POST['sp_notas']
+            
             cs_pi = request.POST['cs_pi'] #i snn
             cs_pp = request.POST['cs_pp'] #i snn
             cs_dm = request.POST['cs_dm'] #i snn
             cs_ip = request.POST['cs_ip']
             cs_fu = request.POST['cs_fu']
             cs_mh = request.POST['cs_mh']
-            cs_dm = request.POST['cs_dm'] #i metodos
+            cs_metodo = request.POST['cs_metodo'] 
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
             cs_eb = request.POST['cs_eb'] #i
@@ -708,13 +709,33 @@ def sm_HPC(request):
                 spa_instance2 = None
                 
             if 'sp_cf' in request.POST:
-                sp_cf = True
+                sp_cfins = True
             else:
-                sp_cf = False
-                
+                sp_cfins = False
                 
             fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
             
+            try:
+                cs_pins = SiNoNunca.objects.get(id=cs_pi)
+            except SiNoNunca.DoesNotExist:
+                cs_pins = None
+                
+            try:
+                cs_ppins = SiNoNunca.objects.get(id=cs_pp)
+            except SiNoNunca.DoesNotExist:
+                cs_ppins = None
+            
+            try:
+                cs_dmins = SiNoNunca.objects.get(id=cs_dm)
+            except SiNoNunca.DoesNotExist:
+                cs_dmins = None
+                
+            try:
+                cs_ebins = SiNoNunca.objects.get(id=cs_eb)
+            except SiNoNunca.DoesNotExist:
+                cs_ebins = None
+                
+                
             asesoria = HPC(
                 cedula_usuario = documento,
                 id_profesional = id_profesional,
@@ -732,15 +753,25 @@ def sm_HPC(request):
                 edad_inicio = sp_edad,
                 spa_inicio = spa_instance,
                 sustancia_impacto = spa_instance2,
-                metodo = sp_metodo,
                 periodo_ultimo_consumo = sp_ulco,
                 conductas_sex_riesgo = sp_csr,
                 intervenciones_previas = sp_ip,
-                consumo_familiar = sp_cf,
+                consumo_familiar = sp_cfins,
+                vinculo = sp_vi,
+                anotaciones_consumoPSA = sp_notas,
+                tendencia_suicida = cs_pins,
+                precencia_planeacion = cs_ppins,
+                disponibilidad_medios = cs_dmins,
+                intentos_previos = cs_ip,
+                fecha_ultimo_intento = cs_fu,
+                manejo_hospitalario = cs_mh,
+                metodo = cs_metodo,
+                letalidad = cs_let,
+                signos = cs_ss,
+                tratamiento_psiquiatrico = cs_ebins,
                 
-                
+                   
             )
-            
             ##Hacer el save y después generar el id
             id_asesoria = asesoria.id
             

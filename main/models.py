@@ -370,7 +370,6 @@ class HPC(models.Model):
     edad_inicio = models.IntegerField(null=True, default=models.SET_NULL)
     spa_inicio = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_spa_inicio')
     sustancia_impacto = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_sustancia_impacto')
-    metodo = models.TextField(max_length=300, null=True)
     periodo_ultimo_consumo = models.DateField(null=True)
     conductas_sex_riesgo = models.TextField(max_length=300, null=True)
     intervenciones_previas = models.TextField(max_length=300, null=True)
@@ -384,7 +383,7 @@ class HPC(models.Model):
     fecha_ultimo_intento = models.DateField(null=True)
     manejo_hospitalario = models.BooleanField(null=True)
     #VIII
-    metodo = models.ForeignKey(HPCMetodosSuicida,null=True, on_delete=models.DO_NOTHING)
+    metodo = models.TextField(max_length=300, null=True)
     letalidad = models.TextField(max_length=300, null=True)
     signos = models.TextField(max_length=300, null=True)
     tratamiento_psiquiatrico = models.ForeignKey(SiNoNunca,null=True, on_delete=models.CASCADE, related_name='hpc_tratamiento_psiquiatrico')
