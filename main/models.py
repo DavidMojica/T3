@@ -372,7 +372,7 @@ class HPC(models.Model):
     sustancia_impacto = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_sustancia_impacto')
     metodo = models.TextField(max_length=300, null=True)
     periodo_ultimo_consumo = models.DateField(null=True)
-    conductas_sex_resgo = models.TextField(max_length=300, null=True)
+    conductas_sex_riesgo = models.TextField(max_length=300, null=True)
     intervenciones_previas = models.TextField(max_length=300, null=True)
     consumo_familiar = models.BooleanField(default=False)
     vinculo = models.TextField(max_length=300, null=True)

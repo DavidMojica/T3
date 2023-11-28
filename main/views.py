@@ -371,7 +371,14 @@ def edit_account(request, user_id, user_type):
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 
+def boolInputs(request, i):
+    if i in request.POST:
+        return True
+    else:
+        return False
+
 #PSICOLOGIA VISTAS
+
 @login_required
 def sm_HPC(request):
     documento = ""
@@ -700,6 +707,10 @@ def sm_HPC(request):
             except SPA.DoesNotExist:
                 spa_instance2 = None
                 
+            if 'sp_cf' in request.POST:
+                sp_cf = True
+            else:
+                sp_cf = False
                 
                 
             fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
@@ -721,9 +732,11 @@ def sm_HPC(request):
                 edad_inicio = sp_edad,
                 spa_inicio = spa_instance,
                 sustancia_impacto = spa_instance2,
+                metodo = sp_metodo,
                 periodo_ultimo_consumo = sp_ulco,
-                metodo = sp_metodo
-                
+                conductas_sex_riesgo = sp_csr,
+                intervenciones_previas = sp_ip,
+                consumo_familiar = sp_cf,
                 
                 
             )
