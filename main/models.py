@@ -370,7 +370,7 @@ class HPC(models.Model):
     edad_inicio = models.IntegerField(null=True, default=models.SET_NULL)
     spa_inicio = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_spa_inicio')
     sustancia_impacto = models.ForeignKey(SPA,null=True, on_delete=models.DO_NOTHING, related_name='hpc_sustancia_impacto')
-    metodo = models.ForeignKey(HPCMetodosSuicida,null=True, on_delete=models.DO_NOTHING)
+    metodo = models.TextField(max_length=300, null=True)
     periodo_ultimo_consumo = models.DateField(null=True)
     conductas_sex_resgo = models.TextField(max_length=300, null=True)
     intervenciones_previas = models.TextField(max_length=300, null=True)

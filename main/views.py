@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca,RHPCConductasASeguir, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca,RHPCConductasASeguir, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto,RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -375,6 +375,7 @@ def edit_account(request, user_id, user_type):
 @login_required
 def sm_HPC(request):
     documento = ""
+    fecha_actual = datetime.now()
     fecha_nacimiento = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
@@ -642,6 +643,7 @@ def sm_HPC(request):
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
+            ap_diag = request.POST['ap_diag']
             ap_trat = request.POST['ap_trat']
             ap_med = request.POST['ap_med']
             ap_adh = request.POST['ap_adh']
@@ -652,6 +654,7 @@ def sm_HPC(request):
             sp_susi = request.POST['sp_susi'] #i
             sp_ulco = request.POST['sp_ulco']
             sp_susim = request.POST['sp_susim'] #i
+            sp_metodo = request.POST['sp_metodo'] #i
             sp_csr = request.POST['sp_csr']
             sp_ip = request.POST['sp_ip']
             sp_cf = request.POST['sp_cf']
@@ -687,13 +690,42 @@ def sm_HPC(request):
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
             
-            print(fecha_nacimiento)
+            try:
+                spa_instance = SPA.objects.get(id=sp_susi)
+            except SPA.DoesNotExist:
+                spa_instance = None
+            
+            try:
+                spa_instance2 = SPA.objects.get(id=sp_susim)
+            except SPA.DoesNotExist:
+                spa_instance2 = None
+                
+                
+                
+            fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+            
             asesoria = HPC(
                 cedula_usuario = documento,
                 id_profesional = id_profesional,
-                fecha_asesoria = datetime.now().date(),
                 lugar = a_lugar,
-                edad_usuario_actual = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+                edad_usuario_actual = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day)),
+                diag_trans_mental = ap_trans,
+                diag_categoria = ap_cate,
+                diag_por_profesional = ap_diag,
+                tratamiento = ap_trat,
+                medicamentos = ap_med,
+                adherencia = ap_adh,
+                barreras_acceso = ap_barr,
+                anotaciones_antecedentes_psiquatricos = ap_notas,
+                es_hasido_consumidor = sp_eoa,
+                edad_inicio = sp_edad,
+                spa_inicio = spa_instance,
+                sustancia_impacto = spa_instance2,
+                periodo_ultimo_consumo = sp_ulco,
+                metodo = sp_metodo
+                
+                
+                
             )
             
             ##Hacer el save y después generar el id
