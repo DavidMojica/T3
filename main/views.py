@@ -888,7 +888,7 @@ def sm_HPC(request):
                     
             for tpr in hpcrespuestas:
                 checkbox_name = f'r_{tpr.id}'
-                if checkbox_name in request.post:
+                if checkbox_name in request.POST:
                     try:
                         resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
                     except HPCTiposRespuestas.DoesNotExist:
@@ -902,7 +902,7 @@ def sm_HPC(request):
 
             for cs in conductas:
                 checkbox_name = f'cs_{cs.id}'
-                if checkbox_name in request.post:
+                if checkbox_name in request.POST:
                     try:
                         conInstance = ConductasASeguir.objects.get(id=cs.id)
                     except ConductasASeguir.DoesNotExist:
