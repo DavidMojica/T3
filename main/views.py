@@ -706,6 +706,12 @@ def sm_HPC(request):
                 pacienteInstance = None
             
             try:
+                id_profesionalInstance = InfoMiembros.objects.get(id_usuario=id_profesional)
+            except InfoMiembros.DoesNotExist:
+                id_profesionalInstance = None
+            
+            
+            try:
                 spa_instance = SPA.objects.get(id=sp_susi)
             except SPA.DoesNotExist:
                 spa_instance = None
@@ -788,8 +794,8 @@ def sm_HPC(request):
                 re_io = False
             
             asesoria = HPC(
-                cedula_usuario = documento,
-                id_profesional = id_profesional,
+                cedula_usuario = pacienteInstance,
+                id_profesional = id_profesionalInstance,
                 lugar = a_lugar,
                 edad_usuario_actual = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day)),
                 diag_trans_mental = ap_trans,
@@ -799,7 +805,7 @@ def sm_HPC(request):
                 medicamentos = ap_med,
                 adherencia = ap_adh,
                 barreras_acceso = ap_barr,
-                anotaciones_antecedentes_psiquatricos = ap_notas,
+                anotaciones_antecedentes_psiquiatricos = ap_notas,
                 es_hasido_consumidor = sp_eoa,
                 edad_inicio = sp_edad,
                 spa_inicio = spa_instance,
@@ -811,7 +817,7 @@ def sm_HPC(request):
                 vinculo = sp_vi,
                 anotaciones_consumoPSA = sp_notas,
                 tendencia_suicida = cs_pins,
-                precencia_planeacion = cs_ppins,
+                presencia_planeacion = cs_ppins,
                 disponibilidad_medios = cs_dmins,
                 intentos_previos = cs_ip,
                 fecha_ultimo_intento = cs_fu,
