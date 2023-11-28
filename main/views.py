@@ -690,9 +690,9 @@ def sm_HPC(request):
             av_agre = request.POST['av_agre']
             av_ir = request.POST['av_ir']
             av_notas = request.POST['av_notas']
-            re_ac = request.POST['re_ac']
-            re_sc = request.POST['re_sc']
-            re_ic = request.POST['re_ic']
+            # re_ac = request.POST['re_ac']
+            # re_sc = request.POST['re_sc']
+            # re_ic = request.POST['re_ic']
             re_pt = request.POST['re_pt']
             re_cd = request.POST['re_cd']
             re_notas = request.POST['re_notas']
@@ -750,6 +750,26 @@ def sm_HPC(request):
                 av_vict = True
             else:
                 av_vict = False
+                
+            if 're_ac' in request.POST:
+                re_ac = True
+            else:
+                re_ac = False
+                
+            if 're_sc' in request.POST:
+                re_sc = True
+            else:
+                re_sc = False
+                
+            if 're_ic' in request.POST:
+                re_ic = True
+            else:
+                re_ic = False
+                
+            if 're_io' in request.POST:
+                re_io = True
+            else:
+                re_io = False
             
             asesoria = HPC(
                 cedula_usuario = documento,
@@ -793,11 +813,20 @@ def sm_HPC(request):
                 victima = av_vict,
                 tipo_violencia = av_tv,
                 agresor = av_agre,
-                inst_reporte_legal = av_ir
+                inst_reporte_legal = av_ir,
                 anotaciones_antecedentes_violencia = av_notas,
-                
-                   
+                asistencia_cita = re_ac,
+                contacto = re_sc,
+                contacto_interrumpido = re_ic,
+                inicia_otro_programa = re_io,
+                p_tamizaje = re_pt,
+                c_o_d = re_cd,
+                anotaciones_libres_profesional = re_notas,
+                seguimiento1 = None,
+                seguimiento2 = None
             )
+            
+            asesoria.save()
             ##Hacer el save y después generar el id
             id_asesoria = asesoria.id
             
