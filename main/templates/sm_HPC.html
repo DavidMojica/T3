@@ -382,7 +382,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-2">
+                <div class="form-group mb-2 col-md-2 mb-5">
                     <button type="submit" class="btn btn-success" name="crear_usuario">Crear Paciente</button>
                 </div>
             </div>
@@ -449,9 +449,8 @@
                 </div>
 
                 <div class="form-group mb-2 col-md-4"> </div>
-                
 
-                <h4 class="text-light text-center">Antecedentes psiquiatricos</h4>
+                <h2 class="text-primary mt-5 text-center">Antecedentes psiquiatricos</h2>
                
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Diagnóstico de transtorno mental</label>
@@ -488,55 +487,76 @@
                     <textarea name="ap_notas" class="form-control" id="ap_notas" cols="30" rows="10"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-2"></div>
-                <div class="form-group mb-2 col-md-4"></div>
                 
-            
-            
+                <!-- II -->
+                <h2 class="text-primary mt-5">Historial de consumo de sustancias psicoactivas</h2>
+                
+                <div class="form-group mb-2 col-md-3"></div>
+                <div class="form-group mb-2 col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Es o ha sido consumidor</label>
+                    <input type="checkbox" class="form-check" name="sp_eoa" id="sp_eoa">
+                </div>
+                <div class="form-group mb-2 col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Consumo núcleo familiar</label>
+                    <input type="checkbox" class="form-check" name="sp_cf" id="sp_cf">
+                </div>
+                <div class="form-group mb-2 col-md-3"></div>
 
-                <h3 class="text-light">Historial de consumo de sustancias psicoactivas</h3>
-                <label for="">Es o ha sido consumidor</label>
-                <input type="checkbox" name="sp_eoa" id="sp_eoa">
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Edad de inicio</label>
+                    <input type="number" name="sp_edad" class="form-control" id="sp_edad">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Sustancia de inicio</label>
+                    <select name="sp_susi" class="form-select" id="sp_susi">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in spa %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <label for="">Edad de inicio</label>
-                <input type="number" name="sp_edad" id="sp_edad">
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Periodo último consumo</label>
+                    <input type="date" class="form-control" name="sp_ulco" id="sp_ulco">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Sustancia de impacto</label>
+                    <select name="sp_susim" class="form-select" id="sp_susim">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in spa %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <label for="">Sustancia de inicio</label>
-                <select name="sp_susi" id="sp_susi">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in spa %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Conductas sexuales de riesgo</label>
+                    <textarea name="sp_csr"  class="form-control"id="sp_csr" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Intervenciones previas</label>
+                    <textarea name="sp_ip"  class="form-control"id="sp_ip" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
 
-                <label for="">Periodo último consumo</label>
-                <input type="date" name="sp_ulco" id="sp_ulco">
 
-                <label for="">Sustancia de impacto</label>
-                <select name="sp_susim" id="sp_susim">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in spa %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Vínculo</label>
+                    <textarea name="sp_vi" class="form-control" id="sp_vi" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Notas de atención</label>
+                    <textarea name="sp_notas" class="form-control" id="sp_notas" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
 
-                <label for="">Conductas sexuales de riesgo</label>
-                <textarea name="sp_csr" id="sp_csr" cols="30" rows="10"></textarea>
-
-                <label for="">Intervenciones previas</label>
-                <textarea name="sp_ip" id="sp_ip" cols="30" rows="10"></textarea>
-
-                <label for="">Consumo núcleo familiar</label>
-                <input type="checkbox" name="sp_cf" id="sp_cf">
-
-                <label for="">Vínculo</label>
-                <textarea name="sp_vi" id="sp_vi" cols="30" rows="10"></textarea>
-
-                <label for="">Notas de atención</label>
-                <textarea name="sp_notas" id="sp_notas" cols="30" rows="10"></textarea>
-        
+                <!-- III -->
                 <h2>Comportamiento Suicida</h2>
         
-                <label for="">Presencia de ideación suicida. Magnitud y persistencia</label>
+                <label for="" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
                 <select name="cs_pi" id="cs_pi">
                     <option value="-1">Seleccione...</option>
                     {% for s in snn %}
