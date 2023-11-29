@@ -596,61 +596,95 @@
                 </div>
                 <div class="form-group mb-2 col-md-3 row justify-content-center">
                     <label for="" class="text-light">Manejo hospitalario</label>
-                    <input type="checkbox" name="cs_mh" id="cs_mh">
+                    <input type="checkbox" name="cs_mh" class="form-check" id="cs_mh">
                 </div>
 
-                <label for="">Letalidad</label>
-                <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Letalidad</label>
+                    <textarea name="cs_let" class="form-control" id="cs_let" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Signos y síntomas psiquiatricos</label>
+                    <textarea name="cs_ss" class="form-control" id="cs_ss" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Signos y síntomas psiquiatricos</label>
+                    <textarea name="cs_ss" class="form-control" id="cs_ss" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Acontecimientos estresantes</label>
+                    <textarea name="cs_ae" class="form-control" id="cs_ae" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Factores protectores</label>
+                    <textarea name="cs_fp" class="form-control" id="cs_fp" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Red de apoyo</label>
+                    <textarea name="cs_ra" class="form-control" id="cs_ra" cols="30" rows="10"></textarea>
+                </div>
 
-                <label for="">Signos y síntomas psiquiatricos</label>
-                <textarea name="cs_ss" id="cs_ss" cols="30" rows="10"></textarea>
-        
-                <label for="">Está bajo tratamiento psiquiátrico</label>
-                <select name="cs_eb" id="cs_eb">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in snn %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Está bajo tratamiento psiquiátrico</label>
+                    <select name="cs_eb" id="cs_eb" class="form-select">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Vive solo/Divorciado/Desempleado</label>
+                    <select name="cs_ep" id="cs_ep" class="form-select">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in ep %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4 row justify-content-center">
+                    <label for="" class="text-light">Tiene historial familiar de suicidio</label>
+                    <input type="checkbox" name="cs_hf" id="cs_hf" class="form-check">
+                </div>
 
-                <label for="">Vive solo/Divorciado/Desempleado</label>
-                <select name="cs_ep" id="cs_ep">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in ep %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Notas de atención</label>
+                    <textarea name="cs_notas" class="form-control" id="cs_notas" cols="30" rows="10"></textarea>
+                </div>
 
-                <label for="">Acontecimientos estresantes</label>
-                <textarea name="cs_ae" id="cs_ae" cols="30" rows="10"></textarea>
-        
-                <label for="">Historial familiar suicidio y vínculos</label>
-                <input type="checkbox" name="cs_hf" id="cs_hf">
-        
-                <label for="">Factores protectores</label>
-                <textarea name="cs_fp" id="cs_fp" cols="30" rows="10"></textarea>
-        
-                <label for="">Red de apoyo</label>
-                <textarea name="cs_ra" id="cs_ra" cols="30" rows="10"></textarea>
-        
-                <label for="">Notas de atención</label>
-                <textarea name="cs_notas" id="cs_notas" cols="30" rows="10"></textarea>
-        
-                <h2>Antecedentes de violencia</h2>
-                <label for="">Se considera víctima de algún tipo de violencia?</label>
-                <input type="checkbox" name="av_vict" id="av_vict">
+                <!-- IV -->
+                <h2 class="text-primary mt-5">Antecedentes de violencia</h2>
 
-                <label for="">Tipo(s) de violencia</label>
-                <textarea name="av_tv" id="av_tv" cols="30" rows="10"></textarea>
+                <div class="form-group col-md-4"></div>
+                <div class="form-group col-md-4 row justify-content-center">
+                    <label for="" class="text-light">Se considera víctima de algún tipo de violencia?</label>
+                    <input type="checkbox" name="av_vict" class="form-check" id="av_vict">
+                </div>
+                <div class="form-group col-md-4"></div>
 
-                <label for="">Agresor(es)</label>
-                <textarea name="av_agre" id="av_agre" cols="30" rows="10"></textarea>
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Tipo(s) de violencia</label>
+                    <textarea name="av_tv" class="form-control" id="av_tv" cols="30" rows="10"></textarea>
+                </div>
 
-                <label for="">Institución de reporte legal (dejar vacío para NO)</label>
-                <textarea name="av_ir" id="av_ir" cols="30" rows="10"></textarea>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Agresor(es)</label>
+                    <textarea name="av_agre" class="form-control" id="av_agre" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-2"></div>
 
-                <label for="">Notas de atención</label>
-                <textarea name="av_notas" id="av_notas" cols="30" rows="10"></textarea>
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Institución de reporte legal (dejar vacío para NO)</label>
+                    <textarea name="av_ir" class="form-control" id="av_ir" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Notas de atención</label>
+                    <textarea name="av_notas" class="form-control" id="av_notas" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-2"></div>
+
 
                 <h2>Resultado, conducta a seguir y canalización</h2>
                 <label for="">Acudió la cita?</label>
