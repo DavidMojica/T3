@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main class="main-expanded" id="main-hpc">
+<main class="main-expanded bg-gradient-blue">
     {% if step == 0 %}
     <form class="container" action="" method="POST">
         {% csrf_token %}
@@ -24,7 +24,7 @@
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-8 row justify-content-center">
-                <h1 class="text-center text-light mt-5 text-success">PACIENTE EXISTENTE</h1>
+                <h1 class="text-center text-light mt-5">PACIENTE EXISTENTE</h1>
                 <h4 class="text-center text-light mt-2">Verifique los datos y actualice si es necesario.</h4>
 
                 <div class="form-group mb-2 col-md-6">
@@ -196,165 +196,197 @@
 
     {% if not paciente and step == 1 %}
     <form action="" method="POST">
-        <h1>PACIENTE NO EXISTE</h1>
-
         {% csrf_token %}
-        <h2>Registro de un nuevo paciente</h2>
-        <label for="documento">Documento:</label>
+        <div class="row justify-content-center">
+            <div class="col-md-8 row justify-content-center">
+                <h1 class="text-center text-light mt-5">PACIENTE NO EXISTE</h1>
+                <h2 class="text-center text-light mt-2">Registro de un nuevo paciente</h2>
+                <div class="form-group mb-2 col-md-6">
+                    <label for="documento" class="text-light">Documento</label>
+                    <input type="text" name="documento_bait" class="form-control" id="documento_bait" value="{{documento}}">
+                    <input type="hidden" name="documento" id="documento" value="{{documento}}">
+                </div>
+                
+                <div class="form-group mb-2 col-md-6">
+                    <label for="tipo_documento" class="text-light">Tipo de documento</label>
+                    <select name="tipo_documento" class="form-select" id="tipo_documento">
+                        <option value="-1">Seleccione...</option>
+                        {% for tipo_documento in tipos_documento %}
+                        <option value="{{tipo_documento.id}}">{{tipo_documento.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <input type="text" name="documento_bait" id="documento_bait" value="{{documento}}">
-        <input type="hidden" name="documento" id="documento" value="{{documento}}">
+                <div class="form-group mb-2 col-md-3">
+                    <label for="nombre" class="text-light">Nombre</label>
+                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="apellido" class="text-light">Apellido</label>
+                    <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Apellido">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="fecha_nacimiento" class="text-light">Fecha de nacimiento</label>
+                    <input type="date" class="form-control" name="fecha_nacimiento" id="fecha_nacimiento">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="edad" class="text-light">Edad</label>
+                    <input type="number" class="form-control" placeholder="Edad del paciente" name="edad" id="edad">
+                </div>
 
-        <label for="tipo_documento">Tipo de documento:</label>
-        <select name="tipo_documento" id="tipo_documento">
-            <option value="-1">Seleccione...</option>
-            {% for tipo_documento in tipos_documento %}
-            <option value="{{tipo_documento.id}}">{{tipo_documento.description}}</option>
-            {% endfor %}
-        </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="in_sexo" class="text-light">Sexo</label>
+                    <select name="sexo" class="form-select" id="sexo">
+                        <option value="-1">Seleccione...</option>
+                        {% for sexo in sexos %}
+                        <option value="{{sexo.id}}">{{sexo.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-
-        <label for="nombre">Nombre</label>
-        <input type="text" name="nombre" id="nombre" placeholder="Nombre">
-        <label for="apellido">Apellido</label>
-        <input type="text" name="apellido" id="apellido" placeholder="Apellido">
-        <!-- Otros campos del formulario para la creación de un paciente -->
-
-        <label for="fecha_nacimiento">Fecha de nacimiento</label>
-        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento">
-
-        <label for="edad">Edad</label>
-        <input type="number" placeholder="Edad del paciente" name="edad" id="edad">
-
-
-        <label for="escolaridad">Escolaridad</label>
-        <select name="escolaridad" id="escolaridad">
-            <option value="-1">Seleccione...</option>
-            {% for escolaridad in escolaridades %}
-            <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="hijos">Número de hijos</label>
-        <input type="number" name="hijos" id="hijos" placeholder="No. de hijos del paciente">
-
-        <label for="in_sexo">Sexo</label>
-        <select name="sexo" id="sexo">
-            <option value="-1">Seleccione...</option>
-            {% for sexo in sexos %}
-            <option value="{{sexo.id}}">{{sexo.description}}</option>
-            {% endfor %}
-        </select>
-
-
-        <label for="direccion">Dirección</label>
-        <input type="text" name="direccion" id="direccion" placeholder="Dirección de residencia">
-
-        <label for="barrio">Barrio</label>
-        <input type="text" name="barrio" id="barrio" placeholder="Barrio de residencia">
-
-        <label for="estado_civil">Estado civil</label>
-        <select name="estado_civil" id="estado_civil">
-            <option value="-1">Seleccione...</option>
-            {% for estado in estados_civil %}
-            <option value="{{estado.id}}">{{estado.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="celular">No. Celular</label>
-        <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
-
-        <label for="correo">Correo</label>
-        <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
-
-        <label for="lectoescritura">Lectoescritura</label>
-        <select name="lectoescritura" id="lectoescritura">
-            <option value="-1">Seleccione...</option>
-            {% for lec in lectoescrituras %}
-            <option value="{{lec.id}}">{{lec.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="lect_nivel">Nivel de lectoescritura</label>
-        <select name="lect_nivel" id="lectoescritura_nivel">
-            <option value="-1">Seleccione...</option>
-            {% for lec_n in lectoescritura_nivel %}
-            <option value="{{lec_n.id}}">{{lec_n.description}}</option>
-            {% endfor %}
-        </select>
-
-        <details class="mult-details">
-            <summary class="mult-summary">Cálculo del paciente</summary>
-            <ul class="mult-ul">
-                {% for calculo in calculos %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
-                            value="{{calculo.id}}" />{{calculo.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="escolaridad" class="text-light">Escolaridad</label>
+                    <select name="escolaridad" class="form-select" id="escolaridad">
+                        <option value="-1">Seleccione...</option>
+                        {% for escolaridad in escolaridades %}
+                        <option value="{{escolaridad.id}}">{{escolaridad.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="hijos" class="text-light">Número de hijos</label>
+                    <input type="number" name="hijos" class="form-control" id="hijos" placeholder="No. de hijos del paciente">
+                </div>
 
 
-        <label for="lectoescritura_nivel">Razonamiento analítico</label>
-        <select name="raz_analitico" id="raz_analitico">
-            <option value="-1">Seleccione...</option>
-            {% for raz in razonamiento_analitico %}
-            <option value="{{raz.id}}">{{raz.description}}</option>
-            {% endfor %}
-        </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="direccion" class="text-light">Dirección</label>
+                    <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Dirección de residencia">
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="barrio" class="text-light">Barrio</label>
+                    <input type="text" class="form-control" name="barrio" id="barrio" placeholder="Barrio de residencia">
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="estado_civil" class="text-light">Estado civil</label>
+                    <select name="estado_civil" class="form-select" id="estado_civil">
+                        <option value="-1">Seleccione...</option>
+                        {% for estado in estados_civil %}
+                        <option value="{{estado.id}}">{{estado.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="etnia">Etnia</label>
-        <select name="etnia" id="etnia">
-            <option value="-1">Seleccione...</option>
-            {% for etnia in etnias %}
-            <option value="{{etnia.id}}">{{etnia.description}}</option>
-            {% endfor %}
-        </select>
+                <div class="form-group mb-2 col-md-6">
+                    <label for="celular" class="text-light">No. Celular</label>
+                    <input type="text" class="form-control" name="celular" id="celular" placeholder="Numero de celular del paciente">
+                </div>
+                <div class="form-group mb-2 col-md-6">
+                    <label for="correo" class="text-light">Correo</label>
+                    <input type="email" class="form-control" name="correo" id="correo" placeholder="Correo electrónico">
+                </div>
 
+                <div class="form-group mb-2 col-md-3">
+                    <label for="lectoescritura" class="text-light">Lectoescritura</label>
+                    <select name="lectoescritura" class="form-select" id="lectoescritura">
+                        <option value="-1">Seleccione...</option>
+                        {% for lec in lectoescrituras %}
+                        <option value="{{lec.id}}">{{lec.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="lect_nivel" class="text-light">Nivel de lectoescritura</label>
+                    <select name="lect_nivel" class="form-select" id="lectoescritura_nivel">
+                        <option value="-1">Seleccione...</option>
+                        {% for lec_n in lectoescritura_nivel %}
+                        <option value="{{lec_n.id}}">{{lec_n.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Cálculo del paciente</summary>
+                        <ul class="mult-ul">
+                            {% for calculo in calculos %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
+                                        value="{{calculo.id}}" />{{calculo.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="lectoescritura_nivel" class="text-light">Razonamiento analítico</label>
+                    <select name="raz_analitico" class="form-select" id="raz_analitico">
+                        <option value="-1">Seleccione...</option>
+                        {% for raz in razonamiento_analitico %}
+                        <option value="{{raz.id}}">{{raz.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="ocupacion">Ocupación</label>
-        <select name="ocupacion" id="ocupacion">
-            <option value="-1">Seleccione...</option>
-            {% for ocupacion in ocupaciones %}
-            <option value="{{ocupacion.id}}">{{ocupacion.description}}</option>
-            {% endfor %}
-        </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="etnia" class="text-light">Etnia</label>
+                    <select name="etnia" class="form-select" id="etnia">
+                        <option value="-1">Seleccione...</option>
+                        {% for etnia in etnias %}
+                        <option value="{{etnia.id}}">{{etnia.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="ocupacion" class="text-light">Ocupación</label>
+                    <select name="ocupacion" class="form-select" id="ocupacion">
+                        <option value="-1">Seleccione...</option>
+                        {% for ocupacion in ocupaciones %}
+                        <option value="{{ocupacion.id}}">{{ocupacion.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Población identificada por particularidades</summary>
+                        <ul class="mult-ul">
+                            {% for pip in pips %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
+                                        value="{{pip.id}}" />{{pip.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
 
+                <div class="form-group mb-2 col-md-5">
+                    <label for="lectoescritura_nivel" class="text-light">Regimen de seguridad social</label>
+                    <select name="rss" class="form-select" id="rss">
+                        <option value="-1">Seleccione...</option>
+                        {% for rss in rsss %}
+                        <option value="{{rss.id}}">{{rss.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-2 row justify-content-center">
+                    <label for="sisben" class="text-light">¿Tiene sisbén?</label>
+                    <input type="checkbox" name="sisben" class="form-check" id="sisben">
+                </div>
+                <div class="form-group mb-2 col-md-5">
+                    <label for="eps" class="text-light">Nombre de la EPS</label>
+                    <select name="eps" class="form-select" id="eps">
+                        <option value="-1">Seleccione...</option>
+                        {% for eps in epss %}
+                        <option value="{{eps.id}}">{{eps.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <details class="mult-details">
-            <summary class="mult-summary">Población identificada por particularidades</summary>
-            <ul class="mult-ul">
-                {% for pip in pips %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
-                            value="{{pip.id}}" />{{pip.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
-
-        <label for="lectoescritura_nivel">Regimen de seguridad social</label>
-        <select name="rss" id="rss">
-            <option value="-1">Seleccione...</option>
-            {% for rss in rsss %}
-            <option value="{{rss.id}}">{{rss.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="sisben">¿Tiene sisbén?</label>
-        <input type="checkbox" name="sisben" id="sisben">
-
-        <label for="eps">Nombre de la EPS</label>
-        <select name="eps" id="eps">
-            <option value="-1">Seleccione...</option>
-            {% for eps in epss %}
-            <option value="{{eps.id}}">{{eps.description}}</option>
-            {% endfor %}
-        </select>
-
-
-        <button type="submit" name="crear_usuario">Crear Paciente</button>
+                <div class="form-group mb-2 col-md-2 mb-5">
+                    <button type="submit" class="btn btn-success" name="crear_usuario">Crear Paciente</button>
+                </div>
+            </div>
+        </div>
     </form>
     {% endif %}
 
@@ -362,254 +394,366 @@
     <!-- STEP 2----------------------------- -->
     <form action="" method="POST">
         {% csrf_token %}
-        <h2>Asesoría Psicológica</h2>
-        <input type="hidden" name="documento" value="{{documento}}">
-        <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
-        <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
-        <label for="a_lugar">Lugar de la asesoría</label>
-        <input type="text" name="a_lugar" id="a_lugar">
+        <div class="row justify-content-center">
+            <div class="col-md-8 row justify-content-center">
+                <h2 class="text-center text-light mt-5">Asesoría Psicológica</h2>
+                <input type="hidden" name="documento" value="{{documento}}">
+                <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
+                <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
+                <div class="form-group mb-2 col-md-4"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="a_lugar" class="text-light">Lugar de la asesoría</label>
+                    <input type="text" name="a_lugar" class="form-control" id="a_lugar">
+                </div>
+                <div class="form-group mb-2 col-md-4"> </div>
 
-        <!-- Multi -->
-        <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
-            <ul class="mult-ul">
-                {% for s in hpcsituaciones %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
-                            value="{{s.id}}" />{{s.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
 
-        <!-- Multi -->
-        <details class="mult-details">
-            <summary class="mult-summary">Tipos de demandas</summary>
-            <ul class="mult-ul">
-                {% for d in hpcdemandas %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
-                            value="{{d.id}}" />{{d.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Situación que origina el contacto</summary>
+                        <ul class="mult-ul">
+                            {% for s in hpcsituaciones %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
+                                        value="{{s.id}}" />{{s.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Tipos de demandas</summary>
+                        <ul class="mult-ul">
+                            {% for d in hpcdemandas %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
+                                        value="{{d.id}}" />{{d.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Tipos de respuestas</summary>
+                        <ul class="mult-ul">
+                            {% for r in hpcrespuestas %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
+                                        value="{{r.id}}" />{{r.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
 
-        <!-- Multi -->
-        <details class="mult-details">
-            <summary class="mult-summary">Tipos de respuestas</summary>
-            <ul class="mult-ul">
-                {% for r in hpcrespuestas %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
-                            value="{{r.id}}" />{{r.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+                <div class="form-group mb-2 col-md-4"> </div>
 
-        <h4>Antecedentes psiquiatricos</h4>
-        <label for="">Diagnóstico de transtorno mental</label>
-        <textarea name="ap_trans" id="ap_trans" cols="30" rows="10"></textarea>
+                <h2 class="text-primary mt-5 text-center">Antecedentes psiquiatricos</h2>
+               
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Diagnóstico de transtorno mental</label>
+                    <textarea name="ap_trans" class="form-control" id="ap_trans" cols="30" rows="10"></textarea>
+                </div>
 
-        <label for="">Categoría del diagóstico (CIE-10)</label>
-        <textarea name="ap_cate" id="ap_cate" cols="30" rows="10"></textarea>
-   
-        <label for="">Diagnóstico por profesional de la salud</label>
-        <textarea name="ap_diag" id="ap_diag" cols="30" rows="10"></textarea>
-    
-        <label for="">Tratamiento</label>
-        <textarea name="ap_trat" id="ap_trat" cols="30" rows="10"></textarea>
-    
-        <label for="">Medicamentos</label>
-        <textarea name="ap_med" id="ap_med" cols="30" rows="10"></textarea>
-    
-        <label for="">Adherencia al tratamiento/medicamentos</label>
-        <textarea name="ap_adh" id="ap_adh" cols="30" rows="10"></textarea>
-    
-        <label for="">Barreras en el acceso</label>
-        <textarea name="ap_barr" id="ap_barr" cols="30" rows="10"></textarea>
-    
-        <label for="">Notas de atención:</label>
-        <textarea name="ap_notas" id="ap_notas" cols="30" rows="10"></textarea>
-    
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Categoría del diagóstico (CIE-10)</label>
+                    <textarea name="ap_cate" class="form-control" id="ap_cate" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Diagnóstico por profesional de la salud</label>
+                    <textarea name="ap_diag" class="form-control"  id="ap_diag" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Tratamiento</label>
+                    <textarea name="ap_trat" class="form-control"  id="ap_trat" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Medicamentos</label>
+                    <textarea name="ap_med"  class="form-control" id="ap_med" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Adherencia al tratamiento/medicamentos</label>
+                    <textarea name="ap_adh" class="form-control" id="ap_adh" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Barreras en el acceso</label>
+                    <textarea name="ap_barr" class="form-control" id="ap_barr" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">   
+                    <label for="" class="text-light">Notas de atención:</label>
+                    <textarea name="ap_notas" class="form-control" id="ap_notas" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
+                
+                <!-- II -->
+                <h2 class="text-primary mt-5">Historial de consumo de sustancias psicoactivas</h2>
+                
+                <div class="form-group mb-2 col-md-3"></div>
+                <div class="form-group mb-2 col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Es o ha sido consumidor</label>
+                    <input type="checkbox" class="form-check" name="sp_eoa" id="sp_eoa">
+                </div>
+                <div class="form-group mb-2 col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Consumo núcleo familiar</label>
+                    <input type="checkbox" class="form-check" name="sp_cf" id="sp_cf">
+                </div>
+                <div class="form-group mb-2 col-md-3"></div>
 
-        <h4>Historial de consumo de sustancias psicoactivas</h4>
-        <label for="">Es o ha sido consumidor</label>
-        <input type="checkbox" name="sp_eoa" id="sp_eoa">
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Edad de inicio</label>
+                    <input type="number" name="sp_edad" class="form-control" id="sp_edad">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Sustancia de inicio</label>
+                    <select name="sp_susi" class="form-select" id="sp_susi">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in spa %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="">Edad de inicio</label>
-        <input type="number" name="sp_edad" id="sp_edad">
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Periodo último consumo</label>
+                    <input type="date" class="form-control" name="sp_ulco" id="sp_ulco">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Sustancia de impacto</label>
+                    <select name="sp_susim" class="form-select" id="sp_susim">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in spa %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="">Sustancia de inicio</label>
-        <select name="sp_susi" id="sp_susi">
-            <option value="-1">Seleccione...</option>
-            {% for s in spa %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Conductas sexuales de riesgo</label>
+                    <textarea name="sp_csr"  class="form-control"id="sp_csr" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Intervenciones previas</label>
+                    <textarea name="sp_ip"  class="form-control"id="sp_ip" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
 
-        <label for="">Periodo último consumo</label>
-        <input type="date" name="sp_ulco" id="sp_ulco">
 
-        <label for="">Sustancia de impacto</label>
-        <select name="sp_susim" id="sp_susim">
-            <option value="-1">Seleccione...</option>
-            {% for s in spa %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Vínculo</label>
+                    <textarea name="sp_vi" class="form-control" id="sp_vi" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Notas de atención</label>
+                    <textarea name="sp_notas" class="form-control" id="sp_notas" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
 
-        <label for="">Conductas sexuales de riesgo</label>
-        <textarea name="sp_csr" id="sp_csr" cols="30" rows="10"></textarea>
-
-        <label for="">Intervenciones previas</label>
-        <textarea name="sp_ip" id="sp_ip" cols="30" rows="10"></textarea>
-
-        <label for="">Consumo núcleo familiar</label>
-        <input type="checkbox" name="sp_cf" id="sp_cf">
-
-        <label for="">Vínculo</label>
-        <textarea name="sp_vi" id="sp_vi" cols="30" rows="10"></textarea>
-
-        <label for="">Notas de atención</label>
-        <textarea name="sp_notas" id="sp_notas" cols="30" rows="10"></textarea>
-   
-        <h2>Comportamiento Suicida</h2>
-   
-        <label for="">Presencia de ideación suicida. Magnitud y persistencia</label>
-        <select name="cs_pi" id="cs_pi">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Presencia de planeación</label>
-        <select name="cs_pp" id="cs_pp">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Disponibilidad de medios</label>
-        <select name="cs_dm" id="cs_dm">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Intentos previos</label>
-        <input type="number" name="cs_ip" id="cs_ip">
-   
-        <label for="">Fecha último intento</label>
-        <input type="date" name="cs_fu" id="cs_fu">
-
-        <label for="">Manejo hospitalario</label>
-        <input type="checkbox" name="cs_mh" id="cs_mh">
-   
-        <label for="">Método de suicidio</label>
-        <input type="text" name="cs_metodo" id="cs_metodo">
-
-        <label for="">Letalidad</label>
-        <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>
-
-        <label for="">Signos y síntomas psiquiatricos</label>
-        <textarea name="cs_ss" id="cs_ss" cols="30" rows="10"></textarea>
-   
-        <label for="">Está bajo tratamiento psiquiátrico</label>
-        <select name="cs_eb" id="cs_eb">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Vive solo/Divorciado/Desempleado</label>
-        <select name="cs_ep" id="cs_ep">
-            <option value="-1">Seleccione...</option>
-            {% for s in ep %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Acontecimientos estresantes</label>
-        <textarea name="cs_ae" id="cs_ae" cols="30" rows="10"></textarea>
-   
-        <label for="">Historial familiar suicidio y vínculos</label>
-        <input type="checkbox" name="cs_hf" id="cs_hf">
-   
-        <label for="">Factores protectores</label>
-        <textarea name="cs_fp" id="cs_fp" cols="30" rows="10"></textarea>
-   
-        <label for="">Red de apoyo</label>
-        <textarea name="cs_ra" id="cs_ra" cols="30" rows="10"></textarea>
-   
-        <label for="">Notas de atención</label>
-        <textarea name="cs_notas" id="cs_notas" cols="30" rows="10"></textarea>
-   
-        <h2>Antecedentes de violencia</h2>
-        <label for="">Se considera víctima de algún tipo de violencia?</label>
-        <input type="checkbox" name="av_vict" id="av_vict">
-
-        <label for="">Tipo(s) de violencia</label>
-        <textarea name="av_tv" id="av_tv" cols="30" rows="10"></textarea>
-
-        <label for="">Agresor(es)</label>
-        <textarea name="av_agre" id="av_agre" cols="30" rows="10"></textarea>
-
-        <label for="">Institución de reporte legal (dejar vacío para NO)</label>
-        <textarea name="av_ir" id="av_ir" cols="30" rows="10"></textarea>
-
-        <label for="">Notas de atención</label>
-        <textarea name="av_notas" id="av_notas" cols="30" rows="10"></textarea>
-
-        <h2>Resultado, conducta a seguir y canalización</h2>
-        <label for="">Acudió la cita?</label>
-        <input type="checkbox" name="re_ac" id="re_ac">
+                <!-- III -->
+                <h2 class="text-primary mt-5">Comportamiento Suicida</h2>
         
-        <label for="">Siguó en contacto</label>
-        <input type="checkbox" name="re_sc" id="re_sc">
-        
-        <label for="">Interrumpió el contacto</label>
-        <input type="checkbox" name="re_ic" id="re_ic">
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
+                    <select name="cs_pi" class="form-select" id="cs_pi">
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="">Inicia en otro programa o institución</label>
-        <input type="checkbox" name="re_io" id="re_io">
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Presencia de planeación</label>
+                    <select name="cs_pp" id="cs_pp" class="form-select">
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="">Pruebas de Tamizaje</label>
-        <textarea name="re_pt" id="re_pt" cols="30" rows="10"></textarea>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Disponibilidad de medios</label>
+                    <select name="cs_dm" id="cs_dm" class="form-select">
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Intentos previos</label>
+                    <input type="number" class="form-control" name="cs_ip" id="cs_ip">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Fecha último intento</label>
+                    <input type="date" class="form-control" name="cs_fu" id="cs_fu">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Método de suicidio</label>
+                    <input type="text" class="form-control" name="cs_metodo" id="cs_metodo">
+                </div>
+                <div class="form-group mb-2 col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Manejo hospitalario</label>
+                    <input type="checkbox" name="cs_mh" class="form-check" id="cs_mh">
+                </div>
 
-        <details class="mult-details">
-            <summary class="mult-summary">Conductas a seguir</summary>
-            <ul class="mult-ul">
-                {% for cs in cas %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
-                            value="{{cs.id}}" />{{cs.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Letalidad</label>
+                    <textarea name="cs_let" class="form-control" id="cs_let" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Signos y síntomas psiquiatricos</label>
+                    <textarea name="cs_ss" class="form-control" id="cs_ss" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Signos y síntomas psiquiatricos</label>
+                    <textarea name="cs_ss" class="form-control" id="cs_ss" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Acontecimientos estresantes</label>
+                    <textarea name="cs_ae" class="form-control" id="cs_ae" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Factores protectores</label>
+                    <textarea name="cs_fp" class="form-control" id="cs_fp" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Red de apoyo</label>
+                    <textarea name="cs_ra" class="form-control" id="cs_ra" cols="30" rows="10"></textarea>
+                </div>
 
-        <label for="">Canalización o derivación (en blanco para ninguna)</label>
-        <textarea name="re_cd" id="re_cd" cols="30" rows="10"></textarea>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Está bajo tratamiento psiquiátrico</label>
+                    <select name="cs_eb" id="cs_eb" class="form-select">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Vive solo/Divorciado/Desempleado</label>
+                    <select name="cs_ep" id="cs_ep" class="form-select">
+                        <option value="-1">Seleccione...</option>
+                        {% for s in ep %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4 row justify-content-center">
+                    <label for="" class="text-light">Tiene historial familiar de suicidio</label>
+                    <input type="checkbox" name="cs_hf" id="cs_hf" class="form-check">
+                </div>
 
-        <label for="">Anotaciones libres del profesional</label>
-        <textarea name="re_notas" id="re_notas" cols="30" rows="10"></textarea>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Notas de atención</label>
+                    <textarea name="cs_notas" class="form-control" id="cs_notas" cols="30" rows="10"></textarea>
+                </div>
 
-        <label for="">Seguimiento del caso</label>
+                <!-- IV -->
+                <h2 class="text-primary mt-5">Antecedentes de violencia</h2>
 
-        <label for="">Seguimiento #1</label>
-        <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
-        
-        <label for="">Seguimiento #2</label>
-        <textarea name="seg_2" id="seg_2" cols="30" rows="10"></textarea>
-        
-        
-        <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
+                <div class="form-group col-md-4"></div>
+                <div class="form-group col-md-4 row justify-content-center">
+                    <label for="" class="text-light">Se considera víctima de algún tipo de violencia?</label>
+                    <input type="checkbox" name="av_vict" class="form-check" id="av_vict">
+                </div>
+                <div class="form-group col-md-4"></div>
+
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Tipo(s) de violencia</label>
+                    <textarea name="av_tv" class="form-control" id="av_tv" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Agresor(es)</label>
+                    <textarea name="av_agre" class="form-control" id="av_agre" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-2"></div>
+
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Institución de reporte legal (dejar vacío para NO)</label>
+                    <textarea name="av_ir" class="form-control" id="av_ir" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-light">Notas de atención</label>
+                    <textarea name="av_notas" class="form-control" id="av_notas" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-2"></div>
+
+
+                <h2 class="text-primary mt-5">Resultado, conducta a seguir y canalización</h2>
+
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Acudió la cita?</label>
+                    <input type="checkbox" class="form-check" name="re_ac" id="re_ac">
+                </div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Siguó en contacto</label>
+                    <input type="checkbox" class="form-check" name="re_sc" id="re_sc">
+                </div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Interrumpió el contacto</label>
+                    <input type="checkbox" class="form-check" name="re_ic" id="re_ic">
+                </div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Inicia en otro programa o institución</label>
+                    <input type="checkbox" class="form-check" name="re_io" id="re_io">
+                </div>
+
+                <div class="form-group col-md-3"></div>
+                <div class="form-group col-md-4 mt-3 mb-3">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Conductas a seguir</summary>
+                        <ul class="mult-ul">
+                            {% for cs in cas %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
+                                        value="{{cs.id}}" />{{cs.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group col-md-3"></div>
+                
+                <div class="form-group col-md-4">
+                    <label for="" class="text-white">Pruebas de Tamizaje</label>
+                    <textarea name="re_pt" class="form-control" id="re_pt" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-white">Canalización o derivación (en blanco para ninguna)</label>
+                    <textarea name="re_cd" class="form-control" id="re_cd" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-white">Anotaciones libres del profesional</label>
+                    <textarea name="re_notas" class="form-control" id="re_notas" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="form-group col-md-4"></div>
+
+                <h2 class="text-primary mt-5">Seguimiento del caso</h2>
+
+                <div class="form-group col-md-6">
+                    <label for="" class="text-light">Seguimiento #1</label>
+                    <textarea name="seg_1" class="form-control"  id="seg_1" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="" class="text-light">Seguimiento #2</label>
+                    <textarea name="seg_2"  class="form-control" id="seg_2" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="form-group col-md-4"></div>
+                <div class="form-group col-md-3 mb-5 mt-5">
+                    <button type="submit" class="btn btn-success" name="detalles_asesoria">Guardar asesoría</button>
+                </div>
+                <div class="form-group col-md-4" ></div>
+            </div>
+        </div>
     </form>
     {% endif %}
     {% if step == 3 %}
