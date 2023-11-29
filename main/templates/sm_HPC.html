@@ -24,15 +24,15 @@
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-8 row">
-                <h1 class="text-center">PACIENTE EXISTENTE</h1>
-                <h4 class="text-center">Por favor verifique los datos del paciente. (actualicelo si es necesario).</h4>
+                <h1 class="text-center text-light">PACIENTE EXISTENTE</h1>
+                <h4 class="text-center text-warning">Verifique los datos y actualice si es necesario.</h4>
 
                 <div class="form-group mb-2 col-md-6">
-                    <label for="e_documento">Documento:</label>
+                    <label for="e_documento" class="text-light">Documento</label>
                     <input type="text" class="form-control" name="e_documento" id="e_documento" readonly value="{{paciente.documento}}">
                 </div>
                 <div class="form-group mb-2 col-md-6">
-                    <label for="e_tipo_documento">Tipo de documento:</label>
+                    <label for="e_tipo_documento" class="text-light">Tipo de documento</label>
                     <select name="e_tipo_documento" class="form-select" id="e_tipo_documento">
                         {% for tipo_documento in tipos_documento %}
                         <option value="{{ tipo_documento.id }}" {% if tipo_documento.id == paciente.tipo_documento_id %}selected{% endif %}>
@@ -44,56 +44,61 @@
                 
 
                <div class="form-group mb-2 col-md-6">
-                    <label for="e_nombre">Nombre</label>
+                    <label for="e_nombre" class="text-light">Nombre</label>
                     <input type="text" class="form-control" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
                </div>
 
                <div class="form-group mb-2 col-md-3">
-                    <label for="e_fecha_nacimiento">Fecha de nacimiento</label>
+                    <label for="e_fecha_nacimiento" class="text-light">Fecha de nacimiento</label>
                     <input type="date" name="e_fecha_nacimiento" class="form-control" id="fecha_nacimiento"
                         value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
                </div>
+
                <div class="form-group mb-2 col-md-3">
-                    <label for="e_edad">Edad:</label>
+                    <label for="e_edad" class="text-light">Edad:</label>
                     <input type="text" class="form-control" name="e_edad" id="e_edad" value="{{paciente.edad}}">
                </div>
 
-
-               <div class="form-group mb-2 col-md-3">
-                    
+               <div class="form-group mb-2 col-md-4">
+                    <label for="e_sexo" class="text-light">Sexo</label>
+                    <select name="e_sexo" class="form-select" id="e_sexo">
+                        {% for sexo in sexos %}
+                        <option value="{{sexo.id}}" {% if sexo.id == paciente.sexo_id %}selected{% endif %}>
+                            {{sexo.description}}</option>
+                        {% endfor %}
+                    </select>
                </div>
 
-                
+               <div class="form-group mb-2 col-md-4">
+                    <label for="e_direccion" class="text-light">Dirección</label>
+                    <input type="text" name="e_direccion" class="form-control" id="e_direccion" placeholder="Dirección de residencia"
+                        value="{{paciente.direccion}}">
+               </div>
+
+               <div class="form-group mb-2 col-md-4">
+                    <label for="e_barrio" class="text-light">Barrio</label>
+                    <input type="text" name="e_barrio" class="form-control" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
+               </div>
+            
+            
+            <label for="e_escolaridad" class="text-light">Escolaridad</label>
+            <select name="e_escolaridad" id="e_escolaridad">
+                {% for escolaridad in escolaridades %}
+                <option value="{{escolaridad.id}}" {% if escolaridad.id == paciente.escolaridad_id %}selected{% endif %}>
+                    {{escolaridad.description}}</option>
+                {% endfor %}
+            </select>
 
                 
 
-                
-
-                <label for="e_escolaridad">Escolaridad</label>
-                <select name="e_escolaridad" id="e_escolaridad">
-                    {% for escolaridad in escolaridades %}
-                    <option value="{{escolaridad.id}}" {% if escolaridad.id == paciente.escolaridad_id %}selected{% endif %}>
-                        {{escolaridad.description}}</option>
-                    {% endfor %}
-                </select>
-
-                <label for="e_hijos">Numero de hijos</label>
+                <label for="e_hijos" class="text-light">Numero de hijos</label>
                 <input type="number" name="e_hijos" id="e_hijos" value="{{paciente.numero_hijos}}">
 
-                <label for="e_sexo">Sexo</label>
-                <select name="e_sexo" id="e_sexo">
-                    {% for sexo in sexos %}
-                    <option value="{{sexo.id}}" {% if sexo.id == paciente.sexo_id %}selected{% endif %}>
-                        {{sexo.description}}</option>
-                    {% endfor %}
-                </select>
+                
 
-                <label for="e_direccion">Dirección</label>
-                <input type="text" name="e_direccion" id="e_direccion" placeholder="Dirección de residencia"
-                    value="{{paciente.direccion}}">
+                
 
-                <label for="e_barrio">Barrio</label>
-                <input type="text" name="e_barrio" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
+                
 
                 <label for="e_estado_civil">Estado civil</label>
                 <select name="e_estado_civil" id="e_estado_civil">
