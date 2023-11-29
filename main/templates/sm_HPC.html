@@ -3,12 +3,19 @@
 {% block content %}
 <main id="main_home">
     {% if step == 0 %}
-    <form action="" method="POST">
+    <form class="container" action="" method="POST">
         {% csrf_token %}
-        <h2>Por favor ingrese el documento del paciente</h2>
-        <label for="in_documento">No. documento</label>
-        <input type="text" name="documento" id="in_documento" placeholder="Documento del paciente">
-        <button type="submit" name="comprobar_documento">Continuar</button>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center">Por favor ingrese el documento del paciente</h2>
+                <div class="form-group mb-2">
+                    <input type="text" class="form-control" name="documento" id="in_documento" placeholder="Documento del paciente">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary" name="comprobar_documento">Continuar</button>
+                </div>
+            </div>
+        </div>
     </form>
     {% endif %}
 
@@ -562,8 +569,16 @@
         <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
     </form>
     {% endif %}
+    {% if step == 3 %}
+
+    <div>
+        <h3>Hoja de primer contacto guardada correctamente</h3>
+        <button>Volver al menú</button>
+        <button>Ingresar otro HPC</button>
+    </div>
+
+    {% endif %}
 
 
-    {{step}}
 </main>
 {% endblock %}
