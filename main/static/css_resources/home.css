@@ -1,5 +1,6 @@
-#main_home{
-    height: 71.4vh;
+
+textarea{
+    resize: none;
 }
 
 .bg-gradient-blue{
