@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main id="main_home">
+<main id="main_hpc">
     {% if step == 0 %}
     <form class="container" action="" method="POST">
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2 class="text-center">Por favor ingrese el documento del paciente</h2>
+                <h2 class="text-center text-light">Por favor ingrese el documento del paciente</h2>
                 <div class="form-group mb-2">
                     <input type="text" class="form-control" name="documento" id="in_documento" placeholder="Documento del paciente">
                 </div>
@@ -22,132 +22,157 @@
     {% if paciente and step == 1 %}
     <form action="" method="POST">
         {% csrf_token %}
-        <h1>PACIENTE EXISTENTE</h1>
-        <h4>Por favor verifique los datos del paciente. (actualicelo si es necesario).</h4>
+        <div class="row justify-content-center">
+            <div class="col-md-8 row">
+                <h1 class="text-center">PACIENTE EXISTENTE</h1>
+                <h4 class="text-center">Por favor verifique los datos del paciente. (actualicelo si es necesario).</h4>
 
-        <label for="e_documento">Documento:</label>
-        <input type="text" name="e_documento" id="e_documento" readonly value="{{paciente.documento}}">
+                <div class="form-group mb-2 col-md-6">
+                    <label for="e_documento">Documento:</label>
+                    <input type="text" class="form-control" name="e_documento" id="e_documento" readonly value="{{paciente.documento}}">
+                </div>
+                <div class="form-group mb-2 col-md-6">
+                    <label for="e_tipo_documento">Tipo de documento:</label>
+                    <select name="e_tipo_documento" class="form-select" id="e_tipo_documento">
+                        {% for tipo_documento in tipos_documento %}
+                        <option value="{{ tipo_documento.id }}" {% if tipo_documento.id == paciente.tipo_documento_id %}selected{% endif %}>
+                            {{ tipo_documento.description }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
 
-        <label for="e_nombre">Nombre</label>
-        <input type="text" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
+               <div class="form-group mb-2 col-md-6">
+                    <label for="e_nombre">Nombre</label>
+                    <input type="text" class="form-control" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
+               </div>
 
-        <label for="e_tipo_documento">Tipo de documento:</label>
-        <select name="e_tipo_documento" id="e_tipo_documento">
-            {% for tipo_documento in tipos_documento %}
-            <option value="{{ tipo_documento.id }}" {% if tipo_documento.id == paciente.tipo_documento_id %}selected{% endif %}>
-                {{ tipo_documento.description }}
-            </option>
-            {% endfor %}
-        </select>
+               <div class="form-group mb-2 col-md-3">
+                    <label for="e_fecha_nacimiento">Fecha de nacimiento</label>
+                    <input type="date" name="e_fecha_nacimiento" class="form-control" id="fecha_nacimiento"
+                        value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
+               </div>
+               <div class="form-group mb-2 col-md-3">
+                    <label for="e_edad">Edad:</label>
+                    <input type="text" class="form-control" name="e_edad" id="e_edad" value="{{paciente.edad}}">
+               </div>
 
-        <label for="e_fecha_nacimiento">Fecha de nacimiento</label>
-        <input type="date" name="e_fecha_nacimiento" id="fecha_nacimiento"
-            value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
 
-        <label for="e_edad">Edad:</label>
-        <input type="text" name="e_edad" id="e_edad" value="{{paciente.edad}}">
+               <div class="form-group mb-2 col-md-3">
+                    
+               </div>
 
-        <label for="e_escolaridad">Escolaridad</label>
-        <select name="e_escolaridad" id="e_escolaridad">
-            {% for escolaridad in escolaridades %}
-            <option value="{{escolaridad.id}}" {% if escolaridad.id == paciente.escolaridad_id %}selected{% endif %}>
-                {{escolaridad.description}}</option>
-            {% endfor %}
-        </select>
+                
 
-        <label for="e_hijos">Numero de hijos</label>
-        <input type="number" name="e_hijos" id="e_hijos" value="{{paciente.numero_hijos}}">
+                
 
-        <label for="e_sexo">Sexo</label>
-        <select name="e_sexo" id="e_sexo">
-            {% for sexo in sexos %}
-            <option value="{{sexo.id}}" {% if sexo.id == paciente.sexo_id %}selected{% endif %}>
-                {{sexo.description}}</option>
-            {% endfor %}
-        </select>
+                
 
-        <label for="e_direccion">Dirección</label>
-        <input type="text" name="e_direccion" id="e_direccion" placeholder="Dirección de residencia"
-            value="{{paciente.direccion}}">
+                <label for="e_escolaridad">Escolaridad</label>
+                <select name="e_escolaridad" id="e_escolaridad">
+                    {% for escolaridad in escolaridades %}
+                    <option value="{{escolaridad.id}}" {% if escolaridad.id == paciente.escolaridad_id %}selected{% endif %}>
+                        {{escolaridad.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="e_barrio">Barrio</label>
-        <input type="text" name="e_barrio" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
+                <label for="e_hijos">Numero de hijos</label>
+                <input type="number" name="e_hijos" id="e_hijos" value="{{paciente.numero_hijos}}">
 
-        <label for="e_estado_civil">Estado civil</label>
-        <select name="e_estado_civil" id="e_estado_civil">
-            {% for estado in estados_civil %}
-            <option value="{{estado.id}}" {% if estado.id == paciente.estado_id %}selected{% endif %}>
-                {{estado.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_sexo">Sexo</label>
+                <select name="e_sexo" id="e_sexo">
+                    {% for sexo in sexos %}
+                    <option value="{{sexo.id}}" {% if sexo.id == paciente.sexo_id %}selected{% endif %}>
+                        {{sexo.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="e_celular">No. Celular</label>
-        <input type="text" name="e_celular" id="e_celular" placeholder="Numero de celular del paciente"
-            value="{{paciente.celular}}">
+                <label for="e_direccion">Dirección</label>
+                <input type="text" name="e_direccion" id="e_direccion" placeholder="Dirección de residencia"
+                    value="{{paciente.direccion}}">
 
-        <label for="e_correo">Correo</label>
-        <input type="email" name="e_correo" id="e_correo" value="{{paciente.correo}}" placeholder="Correo electrónico">
+                <label for="e_barrio">Barrio</label>
+                <input type="text" name="e_barrio" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
 
-        <label for="e_lectoescritura">Lectoescritura</label>
-        <select name="e_lect" id="e_lectoescritura">
-            {% for lec in lectoescrituras %}
-            <option value="{{lec.id}}" {% if lec.id == paciente.lectoescritura_indicador_id %}selected{% endif %}>
-                {{lec.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_estado_civil">Estado civil</label>
+                <select name="e_estado_civil" id="e_estado_civil">
+                    {% for estado in estados_civil %}
+                    <option value="{{estado.id}}" {% if estado.id == paciente.estado_id %}selected{% endif %}>
+                        {{estado.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="e_lect_nivel">Nivel de lectoescritura</label>
-        <select name="e_lect2" id="e_lect_nivel">
-            {% for lec_n in lectoescritura_nivel %}
-            <option value="{{lec_n.id}}" {% if lec_n.id == paciente.lectoescritura_nivel_id %}selected{% endif %}>
-                {{lec_n.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_celular">No. Celular</label>
+                <input type="text" name="e_celular" id="e_celular" placeholder="Numero de celular del paciente"
+                    value="{{paciente.celular}}">
 
-        <label for="e_raz_analitico">Razonamiento analítico</label>
-        <select name="e_raz_analitico" id="e_raz_analitico">
-            {% for raz in razonamiento_analitico %}
-            <option value="{{raz.id}}" {% if raz.id == paciente.razonamiento_analitico_id %}selected{% endif %}>
-                {{raz.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_correo">Correo</label>
+                <input type="email" name="e_correo" id="e_correo" value="{{paciente.correo}}" placeholder="Correo electrónico">
 
-        <label for="e_etnia">Etnia</label>
-        <select name="e_etnia" id="e_etnia">
-            {% for etnia in etnias %}
-            <option value="{{etnia.id}}" {% if etnia.id == paciente.etnia_id %}selected{% endif %}>
-                {{etnia.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_lectoescritura">Lectoescritura</label>
+                <select name="e_lect" id="e_lectoescritura">
+                    {% for lec in lectoescrituras %}
+                    <option value="{{lec.id}}" {% if lec.id == paciente.lectoescritura_indicador_id %}selected{% endif %}>
+                        {{lec.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="e_ocupacion">Ocupación</label>
-        <select name="e_ocupacion" id="e_ocupacion">
-            {% for ocupacion in ocupaciones %}
-            <option value="{{ocupacion.id}}" {% if ocupacion.id == paciente.ocupacion_id %}selected{% endif %} >
-                {{ocupacion.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_lect_nivel">Nivel de lectoescritura</label>
+                <select name="e_lect2" id="e_lect_nivel">
+                    {% for lec_n in lectoescritura_nivel %}
+                    <option value="{{lec_n.id}}" {% if lec_n.id == paciente.lectoescritura_nivel_id %}selected{% endif %}>
+                        {{lec_n.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="e_rss">Regimen de seguridad social</label>
-        <select name="e_rss" id="e_rss">
-            {% for rss in rsss %}
-            <option value="{{rss.id}}" {% if rss.id == paciente.regimen_seguridad_id %}selected{% endif %} >
-                {{rss.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_raz_analitico">Razonamiento analítico</label>
+                <select name="e_raz_analitico" id="e_raz_analitico">
+                    {% for raz in razonamiento_analitico %}
+                    <option value="{{raz.id}}" {% if raz.id == paciente.razonamiento_analitico_id %}selected{% endif %}>
+                        {{raz.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="e_sisben">¿Tiene sisbén?</label>
-        <input type="checkbox" name="e_sisben" id="e_sisben" {% if paciente.sisben %}checked{% endif %}>
+                <label for="e_etnia">Etnia</label>
+                <select name="e_etnia" id="e_etnia">
+                    {% for etnia in etnias %}
+                    <option value="{{etnia.id}}" {% if etnia.id == paciente.etnia_id %}selected{% endif %}>
+                        {{etnia.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="eps">Nombre de la EPS</label>
-        <select name="eps" id="eps">
-            {% for eps in epss %}
-            <option value="{{eps.id}}" {% if eps.id == paciente.eps_id %}selected{% endif %} >
-                {{eps.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="e_ocupacion">Ocupación</label>
+                <select name="e_ocupacion" id="e_ocupacion">
+                    {% for ocupacion in ocupaciones %}
+                    <option value="{{ocupacion.id}}" {% if ocupacion.id == paciente.ocupacion_id %}selected{% endif %} >
+                        {{ocupacion.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <button type="submit" name="actualizar_usuario">Continuar</button>
+                <label for="e_rss">Regimen de seguridad social</label>
+                <select name="e_rss" id="e_rss">
+                    {% for rss in rsss %}
+                    <option value="{{rss.id}}" {% if rss.id == paciente.regimen_seguridad_id %}selected{% endif %} >
+                        {{rss.description}}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="e_sisben">¿Tiene sisbén?</label>
+                <input type="checkbox" name="e_sisben" id="e_sisben" {% if paciente.sisben %}checked{% endif %}>
+
+                <label for="eps">Nombre de la EPS</label>
+                <select name="eps" id="eps">
+                    {% for eps in epss %}
+                    <option value="{{eps.id}}" {% if eps.id == paciente.eps_id %}selected{% endif %} >
+                        {{eps.description}}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" name="actualizar_usuario">Continuar</button>
+
+            </div>
+        </div>
     </form>
     {% endif %}
 
