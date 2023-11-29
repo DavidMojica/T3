@@ -2,6 +2,11 @@
     height: 71.4vh;
 }
 
+#main-hpc{
+    background-image: linear-gradient(to right top, #039bcc, #1ca5c9, #37aec5, #51b7c1, #69bfbe);
+    overflow-x: hidden;
+}
+
 .s_index{
     z-index: 10000;
 }
