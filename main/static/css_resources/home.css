@@ -2,7 +2,7 @@
     height: 71.4vh;
 }
 
-#main-hpc{
+.bg-gradient-blue{
     background-image: linear-gradient(to right top, #039bcc, #1ca5c9, #37aec5, #51b7c1, #69bfbe);
     overflow-x: hidden;
 }
