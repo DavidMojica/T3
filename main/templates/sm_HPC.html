@@ -686,50 +686,74 @@
                 <div class="form-group col-md-2"></div>
 
 
-                <h2>Resultado, conducta a seguir y canalización</h2>
-                <label for="">Acudió la cita?</label>
-                <input type="checkbox" name="re_ac" id="re_ac">
-                
-                <label for="">Siguó en contacto</label>
-                <input type="checkbox" name="re_sc" id="re_sc">
-                
-                <label for="">Interrumpió el contacto</label>
-                <input type="checkbox" name="re_ic" id="re_ic">
+                <h2 class="text-primary mt-5">Resultado, conducta a seguir y canalización</h2>
 
-                <label for="">Inicia en otro programa o institución</label>
-                <input type="checkbox" name="re_io" id="re_io">
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Acudió la cita?</label>
+                    <input type="checkbox" class="form-check" name="re_ac" id="re_ac">
+                </div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Siguó en contacto</label>
+                    <input type="checkbox" class="form-check" name="re_sc" id="re_sc">
+                </div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Interrumpió el contacto</label>
+                    <input type="checkbox" class="form-check" name="re_ic" id="re_ic">
+                </div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Inicia en otro programa o institución</label>
+                    <input type="checkbox" class="form-check" name="re_io" id="re_io">
+                </div>
 
-                <label for="">Pruebas de Tamizaje</label>
-                <textarea name="re_pt" id="re_pt" cols="30" rows="10"></textarea>
-
-                <details class="mult-details">
-                    <summary class="mult-summary">Conductas a seguir</summary>
-                    <ul class="mult-ul">
-                        {% for cs in cas %}
-                        <li class="mult-li">
-                            <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
-                                    value="{{cs.id}}" />{{cs.description}}</label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </details>
-
-                <label for="">Canalización o derivación (en blanco para ninguna)</label>
-                <textarea name="re_cd" id="re_cd" cols="30" rows="10"></textarea>
-
-                <label for="">Anotaciones libres del profesional</label>
-                <textarea name="re_notas" id="re_notas" cols="30" rows="10"></textarea>
-
-                <label for="">Seguimiento del caso</label>
-
-                <label for="">Seguimiento #1</label>
-                <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
-                
-                <label for="">Seguimiento #2</label>
-                <textarea name="seg_2" id="seg_2" cols="30" rows="10"></textarea>
+                <div class="form-group col-md-3"></div>
+                <div class="form-group col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Conductas a seguir</summary>
+                        <ul class="mult-ul">
+                            {% for cs in cas %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
+                                        value="{{cs.id}}" />{{cs.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group col-md-3"></div>
                 
                 
-                <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
+                
+                <div class="form-group col-md-4">
+                    <label for="" class="text-white">Pruebas de Tamizaje</label>
+                    <textarea name="re_pt" class="form-control" id="re_pt" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-white">Canalización o derivación (en blanco para ninguna)</label>
+                    <textarea name="re_cd" class="form-control" id="re_cd" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="" class="text-white">Anotaciones libres del profesional</label>
+                    <textarea name="re_notas" class="form-control" id="re_notas" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="form-group col-md-4"></div>
+
+                <h2 class="text-primary mt-5">Seguimiento del caso</h2>
+
+                <div class="form-group col-md-6">
+                    <label for="">Seguimiento #1</label>
+                    <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Seguimiento #2</label>
+                    <textarea name="seg_2" id="seg_2" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="form-group col-md-4"></div>
+                <div class="form-group col-md-3 row justify-content-center">
+                    <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
+                </div>
+                <div class="form-group col-md-4"></div>
             </div>
         </div>
     </form>
