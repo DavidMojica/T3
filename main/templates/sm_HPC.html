@@ -278,12 +278,12 @@
                 </div>
 
                 <div class="form-group mb-2 col-md-6">
-                    <label for="celular">No. Celular</label>
-                    <input type="text" name="celular" id="celular" placeholder="Numero de celular del paciente">
+                    <label for="celular" class="text-light">No. Celular</label>
+                    <input type="text" class="form-control" name="celular" id="celular" placeholder="Numero de celular del paciente">
                 </div>
                 <div class="form-group mb-2 col-md-6">
-                    <label for="correo">Correo</label>
-                    <input type="email" name="correo" id="correo" placeholder="Correo electrónico">
+                    <label for="correo" class="text-light">Correo</label>
+                    <input type="email" class="form-control" name="correo" id="correo" placeholder="Correo electrónico">
                 </div>
 
                 <div class="form-group mb-2 col-md-3">
@@ -327,60 +327,64 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-3"></div>
-                
-
-                <label for="etnia">Etnia</label>
-                <select name="etnia" id="etnia">
-                    <option value="-1">Seleccione...</option>
-                    {% for etnia in etnias %}
-                    <option value="{{etnia.id}}">{{etnia.description}}</option>
-                    {% endfor %}
-                </select>
-
-
-                <label for="ocupacion">Ocupación</label>
-                <select name="ocupacion" id="ocupacion">
-                    <option value="-1">Seleccione...</option>
-                    {% for ocupacion in ocupaciones %}
-                    <option value="{{ocupacion.id}}">{{ocupacion.description}}</option>
-                    {% endfor %}
-                </select>
-
-
-                <details class="mult-details">
-                    <summary class="mult-summary">Población identificada por particularidades</summary>
-                    <ul class="mult-ul">
-                        {% for pip in pips %}
-                        <li class="mult-li">
-                            <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
-                                    value="{{pip.id}}" />{{pip.description}}</label>
-                        </li>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="etnia" class="text-light">Etnia</label>
+                    <select name="etnia" class="form-select" id="etnia">
+                        <option value="-1">Seleccione...</option>
+                        {% for etnia in etnias %}
+                        <option value="{{etnia.id}}">{{etnia.description}}</option>
                         {% endfor %}
-                    </ul>
-                </details>
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="ocupacion" class="text-light">Ocupación</label>
+                    <select name="ocupacion" class="form-select" id="ocupacion">
+                        <option value="-1">Seleccione...</option>
+                        {% for ocupacion in ocupaciones %}
+                        <option value="{{ocupacion.id}}">{{ocupacion.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Población identificada por particularidades</summary>
+                        <ul class="mult-ul">
+                            {% for pip in pips %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="pip_{{pip.id}}"
+                                        value="{{pip.id}}" />{{pip.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
 
-                <label for="lectoescritura_nivel">Regimen de seguridad social</label>
-                <select name="rss" id="rss">
-                    <option value="-1">Seleccione...</option>
-                    {% for rss in rsss %}
-                    <option value="{{rss.id}}">{{rss.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-5">
+                    <label for="lectoescritura_nivel" class="text-light">Regimen de seguridad social</label>
+                    <select name="rss" class="form-select" id="rss">
+                        <option value="-1">Seleccione...</option>
+                        {% for rss in rsss %}
+                        <option value="{{rss.id}}">{{rss.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-2 row justify-content-center">
+                    <label for="sisben" class="text-light">¿Tiene sisbén?</label>
+                    <input type="checkbox" name="sisben" class="form-check" id="sisben">
+                </div>
+                <div class="form-group mb-2 col-md-5">
+                    <label for="eps" class="text-light">Nombre de la EPS</label>
+                    <select name="eps" class="form-select" id="eps">
+                        <option value="-1">Seleccione...</option>
+                        {% for eps in epss %}
+                        <option value="{{eps.id}}">{{eps.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <label for="sisben">¿Tiene sisbén?</label>
-                <input type="checkbox" name="sisben" id="sisben">
-
-                <label for="eps">Nombre de la EPS</label>
-                <select name="eps" id="eps">
-                    <option value="-1">Seleccione...</option>
-                    {% for eps in epss %}
-                    <option value="{{eps.id}}">{{eps.description}}</option>
-                    {% endfor %}
-                </select>
-
-
-                <button type="submit" name="crear_usuario">Crear Paciente</button>
+                <div class="form-group mb-2 col-md-2">
+                    <button type="submit" class="btn btn-success" name="crear_usuario">Crear Paciente</button>
+                </div>
             </div>
         </div>
     </form>
