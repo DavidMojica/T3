@@ -554,43 +554,50 @@
                 <div class="form-group mb-2 col-md-2"></div>
 
                 <!-- III -->
-                <h2>Comportamiento Suicida</h2>
+                <h2 class="text-primary mt-5">Comportamiento Suicida</h2>
         
-                <label for="" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
-                <select name="cs_pi" id="cs_pi">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in snn %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
+                    <select name="cs_pi" class="form-select" id="cs_pi">
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <label for="">Presencia de planeación</label>
-                <select name="cs_pp" id="cs_pp">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in snn %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Presencia de planeación</label>
+                    <select name="cs_pp" id="cs_pp" class="form-select">
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                <label for="">Disponibilidad de medios</label>
-                <select name="cs_dm" id="cs_dm">
-                    <option value="-1">Seleccione...</option>
-                    {% for s in snn %}
-                    <option value="{{s.id}}">{{s.description}}</option>
-                    {% endfor %}
-                </select>
-
-                <label for="">Intentos previos</label>
-                <input type="number" name="cs_ip" id="cs_ip">
-        
-                <label for="">Fecha último intento</label>
-                <input type="date" name="cs_fu" id="cs_fu">
-
-                <label for="">Manejo hospitalario</label>
-                <input type="checkbox" name="cs_mh" id="cs_mh">
-        
-                <label for="">Método de suicidio</label>
-                <input type="text" name="cs_metodo" id="cs_metodo">
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Disponibilidad de medios</label>
+                    <select name="cs_dm" id="cs_dm" class="form-select">
+                        {% for s in snn %}
+                        <option value="{{s.id}}">{{s.description}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Intentos previos</label>
+                    <input type="number" class="form-control" name="cs_ip" id="cs_ip">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Fecha último intento</label>
+                    <input type="date" class="form-control" name="cs_fu" id="cs_fu">
+                </div>
+                <div class="form-group mb-2 col-md-3">
+                    <label for="" class="text-light">Método de suicidio</label>
+                    <input type="text" class="form-control" name="cs_metodo" id="cs_metodo">
+                </div>
+                <div class="form-group mb-2 col-md-3 row justify-content-center">
+                    <label for="" class="text-light">Manejo hospitalario</label>
+                    <input type="checkbox" name="cs_mh" id="cs_mh">
+                </div>
 
                 <label for="">Letalidad</label>
                 <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>
