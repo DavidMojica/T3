@@ -394,254 +394,283 @@
     <!-- STEP 2----------------------------- -->
     <form action="" method="POST">
         {% csrf_token %}
-        <h2>Asesoría Psicológica</h2>
-        <input type="hidden" name="documento" value="{{documento}}">
-        <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
-        <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
-        <label for="a_lugar">Lugar de la asesoría</label>
-        <input type="text" name="a_lugar" id="a_lugar">
+        <div class="row justify-content-center">
+            <div class="col-md-8 row justify-content-center">
+                <h2 class="text-center text-light mt-5">Asesoría Psicológica</h2>
+                <input type="hidden" name="documento" value="{{documento}}">
+                <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
+                <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
+                <div class="form-group mb-2 col-md-4"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="a_lugar" class="text-light">Lugar de la asesoría</label>
+                    <input type="text" name="a_lugar" class="form-control" id="a_lugar">
+                </div>
+                <div class="form-group mb-2 col-md-4"> </div>
 
-        <!-- Multi -->
-        <details class="mult-details">
-            <summary class="mult-summary">Situación que origina el contacto</summary>
-            <ul class="mult-ul">
-                {% for s in hpcsituaciones %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
-                            value="{{s.id}}" />{{s.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
 
-        <!-- Multi -->
-        <details class="mult-details">
-            <summary class="mult-summary">Tipos de demandas</summary>
-            <ul class="mult-ul">
-                {% for d in hpcdemandas %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
-                            value="{{d.id}}" />{{d.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Situación que origina el contacto</summary>
+                        <ul class="mult-ul">
+                            {% for s in hpcsituaciones %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
+                                        value="{{s.id}}" />{{s.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Tipos de demandas</summary>
+                        <ul class="mult-ul">
+                            {% for d in hpcdemandas %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
+                                        value="{{d.id}}" />{{d.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <details class="mult-details">
+                        <summary class="mult-summary">Tipos de respuestas</summary>
+                        <ul class="mult-ul">
+                            {% for r in hpcrespuestas %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
+                                        value="{{r.id}}" />{{r.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
 
-        <!-- Multi -->
-        <details class="mult-details">
-            <summary class="mult-summary">Tipos de respuestas</summary>
-            <ul class="mult-ul">
-                {% for r in hpcrespuestas %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
-                            value="{{r.id}}" />{{r.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
+                <div class="form-group mb-2 col-md-4"> </div>
+                
 
-        <h4>Antecedentes psiquiatricos</h4>
-        <label for="">Diagnóstico de transtorno mental</label>
-        <textarea name="ap_trans" id="ap_trans" cols="30" rows="10"></textarea>
+                <h4 class="text-light text-center">Antecedentes psiquiatricos</h4>
+               
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Diagnóstico de transtorno mental</label>
+                    <textarea name="ap_trans" class="form-control" id="ap_trans" cols="30" rows="10"></textarea>
+                </div>
 
-        <label for="">Categoría del diagóstico (CIE-10)</label>
-        <textarea name="ap_cate" id="ap_cate" cols="30" rows="10"></textarea>
-   
-        <label for="">Diagnóstico por profesional de la salud</label>
-        <textarea name="ap_diag" id="ap_diag" cols="30" rows="10"></textarea>
-    
-        <label for="">Tratamiento</label>
-        <textarea name="ap_trat" id="ap_trat" cols="30" rows="10"></textarea>
-    
-        <label for="">Medicamentos</label>
-        <textarea name="ap_med" id="ap_med" cols="30" rows="10"></textarea>
-    
-        <label for="">Adherencia al tratamiento/medicamentos</label>
-        <textarea name="ap_adh" id="ap_adh" cols="30" rows="10"></textarea>
-    
-        <label for="">Barreras en el acceso</label>
-        <textarea name="ap_barr" id="ap_barr" cols="30" rows="10"></textarea>
-    
-        <label for="">Notas de atención:</label>
-        <textarea name="ap_notas" id="ap_notas" cols="30" rows="10"></textarea>
-    
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Categoría del diagóstico (CIE-10)</label>
+                    <textarea name="ap_cate" class="form-control" id="ap_cate" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Diagnóstico por profesional de la salud</label>
+                    <textarea name="ap_diag" class="form-control"  id="ap_diag" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Tratamiento</label>
+                    <textarea name="ap_trat" class="form-control"  id="ap_trat" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Medicamentos</label>
+                    <textarea name="ap_med"  class="form-control" id="ap_med" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Adherencia al tratamiento/medicamentos</label>
+                    <textarea name="ap_adh" class="form-control" id="ap_adh" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4">
+                    <label for="" class="text-light">Barreras en el acceso</label>
+                    <textarea name="ap_barr" class="form-control" id="ap_barr" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-4">   
+                    <label for="" class="text-light">Notas de atención:</label>
+                    <textarea name="ap_notas" class="form-control" id="ap_notas" cols="30" rows="10"></textarea>
+                </div>
+                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-md-4"></div>
+                
+            
+            
 
-        <h4>Historial de consumo de sustancias psicoactivas</h4>
-        <label for="">Es o ha sido consumidor</label>
-        <input type="checkbox" name="sp_eoa" id="sp_eoa">
+                <h3 class="text-light">Historial de consumo de sustancias psicoactivas</h3>
+                <label for="">Es o ha sido consumidor</label>
+                <input type="checkbox" name="sp_eoa" id="sp_eoa">
 
-        <label for="">Edad de inicio</label>
-        <input type="number" name="sp_edad" id="sp_edad">
+                <label for="">Edad de inicio</label>
+                <input type="number" name="sp_edad" id="sp_edad">
 
-        <label for="">Sustancia de inicio</label>
-        <select name="sp_susi" id="sp_susi">
-            <option value="-1">Seleccione...</option>
-            {% for s in spa %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="">Sustancia de inicio</label>
+                <select name="sp_susi" id="sp_susi">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in spa %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="">Periodo último consumo</label>
-        <input type="date" name="sp_ulco" id="sp_ulco">
+                <label for="">Periodo último consumo</label>
+                <input type="date" name="sp_ulco" id="sp_ulco">
 
-        <label for="">Sustancia de impacto</label>
-        <select name="sp_susim" id="sp_susim">
-            <option value="-1">Seleccione...</option>
-            {% for s in spa %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
+                <label for="">Sustancia de impacto</label>
+                <select name="sp_susim" id="sp_susim">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in spa %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="">Conductas sexuales de riesgo</label>
-        <textarea name="sp_csr" id="sp_csr" cols="30" rows="10"></textarea>
+                <label for="">Conductas sexuales de riesgo</label>
+                <textarea name="sp_csr" id="sp_csr" cols="30" rows="10"></textarea>
 
-        <label for="">Intervenciones previas</label>
-        <textarea name="sp_ip" id="sp_ip" cols="30" rows="10"></textarea>
+                <label for="">Intervenciones previas</label>
+                <textarea name="sp_ip" id="sp_ip" cols="30" rows="10"></textarea>
 
-        <label for="">Consumo núcleo familiar</label>
-        <input type="checkbox" name="sp_cf" id="sp_cf">
+                <label for="">Consumo núcleo familiar</label>
+                <input type="checkbox" name="sp_cf" id="sp_cf">
 
-        <label for="">Vínculo</label>
-        <textarea name="sp_vi" id="sp_vi" cols="30" rows="10"></textarea>
+                <label for="">Vínculo</label>
+                <textarea name="sp_vi" id="sp_vi" cols="30" rows="10"></textarea>
 
-        <label for="">Notas de atención</label>
-        <textarea name="sp_notas" id="sp_notas" cols="30" rows="10"></textarea>
-   
-        <h2>Comportamiento Suicida</h2>
-   
-        <label for="">Presencia de ideación suicida. Magnitud y persistencia</label>
-        <select name="cs_pi" id="cs_pi">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Presencia de planeación</label>
-        <select name="cs_pp" id="cs_pp">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Disponibilidad de medios</label>
-        <select name="cs_dm" id="cs_dm">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Intentos previos</label>
-        <input type="number" name="cs_ip" id="cs_ip">
-   
-        <label for="">Fecha último intento</label>
-        <input type="date" name="cs_fu" id="cs_fu">
-
-        <label for="">Manejo hospitalario</label>
-        <input type="checkbox" name="cs_mh" id="cs_mh">
-   
-        <label for="">Método de suicidio</label>
-        <input type="text" name="cs_metodo" id="cs_metodo">
-
-        <label for="">Letalidad</label>
-        <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>
-
-        <label for="">Signos y síntomas psiquiatricos</label>
-        <textarea name="cs_ss" id="cs_ss" cols="30" rows="10"></textarea>
-   
-        <label for="">Está bajo tratamiento psiquiátrico</label>
-        <select name="cs_eb" id="cs_eb">
-            <option value="-1">Seleccione...</option>
-            {% for s in snn %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Vive solo/Divorciado/Desempleado</label>
-        <select name="cs_ep" id="cs_ep">
-            <option value="-1">Seleccione...</option>
-            {% for s in ep %}
-            <option value="{{s.id}}">{{s.description}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="">Acontecimientos estresantes</label>
-        <textarea name="cs_ae" id="cs_ae" cols="30" rows="10"></textarea>
-   
-        <label for="">Historial familiar suicidio y vínculos</label>
-        <input type="checkbox" name="cs_hf" id="cs_hf">
-   
-        <label for="">Factores protectores</label>
-        <textarea name="cs_fp" id="cs_fp" cols="30" rows="10"></textarea>
-   
-        <label for="">Red de apoyo</label>
-        <textarea name="cs_ra" id="cs_ra" cols="30" rows="10"></textarea>
-   
-        <label for="">Notas de atención</label>
-        <textarea name="cs_notas" id="cs_notas" cols="30" rows="10"></textarea>
-   
-        <h2>Antecedentes de violencia</h2>
-        <label for="">Se considera víctima de algún tipo de violencia?</label>
-        <input type="checkbox" name="av_vict" id="av_vict">
-
-        <label for="">Tipo(s) de violencia</label>
-        <textarea name="av_tv" id="av_tv" cols="30" rows="10"></textarea>
-
-        <label for="">Agresor(es)</label>
-        <textarea name="av_agre" id="av_agre" cols="30" rows="10"></textarea>
-
-        <label for="">Institución de reporte legal (dejar vacío para NO)</label>
-        <textarea name="av_ir" id="av_ir" cols="30" rows="10"></textarea>
-
-        <label for="">Notas de atención</label>
-        <textarea name="av_notas" id="av_notas" cols="30" rows="10"></textarea>
-
-        <h2>Resultado, conducta a seguir y canalización</h2>
-        <label for="">Acudió la cita?</label>
-        <input type="checkbox" name="re_ac" id="re_ac">
+                <label for="">Notas de atención</label>
+                <textarea name="sp_notas" id="sp_notas" cols="30" rows="10"></textarea>
         
-        <label for="">Siguó en contacto</label>
-        <input type="checkbox" name="re_sc" id="re_sc">
+                <h2>Comportamiento Suicida</h2>
         
-        <label for="">Interrumpió el contacto</label>
-        <input type="checkbox" name="re_ic" id="re_ic">
+                <label for="">Presencia de ideación suicida. Magnitud y persistencia</label>
+                <select name="cs_pi" id="cs_pi">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in snn %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="">Inicia en otro programa o institución</label>
-        <input type="checkbox" name="re_io" id="re_io">
+                <label for="">Presencia de planeación</label>
+                <select name="cs_pp" id="cs_pp">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in snn %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <label for="">Pruebas de Tamizaje</label>
-        <textarea name="re_pt" id="re_pt" cols="30" rows="10"></textarea>
+                <label for="">Disponibilidad de medios</label>
+                <select name="cs_dm" id="cs_dm">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in snn %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
 
-        <details class="mult-details">
-            <summary class="mult-summary">Conductas a seguir</summary>
-            <ul class="mult-ul">
-                {% for cs in cas %}
-                <li class="mult-li">
-                    <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
-                            value="{{cs.id}}" />{{cs.description}}</label>
-                </li>
-                {% endfor %}
-            </ul>
-        </details>
-
-        <label for="">Canalización o derivación (en blanco para ninguna)</label>
-        <textarea name="re_cd" id="re_cd" cols="30" rows="10"></textarea>
-
-        <label for="">Anotaciones libres del profesional</label>
-        <textarea name="re_notas" id="re_notas" cols="30" rows="10"></textarea>
-
-        <label for="">Seguimiento del caso</label>
-
-        <label for="">Seguimiento #1</label>
-        <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
+                <label for="">Intentos previos</label>
+                <input type="number" name="cs_ip" id="cs_ip">
         
-        <label for="">Seguimiento #2</label>
-        <textarea name="seg_2" id="seg_2" cols="30" rows="10"></textarea>
+                <label for="">Fecha último intento</label>
+                <input type="date" name="cs_fu" id="cs_fu">
+
+                <label for="">Manejo hospitalario</label>
+                <input type="checkbox" name="cs_mh" id="cs_mh">
         
+                <label for="">Método de suicidio</label>
+                <input type="text" name="cs_metodo" id="cs_metodo">
+
+                <label for="">Letalidad</label>
+                <textarea name="cs_let" id="cs_let" cols="30" rows="10"></textarea>
+
+                <label for="">Signos y síntomas psiquiatricos</label>
+                <textarea name="cs_ss" id="cs_ss" cols="30" rows="10"></textarea>
         
-        <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
+                <label for="">Está bajo tratamiento psiquiátrico</label>
+                <select name="cs_eb" id="cs_eb">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in snn %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="">Vive solo/Divorciado/Desempleado</label>
+                <select name="cs_ep" id="cs_ep">
+                    <option value="-1">Seleccione...</option>
+                    {% for s in ep %}
+                    <option value="{{s.id}}">{{s.description}}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="">Acontecimientos estresantes</label>
+                <textarea name="cs_ae" id="cs_ae" cols="30" rows="10"></textarea>
+        
+                <label for="">Historial familiar suicidio y vínculos</label>
+                <input type="checkbox" name="cs_hf" id="cs_hf">
+        
+                <label for="">Factores protectores</label>
+                <textarea name="cs_fp" id="cs_fp" cols="30" rows="10"></textarea>
+        
+                <label for="">Red de apoyo</label>
+                <textarea name="cs_ra" id="cs_ra" cols="30" rows="10"></textarea>
+        
+                <label for="">Notas de atención</label>
+                <textarea name="cs_notas" id="cs_notas" cols="30" rows="10"></textarea>
+        
+                <h2>Antecedentes de violencia</h2>
+                <label for="">Se considera víctima de algún tipo de violencia?</label>
+                <input type="checkbox" name="av_vict" id="av_vict">
+
+                <label for="">Tipo(s) de violencia</label>
+                <textarea name="av_tv" id="av_tv" cols="30" rows="10"></textarea>
+
+                <label for="">Agresor(es)</label>
+                <textarea name="av_agre" id="av_agre" cols="30" rows="10"></textarea>
+
+                <label for="">Institución de reporte legal (dejar vacío para NO)</label>
+                <textarea name="av_ir" id="av_ir" cols="30" rows="10"></textarea>
+
+                <label for="">Notas de atención</label>
+                <textarea name="av_notas" id="av_notas" cols="30" rows="10"></textarea>
+
+                <h2>Resultado, conducta a seguir y canalización</h2>
+                <label for="">Acudió la cita?</label>
+                <input type="checkbox" name="re_ac" id="re_ac">
+                
+                <label for="">Siguó en contacto</label>
+                <input type="checkbox" name="re_sc" id="re_sc">
+                
+                <label for="">Interrumpió el contacto</label>
+                <input type="checkbox" name="re_ic" id="re_ic">
+
+                <label for="">Inicia en otro programa o institución</label>
+                <input type="checkbox" name="re_io" id="re_io">
+
+                <label for="">Pruebas de Tamizaje</label>
+                <textarea name="re_pt" id="re_pt" cols="30" rows="10"></textarea>
+
+                <details class="mult-details">
+                    <summary class="mult-summary">Conductas a seguir</summary>
+                    <ul class="mult-ul">
+                        {% for cs in cas %}
+                        <li class="mult-li">
+                            <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
+                                    value="{{cs.id}}" />{{cs.description}}</label>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </details>
+
+                <label for="">Canalización o derivación (en blanco para ninguna)</label>
+                <textarea name="re_cd" id="re_cd" cols="30" rows="10"></textarea>
+
+                <label for="">Anotaciones libres del profesional</label>
+                <textarea name="re_notas" id="re_notas" cols="30" rows="10"></textarea>
+
+                <label for="">Seguimiento del caso</label>
+
+                <label for="">Seguimiento #1</label>
+                <textarea name="seg_1" id="seg_1" cols="30" rows="10"></textarea>
+                
+                <label for="">Seguimiento #2</label>
+                <textarea name="seg_2" id="seg_2" cols="30" rows="10"></textarea>
+                
+                
+                <button type="submit" name="detalles_asesoria">Guardar asesoría</button>
+            </div>
+        </div>
     </form>
     {% endif %}
     {% if step == 3 %}
