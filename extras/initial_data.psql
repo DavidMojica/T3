@@ -93,6 +93,7 @@ insert into main_eps(description) values('Fundación Salud Mia Eps');
 insert into main_eps(description) values('Ferrocarriles Nales');
 insert into main_eps(description) values('Epm');
 insert into main_eps(description) values('Otra');
+insert into main_eps(description) values('Ninguna');
 
 insert into main_poblacionvulnerable(description) values('Población Afro');
 insert into main_poblacionvulnerable(description) values('Población Indígena');
