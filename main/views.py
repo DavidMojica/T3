@@ -442,7 +442,6 @@ def sm_HPC(request):
                 ban = False
                 msg = "Ingrese el documento."
             
-            div = ""
             if(ban):
                 try:
                     paciente = InfoPacientes.objects.get(documento=documento)
