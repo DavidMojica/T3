@@ -52,145 +52,174 @@ snn = SiNoNunca.objects.all()
 @login_required
 def sm_llamadas(request):
     if request.method == "POST":
+        ban = True
+        error = ""
+        
         nombre = request.POST['nombre']
-        tipo_documento = request.POST['tipo_documento']
         documento = request.POST['documento']
-        sexo = request.POST['sexo']
         edad = request.POST['edad']
-        eps = request.POST['eps']
         direccion = request.POST['direccion']
-        pais = request.POST['pais']
-        departamento = request.POST['departamento']
-        municipio = request.POST['municipio']
         telefono = request.POST['telefono']
-        pob_vulnerable = request.POST['poblacion_vulnerable']
         observaciones = request.POST['observaciones']
         seguimiento24 = request.POST['seguimiento24']
         seguimiento48 = request.POST['seguimiento48']
         seguimiento72 = request.POST['seguimiento72']
-
+        
         try:
-            sexo_instance = Sexo.objects.get(id=sexo)
-        except Sexo.DoesNotExist:
-            # Manejar el caso donde no se encontró una instancia de Sexo
-            sexo_instance = None
-
-        llamada = PsiLlamadas(
-            documento=documento,
-            nombre_paciente=nombre,
-            fecha_llamada=datetime.now().date(),
-            hora=datetime.now().hour,
-            observaciones=observaciones,
-            seguimiento24=seguimiento24,
-            seguimiento48=seguimiento48,
-            seguimiento72=seguimiento72,
-            dia_semana_id=datetime.now().weekday(),
-            id_psicologo_id=request.user.id,
-            sexo=sexo_instance,
-            edad=edad
-        )
-        llamada.save()
-        id_llamada = llamada.id
-
+            edad = int(edad)
+            if edad <= 0:
+                ban = False
+                error = "La edad debe ser un número positivo."
+        except ValueError:
+            ban = False
+            error = "Error en el formato de la edad."
+        
         try:
-            psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
-        except PsiLlamadas.DoesNotExist:
-            psi_llamada_instance = None
+            tipo_documento = int(request.POST['tipo_documento'])
+            sexo = int(request.POST['sexo'])
+            eps = int(request.POST['eps'])
+            pais = int(request.POST['pais'])
+            municipio = int(request.POST['municipio'])
+            departamento = int(request.POST['departamento'])
+            pob_vulnerable = int(request.POST['poblacion_vulnerable'])
+        except ValueError:
+            ban = False
+            error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
 
-        # conductas y motivos
-        for conducta in ConductasASeguir.objects.all():
-            checkbox_name = f'cond_{conducta.id}'
-            if checkbox_name in request.POST:
-                try:
-                    conducta_instance = ConductasASeguir.objects.get(
-                        id=conducta.id)
-                except ConductasASeguir.DoesNotExist:
-                    conducta_instance = None
+        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0 or not edad:
+            ban = False
+            error = "Error en alguno de sus datos. Asegúrese de completar todos los campos obligatorios."
 
-                llamada_conducta = PsiLlamadasConductas(
-                    id_llamada=psi_llamada_instance,
-                    id_conducta=conducta_instance
-                )
-                llamada_conducta.save()
+        
 
-        for motivo in PsiMotivos.objects.all():
-            checkbox_name = f'mot_{motivo.id}'
-            if checkbox_name in request.POST:
-                try:
-                    motivo_instace = PsiMotivos.objects.get(id=motivo.id)
-                except PsiMotivos.DoesNotExist:
-                    motivo_instace = None
+        if ban:
+            try:
+                sexo_instance = Sexo.objects.get(id=sexo)
+            except Sexo.DoesNotExist:
+                # Manejar el caso donde no se encontró una instancia de Sexo
+                sexo_instance = None
 
-                llamada_motivo = PsiLlamadasMotivos(
-                    id_llamada=psi_llamada_instance,
-                    id_motivo=motivo_instace
-                )
-                llamada_motivo.save()
-
-        # paciente
-        paciente_existe = InfoPacientes.objects.filter(
-            documento=documento).first()
-
-        try:
-            tipo_documento_instance = TipoDocumento.objects.get(
-                id=tipo_documento)
-        except TipoDocumento.DoesNotExist:
-            tipo_documento_instance = None
-
-        try:
-            eps_instance = EPS.objects.get(id=eps)
-        except EPS.DoesNotExist:
-            eps_instance = None
-
-        try:
-            municipio_instance = Municipio.objects.get(id=municipio)
-        except Municipio.DoesNotExist:
-            municipio_instance = None
-
-        try:
-            pob_vulnerable_instance = PoblacionVulnerable.objects.get(
-                id=pob_vulnerable)
-        except PoblacionVulnerable.DoesNotExist:
-            pob_vulnerable_instance = None
-
-        if paciente_existe:
-            # Si el paciente existe se actualizan los datos
-            paciente_existe.nombre = nombre.lower()
-            paciente_existe.tipo_documento = tipo_documento_instance
-
-            paciente_existe.sexo = sexo_instance
-            paciente_existe.edad = edad
-            paciente_existe.eps = eps_instance
-            paciente_existe.direccion = direccion.lower()
-            paciente_existe.municipio = municipio_instance
-            paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
-            paciente_existe.celular = telefono
-            paciente_existe.save()
-        else:
-            # Si no existe, se crea un paciente nuevo
-            nuevo_paciente = InfoPacientes(
-                nombre=nombre.lower(),
+            llamada = PsiLlamadas(
                 documento=documento,
-                tipo_documento=tipo_documento_instance,
+                nombre_paciente=nombre,
+                fecha_llamada=datetime.now().date(),
+                hora=datetime.now().hour,
+                observaciones=observaciones,
+                seguimiento24=seguimiento24,
+                seguimiento48=seguimiento48,
+                seguimiento72=seguimiento72,
+                dia_semana_id=datetime.now().weekday(),
+                id_psicologo_id=request.user.id,
                 sexo=sexo_instance,
-                edad=edad,
-                eps=eps_instance,
-                direccion=direccion.lower(),
-                municipio=municipio_instance,
-                poblacion_vulnerable=pob_vulnerable_instance,
-                celular=telefono
+                edad=edad
             )
-            nuevo_paciente.save()
+            llamada.save()
+            id_llamada = llamada.id
 
-            # select * from main_infopacientes
-            # select * from main_psillamadasconductas
-            # select * from main_psillamadasmotivos
-            # select * from main_psillamadas
+            try:
+                psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
+            except PsiLlamadas.DoesNotExist:
+                psi_llamada_instance = None
 
-            # delete from main_psillamadas;
-            # delete from main_psillamadasmotivos;
-            # delete from main_psillamadasconductas;
-            # delete from main_infopacientes;
+            # conductas y motivos
+            for conducta in ConductasASeguir.objects.all():
+                checkbox_name = f'cond_{conducta.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        conducta_instance = ConductasASeguir.objects.get(
+                            id=conducta.id)
+                    except ConductasASeguir.DoesNotExist:
+                        conducta_instance = None
+
+                    llamada_conducta = PsiLlamadasConductas(
+                        id_llamada=psi_llamada_instance,
+                        id_conducta=conducta_instance
+                    )
+                    llamada_conducta.save()
+
+            for motivo in PsiMotivos.objects.all():
+                checkbox_name = f'mot_{motivo.id}'
+                if checkbox_name in request.POST:
+                    try:
+                        motivo_instace = PsiMotivos.objects.get(id=motivo.id)
+                    except PsiMotivos.DoesNotExist:
+                        motivo_instace = None
+
+                    llamada_motivo = PsiLlamadasMotivos(
+                        id_llamada=psi_llamada_instance,
+                        id_motivo=motivo_instace
+                    )
+                    llamada_motivo.save()
+
+            # paciente
+            paciente_existe = InfoPacientes.objects.filter(
+                documento=documento).first()
+
+            try:
+                tipo_documento_instance = TipoDocumento.objects.get(
+                    id=tipo_documento)
+            except TipoDocumento.DoesNotExist:
+                tipo_documento_instance = None
+
+            try:
+                eps_instance = EPS.objects.get(id=eps)
+            except EPS.DoesNotExist:
+                eps_instance = None
+
+            try:
+                municipio_instance = Municipio.objects.get(id=municipio)
+            except Municipio.DoesNotExist:
+                municipio_instance = None
+
+            try:
+                pob_vulnerable_instance = PoblacionVulnerable.objects.get(
+                    id=pob_vulnerable)
+            except PoblacionVulnerable.DoesNotExist:
+                pob_vulnerable_instance = None
+
+            if paciente_existe:
+                # Si el paciente existe se actualizan los datos
+                paciente_existe.nombre = nombre.lower()
+                paciente_existe.tipo_documento = tipo_documento_instance
+
+                paciente_existe.sexo = sexo_instance
+                paciente_existe.edad = edad
+                paciente_existe.eps = eps_instance
+                paciente_existe.direccion = direccion.lower()
+                paciente_existe.municipio = municipio_instance
+                paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
+                paciente_existe.celular = telefono
+                paciente_existe.save()
+            else:
+                # Si no existe, se crea un paciente nuevo
+                nuevo_paciente = InfoPacientes(
+                    nombre=nombre.lower(),
+                    documento=documento,
+                    tipo_documento=tipo_documento_instance,
+                    sexo=sexo_instance,
+                    edad=edad,
+                    eps=eps_instance,
+                    direccion=direccion.lower(),
+                    municipio=municipio_instance,
+                    poblacion_vulnerable=pob_vulnerable_instance,
+                    celular=telefono
+                )
+                nuevo_paciente.save()
+        else:
+            return render(request, 'sm_llamadas.html', {'year': datetime.now(),
+                                                'CustomUser': request.user,
+                                                'paises': paises,
+                                                'departamentos': departamentos,
+                                                'municipios': municipios,
+                                                'tipos_documento': tipos_documento,
+                                                'sexos': sexos,
+                                                'epss': EPSS,
+                                                'poblacion_vulnerable': poblacion_vulnerable,
+                                                'motivos': motivos,
+                                                'conductas': conductas,
+                                                'CustomUser': request.user,
+                                                'error': error})
+    
     else:
         pass
 
