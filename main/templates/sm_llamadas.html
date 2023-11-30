@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
+<script src="{% static 'js_resources/LLform.js' %}" defer></script>
 <main class="main-expanded bg-gradient-blue">
-  <form action="" method="POST">
+  <form action="" method="POST" id="form-llamadas">
     {% csrf_token %}
     <div class="row justify-content-center">
       <h2 class="text-light mt-5 mb-3">Formulario de llamadas</h2>
@@ -65,8 +67,6 @@
         <div class="col-md-1 d-flex align-items-center justify-content-center">
           <i class="fa fa-arrow-right"></i>
        </div>
-      
-      
 
         <div class="form-group col-md-3">
           <label for="in_departamento" class="text-light">Departamento</label>
