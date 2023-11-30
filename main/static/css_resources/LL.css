@@ -1,9 +1,0 @@
-.bg-danger {
-    background-color: red;
-    transition: background-color 0.5s ease; 
-}
-
-.bg-warning {
-    background-color: yellow;
-    transition: background-color 0.5s ease; 
-}

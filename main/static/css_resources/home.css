@@ -1,6 +1,7 @@
 
 textarea{
     resize: none;
+    height: 150px;
 }
 
 .bg-gradient-blue{
@@ -100,4 +101,14 @@ textarea{
 .mult-li > .mult-label:has(input:checked) {
     background-color: var(--dk-gray);
     color: white;
+}
+
+.bg-danger {
+    background-color: red;
+    transition: background-color 0.5s ease; 
+}
+
+.bg-warning {
+    background-color: yellow;
+    transition: background-color 0.5s ease; 
 }
