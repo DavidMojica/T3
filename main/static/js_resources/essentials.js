@@ -43,3 +43,18 @@ $(document).ready(function () {
     });
     
 });
+
+
+function changeBg(elements, classToAdd){
+    for(let e of elements){
+        e.classList.add(classToAdd);
+    }
+}
+
+function naturalizeBg(elements, classToRemove){
+    for(let e of elements){
+        if(e.classList.contains(classToRemove)){
+            e.classList.remove(classToRemove);
+        }
+    }
+}
