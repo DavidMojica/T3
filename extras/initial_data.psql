@@ -59,6 +59,41 @@ insert into main_dianombre(id, description) values(5, 'Sábado');
 insert into main_dianombre(id, description) values(6, 'Domingo');
 
 insert into main_eps(description) values('Nueva EPS');
+insert into main_eps(description) values('EPS Sanitas');
+insert into main_eps(description) values('EPS Sura');
+insert into main_eps(description) values('Salud Total');
+insert into main_eps(description) values('Coosalud');
+insert into main_eps(description) values('Comfama');
+insert into main_eps(description) values('Comfenalco');
+insert into main_eps(description) values('Famisanar');
+insert into main_eps(description) values('Mutual Ser EPS');
+insert into main_eps(description) values('Regimen de excepción');
+insert into main_eps(description) values('Compensar');
+insert into main_eps(description) values('Emssanar ESS');
+insert into main_eps(description) values('Asmet Salud');
+insert into main_eps(description) values('Savia Salud');
+insert into main_eps(description) values('Medimas');
+insert into main_eps(description) values('Cajacopi Atlántico');
+insert into main_eps(description) values('Coomeva EPS');
+insert into main_eps(description) values('Capital Salud');
+insert into main_eps(description) values('S.O.S');
+insert into main_eps(description) values('Comfamiliar Huila');
+insert into main_eps(description) values('A.I.C Epsi');
+insert into main_eps(description) values('Mellamas Epsi');
+insert into main_eps(description) values('Comfaguajira');
+insert into main_eps(description) values('Comfenalco Valle');
+insert into main_eps(description) values('Dusakawi Epsi');
+insert into main_eps(description) values('Allansalud Eps');
+insert into main_eps(description) values('Anas Wayuu Epsi');
+insert into main_eps(description) values('Comfaoriente');
+insert into main_eps(description) values('Ccf De Sucre');
+insert into main_eps(description) values('Ccf Del chocó');
+insert into main_eps(description) values('Pijaos Salud Epsi');
+insert into main_eps(description) values('Fundación Salud Mia Eps');
+insert into main_eps(description) values('Ferrocarriles Nales');
+insert into main_eps(description) values('Epm');
+insert into main_eps(description) values('Otra');
+insert into main_eps(description) values('Ninguna');
 
 insert into main_poblacionvulnerable(description) values('Población Afro');
 insert into main_poblacionvulnerable(description) values('Población Indígena');
@@ -123,8 +158,100 @@ insert into main_sinonunca(description) values('Nunca');
 insert into main_sinonunca(description) values('Sí');
 insert into main_sinonunca(description) values('No');
 
+insert into main_hpcsituacioncontacto(description) values('Sustancias/Alcohol');
+insert into main_hpcsituacioncontacto(description) values('Conductas antisociales');
+insert into main_hpcsituacioncontacto(description) values('Psiquiátricas');
+insert into main_hpcsituacioncontacto(description) values('Violencia Psicológica');
+insert into main_hpcsituacioncontacto(description) values('Relaciones');
+insert into main_hpcsituacioncontacto(description) values('Violencia Intrafamiliar');
+insert into main_hpcsituacioncontacto(description) values('Abuso sexual');
+insert into main_hpcsituacioncontacto(description) values('Trabajo sexual');
+insert into main_hpcsituacioncontacto(description) values('Legal');
+insert into main_hpcsituacioncontacto(description) values('Embarazo y parto');
+insert into main_hpcsituacioncontacto(description) values('Enfermedades');
+insert into main_hpcsituacioncontacto(description) values('Pobreza Extrema');
+insert into main_hpcsituacioncontacto(description) values('Apoyo económico');
+insert into main_hpcsituacioncontacto(description) values('Vida en la calle');
+insert into main_hpcsituacioncontacto(description) values('Escolares');
+insert into main_hpcsituacioncontacto(description) values('Exclusión grave');
+insert into main_hpcsituacioncontacto(description) values('Violencia comunitaria');
+insert into main_hpcsituacioncontacto(description) values('Redes interinstitucionales');
+insert into main_hpcsituacioncontacto(description) values('Crisis psicológica');
+insert into main_hpcsituacioncontacto(description) values('Capacitación y formación');
+insert into main_hpcsituacioncontacto(description) values('Organización y planeación');
+insert into main_hpcsituacioncontacto(description) values('HIV - SIDA');
+insert into main_hpcsituacioncontacto(description) values('ETS');
+insert into main_hpcsituacioncontacto(description) values('Migración - Emigración');
+insert into main_hpcsituacioncontacto(description) values('Burocráticos/Administrativos');
+insert into main_hpcsituacioncontacto(description) values('Sin trabajo');
+insert into main_hpcsituacioncontacto(description) values('Tuberculosis');
+insert into main_hpcsituacioncontacto(description) values('Malaria');
+insert into main_hpcsituacioncontacto(description) values('Otro');
+
+
+insert into main_hpctiposdemandas(description) values('Apoyo económico');
+insert into main_hpctiposdemandas(description) values('Atención al parto');
+insert into main_hpctiposdemandas(description) values('Canalización');
+insert into main_hpctiposdemandas(description) values('Cita/Coloquio');
+insert into main_hpctiposdemandas(description) values('Consejo/Orientación');
+insert into main_hpctiposdemandas(description) values('Servicios legales');
+insert into main_hpctiposdemandas(description) values('Finanzas o conmutas');
+insert into main_hpctiposdemandas(description) values('Formación - Capacitación');
+insert into main_hpctiposdemandas(description) values('Guardería/Kinder');
+insert into main_hpctiposdemandas(description) values('Hospitalización médica');
+insert into main_hpctiposdemandas(description) values('Información');
+insert into main_hpctiposdemandas(description) values('Integración comunitaria');
+insert into main_hpctiposdemandas(description) values('Internamiento');
+insert into main_hpctiposdemandas(description) values('Organización y planeación');
+insert into main_hpctiposdemandas(description) values('Internamiento forzado');
+insert into main_hpctiposdemandas(description) values('Recuperación escolar');
+insert into main_hpctiposdemandas(description) values('Servicio social');
+insert into main_hpctiposdemandas(description) values('Terapia');
+insert into main_hpctiposdemandas(description) values('Visita familiar');
+insert into main_hpctiposdemandas(description) values('Burocráticos');
+insert into main_hpctiposdemandas(description) values('Examenes médicos');
+insert into main_hpctiposdemandas(description) values('Medicamientos');
+insert into main_hpctiposdemandas(description) values('Alimentación');
+insert into main_hpctiposdemandas(description) values('Otro');
+
+insert into main_hpctiposrespuestas(description) values('Se da una cita');
+insert into main_hpctiposrespuestas(description) values('Se da información');
+insert into main_hpctiposrespuestas(description) values('Consejo-Orientación');
+insert into main_hpctiposrespuestas(description) values('Canalización/Derivación');
+insert into main_hpctiposrespuestas(description) values('Escucha inmediata/Manejo de crisis');
+insert into main_hpctiposrespuestas(description) values('Indicaciones, sugerencias operativas');
+insert into main_hpctiposrespuestas(description) values('Acompañamiento');
+insert into main_hpctiposrespuestas(description) values('Otro');
+
+insert into main_spa(description) values('Marihuana (cannabis)');
+insert into main_spa(description) values('Cigarrillo (Nicotina)');
+insert into main_spa(description) values('Alcohol');
+insert into main_spa(description) values('Tabaco');
+insert into main_spa(description) values('Cocaína');
+insert into main_spa(description) values('Heroína');
+insert into main_spa(description) values('Basuco');
+insert into main_spa(description) values('LSD');
+insert into main_spa(description) values('Éxtasis');
+insert into main_spa(description) values('Popper');
+insert into main_spa(description) values('Speed');
+insert into main_spa(description) values('Fentanilo');
+insert into main_spa(description) values('Ketamina');
+insert into main_spa(description) values('Opiáceos');
+insert into main_spa(description) values('Hongos');
+insert into main_spa(description) values('Diazepam');
+insert into main_spa(description) values('Clonazepam');
+insert into main_spa(description) values('Lorazepam');
+insert into main_spa(description) values('Alprazolam');
+insert into main_spa(description) values('Otro');
+
+
+
+
+
+
+
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento
--- ALTER SEQUENCE main_tipodocumento_id_seq RESTART WITH 1;
+-- ALTER SEQUENCE main_eps_id_seq RESTART WITH 1;
 -- select * from main_customuser
 -- select * from main_infomiembros
