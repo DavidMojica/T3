@@ -30,97 +30,48 @@ form_llamadas.addEventListener('submit', function(e){
     let preventiveBan = true;
     let preventiveMsg = "";
 
-    if(in_nombre.value.trim() === ""){
-        ban = false
-        msg += "El nombre no puede estar vacío";
-    }
+    const addErrorMsg = (condition, errorMsg) => {
+        if (condition) {
+            ban = false;
+            msg += errorMsg + "<br>";
+        }
+    };
 
-    if(in_documento.value.trim() === ""){
-        ban = false;
-        msg += "El documento no puede estar vacío";
-    }
+    const addPreventiveMsg = (condition, preventiveErrorMsg) => {
+        if (condition) {
+            preventiveBan = false;
+            preventiveMsg += preventiveErrorMsg + "<br>";
+        }
+    };
 
-    if(in_tipo_documento.value < 1 || in_tipo_documento.value > numTiposDocumento){
-        ban = false;
-        msg += "Compruebe tipo de documento";
-    }
+    addErrorMsg(in_nombre.value.trim() === "", "El nombre no puede estar vacío \n");
+    addErrorMsg(in_documento.value.trim() === "", "El documento no puede estar vacío");
+    addErrorMsg(in_tipo_documento.value < 1 || in_tipo_documento.value > numTiposDocumento, "Compruebe tipo de documento");
+    addErrorMsg(in_sexo.value < 1 || in_sexo.value > numSexos, "Compruebe el sexo");
+    addPreventiveMsg(in_edad.value.trim() === "" || isNaN(in_edad.value.trim()), "Edad no especificada ¿Quiere continuar?");
+    addErrorMsg(in_eps.value.trim() < 1 || in_eps > numEps, "Si el paciente no tiene eps, seleccione 'Ninguna'");
+    addPreventiveMsg(in_direccion.value.trim() === "", "Dirección no especificada ¿Quiere continuar?");
+    addErrorMsg(in_pais.value != numPaises, "Comprobar país");
+    addErrorMsg(in_departamento.value < 1, "Comprobar departamento");
+    addErrorMsg(in_municipio.value < 1, "Comprobar ciudad");
+    addPreventiveMsg(in_telefono.value.trim() === "" || isNaN(in_telefono.value.trim()), "Teléfono no especificado ¿Quiere continuar?");
+    addErrorMsg(in_poblacion_vulnerable.value < 1, "Si el paciente no es población vulnerable seleccione 'Ninguna'");
+    addPreventiveMsg(in_observaciones.value === "", "Observaciones vacías ¿Continuar?");
+    addPreventiveMsg(in_seguimiento24.value !== "", "¿Quiere proporcionar información de seguimiento (24h) desde ahora?");
+    addPreventiveMsg(in_seguimiento48.value !== "", "¿Quiere proporcionar información de seguimiento (48h) desde ahora?");
+    addPreventiveMsg(in_seguimiento72.value !== "", "¿Quiere proporcionar información de seguimiento (72h) desde ahora?");
 
-    if(in_sexo.value < 1 || in_sexo.value > numSexos){
-        ban = false;
-        msg += "Compruebe el sexo";
-    }
-
-    if(in_edad.value.trim() == "" || isNaN(in_edad.value.trim())){
-        preventiveBan = false;
-        preventiveMsg += "Edad no especificada ¿Quiere continuar?";
-    }
-
-    if(in_eps.value.trim() < 1 || in_eps > numEps){
-        ban = false;
-        msg += "Si el paciente no tiene eps, seleccione 'Ninguna'";
-    }
-
-    if(in_direccion.value.trim() === ""){
-        preventiveBan = false;
-        preventiveMsg += "Dirección no especificada ¿Quiere continuar?";
-    }
-
-    if(in_pais.value != numPaises){
-        ban = false;
-        msg += "Comprobar pais";
-    }
-
-    if(in_departamento.value < 1){
-        ban = false;
-        msg += "Comprobar departamento";
-    }
-
-    if(in_municipio.value < 1){
-        ban = false;
-        msg += "Comprobar ciudad";
-    }
-
-    if(in_telefono.value.trim() === "" || isNaN(in_telefono.value.trim())){
-        preventiveBan = false;
-        msg += "Telefono no especificado ¿Quiere continuar?";
-    }
-
-    if(in_poblacion_vulnerable.value < 1){
-        ban = false;
-        msg += "Si el paciente no es poblacion vulnerable seleccione 'Ninguna'";
-    }
-
-    if(in_observaciones.value === ""){
-        preventiveBan = false;
-        preventiveMsg += "Observaciones vacías ¿Continuar?";
-    }
-
-    if(in_seguimiento24.value != ""){
-        preventiveBan = false;
-        preventiveMsg += "¿Quiere proporcionar informacion de seguimiento (24h) desde ahora?";
-    }
-
-    if(in_seguimiento48.value != ""){
-        preventiveBan = false;
-        preventiveMsg += "¿Quiere proporcionar informacion de seguimiento (48h) desde ahora?";
-    }
-    
-    if(in_seguimiento72.value != ""){
-        preventiveBan = false;
-        preventiveMsg += "¿Quiere proporcionar informacion de seguimiento (72h) desde ahora?";
-    }
-
-    if(ban){
-
-        if(preventiveBan){
+    coms.classList.remove();
+    if (ban) {
+        if (preventiveBan) {
             form_llamadas.submit();
+        } else {
+            coms.classList.add('text-warning', 'mt-3');
+            coms.innerHTML = preventiveMsg;
         }
-        else{
-            coms.textContent = preventiveMsg;
-        }
-    }
-    else{
-        coms.textContent = msg;
+    } else {
+        coms.classList.add('text-danger', 'mt-3');
+        coms.innerHTML = msg;
     }
 });
 
