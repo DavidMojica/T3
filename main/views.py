@@ -67,7 +67,7 @@ def sm_llamadas(request):
         
         try:
             edad = int(edad)
-            if edad <= 0:
+            if edad < 0:
                 ban = False
                 error = "La edad debe ser un número positivo."
         except ValueError:
@@ -86,7 +86,7 @@ def sm_llamadas(request):
             ban = False
             error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
 
-        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0 or not edad:
+        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0:
             ban = False
             error = "Error en alguno de sus datos. Asegúrese de completar todos los campos obligatorios."
 
