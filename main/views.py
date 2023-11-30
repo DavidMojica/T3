@@ -434,31 +434,47 @@ def sm_HPC(request):
     fecha_nacimiento = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
+            ban = True
+            msg = ""
             documento = request.POST['documento']
-            try:
-                paciente = InfoPacientes.objects.get(documento=documento)
-            except InfoPacientes.DoesNotExist:
-                paciente = None
-            return render(request, 'sm_HPC.html', {
-                'CustomUser': request.user,
-                'paciente': paciente,
-                'step': 1,
-                'escolaridades': escolaridades,
-                'sexos': sexos,
-                'estados_civil': estados_civiles,
-                'lectoescrituras': lectoescritura1,
-                'lectoescritura_nivel': lectoescritura2,
-                'calculos': calculos,
-                'razonamiento_analitico': razonamiento,
-                'etnias': etnias,
-                'ocupaciones': ocupaciones,
-                'pips': pips,
-                'rsss': regimenes,
-                'epss': EPSS,
-                'year': datetime.now(),
-                'documento': documento,
-                'tipos_documento': tipos_documento
-            })
+            
+            if documento == "" or not documento:
+                ban = False
+                msg = "Ingrese el documento."
+            
+            if(ban):
+                try:
+                    paciente = InfoPacientes.objects.get(documento=documento)
+                except InfoPacientes.DoesNotExist:
+                    paciente = None
+                return render(request, 'sm_HPC.html', {
+                    'CustomUser': request.user,
+                    'paciente': paciente,
+                    'step': 1,
+                    'escolaridades': escolaridades,
+                    'sexos': sexos,
+                    'estados_civil': estados_civiles,
+                    'lectoescrituras': lectoescritura1,
+                    'lectoescritura_nivel': lectoescritura2,
+                    'calculos': calculos,
+                    'razonamiento_analitico': razonamiento,
+                    'etnias': etnias,
+                    'ocupaciones': ocupaciones,
+                    'pips': pips,
+                    'rsss': regimenes,
+                    'epss': EPSS,
+                    'year': datetime.now(),
+                    'documento': documento,
+                    'tipos_documento': tipos_documento
+                })
+            else:
+                return render(request, 'sm_HPC.html', {
+                    'CustomUser': request.user,
+                    'year': datetime.now(),
+                    'errorStep0': msg,
+                    'step': 0
+                })
+                
         elif "actualizar_usuario" in request.POST:
             try:
                 documento = request.POST['e_documento']

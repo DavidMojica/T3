@@ -1,9 +1,9 @@
 //Step 1
 const in_documento = document.getElementById('in_documento');
-const step1Form = document.getElementById('step1Form');
+const step0Form = document.getElementById('step0Form');
 const step1Msg = document.getElementById('step1Msg');
 
-step1Form.addEventListener('submit', function(e){
+step0Form.addEventListener('submit', function(e){
     e.preventDefault();
     ban = true;
     msg = "";
@@ -16,7 +16,7 @@ step1Form.addEventListener('submit', function(e){
     }
 
     if(ban){
-        step1Form.submit();
+        step0Form.submit();
     } else{
         changeBg(toDangerBg, 'bg-danger');
         step1Msg.innerHTML = msg;
