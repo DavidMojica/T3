@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<script src="{% static 'js_resources/HPC.js' %}" defer></script>
+
 <main class="main-expanded bg-gradient-blue">
     {% if step == 0 %}
-    <form class="container" action="" method="POST">
+    <form class="container" action="" method="POST" id="step0Form">
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -12,6 +15,7 @@
                     <input type="text" class="form-control" name="documento" id="in_documento" placeholder="Documento del paciente">
                 </div>
                 <div class="text-center">
+                    <p class="text-danger text-bg-light" id="step1Msg">{{errorStep0}}</p>
                     <button type="submit" class="btn btn-primary" name="comprobar_documento">Continuar</button>
                 </div>
             </div>
