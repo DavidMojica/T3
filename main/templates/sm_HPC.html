@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load static %}
-<script src="{% static 'js_resources/HPC.js' %}" defer></script>
+
 
 <main class="main-expanded bg-gradient-blue">
     {% if step == 0 %}
+    {% load static %}
+    <script src="{% static 'js_resources/HPC.js' %}" defer></script>
+    
     <form class="container" action="" method="POST" id="step0Form">
         {% csrf_token %}
         <div class="row justify-content-center">
@@ -25,7 +27,9 @@
     {% endif %}
 
     {% if paciente and step == 1 %}
-    <form action="" method="POST">
+    {% load static %}
+    <script src="{% static 'js_resources/HPCStep2.js' %}" defer></script>
+    <form action="" method="POST" id="step1FormUpdate">
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-8 row justify-content-center">
@@ -61,7 +65,7 @@
 
                <div class="form-group mb-2 col-md-3">
                     <label for="e_edad" class="text-light">Edad:</label>
-                    <input type="text" class="form-control" name="e_edad" id="e_edad" value="{{paciente.edad}}">
+                    <input type="text" class="form-control" name="e_edad" id="e_edad" readonly value="{{paciente.edad}}">
                </div>
 
                <div class="form-group mb-2 col-md-4">
@@ -190,8 +194,8 @@
                 </div>
                 <div class="form-group mb-2 col-md-3 row justify-content-center"></div>
                 
-
                 <div class="form-group mb-2 col-md-2 mb-5">
+                    <p class="text-danger card">{{error}}</p>
                     <button type="submit" name="actualizar_usuario" class="btn btn-success">Continuar</button>
                 </div>
             </div>
@@ -388,6 +392,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-md-2 mb-5">
+                    <p class="text-danger card">{{error}}</p>
                     <button type="submit" class="btn btn-success" name="crear_usuario">Crear Paciente</button>
                 </div>
             </div>

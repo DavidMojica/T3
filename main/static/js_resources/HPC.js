@@ -26,4 +26,3 @@ step0Form.addEventListener('submit', function(e){
         }, 4000);
     }
 });
-
