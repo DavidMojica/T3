@@ -65,6 +65,7 @@ def sm_llamadas(request):
         seguimiento48 = request.POST['seguimiento48']
         seguimiento72 = request.POST['seguimiento72']
         
+        #Campos numericos
         try:
             edad = int(edad)
             if edad < 0:
@@ -74,6 +75,7 @@ def sm_llamadas(request):
             ban = False
             error = "Error en el formato de la edad."
         
+        #Campos obligatorios
         try:
             tipo_documento = int(request.POST['tipo_documento'])
             sexo = int(request.POST['sexo'])
@@ -89,8 +91,6 @@ def sm_llamadas(request):
         if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0:
             ban = False
             error = "Error en alguno de sus datos. Asegúrese de completar todos los campos obligatorios."
-
-        
 
         if ban:
             try:
@@ -478,92 +478,145 @@ def sm_HPC(request):
         elif "actualizar_usuario" in request.POST:
             try:
                 documento = request.POST['e_documento']
-                print(documento)
+                ban = True
+                error = ""
+                
                 paciente = get_object_or_404(
                     InfoPacientes, documento=documento)
 
                 nombre = request.POST['e_nombre']
-                tipo_documento = request.POST['e_tipo_documento']
                 fecha_nacimiento = request.POST['e_fecha_nacimiento']
-                edad = request.POST['e_edad']
                 escolaridad = request.POST['e_escolaridad']
                 numero_hijos = request.POST['e_hijos']
-                sexo = request.POST['e_sexo']
                 direccion = request.POST['e_direccion']
                 barrio = request.POST['e_barrio']
-                estado_civil = request.POST['e_estado_civil']
-                celular = request.POST['e_celular']
                 correo = request.POST['e_correo']
-                lectoescritura = request.POST['e_lect']
-                lect_nivel = request.POST['e_lect2']
-                raz_analitico = request.POST['e_raz_analitico']
-                etnia = request.POST['e_etnia']
-                ocupacion = request.POST['e_ocupacion']
-                regimen = request.POST['e_rss']
+                
+                try:
+                    edad = int(edad)
+                    if edad < 0:
+                        ban = False
+                        error = "La edad debe ser un número positivo."
+                except ValueError:
+                    ban = False
+                    error = "Error en el formato de la edad."
 
-                # Validación simplificada de sisben
-                sisben = request.POST.get('e_sisben') == 'on'
+                try:
+                    tipo_documento = int(request.POST['tipo_documento'])
+                    sexo = int(request.POST['sexo'])
+                    estado_civil = int(request.POST['e_estado_civil'])
+                    celular = int(request.POST['e_celular'])
+                    lectoescritura = int(request.POST['e_lect'])
+                    lect_nivel = int(request.POST['e_lect2'])
+                    raz_analitico = int(request.POST['e_raz_analitico'])
+                    etnia = int(request.POST['e_etnia'])
+                    ocupacion = int(request.POST['e_ocupacion'])
+                    regimen = int(regimen = request.POST['e_rss'])
+                    
+                except ValueError:
+                    ban = False
+                    error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
+                
+                if not nombre or not sexo or not etnia or not estado_civil:
+                    ban = False
+                    error = "Diligencie los campos obligatorios"
+                
+                if ban:
+                    # Validación simplificada de sisben
+                    sisben = request.POST.get('e_sisben') == 'on'
 
-                # Instancias simplificadas usando get_object_or_404
-                tipo_documento_instance = get_object_or_404(
-                    TipoDocumento, id=tipo_documento)
-                escolaridad_instance = get_object_or_404(
-                    Escolaridad, id=escolaridad)
-                sexo_instance = get_object_or_404(Sexo, id=sexo)
-                estado_civil_instance = get_object_or_404(
-                    EstadoCivil, id=estado_civil)
-                lecto1_instance = get_object_or_404(Lecto1, id=lectoescritura)
-                lecto2_instance = get_object_or_404(Lecto2, id=lect_nivel)
-                razonamiento_instance = get_object_or_404(
-                    Razonamiento, id=raz_analitico)
-                etnia_instance = get_object_or_404(Etnia, id=etnia)
-                ocupacion_instance = get_object_or_404(Ocupacion, id=ocupacion)
-                regimen_seguridad_instance = get_object_or_404(
-                    RegimenSeguridad, id=regimen)
-                eps_instance = get_object_or_404(EPS, id=request.POST['eps'])
+                    # Instancias simplificadas usando get_object_or_404
+                    tipo_documento_instance = get_object_or_404(
+                        TipoDocumento, id=tipo_documento)
+                    escolaridad_instance = get_object_or_404(
+                        Escolaridad, id=escolaridad)
+                    sexo_instance = get_object_or_404(Sexo, id=sexo)
+                    estado_civil_instance = get_object_or_404(
+                        EstadoCivil, id=estado_civil)
+                    lecto1_instance = get_object_or_404(Lecto1, id=lectoescritura)
+                    lecto2_instance = get_object_or_404(Lecto2, id=lect_nivel)
+                    razonamiento_instance = get_object_or_404(
+                        Razonamiento, id=raz_analitico)
+                    etnia_instance = get_object_or_404(Etnia, id=etnia)
+                    ocupacion_instance = get_object_or_404(Ocupacion, id=ocupacion)
+                    regimen_seguridad_instance = get_object_or_404(
+                        RegimenSeguridad, id=regimen)
+                    eps_instance = get_object_or_404(EPS, id=request.POST['eps'])
 
-                # Iniciar una transacción
-                with transaction.atomic():
-                    paciente.nombre = nombre
-                    paciente.tipo_documento = tipo_documento_instance
-                    paciente.fecha_nacimiento = fecha_nacimiento
-                    paciente.edad = int(edad)
-                    paciente.escolaridad = escolaridad_instance
-                    paciente.numero_hijos = numero_hijos
-                    paciente.sexo = sexo_instance
-                    paciente.direccion = direccion
-                    paciente.barrio = barrio
-                    paciente.estado_civil = estado_civil_instance
-                    paciente.celular = celular
-                    paciente.correo = correo
-                    paciente.lectoescritura_indicador = lecto1_instance
-                    paciente.lectoescritura_nivel = lecto2_instance
-                    paciente.razonamiento_analitico = razonamiento_instance
-                    paciente.etnia = etnia_instance
-                    paciente.ocupacion = ocupacion_instance
-                    paciente.regimen_seguridad = regimen_seguridad_instance
-                    paciente.sisben = sisben
-                    paciente.eps = eps_instance
+                    # Iniciar una transacción
+                    with transaction.atomic():
+                        paciente.nombre = nombre
+                        paciente.tipo_documento = tipo_documento_instance
+                        paciente.fecha_nacimiento = fecha_nacimiento
+                        paciente.edad = int(edad)
+                        paciente.escolaridad = escolaridad_instance
+                        paciente.numero_hijos = numero_hijos
+                        paciente.sexo = sexo_instance
+                        paciente.direccion = direccion
+                        paciente.barrio = barrio
+                        paciente.estado_civil = estado_civil_instance
+                        paciente.celular = celular
+                        paciente.correo = correo
+                        paciente.lectoescritura_indicador = lecto1_instance
+                        paciente.lectoescritura_nivel = lecto2_instance
+                        paciente.razonamiento_analitico = razonamiento_instance
+                        paciente.etnia = etnia_instance
+                        paciente.ocupacion = ocupacion_instance
+                        paciente.regimen_seguridad = regimen_seguridad_instance
+                        paciente.sisben = sisben
+                        paciente.eps = eps_instance
 
-                    paciente.save()
-
+                        paciente.save()
+                        
+                    return render(request, 'sm_HPC.html', {
+                            'CustomUser': request.user,
+                            'year': datetime.now(),
+                            'step': 2,
+                            'hpcsituaciones': hpcsituaciones,
+                            'hpcdemandas': hpcdemandas,
+                            'hpcrespuestas': hpcrespuestas,
+                            'spa': spa,
+                            'snn': snn,
+                            'fecha_nacimiento': fecha_nacimiento
+                    })
+                else: 
+                    return render(request, 'sm_HPC.html', {
+                        'CustomUser': request.user,
+                        'paciente': paciente,
+                        'step': 1,
+                        'escolaridades': escolaridades,
+                        'sexos': sexos,
+                        'estados_civil': estados_civiles,
+                        'lectoescrituras': lectoescritura1,
+                        'lectoescritura_nivel': lectoescritura2,
+                        'calculos': calculos,
+                        'razonamiento_analitico': razonamiento,
+                        'etnias': etnias,
+                        'ocupaciones': ocupaciones,
+                        'pips': pips,
+                        'rsss': regimenes,
+                        'epss': EPSS,
+                        'year': datetime.now(),
+                        'documento': documento,
+                        'tipos_documento': tipos_documento
+                    })
+                
             except (TipoDocumento.DoesNotExist, Escolaridad.DoesNotExist, Sexo.DoesNotExist, EstadoCivil.DoesNotExist, Lecto1.DoesNotExist, Lecto2.DoesNotExist, Razonamiento.DoesNotExist, Etnia.DoesNotExist, Ocupacion.DoesNotExist, RegimenSeguridad.DoesNotExist, EPS.DoesNotExist):
-                # Manejar excepciones específicas según sea necesario
-                # Puedes agregar un manejo de errores más específico aquí
+
                 pass
 
             # Redirigir a una página de detalles del paciente u otra vista después de la actualización
             return render(request, 'sm_HPC.html', {
-                'CustomUser': request.user,
-                'year': datetime.now(),
-                'step': 2,
-                'hpcsituaciones': hpcsituaciones,
-                'hpcdemandas': hpcdemandas,
-                'hpcrespuestas': hpcrespuestas,
-                'spa': spa,
-                'snn': snn,
-                'fecha_nacimiento': fecha_nacimiento
-            })
+                            'CustomUser': request.user,
+                            'year': datetime.now(),
+                            'step': 2,
+                            'hpcsituaciones': hpcsituaciones,
+                            'hpcdemandas': hpcdemandas,
+                            'hpcrespuestas': hpcrespuestas,
+                            'spa': spa,
+                            'snn': snn,
+                            'fecha_nacimiento': fecha_nacimiento
+                    })
         elif "crear_usuario" in request.POST:
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
