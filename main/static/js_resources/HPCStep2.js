@@ -12,6 +12,7 @@ const e_etnia = document.getElementById('e_etnia'); //NaN
 const e_ocupacion = document.getElementById('e_ocupacion'); //nan
 const e_rss = document.getElementById('e_rss'); //Nan
 const eps = document.getElementById('eps'); //Nan
+const step2Error = document.getElementById('step2Error');
 
 const numEtnias = 6;
 const numOcupaciones = 8;
@@ -64,8 +65,17 @@ step1FormUpdate.addEventListener('submit', function(e){
     addErrorMsg(isNaN(e_etnia.value) || e_etnia.value < 0  || e_etnia.value > numEtnias,"Dato erroneo en etnia.", e_etnia)
     addErrorMsg(isNaN(e_ocupacion.value) || e_ocupacion.value < 0 || e_ocupacion.value > numOcupaciones, "Dato erroneo en ocupacion.", e_ocupacion);
     addErrorMsg(isNaN(e_rss.value) || e_rss.value < 0 || e_rss.value > numRegimenes, "Dato erroneo en regimen", e_rss);
-    addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps") 
+    addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps", eps); 
 
+    step2Error.className = "";
+
+    if(ban){
+
+    } else{
+        step2Error.classList.add('text-danger', 'mt-3', 'card');
+        step2Error.innerHTML = msg;
+        
+    }
 
 });
 
