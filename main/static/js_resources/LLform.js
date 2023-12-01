@@ -35,7 +35,7 @@ form_llamadas.addEventListener('submit', function(e){
 
     const addErrorMsg = (condition, errorMsg, obj) => {
         if (condition) {
-    
+            ban = false;
             msg += errorMsg + "<br>";
             toDangerBg.push(obj);
         }

@@ -14,6 +14,9 @@ const e_rss = document.getElementById('e_rss'); //Nan
 const eps = document.getElementById('eps'); //Nan
 
 const numEtnias = 6;
+const numOcupaciones = 8;
+const numRegimenes = 6;
+const numEps = 36;
 
 fecha_nacimiento.addEventListener('change', function () {
     var fechaNacimiento = new Date(fecha_nacimiento.value);
@@ -58,7 +61,11 @@ step1FormUpdate.addEventListener('submit', function(e){
     addPreventiveMsg(e_direccion.value === "", "La dirección está vacía ¿Continuar?", e_direccion);
     addPreventiveMsg(e_barrio.value === "", "El barrio está vacío ¿Continuar?", e_barrio);
     addPreventiveMsg(e_hijos.value === "", "La cantidad de hijos está vacia, será reemplazada por 0", e_hijos);
-    addErrorMsg(isNaN(e_etnia.value), "Etnia no posee un valor numérico" || e_etnia.value < 0  || e_etnia.value > numEtnias, e_etnia)
+    addErrorMsg(isNaN(e_etnia.value) || e_etnia.value < 0  || e_etnia.value > numEtnias,"Dato erroneo en etnia.", e_etnia)
+    addErrorMsg(isNaN(e_ocupacion.value) || e_ocupacion.value < 0 || e_ocupacion.value > numOcupaciones, "Dato erroneo en ocupacion.", e_ocupacion);
+    addErrorMsg(isNaN(e_rss.value) || e_rss.value < 0 || e_rss.value > numRegimenes, "Dato erroneo en regimen", e_rss);
+    addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps") 
+
 
 });
 
