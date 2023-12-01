@@ -35,12 +35,12 @@ form_llamadas.addEventListener('submit', function(e){
 
     const addErrorMsg = (condition, errorMsg, obj) => {
         if (condition) {
-            ban = false;
+    
             msg += errorMsg + "<br>";
             toDangerBg.push(obj);
         }
     };
-
+    
     const addPreventiveMsg = (condition, preventiveErrorMsg, obj) => {
         if (condition) {
             preventiveBan = false;
@@ -49,7 +49,7 @@ form_llamadas.addEventListener('submit', function(e){
         }
     };
 
-    addErrorMsg(in_nombre.value.trim() === "", "El nombre no puede estar vacío \n", in_nombre);
+    addErrorMsg(in_nombre.value.trim() === "", "El nombre no puede estar vacío", in_nombre);
     addErrorMsg(in_documento.value.trim() === "", "El documento no puede estar vacío", in_documento);
     addErrorMsg(in_tipo_documento.value < 1 || in_tipo_documento.value > numTiposDocumento, "Compruebe tipo de documento", in_tipo_documento);
     addErrorMsg(in_sexo.value < 1 || in_sexo.value > numSexos, "Compruebe el sexo", in_sexo);

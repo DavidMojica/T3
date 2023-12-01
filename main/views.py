@@ -501,6 +501,12 @@ def sm_HPC(request):
                 except ValueError:
                     ban = False
                     error = "Error en el formato de la edad."
+                    
+                try:
+                    datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+                except ValueError:
+                    ban = False
+                    error = "La fecha de nacimiento debe estar en formato YYYY-MM-DD."
 
                 try:
                     tipo_documento = int(request.POST['e_tipo_documento'])
