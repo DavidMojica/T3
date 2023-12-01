@@ -484,6 +484,7 @@ def sm_HPC(request):
                 paciente = get_object_or_404(
                     InfoPacientes, documento=documento)
 
+                edad = request.POST['e_edad']
                 nombre = request.POST['e_nombre']
                 fecha_nacimiento = request.POST['e_fecha_nacimiento']
                 escolaridad = request.POST['e_escolaridad']
@@ -502,8 +503,8 @@ def sm_HPC(request):
                     error = "Error en el formato de la edad."
 
                 try:
-                    tipo_documento = int(request.POST['tipo_documento'])
-                    sexo = int(request.POST['sexo'])
+                    tipo_documento = int(request.POST['e_tipo_documento'])
+                    sexo = int(request.POST['e_sexo'])
                     estado_civil = int(request.POST['e_estado_civil'])
                     celular = int(request.POST['e_celular'])
                     lectoescritura = int(request.POST['e_lect'])
@@ -511,7 +512,7 @@ def sm_HPC(request):
                     raz_analitico = int(request.POST['e_raz_analitico'])
                     etnia = int(request.POST['e_etnia'])
                     ocupacion = int(request.POST['e_ocupacion'])
-                    regimen = int(regimen = request.POST['e_rss'])
+                    regimen = int(request.POST['e_rss'])
                     
                 except ValueError:
                     ban = False
@@ -598,7 +599,8 @@ def sm_HPC(request):
                         'epss': EPSS,
                         'year': datetime.now(),
                         'documento': documento,
-                        'tipos_documento': tipos_documento
+                        'tipos_documento': tipos_documento,
+                        'error' : error
                     })
                 
             except (TipoDocumento.DoesNotExist, Escolaridad.DoesNotExist, Sexo.DoesNotExist, EstadoCivil.DoesNotExist, Lecto1.DoesNotExist, Lecto2.DoesNotExist, Razonamiento.DoesNotExist, Etnia.DoesNotExist, Ocupacion.DoesNotExist, RegimenSeguridad.DoesNotExist, EPS.DoesNotExist):
