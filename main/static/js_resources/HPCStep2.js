@@ -13,6 +13,7 @@ const e_ocupacion = document.getElementById('e_ocupacion'); //nan
 const e_rss = document.getElementById('e_rss'); //Nan
 const eps = document.getElementById('eps'); //Nan
 
+const numEtnias = 6;
 
 fecha_nacimiento.addEventListener('change', function () {
     var fechaNacimiento = new Date(fecha_nacimiento.value);
@@ -27,16 +28,16 @@ fecha_nacimiento.addEventListener('change', function () {
 
 step1FormUpdate.addEventListener('submit', function(e){
     e.preventDefault();
-    ban = true;
-    msg = "";fullfily
-    preventiveBan = true;
-    preventiveMsg = "";
+    let ban = true;
+    let msg = "";fullfily
+    let preventiveBan = true;
+    let preventiveMsg = "";
     let toDangerBg = [];
     let toWarningBg = [];
 
     const addErrorMsg = (condition, errorMsg, obj) => {
         if (condition) {
-    
+            ban = false;
             msg += errorMsg + "<br>";
             toDangerBg.push(obj);
         }
@@ -50,8 +51,14 @@ step1FormUpdate.addEventListener('submit', function(e){
         }
     };
 
-    addErrorMsg(e_documento.value === "" || e_documento.value.length < 4, "Por favor verifique el documento", e_documento);
 
+    addErrorMsg(e_documento.value === "" || e_documento.value.trim().length < 4, "Por favor verifique el documento", e_documento);
+    addErrorMsg(e_nombre.value.trim() === "" || e_nombre.value.trim().length < 4, "Compruebe el nombre", e_nombre);
+    addErrorMsg(!moment(fechaValor.value, 'YYYY-MM-DD', true).isValid(), "La fecha está en el formato incorrecto", fecha_nacimiento);
+    addPreventiveMsg(e_direccion.value === "", "La dirección está vacía ¿Continuar?", e_direccion);
+    addPreventiveMsg(e_barrio.value === "", "El barrio está vacío ¿Continuar?", e_barrio);
+    addPreventiveMsg(e_hijos.value === "", "La cantidad de hijos está vacia, será reemplazada por 0", e_hijos);
+    addErrorMsg(isNaN(e_etnia.value), "Etnia no posee un valor numérico" || e_etnia.value < 0  || e_etnia.value > numEtnias, e_etnia)
 
 });
 
