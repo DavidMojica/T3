@@ -624,169 +624,186 @@ def sm_HPC(request):
             error = ""
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
-            
             if not documento:
                 documento = request.POST.get('documento', None)
-                
             documento = request.POST['documento']
-            tipo_documento = request.POST['tipo_documento'] #
-            sexo = request.POST['sexo'] #
-            edad = request.POST['edad'] #
-            eps = request.POST['eps'] #
             direccion = request.POST['direccion']
-            celular = request.POST['celular'] #
             fecha_nacimiento = request.POST['fecha_nacimiento']
-            escolaridad = request.POST['escolaridad'] #
             hijos = request.POST['hijos'] 
             barrio = request.POST['barrio']
-            estado_civil = request.POST['estado_civil'] #
             correo = request.POST['correo']
-            lectoescritura = request.POST['lectoescritura'] #
-            raz_analitico = request.POST['raz_analitico'] #
-            lect_nivel = request.POST['lect_nivel'] #
-            ocupacion = request.POST['ocupacion'] #
-            regimen = request.POST['rss'] #
+
             
             try:
                 tipo_documento = int(request.POST['tipo_documento'])
-
+                sexo = int(request.POST['sexo'])
+                edad = int(request.POST['edad'])
+                eps = int(request.POST['eps'])
+                celular = int(request.POST['celular'])
+                escolaridad = int(request.POST['escolaridad'])
+                estado_civil = int(request.POST['estado_civil'])
+                estado_civil = int(request.POST['estado_civil'])
+                lectoescritura = int(request.POST['lectoescritura'])
+                raz_analitico = int(request.POST['raz_analitico'])
+                lect_nivel = int(request.POST['lect_nivel'])
+                ocupacion = int(request.POST['ocupacion'])
+                regimen = int(request.POST['rss'])
+                etnia = int(request.POST['etnia'])
                 
             except ValueError:
                 ban = False
                 error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
             
+            if not documento or not nombre or not tipo_documento or not sexo or not int(request.POST['ocupacion']) in request.POST:
+                ban = False
+                error = "Diligencie los campos obligatorios"
             
-            if 'sisben' in request.POST:
-                sisben = True
+            if ban:
+                if 'sisben' in request.POST:
+                    sisben = True
+                else:
+                    sisben = False
+                
+                try:
+                    tipo_documento_instance = TipoDocumento.objects.get(
+                        id=tipo_documento)
+                except TipoDocumento.DoesNotExist:
+                    tipo_documento_instance = None
+
+                try:
+                    escolaridad_instance = Escolaridad.objects.get(id=escolaridad)
+                except Escolaridad.DoesNotExist:
+                    escolaridad_instance = None
+
+                try:
+                    sexo_instance = Sexo.objects.get(id=sexo)
+                except Sexo.DoesNotExist:
+                    sexo_instance = None
+
+                try:
+                    estado_civil_instance = EstadoCivil.objects.get(
+                        id=estado_civil)
+                except EstadoCivil.DoesNotExist:
+                    estado_civil_instance = None
+
+                try:
+                    lecto1_instance = Lecto1.objects.get(id=lectoescritura)
+                except Lecto1.DoesNotExist:
+                    lecto1_instance = None
+                try:
+                    lecto2_instance = Lecto2.objects.get(id=lect_nivel)
+                except Lecto2.DoesNotExist:
+                    lecto2_instance = None
+
+                try:
+                    razonamiento_instance = Razonamiento.objects.get(
+                        id=raz_analitico)
+                except Razonamiento.DoesNotExist:
+                    razonamiento_instance = None
+
+                try:
+                    etnia_instance = Etnia.objects.get(id=etnia)
+                except:
+                    etnia_instance = None
+
+                try:
+                    ocupacion_instance = Ocupacion.objects.get(id=ocupacion)
+                except:
+                    ocupacion_instance = None
+
+                try:
+                    regimen_seguridad_instance = RegimenSeguridad.objects.get(
+                        id=regimen)
+                except:
+                    regimen_seguridad_instance = None
+
+                try:
+                    eps_instance = EPS.objects.get(id=eps)
+                except EPS.DoesNotExist:
+                    eps_instance = None
+
+                nuevo_usuario = InfoPacientes(
+                    nombre=nombre,
+                    documento=documento,
+                    tipo_documento=tipo_documento_instance,
+                    fecha_nacimiento=fecha_nacimiento,
+                    edad=edad,
+                    escolaridad=escolaridad_instance,
+                    numero_hijos=hijos,
+                    sexo=sexo_instance,
+                    direccion=direccion,
+                    barrio=barrio,
+                    estado_civil=estado_civil_instance,
+                    celular=celular,
+                    email=correo,
+                    lectoescritura_indicador=lecto1_instance,
+                    lectoescritura_nivel=lecto2_instance,
+                    razonamiento_analitico=razonamiento_instance,
+                    etnia=etnia_instance,
+                    ocupacion=ocupacion_instance,
+                    regimen_seguridad=regimen_seguridad_instance,
+                    eps=eps_instance,
+                    sisben=sisben
+                )
+                nuevo_usuario.save()
+
+                for c in Calculo.objects.all():
+                    checkbox_name = f'calc_{c.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            calculo_instance = Calculo.objects.get(id=c.id)
+                        except Calculo.DoesNotExist:
+                            calculo_instance = None
+
+                        calc = PacienteCalculo(
+                            documento_usuario=nuevo_usuario,
+                            id_calculo=calculo_instance
+                        )
+                        calc.save()
+
+                for p in Pip.objects.all():
+                    checkbox_name = f'pip_{p.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            pip_instance = Pip.objects.get(id=p.id)
+                        except Pip.DoesNotExist:
+                            pip_instance = None
+
+                        pp = PacientePip(
+                            documento_usuario=nuevo_usuario,
+                            id_pip=pip_instance
+                        )
+                        pp.save()
+
+                return render(request, 'sm_HPC.html', {
+                    'CustomUser': request.user,
+                    'year': datetime.now(),
+                    'step': 2,
+                    'fecha_nacimiento': fecha_nacimiento
+                })
             else:
-                sisben = False
-            eps = request.POST['eps']
-            etnia = request.POST['etnia']
-
-            # INSTANCIAS
-            # try:
-            #     paciente = InfoPacientes.objects.get(documento=documento)
-            # except InfoPacientes.DoesNotExist:
-            #     paciente = None
-
-            try:
-                tipo_documento_instance = TipoDocumento.objects.get(
-                    id=tipo_documento)
-            except TipoDocumento.DoesNotExist:
-                tipo_documento_instance = None
-
-            try:
-                escolaridad_instance = Escolaridad.objects.get(id=escolaridad)
-            except Escolaridad.DoesNotExist:
-                escolaridad_instance = None
-
-            try:
-                sexo_instance = Sexo.objects.get(id=sexo)
-            except Sexo.DoesNotExist:
-                sexo_instance = None
-
-            try:
-                estado_civil_instance = EstadoCivil.objects.get(
-                    id=estado_civil)
-            except EstadoCivil.DoesNotExist:
-                estado_civil_instance = None
-
-            try:
-                lecto1_instance = Lecto1.objects.get(id=lectoescritura)
-            except Lecto1.DoesNotExist:
-                lecto1_instance = None
-            try:
-                lecto2_instance = Lecto2.objects.get(id=lect_nivel)
-            except Lecto2.DoesNotExist:
-                lecto2_instance = None
-
-            try:
-                razonamiento_instance = Razonamiento.objects.get(
-                    id=raz_analitico)
-            except Razonamiento.DoesNotExist:
-                razonamiento_instance = None
-
-            try:
-                etnia_instance = Etnia.objects.get(id=etnia)
-            except:
-                etnia_instance = None
-
-            try:
-                ocupacion_instance = Ocupacion.objects.get(id=ocupacion)
-            except:
-                ocupacion_instance = None
-
-            try:
-                regimen_seguridad_instance = RegimenSeguridad.objects.get(
-                    id=regimen)
-            except:
-                regimen_seguridad_instance = None
-
-            try:
-                eps_instance = EPS.objects.get(id=eps)
-            except EPS.DoesNotExist:
-                eps_instance = None
-
-            nuevo_usuario = InfoPacientes(
-                nombre=nombre,
-                documento=documento,
-                tipo_documento=tipo_documento_instance,
-                fecha_nacimiento=fecha_nacimiento,
-                edad=edad,
-                escolaridad=escolaridad_instance,
-                numero_hijos=hijos,
-                sexo=sexo_instance,
-                direccion=direccion,
-                barrio=barrio,
-                estado_civil=estado_civil_instance,
-                celular=celular,
-                email=correo,
-                lectoescritura_indicador=lecto1_instance,
-                lectoescritura_nivel=lecto2_instance,
-                razonamiento_analitico=razonamiento_instance,
-                etnia=etnia_instance,
-                ocupacion=ocupacion_instance,
-                regimen_seguridad=regimen_seguridad_instance,
-                eps=eps_instance,
-                sisben=sisben
-            )
-            nuevo_usuario.save()
-
-            for c in Calculo.objects.all():
-                checkbox_name = f'calc_{c.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        calculo_instance = Calculo.objects.get(id=c.id)
-                    except Calculo.DoesNotExist:
-                        calculo_instance = None
-
-                    calc = PacienteCalculo(
-                        documento_usuario=nuevo_usuario,
-                        id_calculo=calculo_instance
-                    )
-                    calc.save()
-
-            for p in Pip.objects.all():
-                checkbox_name = f'pip_{p.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        pip_instance = Pip.objects.get(id=p.id)
-                    except Pip.DoesNotExist:
-                        pip_instance = None
-
-                    pp = PacientePip(
-                        documento_usuario=nuevo_usuario,
-                        id_pip=pip_instance
-                    )
-                    pp.save()
-
-            return render(request, 'sm_HPC.html', {
-                'CustomUser': request.user,
-                'year': datetime.now(),
-                'step': 2,
-                'fecha_nacimiento': fecha_nacimiento
-            })
+                return render(request, 'sm_HPC.html', {
+                    'CustomUser': request.user,
+                    'step': 1,
+                    'escolaridades': escolaridades,
+                    'sexos': sexos,
+                    'estados_civil': estados_civiles,
+                    'lectoescrituras': lectoescritura1,
+                    'lectoescritura_nivel': lectoescritura2,
+                    'calculos': calculos,
+                    'razonamiento_analitico': razonamiento,
+                    'etnias': etnias,
+                    'ocupaciones': ocupaciones,
+                    'pips': pips,
+                    'rsss': regimenes,
+                    'epss': EPSS,
+                    'year': datetime.now(),
+                    'documento': documento,
+                    'tipos_documento': tipos_documento,
+                    'error': error
+                })
         elif "detalles_asesoria" in request.POST:
+            
             documento = request.POST['documento']
             id_profesional = request.POST['id_prof']
             fecha_nacimiento = request.POST['fecha_nacimiento']
