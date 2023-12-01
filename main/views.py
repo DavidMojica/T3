@@ -620,28 +620,42 @@ def sm_HPC(request):
                             'fecha_nacimiento': fecha_nacimiento
                     })
         elif "crear_usuario" in request.POST:
+            ban = True
+            error = ""
             nombre = f"{request.POST['nombre']} {request.POST['apellido']}"
             documento = request.POST.get('documento_bait', None)
+            
             if not documento:
                 documento = request.POST.get('documento', None)
+                
             documento = request.POST['documento']
-            tipo_documento = request.POST['tipo_documento']
-            sexo = request.POST['sexo']
-            edad = request.POST['edad']
-            eps = request.POST['eps']
+            tipo_documento = request.POST['tipo_documento'] #
+            sexo = request.POST['sexo'] #
+            edad = request.POST['edad'] #
+            eps = request.POST['eps'] #
             direccion = request.POST['direccion']
-            celular = request.POST['celular']
+            celular = request.POST['celular'] #
             fecha_nacimiento = request.POST['fecha_nacimiento']
-            escolaridad = request.POST['escolaridad']
-            hijos = request.POST['hijos']
+            escolaridad = request.POST['escolaridad'] #
+            hijos = request.POST['hijos'] 
             barrio = request.POST['barrio']
-            estado_civil = request.POST['estado_civil']
+            estado_civil = request.POST['estado_civil'] #
             correo = request.POST['correo']
-            lectoescritura = request.POST['lectoescritura']
-            raz_analitico = request.POST['raz_analitico']
-            lect_nivel = request.POST['lect_nivel']
-            ocupacion = request.POST['ocupacion']
-            regimen = request.POST['rss']
+            lectoescritura = request.POST['lectoescritura'] #
+            raz_analitico = request.POST['raz_analitico'] #
+            lect_nivel = request.POST['lect_nivel'] #
+            ocupacion = request.POST['ocupacion'] #
+            regimen = request.POST['rss'] #
+            
+            try:
+                tipo_documento = int(request.POST['tipo_documento'])
+
+                
+            except ValueError:
+                ban = False
+                error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
+            
+            
             if 'sisben' in request.POST:
                 sisben = True
             else:
