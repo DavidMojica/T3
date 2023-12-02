@@ -85,6 +85,7 @@ step1FormUpdate.addEventListener('submit', function(e){
             
             submitBtn.addEventListener('click', function(){
                 if(e_edad.value === "") e_edad.value = 0;
+                if(e_hijos.value === "") e_hijos.value = 0;
 
                 step1FormUpdate.submit();
             });
