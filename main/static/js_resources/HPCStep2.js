@@ -13,6 +13,7 @@ const e_ocupacion = document.getElementById('e_ocupacion'); //nan
 const e_rss = document.getElementById('e_rss'); //Nan
 const eps = document.getElementById('eps'); //Nan
 const step2Error = document.getElementById('step2Error');
+const submitBtn = document.getElementById('submitBtn');
 
 const numEtnias = 6;
 const numOcupaciones = 8;
@@ -33,7 +34,7 @@ fecha_nacimiento.addEventListener('change', function () {
 step1FormUpdate.addEventListener('submit', function(e){
     e.preventDefault();
     let ban = true;
-    let msg = "";fullfily
+    let msg = "";
     let preventiveBan = true;
     let preventiveMsg = "";
     let toDangerBg = [];
@@ -56,9 +57,10 @@ step1FormUpdate.addEventListener('submit', function(e){
     };
 
 
+    addErrorMsg(e_edad.value < 0 || isNaN(e_edad.value), "Error en la edad", e_edad);
     addErrorMsg(e_documento.value === "" || e_documento.value.trim().length < 4, "Por favor verifique el documento", e_documento);
     addErrorMsg(e_nombre.value.trim() === "" || e_nombre.value.trim().length < 4, "Compruebe el nombre", e_nombre);
-    addErrorMsg(!moment(fechaValor.value, 'YYYY-MM-DD', true).isValid(), "La fecha está en el formato incorrecto", fecha_nacimiento);
+    addErrorMsg(!moment(fecha_nacimiento.value, 'YYYY-MM-DD', true).isValid(), "La fecha está en el formato incorrecto", fecha_nacimiento);
     addPreventiveMsg(e_direccion.value === "", "La dirección está vacía ¿Continuar?", e_direccion);
     addPreventiveMsg(e_barrio.value === "", "El barrio está vacío ¿Continuar?", e_barrio);
     addPreventiveMsg(e_hijos.value === "", "La cantidad de hijos está vacia, será reemplazada por 0", e_hijos);
@@ -70,13 +72,42 @@ step1FormUpdate.addEventListener('submit', function(e){
     step2Error.className = "";
 
     if(ban){
+        if(preventiveBan){
+            step1FormUpdate.submit();
+        }
+        else{
+            step2Error.classList.add('text-warning', 'mt-3', 'card');
+            step2Error.innerHTML = preventiveMsg;
+            changeBg(toWarningBg, 'bg-warning');
 
+            submitBtn.classList.remove('btn-danger');
+            submitBtn.classList.add('btn', 'btn-warning');
+            
+            submitBtn.addEventListener('click', function(){
+                if(e_edad.value === "") e_edad.value = 0;
+                if(e_hijos.value === "") e_hijos.value = 0;
+
+                step1FormUpdate.submit();
+            });
+
+            setTimeout(() => {
+                naturalizeBg(toWarningBg, 'bg-warning')
+            }, 15000);
+        }
     } else{
         step2Error.classList.add('text-danger', 'mt-3', 'card');
         step2Error.innerHTML = msg;
-        
-    }
+        changeBg(toDangerBg, 'bg-danger');
 
+        setTimeout(() => {
+            naturalizeBg(toDangerBg, 'bg-danger')
+        }, 7000);
+
+        setTimeout(() => {
+            step2Error.classList.remove('card');
+            step2Error.innerHTML = "";
+        }, 7000);   
+    }
 });
 
 
