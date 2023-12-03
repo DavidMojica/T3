@@ -18,7 +18,7 @@ const etnia = document.getElementById('etnia');
 const ocupacion = document.getElementById('ocupacion');
 const rss = document.getElementById('rss');
 const step3Error = document.getElementById('step3Error');
-
+const submitBtn3 = document.getElementById('submitBtn3');
 const numEtnias = 6;
 const numOcupaciones = 8;
 const numRegimenes = 6;
@@ -27,11 +27,11 @@ const numEps = 36;
 fecha_nacimiento.addEventListener('change', function () {
     var fechaNacimiento = new Date(fecha_nacimiento.value);
     var fechaActual = new Date();
-    var edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+    var edadNum = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
     if (fechaActual.getMonth() < fechaNacimiento.getMonth() || (fechaActual.getMonth() === fechaNacimiento.getMonth() && fechaActual.getDate() < fechaNacimiento.getDate())) {
-        edad--;
+        edadNum--;
     }
-    e_edad.value = edad;
+    edad.value = edadNum;
 });
 
 step2FormUpdate.addEventListener('submit', function(e){
@@ -81,14 +81,14 @@ step2FormUpdate.addEventListener('submit', function(e){
             step3Error.innerHTML = preventiveMsg;
             changeBg(toWarningBg, 'bg-warning');
 
-            submitBtn.classList.remove('btn-danger');
-            submitBtn.classList.add('btn', 'btn-warning');
+            submitBtn3.classList.remove('btn-danger');
+            submitBtn3.classList.add('btn', 'btn-warning');
             
-            submitBtn.addEventListener('click', function(){
+            submitBtn3.addEventListener('click', function(){
                 if(e_edad.value === "") e_edad.value = 0;
                 if(e_hijos.value === "") e_hijos.value = 0;
 
-                step1FormUpdate.submit();
+                step2FormUpdate.submit();
             });
 
             setTimeout(() => {
