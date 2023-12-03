@@ -17,6 +17,7 @@ const raz_analitico = document.getElementById('raz_analitico');
 const etnia = document.getElementById('etnia');
 const ocupacion = document.getElementById('ocupacion');
 const rss = document.getElementById('rss');
+const step3Error = document.getElementById('step3Error');
 
 const numEtnias = 6;
 const numOcupaciones = 8;
@@ -69,5 +70,44 @@ step2FormUpdate.addEventListener('submit', function(e){
     addErrorMsg(isNaN(ocupacion.value) ||ocupacion.value < 0 ||ocupacion.value > numOcupaciones, "Dato erroneo en ocupacion.",ocupacion);
     addErrorMsg(isNaN(rss.value) || rss.value < 0 || rss.value > numRegimenes, "Dato erroneo en regimen", rss);
     addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps", eps); 
-    
+
+    step3Error.className = "";
+
+    if (ban){
+        if(preventiveBan){
+            step2FormUpdate.submit();
+        } else {
+            step3Error.classList.add('text-warning', 'mt-3', 'card');
+            step3Error.innerHTML = preventiveMsg;
+            changeBg(toWarningBg, 'bg-warning');
+
+            submitBtn.classList.remove('btn-danger');
+            submitBtn.classList.add('btn', 'btn-warning');
+            
+            submitBtn.addEventListener('click', function(){
+                if(e_edad.value === "") e_edad.value = 0;
+                if(e_hijos.value === "") e_hijos.value = 0;
+
+                step1FormUpdate.submit();
+            });
+
+            setTimeout(() => {
+                naturalizeBg(toWarningBg, 'bg-warning')
+            }, 15000);
+        }
+    } else{
+        step3Error.classList.add('text-danger', 'mt-3', 'card');
+        step3Error.innerHTML = msg;
+        changeBg(toDangerBg, 'bg-danger');
+
+        setTimeout(() => {
+            naturalizeBg(toDangerBg, 'bg-danger')
+        }, 7000);
+
+        setTimeout(() => {
+            step3Error.classList.remove('card');
+            step3Error.innerHTML = "";
+        }, 7000);  
+    }
+
 })
