@@ -69,4 +69,5 @@ step2FormUpdate.addEventListener('submit', function(e){
     addErrorMsg(isNaN(ocupacion.value) ||ocupacion.value < 0 ||ocupacion.value > numOcupaciones, "Dato erroneo en ocupacion.",ocupacion);
     addErrorMsg(isNaN(rss.value) || rss.value < 0 || rss.value > numRegimenes, "Dato erroneo en regimen", rss);
     addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps", eps); 
+    
 })
