@@ -1,5 +1,6 @@
 const step2FormUpdate = document.getElementById('step2FormUpdate');
 const documento = document.getElementById('documento');
+const tipo_documento = document.getElementById('tipo_documento');
 const nombre = document.getElementById('nombre');
 const apellido = document.getElementById('apellido');
 const fecha_nacimiento = document.getElementById('fecha_nacimiento');
@@ -19,10 +20,13 @@ const ocupacion = document.getElementById('ocupacion');
 const rss = document.getElementById('rss');
 const step3Error = document.getElementById('step3Error');
 const submitBtn3 = document.getElementById('submitBtn3');
+
 const numEtnias = 6;
 const numOcupaciones = 8;
 const numRegimenes = 6;
 const numEps = 36;
+const numTipoDocumentos = 8;
+const numSexos = 3;
 
 fecha_nacimiento.addEventListener('change', function () {
     var fechaNacimiento = new Date(fecha_nacimiento.value);
@@ -59,6 +63,8 @@ step2FormUpdate.addEventListener('submit', function(e){
         }
     };
 
+    addErrorMsg(sexo.value <= 0 || sexo.value > numSexos, "Comrpuebe el sexo", sexo);
+    addErrorMsg(tipo_documento.value <= 0 || tipo_documento.value > numTipoDocumentos, "Compruebe tipo de documento", tipo_documento);
     addErrorMsg(edad.value < 0 || isNaN(edad.value), "Error en la edad", edad);
     addErrorMsg(documento.value === "" || documento.value.trim().length < 4, "Por favor verifique el documento", documento);
     addErrorMsg(nombre.value.trim() === "" || nombre.value.trim().length < 4, "Compruebe el nombre", nombre);
@@ -85,8 +91,8 @@ step2FormUpdate.addEventListener('submit', function(e){
             submitBtn3.classList.add('btn', 'btn-warning');
             
             submitBtn3.addEventListener('click', function(){
-                if(e_edad.value === "") e_edad.value = 0;
-                if(e_hijos.value === "") e_hijos.value = 0;
+                if(edad.value === "") edad.value = 0;
+                if(hijos.value === "") hijos.value = 0;
 
                 step2FormUpdate.submit();
             });
