@@ -29,6 +29,9 @@ const numTipoDocumentos = 8;
 const numSexos = 3;
 const numEstadosCivil = 6;
 const numEscolaridades = 7;
+const numLectoes = 4;
+const numLectoesNiv = 6;
+const numRa = 6;
 
 fecha_nacimiento.addEventListener('change', function () {
     var fechaNacimiento = new Date(fecha_nacimiento.value);
@@ -65,7 +68,9 @@ step2FormUpdate.addEventListener('submit', function(e){
         }
     };
     
-    addErrorMsg(lectoescritura)
+    addErrorMsg(raz_analitico.value <= 0 || raz_analitico > numRa, "Compruebe razonamiento analitico", raz_analitico);
+    addErrorMsg(lectoescritura_nivel.value <= 0 || lectoescritura_nivel > numLectoesNiv, "Compruebe lectoescritura nivel", lectoescritura_nivel);
+    addErrorMsg(lectoescritura.value <= 0 || lectoescritura.value > numLectoes, "Compruebe lectoescritura", lectoescritura);
     addErrorMsg(escolaridad.value <= 0 || escolaridad.value > numEscolaridades, "Compruebe escolaridad", escolaridad);
     addErrorMsg(estado_civil.value <= 0 || estado_civil.value > numEstadosCivil, "Compruebe estado civil", estado_civil);
     addErrorMsg(sexo.value <= 0 || sexo.value > numSexos, "Comrpuebe el sexo", sexo);
