@@ -821,7 +821,6 @@ def sm_HPC(request):
             ap_adh = request.POST['ap_adh']
             ap_barr = request.POST['ap_barr']
             ap_notas = request.POST['ap_notas']
-            # sp_eoa = request.POST['sp_eoa']
             sp_edad = request.POST['sp_edad']
             sp_susi = request.POST['sp_susi']  # i
             sp_ulco = request.POST['sp_ulco']
@@ -829,7 +828,6 @@ def sm_HPC(request):
 
             sp_csr = request.POST['sp_csr']
             sp_ip = request.POST['sp_ip']
-            # sp_cf = request.POST['sp_cf']
             sp_vi = request.POST['sp_vi']
             sp_notas = request.POST['sp_notas']
 
@@ -838,26 +836,20 @@ def sm_HPC(request):
             cs_dm = request.POST['cs_dm']  # i snn
             cs_ip = request.POST['cs_ip']
             cs_fu = request.POST['cs_fu']
-            # cs_mh = request.POST['cs_mh']
             cs_metodo = request.POST['cs_metodo']
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
             cs_eb = request.POST['cs_eb']  # i
             cs_ep = request.POST['cs_ep']  # i
             cs_ae = request.POST['cs_ae']
-            # cs_hf = request.POST['cs_hf']
             cs_fp = request.POST['cs_fp']
             cs_ra = request.POST['cs_ra']
             cs_notas = request.POST['cs_notas']
 
-            # av_vict = request.POST['av_vict']
             av_tv = request.POST['av_tv']
             av_agre = request.POST['av_agre']
             av_ir = request.POST['av_ir']
             av_notas = request.POST['av_notas']
-            # re_ac = request.POST['re_ac']
-            # re_sc = request.POST['re_sc']
-            # re_ic = request.POST['re_ic']
             re_pt = request.POST['re_pt']
             re_cd = request.POST['re_cd']
             re_notas = request.POST['re_notas']

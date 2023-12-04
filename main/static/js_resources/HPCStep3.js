@@ -68,24 +68,24 @@ step2FormUpdate.addEventListener('submit', function(e){
         }
     };
     
-    addErrorMsg(raz_analitico.value <= 0 || raz_analitico > numRa, "Compruebe razonamiento analitico", raz_analitico);
-    addErrorMsg(lectoescritura_nivel.value <= 0 || lectoescritura_nivel > numLectoesNiv, "Compruebe lectoescritura nivel", lectoescritura_nivel);
-    addErrorMsg(lectoescritura.value <= 0 || lectoescritura.value > numLectoes, "Compruebe lectoescritura", lectoescritura);
-    addErrorMsg(escolaridad.value <= 0 || escolaridad.value > numEscolaridades, "Compruebe escolaridad", escolaridad);
-    addErrorMsg(estado_civil.value <= 0 || estado_civil.value > numEstadosCivil, "Compruebe estado civil", estado_civil);
-    addErrorMsg(sexo.value <= 0 || sexo.value > numSexos, "Comrpuebe el sexo", sexo);
-    addErrorMsg(tipo_documento.value <= 0 || tipo_documento.value > numTipoDocumentos, "Compruebe tipo de documento", tipo_documento);
-    addErrorMsg(edad.value < 0 || isNaN(edad.value), "Error en la edad", edad);
-    addErrorMsg(documento.value === "" || documento.value.trim().length < 4, "Por favor verifique el documento", documento);
+    addErrorMsg(raz_analitico.value.trim() <= 0 || raz_analitico.value.trim() > numRa, "Compruebe razonamiento analitico", raz_analitico);
+    addErrorMsg(lectoescritura_nivel.value.trim() <= 0 || lectoescritura_nivel > numLectoesNiv, "Compruebe lectoescritura nivel", lectoescritura_nivel);
+    addErrorMsg(lectoescritura.value.trim() <= 0 || lectoescritura.value.trim() > numLectoes, "Compruebe lectoescritura", lectoescritura);
+    addErrorMsg(escolaridad.value.trim() <= 0 || escolaridad.value.trim() > numEscolaridades, "Compruebe escolaridad", escolaridad);
+    addErrorMsg(estado_civil.value.trim() <= 0 || estado_civil.value.trim() > numEstadosCivil, "Compruebe estado civil", estado_civil);
+    addErrorMsg(sexo.value.trim() <= 0 || sexo.value.trim() > numSexos, "Comrpuebe el sexo", sexo);
+    addErrorMsg(tipo_documento.value.trim() <= 0 || tipo_documento.value.trim() > numTipoDocumentos, "Compruebe tipo de documento", tipo_documento);
+    addErrorMsg(edad.value.trim() < 0 || isNaN(edad.value.trim()), "Error en la edad", edad);
+    addErrorMsg(documento.value.trim() === "" || documento.value.trim().length < 4, "Por favor verifique el documento", documento);
     addErrorMsg(nombre.value.trim() === "" || nombre.value.trim().length < 4, "Compruebe el nombre", nombre);
-    addErrorMsg(!moment(fecha_nacimiento.value, 'YYYY-MM-DD', true).isValid(), "La fecha está en el formato incorrecto", fecha_nacimiento);
-    addPreventiveMsg(direccion.value === "", "La dirección está vacía ¿Continuar?", direccion);
-    addPreventiveMsg(barrio.value === "", "El barrio está vacío ¿Continuar?", barrio);
-    addPreventiveMsg(hijos.value === "", "La cantidad de hijos está vacia, será reemplazada por 0", hijos);
-    addErrorMsg(isNaN(etnia.value) || etnia.value < 0  || etnia.value > numEtnias,"Dato erroneo en etnia.", etnia)
-    addErrorMsg(isNaN(ocupacion.value) ||ocupacion.value < 0 ||ocupacion.value > numOcupaciones, "Dato erroneo en ocupacion.",ocupacion);
-    addErrorMsg(isNaN(rss.value) || rss.value < 0 || rss.value > numRegimenes, "Dato erroneo en regimen", rss);
-    addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps", eps); 
+    addErrorMsg(!moment(fecha_nacimiento.value.trim(), 'YYYY-MM-DD', true).isValid(), "La fecha está en el formato incorrecto", fecha_nacimiento);
+    addPreventiveMsg(direccion.value.trim() === "", "La dirección está vacía ¿Continuar?", direccion);
+    addPreventiveMsg(barrio.value.trim() === "", "El barrio está vacío ¿Continuar?", barrio);
+    addPreventiveMsg(hijos.value.trim() === "", "La cantidad de hijos está vacia, será reemplazada por 0", hijos);
+    addErrorMsg(isNaN(etnia.value.trim()) || etnia.value.trim() < 0  || etnia.value.trim() > numEtnias,"Dato erroneo en etnia.", etnia)
+    addErrorMsg(isNaN(ocupacion.value.trim()) ||ocupacion.value.trim() < 0 ||ocupacion.value.trim() > numOcupaciones, "Dato erroneo en ocupacion.",ocupacion);
+    addErrorMsg(isNaN(rss.value.trim()) || rss.value.trim() < 0 || rss.value.trim() > numRegimenes, "Dato erroneo en regimen", rss);
+    addErrorMsg(isNaN(eps.value.trim()) || eps.value.trim() < 0 || eps.value.trim() > numEps, "Dato erroneo en Eps", eps); 
 
     step3Error.className = "";
 
