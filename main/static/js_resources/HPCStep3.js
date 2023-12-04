@@ -27,6 +27,7 @@ const numRegimenes = 6;
 const numEps = 36;
 const numTipoDocumentos = 8;
 const numSexos = 3;
+const numEstadosCivil = 6;
 
 fecha_nacimiento.addEventListener('change', function () {
     var fechaNacimiento = new Date(fecha_nacimiento.value);
@@ -63,6 +64,7 @@ step2FormUpdate.addEventListener('submit', function(e){
         }
     };
 
+    addErrorMsg(estado_civil.value <= 0 || estado_civil.value > numEstadosCivil, "Compruebe estado civil", estado_civil);
     addErrorMsg(sexo.value <= 0 || sexo.value > numSexos, "Comrpuebe el sexo", sexo);
     addErrorMsg(tipo_documento.value <= 0 || tipo_documento.value > numTipoDocumentos, "Compruebe tipo de documento", tipo_documento);
     addErrorMsg(edad.value < 0 || isNaN(edad.value), "Error en la edad", edad);

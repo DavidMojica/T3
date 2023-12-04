@@ -638,14 +638,13 @@ def sm_HPC(request):
             hijos = request.POST['hijos'] 
             barrio = request.POST['barrio']
             correo = request.POST['correo']
-
+            celular = request.POST['celular']
             
             try:
                 tipo_documento = int(request.POST['tipo_documento'])
                 sexo = int(request.POST['sexo'])
                 edad = int(request.POST['edad'])
-                eps = int(request.POST['eps'])
-                celular = int(request.POST['celular'])
+                eps = int(request.POST['eps'])        
                 escolaridad = int(request.POST['escolaridad'])
                 estado_civil = int(request.POST['estado_civil'])
                 estado_civil = int(request.POST['estado_civil'])
@@ -660,7 +659,8 @@ def sm_HPC(request):
                 ban = False
                 error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
             
-            if not documento or not nombre or not tipo_documento or not sexo or not int(request.POST['ocupacion']) in request.POST:
+            print(f"{documento} | {nombre} | {tipo_documento} | {sexo} | {int(request.POST['ocupacion'])} ")
+            if not documento or not nombre or not tipo_documento or not sexo or not int(request.POST['ocupacion']):
                 ban = False
                 error = "Diligencie los campos obligatorios"
             
