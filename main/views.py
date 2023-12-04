@@ -647,7 +647,6 @@ def sm_HPC(request):
                 eps = int(request.POST['eps'])        
                 escolaridad = int(request.POST['escolaridad'])
                 estado_civil = int(request.POST['estado_civil'])
-                estado_civil = int(request.POST['estado_civil'])
                 lectoescritura = int(request.POST['lectoescritura'])
                 raz_analitico = int(request.POST['raz_analitico'])
                 lect_nivel = int(request.POST['lect_nivel'])
