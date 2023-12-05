@@ -3,6 +3,8 @@ const hpcForm = document.getElementById('hpcForm');
 
 const sp_ulco = document.getElementById('sp_ulco');
 const cs_fu = document.getElementById('cs_fu');
+const cs_ip = document.getElementById('cs_ip');
+
 
 hpcForm.addEventListener('submit', function(e){
     e.preventDefault();
@@ -17,6 +19,7 @@ hpcForm.addEventListener('submit', function(e){
     if (!formatoFecha.test(cs_fu.value)) cs_fu.value = null;
     if (!formatoFecha.test(sp_ulco.value)) sp_ulco.value = null;
     if(sp_edad.value == "") sp_edad.value = 0;
+    if (cs_ip.value == "") cs_ip.value = 0;
 
 
     if(ban){

@@ -821,7 +821,6 @@ def sm_HPC(request):
             
             documento = request.POST['documento']
             id_profesional = request.POST['id_prof']
-            fecha_nacimiento = request.POST['fecha_nacimiento']
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
@@ -833,7 +832,7 @@ def sm_HPC(request):
             ap_notas = request.POST['ap_notas']
             sp_edad = request.POST['sp_edad']
             sp_susi = request.POST['sp_susi']  # i
-            sp_ulco = request.POST['sp_ulco']
+            sp_ulco = request.POST['sp_ulco'] #f
             sp_susim = request.POST['sp_susim']  # i
 
             sp_csr = request.POST['sp_csr']
@@ -845,7 +844,7 @@ def sm_HPC(request):
             cs_pp = request.POST['cs_pp']  # i snn
             cs_dm = request.POST['cs_dm']  # i snn
             cs_ip = request.POST['cs_ip']
-            cs_fu = request.POST['cs_fu']
+            cs_fu = request.POST['cs_fu'] #f
             cs_metodo = request.POST['cs_metodo']
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
@@ -892,8 +891,21 @@ def sm_HPC(request):
                 sp_cfins = True
             else:
                 sp_cfins = False
+                
+            try:
+                cs_fu = datetime.strptime(cs_fu, '%Y-%m-%d')
+            except:
+                cs_fu = None
 
-            fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+            try:
+                sp_ulco = datetime.strptime(sp_ulco, '%Y-%m-%d')
+            except:
+                sp_ulco = None
+                
+            try:
+                fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+            except:
+                fecha_nacimiento = None
 
             try:
                 cs_pins = SiNoNunca.objects.get(id=cs_pi)
@@ -959,14 +971,17 @@ def sm_HPC(request):
                 re_io = True
             else:
                 re_io = False
+                
+            try:
+                edadActual = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+            except:
+                edadActual = None
 
             asesoria = HPC(
                 cedula_usuario=pacienteInstance,
                 id_profesional=id_profesionalInstance,
                 lugar=a_lugar,
-                edad_usuario_actual=fecha_actual.year - fecha_nacimiento.year -
-                ((fecha_actual.month, fecha_actual.day) <
-                 (fecha_nacimiento.month, fecha_nacimiento.day)),
+                edad_usuario_actual=edadActual,
                 diag_trans_mental=ap_trans,
                 diag_categoria=ap_cate,
                 diag_por_profesional=ap_diag,
@@ -1081,10 +1096,7 @@ def sm_HPC(request):
                     )
                     cond_s.save()
 
-            return render(request, 'sm_citas',{
-                'CustomUser': request.user,
-                'year': datetime.now()
-            })
+            return redirect(reverse('sm_citas'))
     elif request.method == "GET":
         try:
             cita = request.GET.get('cita', 0)
