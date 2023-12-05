@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="main-expanded container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h4 class="text-center display-3 py-5">Citas psicologicas</h4>
+            <ul class="list-group">
+                {% for cita in citas %}
+                <a href="{% url 'sm_HPC' %}?cita={{ cita.id }}" class="list-group-item">
+                    <header class="d-flex justify-content-between">
+                        <h1 class="fw-bold text-success">Cita</h1>
+
+                    </header>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</main>
+{% endblock %}

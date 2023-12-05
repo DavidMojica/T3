@@ -407,9 +407,11 @@
     </form>
     {% endif %}
 
-    {% if step == 2 %}
     <!-- STEP 2----------------------------- -->
-    <form action="" method="POST">
+    {% if step == 2 %}
+    {% load static %}
+    <script src="{% static 'js_resources/HPCStep4.js' %}" defer></script>
+    <form action="" method="POST" id="hpcForm">
         {% csrf_token %}
         <div class="row justify-content-center">
             <div class="col-md-8 row justify-content-center">
@@ -420,7 +422,7 @@
                 <div class="form-group mb-2 col-md-4"></div>
                 <div class="form-group mb-2 col-md-4">
                     <label for="a_lugar" class="text-light">Lugar de la asesoría</label>
-                    <input type="text" name="a_lugar" class="form-control" id="a_lugar">
+                    <input type="text" name="a_lugar" class="form-control" id="a_lugar" value="{{data.lugar}}">
                 </div>
                 <div class="form-group mb-2 col-md-4"> </div>
 
@@ -766,7 +768,8 @@
 
                 <div class="form-group col-md-4"></div>
                 <div class="form-group col-md-3 mb-5 mt-5">
-                    <button type="submit" class="btn btn-success" name="detalles_asesoria">Guardar asesoría</button>
+                    <input type="hidden" name="detalles_asesoria">
+                    <button type="submit" class="btn btn-success">Guardar asesoría</button>
                 </div>
                 <div class="form-group col-md-4" ></div>
             </div>
