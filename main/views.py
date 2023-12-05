@@ -1081,6 +1081,10 @@ def sm_HPC(request):
                     )
                     cond_s.save()
 
+            return render(request, 'sm_citas',{
+                'CustomUser': request.user,
+                'year': datetime.now()
+            })
     elif request.method == "GET":
         try:
             cita = request.GET.get('cita', 0)
