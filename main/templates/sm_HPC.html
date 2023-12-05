@@ -426,7 +426,6 @@
                 </div>
                 <div class="form-group mb-2 col-md-4"> </div>
 
-
                 <div class="form-group mb-2 col-md-4">
                     <details class="mult-details">
                         <summary class="mult-summary">Situación que origina el contacto</summary>
@@ -472,38 +471,38 @@
                 <h2 class="text-primary mt-5 text-center">Antecedentes psiquiatricos</h2>
                
                 <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Diagnóstico de transtorno mental</label>
-                    <textarea name="ap_trans" class="form-control" id="ap_trans" cols="30" rows="10"></textarea>
+                    <label for="" class="text-light" >Diagnóstico de transtorno mental</label>
+                    <textarea name="ap_trans" class="form-control" id="ap_trans" cols="30" rows="10" value="{{data.diag_trans_mental}}"></textarea>
                 </div>
 
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Categoría del diagóstico (CIE-10)</label>
-                    <textarea name="ap_cate" class="form-control" id="ap_cate" cols="30" rows="10"></textarea>
+                    <textarea name="ap_cate" class="form-control" id="ap_cate" cols="30" rows="10" value="{{data.diag_categoria}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Diagnóstico por profesional de la salud</label>
-                    <textarea name="ap_diag" class="form-control"  id="ap_diag" cols="30" rows="10"></textarea>
+                    <textarea name="ap_diag" class="form-control"  id="ap_diag" cols="30" rows="10" value="{{data.diag_por_profesional}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Tratamiento</label>
-                    <textarea name="ap_trat" class="form-control"  id="ap_trat" cols="30" rows="10"></textarea>
+                    <textarea name="ap_trat" class="form-control"  id="ap_trat" cols="30" rows="10" value="{{data.tratamiento}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Medicamentos</label>
-                    <textarea name="ap_med"  class="form-control" id="ap_med" cols="30" rows="10"></textarea>
+                    <textarea name="ap_med"  class="form-control" id="ap_med" cols="30" rows="10" value="{{data.medicamentos}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Adherencia al tratamiento/medicamentos</label>
-                    <textarea name="ap_adh" class="form-control" id="ap_adh" cols="30" rows="10"></textarea>
+                    <textarea name="ap_adh" class="form-control" id="ap_adh" cols="30" rows="10" value="{{data.adherencia}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-2"></div>
                 <div class="form-group mb-2 col-md-4">
                     <label for="" class="text-light">Barreras en el acceso</label>
-                    <textarea name="ap_barr" class="form-control" id="ap_barr" cols="30" rows="10"></textarea>
+                    <textarea name="ap_barr" class="form-control" id="ap_barr" cols="30" rows="10" value="{{data.barreras_acceso}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-4">   
                     <label for="" class="text-light">Notas de atención:</label>
-                    <textarea name="ap_notas" class="form-control" id="ap_notas" cols="30" rows="10"></textarea>
+                    <textarea name="ap_notas" class="form-control" id="ap_notas" cols="30" rows="10" value="{{data.anotaciones_antecedentes_psiquiatricos}}"></textarea>
                 </div>
                 <div class="form-group mb-2 col-md-2"></div>
                 
@@ -513,24 +512,24 @@
                 <div class="form-group mb-2 col-md-3"></div>
                 <div class="form-group mb-2 col-md-3 row justify-content-center">
                     <label for="" class="text-light">Es o ha sido consumidor</label>
-                    <input type="checkbox" class="form-check" name="sp_eoa" id="sp_eoa">
+                    <input type="checkbox" class="form-check" name="sp_eoa" id="sp_eoa" checked="{{data.es_hasido_consumidor}}">
                 </div>
                 <div class="form-group mb-2 col-md-3 row justify-content-center">
                     <label for="" class="text-light">Consumo núcleo familiar</label>
-                    <input type="checkbox" class="form-check" name="sp_cf" id="sp_cf">
+                    <input type="checkbox" class="form-check" name="sp_cf" id="sp_cf" checked="{{data.consumo_familiar}}">
                 </div>
                 <div class="form-group mb-2 col-md-3"></div>
 
                 <div class="form-group mb-2 col-md-3">
                     <label for="" class="text-light">Edad de inicio</label>
-                    <input type="number" name="sp_edad" class="form-control" id="sp_edad">
+                    <input type="number" name="sp_edad" class="form-control" id="sp_edad" value="{{data.edad_inicio}}">
                 </div>
                 <div class="form-group mb-2 col-md-3">
                     <label for="" class="text-light">Sustancia de inicio</label>
                     <select name="sp_susi" class="form-select" id="sp_susi">
                         <option value="-1">Seleccione...</option>
                         {% for s in spa %}
-                        <option value="{{s.id}}">{{s.description}}</option>
+                            <option value="{{ s.id }}" {% if s.id == data.spa_inicio %} selected {% endif %}>{{ s.description }}</option>
                         {% endfor %}
                     </select>
                 </div>
