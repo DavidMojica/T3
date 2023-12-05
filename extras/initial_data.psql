@@ -244,6 +244,10 @@ insert into main_spa(description) values('Lorazepam');
 insert into main_spa(description) values('Alprazolam');
 insert into main_spa(description) values('Otro');
 
+insert into main_estatuspersona(description) values('Vive solo');
+insert into main_estatuspersona(description) values('Divorciado');
+insert into main_estatuspersona(description) values('Desempleado');
+
 
 
 

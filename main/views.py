@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca, EstatusPersona, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -45,6 +45,7 @@ hpcdemandas = HPCTiposDemandas.objects.all()
 hpcrespuestas = HPCTiposRespuestas.objects.all()
 spa = SPA.objects.all()
 snn = SiNoNunca.objects.all()
+ep = EstatusPersona.objects.all()
 
 
 # Create your views here.
@@ -584,7 +585,9 @@ def sm_HPC(request):
                             'hpcrespuestas': hpcrespuestas,
                             'spa': spa,
                             'snn': snn,
-                            'fecha_nacimiento': fecha_nacimiento
+                            'fecha_nacimiento': fecha_nacimiento,
+                            'ep':ep,
+                            'cas': conductas
                     })
                 else: 
                     return render(request, 'sm_HPC.html', {
@@ -784,7 +787,14 @@ def sm_HPC(request):
                     'CustomUser': request.user,
                     'year': datetime.now(),
                     'step': 2,
-                    'fecha_nacimiento': fecha_nacimiento
+                    'hpcsituaciones': hpcsituaciones,
+                    'hpcdemandas': hpcdemandas,
+                    'hpcrespuestas': hpcrespuestas,
+                    'spa': spa,
+                    'snn': snn,
+                    'fecha_nacimiento': fecha_nacimiento,
+                    'ep':ep,
+                    'cas': conductas
                 })
             else:
                 return render(request, 'sm_HPC.html', {
@@ -1079,21 +1089,16 @@ def sm_HPC(request):
             
             return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
-            'step': 2,
-            'escolaridades': escolaridades,
-            'sexos': sexos,
-            'estados_civil': estados_civiles,
-            'lectoescrituras': lectoescritura1,
-            'lectoescritura_nivel': lectoescritura2,
-            'calculos': calculos,
-            'razonamiento_analitico': razonamiento,
-            'etnias': etnias,
-            'ocupaciones': ocupaciones,
-            'pips': pips,
-            'rsss': regimenes,
-            'epss': EPSS,
             'year': datetime.now(),
-            'error': error,
+            'step': 2,
+            'hpcsituaciones': hpcsituaciones,
+            'hpcdemandas': hpcdemandas,
+            'hpcrespuestas': hpcrespuestas,
+            'spa': spa,
+            'snn': snn,
+            'fecha_nacimiento': fecha_nacimiento,
+            'ep':ep,
+            'cas': conductas,
             'data': citaInfo
         })
         except:
