@@ -485,7 +485,7 @@ class HPC(models.Model):
     c_o_d = models.TextField(max_length=300, null=True)
     anotaciones_antecedentes_psiquiatricos = models.TextField(
         max_length=5000, null=True)
-    anotaciones_consumoPSA = models.TextField(max_length=5000, null=True)
+    anotaciones_consumoSPA = models.TextField(max_length=5000, null=True)
     anotaciones_comportamiento_suic = models.TextField(
         max_length=5000, null=True)
     anotaciones_antecedentes_violencia = models.TextField(
