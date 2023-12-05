@@ -1082,18 +1082,23 @@ def sm_HPC(request):
             'CustomUser': request.user,
             'paciente': paciente,
             'year': datetime.now(),
+            'step' : 0
         })
     except:
         return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
+            'step' : 0
         })
 
 
 @login_required
-def sm_historial(request):
+def sm_citas(request):
     if request.method == "GET":
-        return render(request, 'sm_historial.html')
+        return render(request, 'sm_citas.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+        })
 
 # 404 VISTAS
 
