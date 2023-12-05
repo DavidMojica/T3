@@ -1076,12 +1076,18 @@ def sm_HPC(request):
             'CustomUser': request.user,
             'step': 0
         })
-
-    return render(request, 'sm_HPC.html', {
-        'CustomUser': request.user,
-        'paciente': paciente,
-        'year': datetime.now(),
-    })
+        
+    try:
+        return render(request, 'sm_HPC.html', {
+            'CustomUser': request.user,
+            'paciente': paciente,
+            'year': datetime.now(),
+        })
+    except:
+        return render(request, 'sm_HPC.html', {
+            'CustomUser': request.user,
+            'year': datetime.now(),
+        })
 
 
 @login_required
