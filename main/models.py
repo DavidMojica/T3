@@ -459,7 +459,7 @@ class HPC(models.Model):
     intentos_previos = models.IntegerField(default=0)
     fecha_ultimo_intento = models.DateField(null=True)
     manejo_hospitalario = models.BooleanField(null=True)
-    # VIII
+   
     metodo = models.TextField(max_length=300, null=True)
     letalidad = models.TextField(max_length=300, null=True)
     signos = models.TextField(max_length=300, null=True)
