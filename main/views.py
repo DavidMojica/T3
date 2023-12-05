@@ -1073,14 +1073,29 @@ def sm_HPC(request):
 
     elif request.method == "GET":
         try:
-            step = request.GET.get('step', 0)
             cita = request.GET.get('cita', 0)
+            citaInfo = get_object_or_404(HPC, pk=cita)
+            error = ""
             
             return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
-            'step': step
+            'step': 2,
+            'escolaridades': escolaridades,
+            'sexos': sexos,
+            'estados_civil': estados_civiles,
+            'lectoescrituras': lectoescritura1,
+            'lectoescritura_nivel': lectoescritura2,
+            'calculos': calculos,
+            'razonamiento_analitico': razonamiento,
+            'etnias': etnias,
+            'ocupaciones': ocupaciones,
+            'pips': pips,
+            'rsss': regimenes,
+            'epss': EPSS,
+            'year': datetime.now(),
+            'error': error,
+            'data': citaInfo
         })
-            
         except:
             return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
