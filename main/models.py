@@ -459,7 +459,7 @@ class HPC(models.Model):
     intentos_previos = models.IntegerField(default=0)
     fecha_ultimo_intento = models.DateField(null=True)
     manejo_hospitalario = models.BooleanField(null=True)
-    # VIII
+   
     metodo = models.TextField(max_length=300, null=True)
     letalidad = models.TextField(max_length=300, null=True)
     signos = models.TextField(max_length=300, null=True)
@@ -485,7 +485,7 @@ class HPC(models.Model):
     c_o_d = models.TextField(max_length=300, null=True)
     anotaciones_antecedentes_psiquiatricos = models.TextField(
         max_length=5000, null=True)
-    anotaciones_consumoPSA = models.TextField(max_length=5000, null=True)
+    anotaciones_consumoSPA = models.TextField(max_length=5000, null=True)
     anotaciones_comportamiento_suic = models.TextField(
         max_length=5000, null=True)
     anotaciones_antecedentes_violencia = models.TextField(
