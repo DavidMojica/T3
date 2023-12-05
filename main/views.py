@@ -1071,12 +1071,26 @@ def sm_HPC(request):
                     )
                     cond_s.save()
 
+    elif request.method == "GET":
+        try:
+            step = request.GET.get('step', 0)
+            cita = request.GET.get('cita', 0)
+            
+            return render(request, 'sm_HPC.html', {
+            'CustomUser': request.user,
+            'step': step
+        })
+            
+        except:
+            return render(request, 'sm_HPC.html', {
+            'CustomUser': request.user,
+            'step': 0
+        })
     else:
         return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
             'step': 0
         })
-        
     try:
         return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
