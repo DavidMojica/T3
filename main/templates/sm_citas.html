@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="main-expanded">
-
+<main class="main-expanded container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="text-center display-3 py-5">Citas psicologicas</h1>
+            <ul class="list-group">
+                {% for cita in citas %}
+                <a href="{% url 'sm_HPC' cita.id %}?step=3" class="list-group-item"></a>
+            </ul>
+        </div>
+    </div>
 </main>
 {% endblock %}

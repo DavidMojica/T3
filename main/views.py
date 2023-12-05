@@ -1098,6 +1098,7 @@ def sm_citas(request):
         return render(request, 'sm_citas.html',{
             'CustomUser': request.user,
             'year': datetime.now(),
+            'citas': HPC.objects.all()
         })
 
 # 404 VISTAS
