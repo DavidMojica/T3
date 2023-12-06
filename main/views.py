@@ -9,6 +9,7 @@ from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
 from .models import SiNoNunca, EstatusPersona, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -587,7 +588,8 @@ def sm_HPC(request):
                             'snn': snn,
                             'fecha_nacimiento': fecha_nacimiento,
                             'ep':ep,
-                            'cas': conductas
+                            'cas': conductas,
+                            'documento': documento
                     })
                 else: 
                     return render(request, 'sm_HPC.html', {
@@ -794,7 +796,8 @@ def sm_HPC(request):
                     'snn': snn,
                     'fecha_nacimiento': fecha_nacimiento,
                     'ep':ep,
-                    'cas': conductas
+                    'cas': conductas,
+                    'documento' : documento
                 })
             else:
                 return render(request, 'sm_HPC.html', {
@@ -1162,12 +1165,22 @@ def sm_HPC(request):
 
 @login_required
 def sm_citas(request):
-    if request.method == "GET":
-        return render(request, 'sm_citas.html',{
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'citas': HPC.objects.all()
-        })
+    citas_with_pacientes = HPC.objects.select_related('cedula_usuario')   
+    citas_por_pagina = 10
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(citas_with_pacientes, citas_por_pagina)
+
+    try:
+        citas = paginator.page(page)
+    except EmptyPage:
+        citas = paginator.page(paginator.num_pages)
+
+    return render(request, 'sm_citas.html', {
+        'CustomUser': request.user,
+        'year': datetime.now(),
+        'citas': citas,
+    })
 
 # 404 VISTAS
 
