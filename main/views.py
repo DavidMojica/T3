@@ -1102,8 +1102,10 @@ def sm_HPC(request):
             citaInfo = get_object_or_404(HPC, pk=cita)
             error = ""
             situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita).values_list('id_situacion_id', flat=True)
-            tiposDemandas = RHPCTiposDemandas.objects.filter(id_asesoria_id=cita).values_list('id_asesoria_id', flat=True)
-            
+            tiposDemandas = RHPCTiposDemandas.objects.filter(id_asesoria_id=cita).values_list('id_tipo_demanda_id', flat=True)
+            respuestasCita = RHPCTiposRespuestas.objects.filter(id_asesoria_id=cita).values_list('id_respuesta_id', flat=True)
+            conductasCita = RHPCConductasASeguir.objects.filter(id_asesoria_id=cita).values_list('id_conducta_id', flat=True)
+
             
             return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
@@ -1118,8 +1120,10 @@ def sm_HPC(request):
             'ep':ep,
             'cas': conductas,
             'data': citaInfo,
-            'situaciones': situacionesContacto,
-            'demandas': tiposDemandas
+            'situacionesCita': situacionesContacto,
+            'demandasCita': tiposDemandas,
+            'respuestasCita': respuestasCita,
+            'conductasCita': conductasCita
         })
         except:
             return render(request, 'sm_HPC.html', {

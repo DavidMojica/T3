@@ -429,7 +429,7 @@
                             {% for s in hpcsituaciones %}
                             <li class="mult-li">
                                 <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
-                                        value="{{s.id}}" {% if s.id in situaciones %} checked {% endif %} />{{s.description}}</label>
+                                        value="{{s.id}}" {% if s.id in situacionesCita %} checked {% endif %} />{{s.description}}</label>
                             </li>
                             {% endfor %}
                         </ul>
@@ -442,12 +442,13 @@
                             {% for d in hpcdemandas %}
                             <li class="mult-li">
                                 <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{d.id}}"
-                                        value="{{d.id}}" {% if d.id in demandas %} checked {% endif %} />{{d.description}}</label>
+                                        value="{{d.id}}" {% if d.id in demandasCita %} checked {% endif %} />{{d.description}}</label>
                             </li>
                             {% endfor %}
                         </ul>
                     </details>
                 </div>
+
                 <div class="form-group mb-2 col-md-4">
                     <details class="mult-details">
                         <summary class="mult-summary">Tipos de respuestas</summary>
@@ -455,7 +456,7 @@
                             {% for r in hpcrespuestas %}
                             <li class="mult-li">
                                 <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{r.id}}"
-                                        value="{{r.id}}" />{{r.description}}</label>
+                                        value="{{r.id}}" {% if respuestasCita and r.id in respuestasCita %} checked {% endif %} />{{r.description}}</label>
                             </li>
                             {% endfor %}
                         </ul>
@@ -724,8 +725,8 @@
                         <ul class="mult-ul">
                             {% for cs in cas %}
                             <li class="mult-li">
-                                <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{s.id}}"
-                                        value="{{cs.id}}" />{{cs.description}}</label>
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="cs_{{cs.id}}"
+                                        value="{{cs.id}}" {% if cs.id in conductasCita %} checked {% endif %} />{{cs.description}}</label>
                             </li>
                             {% endfor %}
                         </ul>
