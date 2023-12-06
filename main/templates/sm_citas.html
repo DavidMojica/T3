@@ -1,20 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="main-expanded container">
+<main class="main-expanded container mb-5">
     <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <h4 class="text-center display-3 py-5">Citas psicologicas</h4>
+        <div class="col-md-12">
+            <h2 class="text-center display-3 py-5">Citas Psicológicas</h2>
             <ul class="list-group">
                 {% for cita in citas %}
-                <a href="{% url 'sm_HPC' %}?cita={{ cita.id }}" class="list-group-item">
-                    <header class="d-flex justify-content-between">
-                        <h1 class="fw-bold text-success">Cita</h1>
-
-                    </header>
-                </a>
+                    <a href="{% url 'sm_HPC' %}?cita={{ cita.id }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold text-success">Cita <span class="badge bg-primary">#{{cita.id}}</span> </h3>
+                            <span class="badge bg-primary">{{ cita.fecha_asesoria }}</span>
+                        </div>
+                        {% with paciente=cita.cedula_usuario %}
+                            <p class="mb-0 fw-bold">
+                            <span class="bg-info badge">Paciente <i class="fa fa-arrow-right"></i></span> {{ cita.cedula_usuario.nombre }}
+                            <span class="badge bg-success"> Doc: {{ cita.cedula_usuario.documento }} </span> <br>
+                            <span class="bg-info badge">Profesional <i class="fa fa-arrow-right"></i></span> {{ cita.id_profesional.nombre }} 
+                            <span class="badge bg-success">ID {{ cita.id_profesional_id }} </span>
+                            </p>
+                        {% endwith %}
+                    </a>
                 {% endfor %}
             </ul>
+            
+
+            <!-- Navegación de páginas -->
+            <div class="pagination justify-content-center mt-4">
+                <ul class="pagination">
+                    {% if citas.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ citas.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Página {{ citas.number }} de {{ citas.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if citas.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ citas.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ citas.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in citas.paginator.page_range %}
+                        <li class="page-item {% if citas.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 </main>
+
+
 {% endblock %}

@@ -29,52 +29,69 @@ class TrabajadorEditForm(forms.ModelForm):
         fields = ('email',)
 
 
+from django import forms
+from .models import InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
+
+from django import forms
+from .models import InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
+
 class AutodataForm(forms.ModelForm):
     tipo_documento = forms.ModelChoiceField(
         queryset=TipoDocumento.objects.all(),
         widget=forms.Select(attrs={
-            'class': '',
-            'id': ''
+            'class': 'form-control',
+            'id': 'id_tipo_documento'
         }),
         empty_label="Selecciona tu tipo de documento"
     )
     estado_civil = forms.ModelChoiceField(
         queryset=EstadoCivil.objects.all(),
         widget=forms.Select(attrs={
-            'class': '',
-            'id': ''
+            'class': 'form-control',
+            'id': 'id_estado_civil'
         }),
         empty_label="Selecciona tu estado civil"
     )
     regimen_seguridad = forms.ModelChoiceField(
         queryset=RegimenSeguridad.objects.all(),
         widget=forms.Select(attrs={
-            'class': '',
-            'id': ''
+            'class': 'form-control',
+            'id': 'id_regimen_seguridad'
         }),
         empty_label="Selecciona tu régimen de seguridad"
     )
     sexo = forms.ModelChoiceField(
         queryset=Sexo.objects.all(),
         widget=forms.Select(attrs={
-            'class': '',
-            'id': ''
+            'class': 'form-control',
+            'id': 'id_sexo'
         }),
         empty_label="Selecciona tu sexo"
     )
     etnia = forms.ModelChoiceField(
         queryset=Etnia.objects.all(),
         widget=forms.Select(attrs={
-            'class': '',
-            'id': ''
+            'class': 'form-control',
+            'id': 'id_etnia'
         }),
         empty_label="Selecciona tu Etnia"
     )
 
+    # Agregar campos restantes con estilos Bootstrap
+    nombre = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre'}))
+    documento = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_documento'}))
+    numero_hijos = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'id': 'id_numero_hijos'}))
+    direccion = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_direccion'}))
+    barrio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_barrio'}))
+    celular = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_celular'}))
+    sisben = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_sisben'}))
+    nombre_eps = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre_eps'}))
+
     class Meta:
         model = InfoMiembros
-        fields = ('tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
+        fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
                   'direccion', 'barrio', 'celular', 'sisben', 'nombre_eps', 'regimen_seguridad', 'sexo',)
+
 
 
 class AdministradorEditForm(forms.ModelForm):
