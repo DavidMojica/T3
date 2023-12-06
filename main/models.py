@@ -523,5 +523,5 @@ class SPAActuales(models.Model):
 
 
 class RHPCConductasASeguir(models.Model):
-    id_asesoria = models.ForeignKey(InfoPacientes, on_delete=models.CASCADE)
+    id_asesoria = models.ForeignKey(HPC, on_delete=models.CASCADE)
     id_conducta = models.ForeignKey(ConductasASeguir, on_delete=models.CASCADE)

@@ -1097,6 +1097,7 @@ def sm_HPC(request):
                         id_conducta=conInstance
                     )
                     cond_s.save()
+                    
 
             return redirect(reverse('sm_citas'))
     elif request.method == "GET":
