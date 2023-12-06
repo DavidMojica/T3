@@ -353,6 +353,7 @@ sólo que con algunos campos menos que se consideraron innecesarios.
 
 class InfoMiembros(models.Model):
     documento = models.CharField(max_length=20, null=False)
+    nombre = models.CharField(max_length=150, null=True)
     tipo_documento = models.ForeignKey(
         TipoDocumento, on_delete=models.DO_NOTHING, null=True)
     id_usuario = models.ForeignKey(

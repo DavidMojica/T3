@@ -12,7 +12,7 @@
                         <span class="badge bg-primary">{{ cita.fecha_asesoria }}</span>
                     </div>
                     {% with paciente=cita.cedula_usuario %}
-                        <p class="mb-0">Paciente: {{ cita.cedula_usuario.nombre }} <br> Doc. Paciente: {{ cita.cedula_usuario.documento }} <br> ID Profesional: <span class="badge bg-success">{{ cita.id_profesional_id }}</span> </p>
+                        <p class="mb-0">Paciente: {{ cita.cedula_usuario.nombre }} <br> Doc. Paciente: {{ cita.cedula_usuario.documento }} <br>Profesional: {{cita.id_profesional.nombre}} <span class="badge bg-success">ID {{ cita.id_profesional_id }} </span> </p>
                     {% endwith %}
                 </a>
                 {% endfor %}

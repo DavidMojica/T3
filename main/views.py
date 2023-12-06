@@ -1165,7 +1165,7 @@ def sm_HPC(request):
 
 @login_required
 def sm_citas(request):
-    citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria') 
+    citas_with_pacientes = HPC.objects.select_related('cedula_usuario', 'id_profesional').order_by('-fecha_asesoria') 
     citas_por_pagina = 10
     page = request.GET.get('page', 1)
 
