@@ -429,7 +429,7 @@
                             {% for s in hpcsituaciones %}
                             <li class="mult-li">
                                 <label class="mult-label"><input class="mult-input" type="checkbox" name="sit_{{s.id}}"
-                                        value="{{s.id}}" {% if s.id in situaciones.id_situacion_id %} checked {% endif %} />{{s.description}}</label>
+                                        value="{{s.id}}" {% if s.id in situaciones %} checked {% endif %} />{{s.description}}</label>
                             </li>
                             {% endfor %}
                         </ul>
@@ -441,8 +441,8 @@
                         <ul class="mult-ul">
                             {% for d in hpcdemandas %}
                             <li class="mult-li">
-                                <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{s.id}}"
-                                        value="{{d.id}}" />{{d.description}}</label>
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="dem_{{d.id}}"
+                                        value="{{d.id}}" {% if d.id in demandas %} checked {% endif %} />{{d.description}}</label>
                             </li>
                             {% endfor %}
                         </ul>
@@ -454,7 +454,7 @@
                         <ul class="mult-ul">
                             {% for r in hpcrespuestas %}
                             <li class="mult-li">
-                                <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{s.id}}"
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="r_{{r.id}}"
                                         value="{{r.id}}" />{{r.description}}</label>
                             </li>
                             {% endfor %}

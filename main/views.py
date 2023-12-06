@@ -1035,7 +1035,6 @@ def sm_HPC(request):
 
             # Hacer el save y después generar el id
             id_asesoria = asesoria.id
-            print(f"id asesoria {id_asesoria}")
 
             try:
                 as_instance = HPC.objects.get(id=id_asesoria)
@@ -1102,7 +1101,8 @@ def sm_HPC(request):
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
             error = ""
-            situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita)
+            situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita).values_list('id_situacion_id', flat=True)
+            tiposDemandas = RHPCTiposDemandas.objects.filter(id_asesoria_id=cita).values_list('id_asesoria_id', flat=True)
             
             
             return render(request, 'sm_HPC.html', {
@@ -1118,7 +1118,8 @@ def sm_HPC(request):
             'ep':ep,
             'cas': conductas,
             'data': citaInfo,
-            'situaciones': situacionesContacto
+            'situaciones': situacionesContacto,
+            'demandas': tiposDemandas
         })
         except:
             return render(request, 'sm_HPC.html', {
