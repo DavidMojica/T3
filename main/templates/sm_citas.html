@@ -13,9 +13,9 @@
                         </div>
                         {% with paciente=cita.cedula_usuario %}
                             <p class="mb-0 fw-bold">
-                            <span class="bg-info badge">Paciente</span> <br> {{ cita.cedula_usuario.nombre }}
+                            <span class="bg-info badge">Paciente <i class="fa fa-arrow-right"></i></span> {{ cita.cedula_usuario.nombre }}
                             <span class="badge bg-success"> Doc: {{ cita.cedula_usuario.documento }} </span> <br>
-                            <span class="bg-info badge">Profesional</span> <br> {{ cita.id_profesional.nombre }} 
+                            <span class="bg-info badge">Profesional <i class="fa fa-arrow-right"></i></span> {{ cita.id_profesional.nombre }} 
                             <span class="badge bg-success">ID {{ cita.id_profesional_id }} </span>
                             </p>
                         {% endwith %}
