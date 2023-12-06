@@ -15,12 +15,13 @@
                             <p class="mb-0">Paciente: {{ cita.cedula_usuario.nombre }} <br> 
                             Doc. Paciente: {{ cita.cedula_usuario.documento }} <br>
                             Profesional: {{ cita.id_profesional.nombre }} 
-                            <span class="badge bg-success">ID {{ cita.id_profesional.id }} </span>
+                            <span class="badge bg-success">ID {{ cita.id_profesional_id }} </span>
                             </p>
                         {% endwith %}
                     </a>
                 {% endfor %}
             </ul>
+            
 
             <!-- Navegación de páginas -->
             <div class="pagination justify-content-center mt-4">

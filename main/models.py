@@ -356,8 +356,8 @@ class InfoMiembros(models.Model):
     nombre = models.CharField(max_length=150, null=True)
     tipo_documento = models.ForeignKey(
         TipoDocumento, on_delete=models.DO_NOTHING, null=True)
-    id_usuario = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, primary_key=True, unique=True)
+    id_usuario = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, primary_key=True)
     numero_hijos = models.IntegerField(null=False, default=0)
     sexo = models.ForeignKey(Sexo, on_delete=models.DO_NOTHING, null=True)
     direccion = models.CharField(max_length=100, null=False)
@@ -375,6 +375,8 @@ class InfoMiembros(models.Model):
     contador_asesorias_psicologicas = models.IntegerField(
         null=False, default=0)  # tr
 
+    def __str__(self):
+            return str(self.id_usuario)
 
 """
 ##### MODELO DE INFORMACIÓN DE LLAMADAS #####
@@ -421,7 +423,7 @@ class HPC(models.Model):
     cedula_usuario = models.ForeignKey(
         InfoPacientes, on_delete=models.DO_NOTHING)
     id_profesional = models.ForeignKey(
-        InfoMiembros, on_delete=models.DO_NOTHING)
+        InfoMiembros, on_delete=models.DO_NOTHING, to_field='id_usuario')
     fecha_asesoria = models.DateTimeField(default=timezone.now)
     lugar = models.TextField(max_length=150, null=True)
     edad_usuario_actual = models.IntegerField(null=True)
