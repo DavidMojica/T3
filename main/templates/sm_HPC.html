@@ -576,7 +576,7 @@
                 <!-- III -->
                 <h2 class="text-primary mt-5">Comportamiento Suicida</h2>
         
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <label for="cs_pi" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
                     <select name="cs_pi" class="form-select" id="cs_pi">
                         {% for s in snn %}
@@ -585,7 +585,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <label for="cs_pp" class="text-light">Presencia de planeación</label>
                     <select name="cs_pp" id="cs_pp" class="form-select">
                         {% for s in snn %}
@@ -594,7 +594,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <label for="cs_dm" class="text-light">Disponibilidad de medios</label>
                     <select name="cs_dm" id="cs_dm" class="form-select">
                         {% for s in snn %}
@@ -602,46 +602,46 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group mb-2 col-md-3">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
                     <label for="cs_ip" class="text-light">Intentos previos</label>
                     <input type="number" class="form-control" name="cs_ip" id="cs_ip" value="{{data.intentos_previos}}">
                 </div>
-                <div class="form-group mb-2 col-md-3">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
                     <label for="cs_fu" class="text-light">Fecha último intento</label>
                     <input type="date" class="form-control" name="cs_fu" id="cs_fu" value="{{data.fecha_ultimo_intento}}">
                 </div>
-                <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Método de suicidio</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
+                    <label for="cs_metodo" class="text-light">Método de suicidio</label>
                     <input type="text" class="form-control" name="cs_metodo" id="cs_metodo" value="{{data.metodo}}">
                 </div>
-                <div class="form-group mb-2 col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Manejo hospitalario</label>
+                <div class="form-group mb-2 col-sm-10 col-md-10 col-lg-10 col-xl-3 row justify-content-center">
+                    <label for="cs_mh" class="text-light">Manejo hospitalario</label>
                     <input type="checkbox" name="cs_mh" class="form-check" id="cs_mh" {% if data.manejo_hospitalario %} checked {% endif %}>
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Letalidad</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="cs_let" class="text-light">Letalidad</label>
                     <textarea name="cs_let" class="form-control" id="cs_let" cols="30" rows="10">{{data.letalidad}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Signos y síntomas psiquiatricos</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="cs_ss" class="text-light">Signos y síntomas psiquiatricos</label>
                     <textarea name="cs_ss" class="form-control" id="cs_ss" cols="30" rows="10">{{data.signos}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Acontecimientos estresantes</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="cs_ae" class="text-light">Acontecimientos estresantes</label>
                     <textarea name="cs_ae" class="form-control" id="cs_ae" cols="30" rows="10">{{data.acontecimientos_estresantes}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <label for="cs_fp" class="text-light">Factores protectores</label>
                     <textarea name="cs_fp" class="form-control" id="cs_fp" cols="30" rows="10">{{data.factores_protectores}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Red de apoyo</label>
+                <div class="form-group mb-2 col-sm-10 col-md-8 col-lg-8 col-xl-4">
+                    <label for="cs_ra" class="text-light">Red de apoyo</label>
                     <textarea name="cs_ra" class="form-control" id="cs_ra" cols="30" rows="10">{{red_apoyo}}</textarea>
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Está bajo tratamiento psiquiátrico</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="cs_eb" class="text-light">Está bajo tratamiento psiquiátrico</label>
                     <select name="cs_eb" id="cs_eb" class="form-select">
                         <option value="-1">Seleccione...</option>
                         {% for s in snn %}
@@ -649,8 +649,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Vive solo/Divorciado/Desempleado</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="cs_ep" class="text-light">Vive solo/Divorciado/Desempleado</label>
                     <select name="cs_ep" id="cs_ep" class="form-select">
                         <option value="-1">Seleccione...</option>
                         {% for s in ep %}
@@ -659,49 +659,48 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-4 row justify-content-center">
-                    <label for="" class="text-light">Tiene historial familiar de suicidio</label>
+                <div class="form-group mb-2 col-sm-10 col-md-8 col-lg-8 col-xl-4 row justify-content-center">
+                    <label for="cs_hf" class="text-light">Tiene historial familiar de suicidio</label>
                     <input type="checkbox" name="cs_hf" id="cs_hf" class="form-check" {% if data.historial_familiar %} checked {% endif %} >
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Notas de atención</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="cs_notas" class="text-light">Notas de atención</label>
                     <textarea name="cs_notas" class="form-control" id="cs_notas" cols="30" rows="10">{{data.anotaciones_comportamiento_suic}}</textarea>
                 </div>
 
                 <!-- IV -->
                 <h2 class="text-primary mt-5">Antecedentes de violencia</h2>
 
-                <div class="form-group col-md-4"></div>
-                <div class="form-group col-md-4 row justify-content-center">
-                    <label for="" class="text-light">Se considera víctima de algún tipo de violencia?</label>
+                <div class="form-group col-xl-4"></div>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4 row justify-content-center">
+                    <label for="av_vict" class="text-light">Se considera víctima de algún tipo de violencia?</label>
                     <input type="checkbox" name="av_vict" class="form-check" id="av_vict" {% if data.victima %} checked {% endif %}>
                 </div>
-                <div class="form-group col-md-4"></div>
+                <div class="form-group col-xl-4"></div>
 
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-4">
-                    <label for="" class="text-light">Tipo(s) de violencia</label>
+                <div class="form-group col-xl-2"></div>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="av_tv" class="text-light">Tipo(s) de violencia</label>
                     <textarea name="av_tv" class="form-control" id="av_tv" cols="30" rows="10">{{data.tipo_violencia}}</textarea>
                 </div>
 
-                <div class="form-group col-md-4">
-                    <label for="" class="text-light">Agresor(es)</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="av_agre" class="text-light">Agresor(es)</label>
                     <textarea name="av_agre" class="form-control" id="av_agre" cols="30" rows="10">{{data.agresor}}</textarea>
                 </div>
-                <div class="form-group col-md-2"></div>
+                <div class="form-group col-xl-2"></div>
 
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-4">
-                    <label for="" class="text-light">Institución de reporte legal (dejar vacío para NO)</label>
+                <div class="form-group col-xl-2"></div>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="av_ir" class="text-light">Institución de reporte legal (dejar vacío para NO)</label>
                     <textarea name="av_ir" class="form-control" id="av_ir" cols="30" rows="10">{{data.inst_reporte_legal}}</textarea>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="" class="text-light">Notas de atención</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="av_notas" class="text-light">Notas de atención</label>
                     <textarea name="av_notas" class="form-control" id="av_notas" cols="30" rows="10">{{data.anotaciones_antecedentes_violencia}}</textarea>
                 </div>
-                <div class="form-group col-md-2"></div>
-
+                <div class="form-group col-xl-2"></div>
 
                 <h2 class="text-primary mt-5">Resultado, conducta a seguir y canalización</h2>
 
