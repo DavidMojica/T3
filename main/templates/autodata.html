@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-<main id="main_home">
-    <form action="" method="POST">
-        {% csrf_token %}
-        <ul>
-            {% for field in form %}
-              <li>
-                {{ field.label_tag }} {{ field }}
+<main class="main-expanded">
+  <form action="" method="POST" class="my-4 mx-2">
+      {% csrf_token %}
+      <ul class="list-group">
+          {% for field in form %}
+              <li class="list-group-item">
+                  {{ field.label_tag }} {{ field }}
               </li>
-            {% endfor %}
-          </ul>
-        <button type="submit">Guardar datos</button>
-        {{event}}
-    </form>
+          {% endfor %}
+      </ul>
+      {{ event }} <br>
+      <button type="submit" class="btn btn-primary mt-3">Guardar datos</button>
+  </form>
 </main>
+
 {% endblock %}
