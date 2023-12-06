@@ -999,7 +999,7 @@ def sm_HPC(request):
                 intervenciones_previas=sp_ip,
                 consumo_familiar=sp_cfins,
                 vinculo=sp_vi,
-                anotaciones_consumoPSA=sp_notas,
+                anotaciones_consumoSPA=sp_notas,
                 tendencia_suicida=cs_pins,
                 presencia_planeacion=cs_ppins,
                 disponibilidad_medios=cs_dmins,
@@ -1102,6 +1102,8 @@ def sm_HPC(request):
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
             error = ""
+            situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita)
+            
             
             return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
@@ -1115,7 +1117,8 @@ def sm_HPC(request):
             'fecha_nacimiento': fecha_nacimiento,
             'ep':ep,
             'cas': conductas,
-            'data': citaInfo
+            'data': citaInfo,
+            'situaciones': situacionesContacto
         })
         except:
             return render(request, 'sm_HPC.html', {
