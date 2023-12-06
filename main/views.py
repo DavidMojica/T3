@@ -1100,7 +1100,17 @@ def sm_HPC(request):
         try:
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
-            error = ""
+            
+            if citaInfo.periodo_ultimo_consumo == None:
+                citaInfo.periodo_ultimo_consumo = str("")
+            else:
+                citaInfo.periodo_ultimo_consumo = str(citaInfo.periodo_ultimo_consumo)
+            
+            if citaInfo.fecha_ultimo_intento == None:
+                citaInfo.fecha_ultimo_intento = str("")
+            else:
+                citaInfo.fecha_ultimo_intento = str(citaInfo.fecha_ultimo_intento)
+            
             situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita).values_list('id_situacion_id', flat=True)
             tiposDemandas = RHPCTiposDemandas.objects.filter(id_asesoria_id=cita).values_list('id_tipo_demanda_id', flat=True)
             respuestasCita = RHPCTiposRespuestas.objects.filter(id_asesoria_id=cita).values_list('id_respuesta_id', flat=True)
