@@ -34,11 +34,11 @@
                 <h1 class="text-center text-light mt-5">PACIENTE EXISTENTE</h1>
                 <h4 class="text-center text-light mt-2">Verifique los datos y actualice si es necesario.</h4>
 
-                <div class="form-group mb-2 col-md-6">
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <label for="e_documento" class="text-light">Documento</label>
                     <input type="text" class="form-control" name="e_documento" id="e_documento" readonly value="{{paciente.documento}}">
                 </div>
-                <div class="form-group mb-2 col-md-6">
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <label for="e_tipo_documento" class="text-light">Tipo de documento</label>
                     <select name="e_tipo_documento" class="form-select" id="e_tipo_documento">
                         {% for tipo_documento in tipos_documento %}
@@ -50,23 +50,23 @@
                 </div>
                 
 
-               <div class="form-group mb-2 col-md-6">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                     <label for="e_nombre" class="text-light">Nombre</label>
                     <input type="text" class="form-control" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
                </div>
 
-               <div class="form-group mb-2 col-md-3">
-                    <label for="e_fecha_nacimiento" class="text-light">Fecha de nacimiento</label>
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                    <label for="fecha_nacimiento" class="text-light">Fecha de nacimiento</label>
                     <input type="date" name="e_fecha_nacimiento" class="form-control" id="fecha_nacimiento"
                         value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
                </div>
 
-               <div class="form-group mb-2 col-md-3">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_edad" class="text-light">Edad:</label>
                     <input type="text" class="form-control" name="e_edad" id="e_edad" readonly value="{{paciente.edad}}">
                </div>
 
-               <div class="form-group mb-2 col-md-4">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_sexo" class="text-light">Sexo</label>
                     <select name="e_sexo" class="form-select" id="e_sexo">
                         {% for sexo in sexos %}
@@ -76,18 +76,18 @@
                     </select>
                </div>
 
-               <div class="form-group mb-2 col-md-4">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_direccion" class="text-light">Dirección</label>
                     <input type="text" name="e_direccion" class="form-control" id="e_direccion" placeholder="Dirección de residencia"
                         value="{{paciente.direccion}}">
                </div>
 
-               <div class="form-group mb-2 col-md-4">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_barrio" class="text-light">Barrio</label>
                     <input type="text" name="e_barrio" class="form-control" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
                </div>
             
-               <div class="form-group mb-2 col-md-4">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_escolaridad" class="text-light">Escolaridad</label>
                     <select name="e_escolaridad" class="form-select" id="e_escolaridad">
                         {% for escolaridad in escolaridades %}
@@ -96,11 +96,11 @@
                         {% endfor %}
                     </select>
                </div>
-               <div class="form-group mb-2 col-md-4">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_hijos" class="text-light">Numero de hijos</label>
                     <input type="number" class="form-control" name="e_hijos" id="e_hijos" value="{{paciente.numero_hijos}}">
                </div>
-               <div class="form-group mb-2 col-md-4">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_estado_civil" class="text-light">Estado civil</label>
                     <select name="e_estado_civil" class="form-select" id="e_estado_civil">
                         {% for estado in estados_civil %}
@@ -110,16 +110,16 @@
                     </select>
                </div>
 
-               <div class="form-group mb-2 col-md-3">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_celular" class="text-light">No. Celular</label>
                     <input type="text" name="e_celular" class="form-control" id="e_celular" placeholder="Numero de celular del paciente"
                         value="{{paciente.celular}}">
                </div>
-               <div class="form-group mb-2 col-md-3">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_correo" class="text-light">Correo</label>
                     <input type="email" name="e_correo" class="form-control" id="e_correo" value="{{paciente.correo}}" placeholder="Correo electrónico">
                </div>
-               <div class="form-group mb-2 col-md-3">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_lectoescritura" class="text-light">Lectoescritura</label>
                     <select name="e_lect" class="form-select" id="e_lectoescritura">
                         {% for lec in lectoescrituras %}
@@ -128,7 +128,7 @@
                         {% endfor %}
                     </select>
                </div>
-               <div class="form-group mb-2 col-md-3">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_lect_nivel" class="text-light">Nivel de lectoescritura</label>
                     <select name="e_lect2" class="form-select" id="e_lect_nivel">
                         {% for lec_n in lectoescritura_nivel %}
@@ -137,7 +137,7 @@
                         {% endfor %}
                     </select>
                </div>
-               <div class="form-group mb-2 col-md-3">
+               <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_raz_analitico" class="text-light">Razonamiento analítico</label>
                     <select name="e_raz_analitico" id="e_raz_analitico" class="form-select">
                         {% for raz in razonamiento_analitico %}
@@ -147,7 +147,7 @@
                     </select>
                </div>
                
-                <div class="form-group mb-2 col-md-3">
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_etnia" class="text-light">Etnia</label>
                     <select name="e_etnia" class="form-select" id="e_etnia">
                         {% for etnia in etnias %}
@@ -156,7 +156,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group mb-2 col-md-3">
+
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_ocupacion" class="text-light">Ocupación</label>
                     <select name="e_ocupacion" id="e_ocupacion" class="form-select">
                         {% for ocupacion in ocupaciones %}
@@ -165,35 +166,36 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group mb-2 col-md-3">
+
+                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-3">
                     <label for="e_rss" class="text-light">Regimen de seguridad social</label>
                     <select name="e_rss" id="e_rss" class="form-select">
                         {% for rss in rsss %}
-                        <option value="{{rss.id}}" {% if rss.id == paciente.regimen_seguridad_id %}selected{% endif %} >
+                        <option value="{{rss.id}}" {% if rss.id == paciente.regimen_seguridad_id %} selected {% endif %} >
                             {{rss.description}}</option>
                         {% endfor %}
                     </select>
                 </div>
                 
-                <div class="form-group mb-2 col-md-3 row justify-content-center"></div>
-                <div class="form-group mb-2 col-md-3">
+                <div class="form-group mb-2 col-sm-1 col-md-1 col-lg-1 col-xl-3 row justify-content-center"></div>
+                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-3">
                     <label for="eps" class="text-light">Nombre de la EPS</label>
                     <select name="eps" id="eps" class="form-select">
                         {% for eps in epss %}
-                        <option value="{{eps.id}}" {% if eps.id == paciente.eps_id %}selected{% endif %} >
+                        <option value="{{eps.id}}" {% if eps.id == paciente.eps_id %} selected {% endif %} >
                             {{eps.description}}</option>
                         {% endfor %}
                     </select>
+                </div>
 
+                <div class="form-group mb-2 col-sm-12 col-md-10 col-lg-10 col-xl-3 row justify-content-center">
+                    <label for="e_sisben" class="text-light">¿Tiene sisbén?</label>
+                    <input type="checkbox" name="e_sisben" class="form-check" id="e_sisben" {% if paciente.sisben %} checked {% endif %}>
                 </div>
-                <div class="form-group mb-2 col-md-3 row justify-content-center">
-                    <label for="" class="text-light">¿Tiene sisbén?</label>
-                    <input type="checkbox" name="e_sisben" class="form-check" id="e_sisben" {% if paciente.sisben %}checked{% endif %}>
-                </div>
-                <div class="form-group mb-2 col-md-3 row justify-content-center"></div>
+                <div class="form-group mb-2 col-xl-3 row justify-content-center"></div>
                 
                 <div class="form-group mb-2 col-md-2 mb-5">
-                    <p class="text-danger card" id="step2Error">{{error}}</p>
+                    <p class="text-danger" id="step2Error">{{error}}</p>
                     <input type="hidden" name="actualizar_usuario">
                     <button type="submit" id="submitBtn" class="btn btn-success">Continuar</button>
                 </div>
@@ -307,7 +309,7 @@
                     </select>
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="lect_nivel" class="text-light">Nivel de lectoescritura</label>
+                    <label for="lectoescritura_nivel" class="text-light">Nivel de lectoescritura</label>
                     <select name="lect_nivel" class="form-select" id="lectoescritura_nivel">
                         <option value="-1">Seleccione...</option>
                         {% for lec_n in lectoescritura_nivel %}
