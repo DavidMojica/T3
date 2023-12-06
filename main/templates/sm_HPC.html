@@ -417,14 +417,15 @@
                 <input type="hidden" name="documento" value="{{documento}}">
                 <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
                 <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
-                <div class="form-group mb-2 col-md-4"></div>
-                <div class="form-group mb-2 col-md-4">
+                
+                <div class="form-group mb-2 col-sm-1 col-md-2 col-lg-3 col-xl-4"></div>
+                <div class="form-group mb-2 col-sm-10 col-md-8 col-lg-6 col-xl-4">
                     <label for="a_lugar" class="text-light">Lugar de la asesoría</label>
                     <input type="text" name="a_lugar" class="form-control" id="a_lugar" value="{{data.lugar}}">
                 </div>
-                <div class="form-group mb-2 col-md-4"> </div>
+                <div class="form-group mb-2 col-sm-1 col-md-2 col-lg-3 col-xl-4"> </div>
 
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <details class="mult-details">
                         <summary class="mult-summary">Situación que origina el contacto</summary>
                         <ul class="mult-ul">
@@ -437,7 +438,7 @@
                         </ul>
                     </details>
                 </div>
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <details class="mult-details">
                         <summary class="mult-summary">Tipos de demandas</summary>
                         <ul class="mult-ul">
@@ -451,7 +452,7 @@
                     </details>
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
+                <div class="form-group mb-2 col-sm-10 col-md-10 col-lg-10 col-xl-4">
                     <details class="mult-details">
                         <summary class="mult-summary">Tipos de respuestas</summary>
                         <ul class="mult-ul">
@@ -469,38 +470,38 @@
 
                 <h2 class="text-primary mt-5 text-center">Antecedentes psiquiatricos</h2>
                
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light" >Diagnóstico de transtorno mental</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_trans" class="text-light" >Diagnóstico de transtorno mental</label>
                     <textarea name="ap_trans" class="form-control" id="ap_trans" cols="30" rows="10">{{data.diag_trans_mental}}</textarea>
                 </div>
 
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Categoría del diagóstico (CIE-10)</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_cate" class="text-light">Categoría del diagóstico (CIE-10)</label>
                     <textarea name="ap_cate" class="form-control" id="ap_cate" cols="30" rows="10" >{{data.diag_categoria}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Diagnóstico por profesional de la salud</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_diag" class="text-light">Diagnóstico por profesional de la salud</label>
                     <textarea name="ap_diag" class="form-control"  id="ap_diag" cols="30" rows="10" >{{data.diag_por_profesional}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Tratamiento</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_trat" class="text-light">Tratamiento</label>
                     <textarea name="ap_trat" class="form-control"  id="ap_trat" cols="30" rows="10" >{{data.tratamiento}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Medicamentos</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_med" class="text-light">Medicamentos</label>
                     <textarea name="ap_med"  class="form-control" id="ap_med" cols="30" rows="10">{{data.medicamentos}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Adherencia al tratamiento/medicamentos</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_adh" class="text-light">Adherencia al tratamiento/medicamentos</label>
                     <textarea name="ap_adh" class="form-control" id="ap_adh" cols="30" rows="10" >{{data.adherencia}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-2"></div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Barreras en el acceso</label>
+                <div class="form-group mb-2 col-xl-2"></div>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="ap_barr" class="text-light">Barreras en el acceso</label>
                     <textarea name="ap_barr" class="form-control" id="ap_barr" cols="30" rows="10" >{{data.barreras_acceso}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">   
-                    <label for="" class="text-light">Notas de atención:</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">   
+                    <label for="ap_notas" class="text-light">Notas de atención:</label>
                     <textarea name="ap_notas" class="form-control" id="ap_notas" cols="30" rows="10" >{{data.anotaciones_antecedentes_psiquiatricos}}</textarea>
                 </div>
                 <div class="form-group mb-2 col-md-2"></div>
@@ -510,21 +511,22 @@
                 
                 <div class="form-group mb-2 col-md-3"></div>
                 <div class="form-group mb-2 col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Es o ha sido consumidor</label>
+                    <label for="sp_eoa" class="text-light">Es o ha sido consumidor</label>
                     <input type="checkbox" class="form-check" name="sp_eoa" id="sp_eoa" {% if data.es_hasido_consumidor %} checked {% endif %}>
                 </div>
                 <div class="form-group mb-2 col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Consumo núcleo familiar</label>
-                    <input type="checkbox" class="form-check" name="sp_eoa" id="sp_eoa" {% if data.consumo_familiar %} checked {% endif %}>
+                    <!-- COMPROBAR ESTE EN LA VIEW Y BD -->
+                    <label for="sp_cf" class="text-light">Consumo núcleo familiar</label>
+                    <input type="checkbox" class="form-check" name="sp_cf" id="sp_cf" {% if data.consumo_familiar %} checked {% endif %}>
                 </div>
                 <div class="form-group mb-2 col-md-3"></div>
 
-                <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Edad de inicio</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
+                    <label for="sp_edad" class="text-light">Edad de inicio</label>
                     <input type="number" name="sp_edad" class="form-control" id="sp_edad" value="{{data.edad_inicio}}">
                 </div>
-                <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Sustancia de inicio</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
+                    <label for="sp_susi" class="text-light">Sustancia de inicio</label>
                     <select name="sp_susi" class="form-select" id="sp_susi">
                         <option value="-1">Seleccione...</option>
                         {% for s in spa %}
@@ -533,13 +535,13 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Periodo último consumo</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
+                    <label for="sp_ulco" class="text-light">Periodo último consumo</label>
                     <input type="date" class="form-control" name="sp_ulco" id="sp_ulco" value="{{data.periodo_ultimo_consumo}}">
                 </div>
 
-                <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Sustancia de impacto</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-3">
+                    <label for="sp_susim" class="text-light">Sustancia de impacto</label>
                     <select name="sp_susim" class="form-select" id="sp_susim">
                         <option value="-1">Seleccione...</option>
                         {% for s in spa %}
@@ -548,34 +550,34 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-md-2"></div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Conductas sexuales de riesgo</label>
-                    <textarea name="sp_csr"  class="form-control"id="sp_csr" cols="30" rows="10">{{data.conductas_sex_riesgo}}</textarea>
+                <div class="form-group mb-2 col-xl-2"></div>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="sp_csr" class="text-light">Conductas sexuales de riesgo</label>
+                    <textarea name="sp_csr" class="form-control" id="sp_csr" cols="30" rows="10">{{data.conductas_sex_riesgo}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Intervenciones previas</label>
-                    <textarea name="sp_ip"  class="form-control"id="sp_ip" cols="30" rows="10">{{data.intervenciones_previas}}</textarea>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="sp_ip" class="text-light">Intervenciones previas</label>
+                    <textarea name="sp_ip"  class="form-control" id="sp_ip" cols="30" rows="10">{{data.intervenciones_previas}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-xl-2"></div>
 
 
-                <div class="form-group mb-2 col-md-2"></div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Vínculo</label>
+                <div class="form-group mb-2 col-xl-2"></div>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="sp_vi" class="text-light">Vínculo</label>
                     <textarea name="sp_vi" class="form-control" id="sp_vi" cols="30" rows="10">{{data.vinculo}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Notas de atención</label>
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="sp_notas" class="text-light">Notas de atención</label>
                     <textarea name="sp_notas" class="form-control" id="sp_notas" cols="30" rows="10">{{data.anotaciones_consumoSPA}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-md-2"></div>
+                <div class="form-group mb-2 col-xl-2"></div>
 
                 <!-- III -->
                 <h2 class="text-primary mt-5">Comportamiento Suicida</h2>
         
                 <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
+                    <label for="cs_pi" class="text-light">Presencia de ideación suicida. Magnitud y persistencia</label>
                     <select name="cs_pi" class="form-select" id="cs_pi">
                         {% for s in snn %}
                         <option value="{{s.id}}" {% if s.id == data.tendencias_suicida_id %} selected {% endif %}>{{s.description}}</option>
@@ -584,7 +586,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Presencia de planeación</label>
+                    <label for="cs_pp" class="text-light">Presencia de planeación</label>
                     <select name="cs_pp" id="cs_pp" class="form-select">
                         {% for s in snn %}
                         <option value="{{s.id}}" {% if s.id == data.presencia_planeacion_id %} selected {% endif %}>{{s.description}}</option>
@@ -593,7 +595,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-md-4">
-                    <label for="" class="text-light">Disponibilidad de medios</label>
+                    <label for="cs_dm" class="text-light">Disponibilidad de medios</label>
                     <select name="cs_dm" id="cs_dm" class="form-select">
                         {% for s in snn %}
                         <option value="{{s.id}}" {% if s.id == data.disponibilidad_medios_id %} selected {% endif %}>{{s.description}}</option>
@@ -601,11 +603,11 @@
                     </select>
                 </div>
                 <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Intentos previos</label>
+                    <label for="cs_ip" class="text-light">Intentos previos</label>
                     <input type="number" class="form-control" name="cs_ip" id="cs_ip" value="{{data.intentos_previos}}">
                 </div>
                 <div class="form-group mb-2 col-md-3">
-                    <label for="" class="text-light">Fecha último intento</label>
+                    <label for="cs_fu" class="text-light">Fecha último intento</label>
                     <input type="date" class="form-control" name="cs_fu" id="cs_fu" value="{{data.fecha_ultimo_intento}}">
                 </div>
                 <div class="form-group mb-2 col-md-3">
