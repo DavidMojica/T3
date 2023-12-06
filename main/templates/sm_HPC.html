@@ -631,11 +631,11 @@
                     <label for="cs_ae" class="text-light">Acontecimientos estresantes</label>
                     <textarea name="cs_ae" class="form-control" id="cs_ae" cols="30" rows="10">{{data.acontecimientos_estresantes}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-5">
                     <label for="cs_fp" class="text-light">Factores protectores</label>
                     <textarea name="cs_fp" class="form-control" id="cs_fp" cols="30" rows="10">{{data.factores_protectores}}</textarea>
                 </div>
-                <div class="form-group mb-2 col-sm-10 col-md-8 col-lg-8 col-xl-4">
+                <div class="form-group mb-2 col-sm-10 col-md-8 col-lg-8 col-xl-5">
                     <label for="cs_ra" class="text-light">Red de apoyo</label>
                     <textarea name="cs_ra" class="form-control" id="cs_ra" cols="30" rows="10">{{red_apoyo}}</textarea>
                 </div>
@@ -704,25 +704,25 @@
 
                 <h2 class="text-primary mt-5">Resultado, conducta a seguir y canalización</h2>
 
-                <div class="form-group col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Acudió la cita?</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-3 row justify-content-center">
+                    <label for="re_ac" class="text-light">Acudió la cita?</label>
                     <input type="checkbox" class="form-check" name="re_ac" id="re_ac">
                 </div>
-                <div class="form-group col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Siguó en contacto</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-3 row justify-content-center">
+                    <label for="re_sc" class="text-light">Siguó en contacto</label>
                     <input type="checkbox" class="form-check" name="re_sc" id="re_sc">
                 </div>
-                <div class="form-group col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Interrumpió el contacto</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-3 row justify-content-center">
+                    <label for="re_ic" class="text-light">Interrumpió el contacto</label>
                     <input type="checkbox" class="form-check" name="re_ic" id="re_ic">
                 </div>
-                <div class="form-group col-md-3 row justify-content-center">
-                    <label for="" class="text-light">Inicia en otro programa o institución</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-3 row justify-content-center">
+                    <label for="re_io" class="text-light">Inicia en otro programa o institución</label>
                     <input type="checkbox" class="form-check" name="re_io" id="re_io">
                 </div>
 
-                <div class="form-group col-md-3"></div>
-                <div class="form-group col-md-4 mt-3 mb-3">
+                <div class="form-group col-xl-3"></div>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4 mt-3 mb-3">
                     <details class="mult-details">
                         <summary class="mult-summary">Conductas a seguir</summary>
                         <ul class="mult-ul">
@@ -735,31 +735,31 @@
                         </ul>
                     </details>
                 </div>
-                <div class="form-group col-md-3"></div>
+                <div class="form-group col-xl-3"></div>
                 
-                <div class="form-group col-md-4">
-                    <label for="" class="text-white">Pruebas de Tamizaje</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="re_pt" class="text-white">Pruebas de Tamizaje</label>
                     <textarea name="re_pt" class="form-control" id="re_pt" cols="30" rows="10">{{data.p_tamizaje}}</textarea>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="" class="text-white">Canalización o derivación (en blanco para ninguna)</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="re_cd" class="text-white">Canalización o derivación</label>
                     <textarea name="re_cd" class="form-control" id="re_cd" cols="30" rows="10">{{data.c_o_d}}</textarea>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="" class="text-white">Anotaciones libres del profesional</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-4">
+                    <label for="re_notas" class="text-white">Anotaciones libres del profesional</label>
                     <textarea name="re_notas" class="form-control" id="re_notas" cols="30" rows="10">{{data.anotaciones_libres_profesional}}</textarea>
                 </div>
 
-                <div class="form-group col-md-4"></div>
+                <div class="form-group col-xl-4"></div>
 
                 <h2 class="text-primary mt-5">Seguimiento del caso</h2>
 
-                <div class="form-group col-md-6">
-                    <label for="" class="text-light">Seguimiento #1</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
+                    <label for="seg_1" class="text-light">Seguimiento #1</label>
                     <textarea name="seg_1" class="form-control"  id="seg_1" cols="30" rows="10">{{data.seguimiento1}}</textarea>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="" class="text-light">Seguimiento #2</label>
+                <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
+                    <label for="seg_2" class="text-light">Seguimiento #2</label>
                     <textarea name="seg_2"  class="form-control" id="seg_2" cols="30" rows="10">{{data.seguimiento2}}</textarea>
                 </div>
 
