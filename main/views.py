@@ -999,7 +999,7 @@ def sm_HPC(request):
                 intervenciones_previas=sp_ip,
                 consumo_familiar=sp_cfins,
                 vinculo=sp_vi,
-                anotaciones_consumoPSA=sp_notas,
+                anotaciones_consumoSPA=sp_notas,
                 tendencia_suicida=cs_pins,
                 presencia_planeacion=cs_ppins,
                 disponibilidad_medios=cs_dmins,
@@ -1035,7 +1035,6 @@ def sm_HPC(request):
 
             # Hacer el save y después generar el id
             id_asesoria = asesoria.id
-            print(f"id asesoria {id_asesoria}")
 
             try:
                 as_instance = HPC.objects.get(id=id_asesoria)
@@ -1101,7 +1100,22 @@ def sm_HPC(request):
         try:
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
-            error = ""
+            
+            if citaInfo.periodo_ultimo_consumo == None:
+                citaInfo.periodo_ultimo_consumo = str("")
+            else:
+                citaInfo.periodo_ultimo_consumo = str(citaInfo.periodo_ultimo_consumo)
+            
+            if citaInfo.fecha_ultimo_intento == None:
+                citaInfo.fecha_ultimo_intento = str("")
+            else:
+                citaInfo.fecha_ultimo_intento = str(citaInfo.fecha_ultimo_intento)
+            
+            situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita).values_list('id_situacion_id', flat=True)
+            tiposDemandas = RHPCTiposDemandas.objects.filter(id_asesoria_id=cita).values_list('id_tipo_demanda_id', flat=True)
+            respuestasCita = RHPCTiposRespuestas.objects.filter(id_asesoria_id=cita).values_list('id_respuesta_id', flat=True)
+            conductasCita = RHPCConductasASeguir.objects.filter(id_asesoria_id=cita).values_list('id_conducta_id', flat=True)
+
             
             return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
@@ -1115,7 +1129,11 @@ def sm_HPC(request):
             'fecha_nacimiento': fecha_nacimiento,
             'ep':ep,
             'cas': conductas,
-            'data': citaInfo
+            'data': citaInfo,
+            'situacionesCita': situacionesContacto,
+            'demandasCita': tiposDemandas,
+            'respuestasCita': respuestasCita,
+            'conductasCita': conductasCita
         })
         except:
             return render(request, 'sm_HPC.html', {
