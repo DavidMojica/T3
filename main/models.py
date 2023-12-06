@@ -421,7 +421,7 @@ class HPC(models.Model):
         InfoPacientes, on_delete=models.DO_NOTHING)
     id_profesional = models.ForeignKey(
         InfoMiembros, on_delete=models.DO_NOTHING)
-    fecha_asesoria = models.DateField(default=timezone.now)
+    fecha_asesoria = models.DateTimeField(default=timezone.now)
     lugar = models.TextField(max_length=150, null=True)
     edad_usuario_actual = models.IntegerField(null=True)
     diag_trans_mental = models.TextField(
