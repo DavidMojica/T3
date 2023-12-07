@@ -33,26 +33,26 @@
           <select name="sexo" class="form-select" id="in_sexo">
             <option value="-1">Seleccione...</option>
             {% for sexo in sexos %}
-            <option value="{{sexo.id}}" >{{sexo.description}}</option>
+            <option value="{{sexo.id}}" {% if paciente.sexo_id == sexo.id %} selected {% endif %} >{{sexo.description}}</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_edad" class="text-light">Edad</label>
-          <input type="number" class="form-control" name="edad" id="in_edad">
+          <input type="number" class="form-control" name="edad" id="in_edad" value="{{paciente.edad}}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_eps" class="text-light">Eps</label>
           <select name="eps" class="form-select" id="in_eps">
             <option value="-1">Seleccione...</option>
             {% for eps in epss %}
-            <option value="{{eps.id}}">{{eps.description}}</option>
+            <option value="{{eps.id}}" {% if paciente.eps_id == eps.id %} selected {% endif %} >{{eps.description}}</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_direccion" class="text-light">Dirección</label>
-          <input type="text" name="direccion" class="form-control" id="in_direccion" placeholder="Dirección del paciente">
+          <input type="text" name="direccion" class="form-control" value="{{paciente.direccion}}" id="in_direccion" placeholder="Dirección del paciente">
         </div>
 
         <div class="form-group col-sm-10 col-md-4 col-lg-3 col-xl-3">
@@ -83,7 +83,7 @@
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
           <label for="in_telefono" class="text-light">Telefono</label>
-          <input type="text" class="form-control" name="telefono" id="in_telefono" placeholder="Teléfono del paciente">
+          <input type="text" class="form-control" name="telefono" id="in_telefono" placeholder="Teléfono del paciente" value="{{paciente.celular}}">
         </div>
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
@@ -91,7 +91,7 @@
           <select name="poblacion_vulnerable" class="form-select" id="in_poblacion_vulnerable">
             <option value="-1">Seleccione...</option>
             {% for poblacion in poblacion_vulnerable %}
-            <option value="{{poblacion.id}}">{{poblacion.description}}</option>
+            <option value="{{poblacion.id}}" {% if paciente.poblacion_vulnerable_id == poblacion.id %} selected {% endif %} >{{poblacion.description}}</option>
             {% endfor %}
           </select>
         </div>

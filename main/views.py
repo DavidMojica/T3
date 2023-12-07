@@ -226,15 +226,11 @@ def sm_llamadas(request):
 
     else:
         try:
-            
             llamada = request.GET.get('llamada', 0)
-            print(f'paciente: {llamada}')
-            print("private")
             llamadaWithPaciente = PsiLlamadas.objects.get(id=llamada)
-            
-            documento_paciente = llamadaWithPaciente.documento  # Accede al objeto InfoPacientes
-
+            documento_paciente = llamadaWithPaciente.documento  
             paciente = InfoPacientes.objects.get(documento=documento_paciente)
+            
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                 'CustomUser': request.user,
                                                 'paises': paises,
@@ -244,7 +240,7 @@ def sm_llamadas(request):
                                                 'sexos': sexos,
                                                 'epss': EPSS,
                                                 'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': motivos,
+                                                'motivos': hpcsituaciones,
                                                 'conductas': conductas,
                                                 'CustomUser': request.user,
                                                 'data': llamadaWithPaciente,
@@ -263,7 +259,7 @@ def sm_llamadas(request):
                                                 'sexos': sexos,
                                                 'epss': EPSS,
                                                 'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': motivos,
+                                                'motivos': hpcsituaciones,
                                                 'conductas': conductas,
                                                 'CustomUser': request.user})
 
@@ -276,7 +272,7 @@ def sm_llamadas(request):
                                                 'sexos': sexos,
                                                 'epss': EPSS,
                                                 'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': motivos,
+                                                'motivos': hpcsituaciones,
                                                 'conductas': conductas,
                                                 'CustomUser': request.user})
 

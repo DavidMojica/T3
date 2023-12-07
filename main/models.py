@@ -408,7 +408,7 @@ class PsiLlamadasConductas(models.Model):
 
 class PsiLlamadasMotivos(models.Model):
     id_llamada = models.ForeignKey(PsiLlamadas, on_delete=models.CASCADE)
-    id_motivo = models.ForeignKey(PsiMotivos, on_delete=models.CASCADE)
+    id_motivo = models.ForeignKey(HPCSituacionContacto, on_delete=models.CASCADE)
 
 
 """ 
