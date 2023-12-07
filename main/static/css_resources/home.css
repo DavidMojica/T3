@@ -1,4 +1,7 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@200;400;700&display=swap');
+*{
+    font-family: 'Josefin Sans', sans-serif;
+}
 textarea{
     resize: none;
     height: 150px;

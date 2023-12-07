@@ -5,7 +5,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.db.models import Q, Value, IntegerField, CharField
 from django.db import IntegrityError, transaction
+from django.db.models.functions import Cast
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm
 from .models import SiNoNunca, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
@@ -1369,13 +1371,16 @@ def sm_citas(request):
         solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
 
         if id_profesional:
-            citas_with_pacientes = citas_with_pacientes.filter(id_profesional=id_profesional)
+            citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(Value(id_profesional), CharField())) | Q(id_profesional_id=None))
         if documento_paciente:
             citas_with_pacientes = citas_with_pacientes.filter(cedula_usuario__documento=documento_paciente)
         if fecha_cita:
-            citas_with_pacientes = citas_with_pacientes.filter(fecha_asesoria=fecha_cita)
+            citas_with_pacientes = citas_with_pacientes.filter(fecha_asesoria__date=fecha_cita)
         if solo_hechas_por_mi:
-            citas_with_pacientes = citas_with_pacientes.filter(id_profesional=int(request.user.id))
+            user_id = str(request.user.id)
+            citas_with_pacientes = citas_with_pacientes.filter(
+                Q(id_profesional_id=Cast(Value(user_id), CharField())) | Q(id_profesional_id=None)
+            )
 
     # Paginación
     citas_por_pagina = 10

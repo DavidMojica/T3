@@ -4,10 +4,23 @@ from django import forms
 
 
 class FiltroCitasForm(forms.Form):
-    id_profesional = forms.IntegerField(required=False)
-    documento_paciente = forms.CharField(max_length=20, required=False)
-    fecha_cita = forms.DateField(required=False)
-    solo_hechas_por_mi = forms.BooleanField(required=False)
+    id_profesional = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control '})
+    )
+    documento_paciente = forms.CharField(
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    fecha_cita = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    solo_hechas_por_mi = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
 
 class CustomUserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(
