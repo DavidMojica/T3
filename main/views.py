@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm
 from .models import SiNoNunca, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -1353,14 +1353,34 @@ def sm_HPC(request):
         })
 
 
+from django.core.paginator import Paginator, EmptyPage
+
 @login_required
 def sm_citas(request):
-    citas_with_pacientes = HPC.objects.select_related(
-        'cedula_usuario').order_by('-fecha_asesoria')
-    citas_por_pagina = 10
-    page = request.GET.get('page', 1)
+    # Obtener todas las citas con información relacionada de pacientes
+    citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
 
+    # Sistema de filtrado
+    form = FiltroCitasForm(request.GET)
+    if form.is_valid():  # Asegúrate de llamar a is_valid antes de acceder a cleaned_data
+        id_profesional = form.cleaned_data.get('id_profesional')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        fecha_cita = form.cleaned_data.get('fecha_cita')
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
+
+        if id_profesional:
+            citas_with_pacientes = citas_with_pacientes.filter(id_profesional=id_profesional)
+        if documento_paciente:
+            citas_with_pacientes = citas_with_pacientes.filter(cedula_usuario__documento=documento_paciente)
+        if fecha_cita:
+            citas_with_pacientes = citas_with_pacientes.filter(fecha_asesoria=fecha_cita)
+        if solo_hechas_por_mi:
+            citas_with_pacientes = citas_with_pacientes.filter(id_profesional=int(request.user.id))
+
+    # Paginación
+    citas_por_pagina = 10
     paginator = Paginator(citas_with_pacientes, citas_por_pagina)
+    page = request.GET.get('page', 1)
 
     try:
         citas = paginator.page(page)
@@ -1371,6 +1391,7 @@ def sm_citas(request):
         'CustomUser': request.user,
         'year': datetime.now(),
         'citas': citas,
+        'form': form
     })
 
 # 404 VISTAS

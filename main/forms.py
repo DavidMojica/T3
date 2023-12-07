@@ -3,6 +3,12 @@ from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, Estado
 from django import forms
 
 
+class FiltroCitasForm(forms.Form):
+    id_profesional = forms.IntegerField(required=False)
+    documento_paciente = forms.CharField(max_length=20, required=False)
+    fecha_cita = forms.DateField(required=False)
+    solo_hechas_por_mi = forms.BooleanField(required=False)
+
 class CustomUserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
