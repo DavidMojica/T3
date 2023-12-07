@@ -27,6 +27,8 @@ fecha_nacimiento.addEventListener('change', function () {
     if (fechaActual.getMonth() < fechaNacimiento.getMonth() || (fechaActual.getMonth() === fechaNacimiento.getMonth() && fechaActual.getDate() < fechaNacimiento.getDate())) {
         edad--;
     }
+    console.log(fechaActual)
+    console.log(fechaNacimiento)
     e_edad.value = edad;
 });
 
@@ -70,7 +72,6 @@ step1FormUpdate.addEventListener('submit', function(e){
     addErrorMsg(isNaN(eps.value) || eps.value < 0 || eps.value > numEps, "Dato erroneo en Eps", eps); 
 
     step2Error.className = "";
-
     if(ban){
         if(preventiveBan){
             step1FormUpdate.submit();

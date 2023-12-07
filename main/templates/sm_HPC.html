@@ -128,6 +128,21 @@
                         {% endfor %}
                     </select>
                </div>
+
+               <div class="form-group mt-3 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <details class="mult-details">
+                    <summary class="mult-summary">Cálculo del paciente</summary>
+                        <ul class="mult-ul">
+                            {% for calculo in calculos %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
+                                        value="{{calculo.id}}" {% if calculo.id in calculosPaciente %} checked {% endif %} />{{calculo.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_lect_nivel" class="text-light">Nivel de lectoescritura</label>
                     <select name="e_lect2" class="form-select" id="e_lect_nivel">
@@ -157,7 +172,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_ocupacion" class="text-light">Ocupación</label>
                     <select name="e_ocupacion" id="e_ocupacion" class="form-select">
                         {% for ocupacion in ocupaciones %}
@@ -167,7 +182,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-3">
+                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-4">
                     <label for="e_rss" class="text-light">Regimen de seguridad social</label>
                     <select name="e_rss" id="e_rss" class="form-select">
                         {% for rss in rsss %}
@@ -177,8 +192,7 @@
                     </select>
                 </div>
                 
-                <div class="form-group mb-2 col-sm-1 col-md-1 col-lg-1 col-xl-3 row justify-content-center"></div>
-                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-3">
+                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-4">
                     <label for="eps" class="text-light">Nombre de la EPS</label>
                     <select name="eps" id="eps" class="form-select">
                         {% for eps in epss %}
@@ -414,9 +428,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8 row justify-content-center">
                 <h2 class="text-center text-light mt-5">Asesoría Psicológica</h2>
+                <input type="hidden" name="{{secretName}}">
                 <input type="hidden" name="documento" value="{{documento}}">
                 <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
-                <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
+                <input type="hidden" name="edad_actual" value="{{edad_actual}}">
                 
                 <div class="form-group mb-2 col-sm-1 col-md-2 col-lg-3 col-xl-4"></div>
                 <div class="form-group mb-2 col-sm-10 col-md-8 col-lg-6 col-xl-4">
@@ -548,7 +563,21 @@
                         {% endfor %}
                     </select>
                 </div>
-
+                <div class="form-group mb-2 col-xl-2"></div>
+                <div class="form-group mb-2 mt-4 col-sm-10 col-md-10 col-lg-10 col-xl-8">
+                    <details class="mult-details">
+                        <summary class="mult-summary">SPA constumidas en la actualidad</summary>
+                        <ul class="mult-ul">
+                            {% for sp in spa %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="spac_{{sp.id}}"
+                                        value="{{sp.id}}" {% if spaActuales and sp.id in spaActuales %} checked {% endif %} />{{sp.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-xl-2"></div>
                 <div class="form-group mb-2 col-xl-2"></div>
                 <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <label for="sp_csr" class="text-light">Conductas sexuales de riesgo</label>
@@ -765,7 +794,7 @@
                 <div class="form-group col-md-4"></div>
                 <div class="form-group col-md-3 mb-5 mt-5">
                     <input type="hidden" name="detalles_asesoria">
-                    <button type="submit" class="btn btn-success">Guardar asesoría</button>
+                    <button type="submit" class="btn {{btnClass}}">{{btnText}}</button>
                 </div>
                 <div class="form-group col-md-4" ></div>
             </div>

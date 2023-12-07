@@ -499,8 +499,6 @@ class HPC(models.Model):
     seguimiento2 = models.TextField(max_length=5000, null=True)
 
 # Rompimientos
-
-
 class RHPCSituacionContacto(models.Model):
     id_asesoria = models.ForeignKey(HPC, on_delete=models.CASCADE)
     id_situacion = models.ForeignKey(
