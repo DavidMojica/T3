@@ -157,56 +157,71 @@ def sm_llamadas(request):
                     celular=telefono
                 )
                 nuevo_paciente.save()
-
-            llamada = PsiLlamadas(
-                    documento=documento,
-                    nombre_paciente=nombre,
-                    observaciones=observaciones,
-                    seguimiento24=seguimiento24,
-                    seguimiento48=seguimiento48,
-                    seguimiento72=seguimiento72,
-                    dia_semana_id=datetime.now().weekday(),
-                    id_psicologo_id=request.user.id,
-                    sexo=sexo_instance,
-                    edad=edad
-                )
-            llamada.save()
-            id_llamada = llamada.id
-
-            try:
-                psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
-            except PsiLlamadas.DoesNotExist:
-                psi_llamada_instance = None
-
-            # conductas y motivos
-            for conducta in ConductasASeguir.objects.all():
-                checkbox_name = f'cond_{conducta.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        conducta_instance = ConductasASeguir.objects.get(
-                            id=conducta.id)
-                    except ConductasASeguir.DoesNotExist:
-                        conducta_instance = None
-
-                    llamada_conducta = PsiLlamadasConductas(
-                        id_llamada=psi_llamada_instance,
-                        id_conducta=conducta_instance
+                
+            if "secretKey" in request.POST:
+                #actualizar llamada
+                numLlamada = request.GET.get('llamada', 0)
+                llamadaInstance =get_object_or_404(PsiLlamadas, id=numLlamada)
+                
+                with transaction.atomic():
+                    llamadaInstance.observaciones = observaciones
+                    llamadaInstance.seguimiento24 = seguimiento24
+                    llamadaInstance.seguimiento48 = seguimiento48
+                    llamadaInstance.seguimiento72 = seguimiento72
+                    llamadaInstance.save()
+                
+                pass
+            else:
+                #crear nueva llamada
+                llamada = PsiLlamadas(
+                        documento=documento,
+                        nombre_paciente=nombre,
+                        observaciones=observaciones,
+                        seguimiento24=seguimiento24,
+                        seguimiento48=seguimiento48,
+                        seguimiento72=seguimiento72,
+                        dia_semana_id=datetime.now().weekday(),
+                        id_psicologo_id=request.user.id,
+                        sexo=sexo_instance,
+                        edad=edad
                     )
-                    llamada_conducta.save()
+                llamada.save()
+                id_llamada = llamada.id
 
-            for motivo in PsiMotivos.objects.all():
-                checkbox_name = f'mot_{motivo.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
-                    except PsiMotivos.DoesNotExist:
-                        motivo_instace = None
+                try:
+                    psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
+                except PsiLlamadas.DoesNotExist:
+                    psi_llamada_instance = None
 
-                    llamada_motivo = PsiLlamadasMotivos(
-                        id_llamada=psi_llamada_instance,
-                        id_motivo=motivo_instace
-                    )
-                    llamada_motivo.save()
+                # conductas y motivos
+                for conducta in ConductasASeguir.objects.all():
+                    checkbox_name = f'cond_{conducta.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            conducta_instance = ConductasASeguir.objects.get(
+                                id=conducta.id)
+                        except ConductasASeguir.DoesNotExist:
+                            conducta_instance = None
+
+                        llamada_conducta = PsiLlamadasConductas(
+                            id_llamada=psi_llamada_instance,
+                            id_conducta=conducta_instance
+                        )
+                        llamada_conducta.save()
+
+                for motivo in PsiMotivos.objects.all():
+                    checkbox_name = f'mot_{motivo.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
+                        except PsiMotivos.DoesNotExist:
+                            motivo_instace = None
+
+                        llamada_motivo = PsiLlamadasMotivos(
+                            id_llamada=psi_llamada_instance,
+                            id_motivo=motivo_instace
+                        )
+                        llamada_motivo.save()
             return redirect(reverse('sm_historial_llamadas'))
             
         else:
@@ -1037,8 +1052,6 @@ def sm_HPC(request):
             if "secretKey" in request.POST:
                 #actualizar la asesoría
                 cita = request.GET.get('cita', 0)
-                ban = True
-                error = ""
                 citaInstance = get_object_or_404(HPC, id=cita)
                 
                 try:
