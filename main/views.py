@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca, EstatusPersona, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
 ######### Errors related to register ##########
@@ -577,8 +577,7 @@ def sm_HPC(request):
                         paciente.regimen_seguridad = regimen_seguridad_instance
                         paciente.sisben = sisben
                         paciente.eps = eps_instance
-
-                    paciente.save()
+                        paciente.save()
 
                     return render(request, 'sm_HPC.html', {
                         'CustomUser': request.user,
@@ -991,6 +990,11 @@ def sm_HPC(request):
                 error = ""
                 cita = get_object_or_404(HPC, id=cita)
                 
+                try:
+                    as_instance = HPC.objects.get(id=cita)
+                except HPC.DoesNotExist:
+                    as_instance = None
+                
                 with transaction.atomic():
                     cita.lugar = a_lugar,
                     cita.diag_trans_mental = ap_trans,
@@ -1041,7 +1045,59 @@ def sm_HPC(request):
                     cita.anotaciones_libres_profesional=re_notas,
                     cita.seguimiento1=seg_1,
                     cita.seguimiento2=seg_2
-                cita.save()
+                    cita.save()
+                    
+                with transaction.atomic():
+                    RHPCSituacionContacto.objects.filter(id_asesoria=cita).delete()
+                    
+                    for sit in hpcsituaciones:
+                        checkbox_name = f'sit_{sit.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                sitInstance = HPCSituacionContacto.objects.get(id=sit.id)
+                            except HPCSituacionContacto.DoesNotExist:
+                                sitInstance = None
+
+                            situacion_contacto = RHPCSituacionContacto(
+                                id_asesoria=as_instance,
+                                id_situacion=sitInstance
+                            )
+                            situacion_contacto.save()
+                            
+                with transaction.atomic():
+                    RHPCTiposDemandas.objects.filter(id_asesoria=cita).delete()
+                    for dem in hpcdemandas:
+                        checkbox_name = f'dem_{dem.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                demInstance = HPCTiposDemandas.objects.get(id=dem.id)
+                            except HPCTiposDemandas.DoesNotExist:
+                                demInstance = None
+                            demi = RHPCTiposDemandas(
+                                id_asesoria=as_instance,
+                                id_tipo_demanda=demInstance
+                            )
+                            demi.save()
+                            
+                with transaction.atomic():
+                    RHPCTiposRespuestas.objects.filter(id_asesoria=cita).delete()
+                    for tpr in hpcrespuestas:
+                        checkbox_name = f'r_{tpr.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
+                            except HPCTiposRespuestas.DoesNotExist:
+                                resInstance = None
+                            resTp = RHPCTiposRespuestas(
+                                id_asesoria=as_instance,
+                                id_respuesta=resInstance
+                            )
+                            resTp.save()
+                
+                with transaction.atomic():
+                    RHPCConductasASeguir.objects.filter(id_asesoria=cita).delete()
+
+                    
             else:
                 #Crear nueva sesoría
                 try:
@@ -1114,6 +1170,20 @@ def sm_HPC(request):
                     as_instance = HPC.objects.get(id=id_asesoria)
                 except HPC.DoesNotExist:
                     as_instance = None
+                    
+                for sp in spa:
+                    checkbox_name = f'spac_{sp.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            spa_instance = SPA.objects.get(id=sp.id)
+                        except SPA.DoesNotExist:
+                            spa_instance = None
+                            
+                        spact = SPAActuales(
+                            id_paciente = documento,
+                            id_sustancia = spa_instance
+                        )
+                        spact.save()
 
                 for sit in hpcsituaciones:
                     checkbox_name = f'sit_{sit.id}'
@@ -1174,6 +1244,7 @@ def sm_HPC(request):
         try:
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
+            paciente = citaInfo.cedula_usuario
 
             if citaInfo.periodo_ultimo_consumo == None:
                 citaInfo.periodo_ultimo_consumo = str("")
@@ -1195,6 +1266,8 @@ def sm_HPC(request):
                 id_asesoria_id=cita).values_list('id_respuesta_id', flat=True)
             conductasCita = RHPCConductasASeguir.objects.filter(
                 id_asesoria_id=cita).values_list('id_conducta_id', flat=True)
+            spaActuales = SPAActuales.objects.filter(
+                id_paciente_id=paciente).values_list('id_sustancia_id', flat=True)
 
             return render(request, 'sm_HPC.html', {
                 'CustomUser': request.user,
@@ -1213,6 +1286,7 @@ def sm_HPC(request):
                 'demandasCita': tiposDemandas,
                 'respuestasCita': respuestasCita,
                 'conductasCita': conductasCita,
+                'spaActuales': spaActuales,
                 'btnClass': "btn-warning",
                 'btnText': "Actualizar asesoría",
                 'secretName': "secretKey"

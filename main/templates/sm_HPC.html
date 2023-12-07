@@ -549,7 +549,21 @@
                         {% endfor %}
                     </select>
                 </div>
-
+                <div class="form-group mb-2 col-xl-2"></div>
+                <div class="form-group mb-2 mt-4 col-sm-10 col-md-10 col-lg-10 col-xl-8">
+                    <details class="mult-details">
+                        <summary class="mult-summary">SPA constumidas en la actualidad</summary>
+                        <ul class="mult-ul">
+                            {% for sp in spa %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="spac_{{sp.id}}"
+                                        value="{{sp.id}}" {% if spaActuales and sp.id in spaActuales %} checked {% endif %} />{{sp.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+                <div class="form-group mb-2 col-xl-2"></div>
                 <div class="form-group mb-2 col-xl-2"></div>
                 <div class="form-group mb-2 col-sm-10 col-md-6 col-lg-6 col-xl-4">
                     <label for="sp_csr" class="text-light">Conductas sexuales de riesgo</label>
