@@ -506,10 +506,11 @@ def sm_HPC(request):
                     error = "Error en el formato de la edad."
 
                 try:
-                    datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+                    fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
                 except ValueError:
                     ban = False
                     error = "La fecha de nacimiento debe estar en formato YYYY-MM-DD."
+                
 
                 try:
                     tipo_documento = int(request.POST['e_tipo_documento'])
@@ -591,7 +592,6 @@ def sm_HPC(request):
                         'hpcrespuestas': hpcrespuestas,
                         'spa': spa,
                         'snn': snn,
-                        'fecha_nacimiento': fecha_nacimiento,
                         'ep': ep,
                         'cas': conductas,
                         'documento': documento,
@@ -599,6 +599,7 @@ def sm_HPC(request):
                         'btnText': "Guardar asesoría",
                         'secretName': "threeCapitor",
                         'spaActuales': spaActuales,
+                        'edad_actual':edad
                     })
                 else:
                     return render(request, 'sm_HPC.html', {
@@ -634,7 +635,6 @@ def sm_HPC(request):
                     'hpcrespuestas': hpcrespuestas,
                     'spa': spa,
                     'snn': snn,
-                    'fecha_nacimiento': fecha_nacimiento,
                     'btnClass': "btn-success",
                     'btnText': "Guardar asesoría",
                     'secretName': "threeCapitor",
@@ -841,6 +841,7 @@ def sm_HPC(request):
 
             documento = request.POST['documento']
             id_profesional = request.POST['id_prof']
+            edad_actual = request.POST['edad_actual']
             a_lugar = request.POST['a_lugar']
             ap_trans = request.POST['ap_trans']
             ap_cate = request.POST['ap_cate']
@@ -921,13 +922,6 @@ def sm_HPC(request):
                 sp_ulco = datetime.strptime(sp_ulco, '%Y-%m-%d')
             except:
                 sp_ulco = None
-
-            print(f'925 {fecha_nacimiento}')
-            try:
-                fecha_nacimiento = datetime.strptime(
-                    fecha_nacimiento, '%Y-%m-%d')
-            except:
-                fecha_nacimiento = None
 
             try:
                 cs_pins = SiNoNunca.objects.get(id=cs_pi)
@@ -1140,18 +1134,12 @@ def sm_HPC(request):
                 return redirect(reverse('sm_citas'))
             else:
                 #Crear nueva asesoría
-                try:
-                    edadActual = fecha_actual.year - fecha_nacimiento.year - \
-                        ((fecha_actual.month, fecha_actual.day) <
-                        (fecha_nacimiento.month, fecha_nacimiento.day))
-                except:
-                    edadActual = None
-
+                
                 asesoria = HPC(
                     cedula_usuario=pacienteInstance,
                     id_profesional=id_profesionalInstance,
                     lugar=a_lugar,
-                    edad_usuario_actual=edadActual,
+                    edad_usuario_actual=edad_actual,
                     diag_trans_mental=ap_trans,
                     diag_categoria=ap_cate,
                     diag_por_profesional=ap_diag,
