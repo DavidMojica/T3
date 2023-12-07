@@ -1361,6 +1361,15 @@ from django.core.paginator import Paginator, EmptyPage
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
     
+    # Paginación
+    llamadas_por_pagina = 10
+    paginator = Paginator(llamadas, llamadas_por_pagina)
+    page = request.GET.get('page', 1)
+    
+    try:
+        llamadas = paginator.page(page)
+    except EmptyPage:
+        llamadas = paginator.page(paginator.num_pages)
     
     form = FiltroCitasForm(request.GET)
     return render(request, 'sm_historial_llamadas.html',{

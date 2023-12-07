@@ -30,7 +30,7 @@
 
             <ul class="list-group">
                 {% for l in llamadas %}
-                <a href="{% url 'sm_llamadas' %}=llamada={{l.id}}" class="list-group-item list-group-item-action">
+                <a href="{% url 'sm_llamadas' %}?llamada={{l.id}}" class="list-group-item list-group-item-action">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="fw-bold text-success">Llamada <span class="badge bg-primary">#{{l.id}}</span> </h3>
                         <span class="badge bg-primary">{{ l.fecha_llamada }}</span>
@@ -48,37 +48,37 @@
             <!-- Navegación de páginas -->
             <div class="pagination justify-content-center mt-4">
                 <ul class="pagination">
-                    {% if citas.has_previous %}
+                    {% if llamadas.has_previous %}
                         <li class="page-item">
                             <a class="page-link" href="?page=1" aria-label="First">
                                 <span aria-hidden="true">&laquo;&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ citas.previous_page_number }}" aria-label="Previous">
+                            <a class="page-link" href="?page={{ llamadas.previous_page_number }}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                     {% endif %}
                     <li class="page-item disabled">
-                        <span class="page-link">Página {{ citas.number }} de {{ citas.paginator.num_pages }}</span>
+                        <span class="page-link">Página {{ llamadas.number }} de {{ llamadas.paginator.num_pages }}</span>
                     </li>
 
-                    {% if citas.has_next %}
+                    {% if llamadas.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ citas.next_page_number }}" aria-label="Next">
+                            <a class="page-link" href="?page={{ llamadas.next_page_number }}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ citas.paginator.num_pages }}" aria-label="Last">
+                            <a class="page-link" href="?page={{ llamadas.paginator.num_pages }}" aria-label="Last">
                                 <span aria-hidden="true">&raquo;&raquo;</span>
                             </a>
                         </li>
                     {% endif %}
 
-                    {% for i in citas.paginator.page_range %}
-                        <li class="page-item {% if citas.number == i %}active{% endif %}">
+                    {% for i in llamadas.paginator.page_range %}
+                        <li class="page-item {% if llamadas.number == i %}active{% endif %}">
                             <a class="page-link" href="?page={{ i }}">{{ i }}</a>
                         </li>
                     {% endfor %}
