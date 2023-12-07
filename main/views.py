@@ -56,7 +56,7 @@ def sm_llamadas(request):
     if request.method == "POST":
         ban = True
         error = ""
-        
+
         nombre = request.POST['nombre']
         documento = request.POST['documento']
         edad = request.POST['edad']
@@ -66,8 +66,8 @@ def sm_llamadas(request):
         seguimiento24 = request.POST['seguimiento24']
         seguimiento48 = request.POST['seguimiento48']
         seguimiento72 = request.POST['seguimiento72']
-        
-        #Campos numericos
+
+        # Campos numericos
         try:
             edad = int(edad)
             if edad < 0:
@@ -76,8 +76,8 @@ def sm_llamadas(request):
         except ValueError:
             ban = False
             error = "Error en el formato de la edad."
-        
-        #Campos obligatorios
+
+        # Campos obligatorios
         try:
             tipo_documento = int(request.POST['tipo_documento'])
             sexo = int(request.POST['sexo'])
@@ -209,19 +209,19 @@ def sm_llamadas(request):
                 nuevo_paciente.save()
         else:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
-                                                'CustomUser': request.user,
-                                                'paises': paises,
-                                                'departamentos': departamentos,
-                                                'municipios': municipios,
-                                                'tipos_documento': tipos_documento,
-                                                'sexos': sexos,
-                                                'epss': EPSS,
-                                                'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': motivos,
-                                                'conductas': conductas,
-                                                'CustomUser': request.user,
-                                                'error': error})
-    
+                                                        'CustomUser': request.user,
+                                                        'paises': paises,
+                                                        'departamentos': departamentos,
+                                                        'municipios': municipios,
+                                                        'tipos_documento': tipos_documento,
+                                                        'sexos': sexos,
+                                                        'epss': EPSS,
+                                                        'poblacion_vulnerable': poblacion_vulnerable,
+                                                        'motivos': motivos,
+                                                        'conductas': conductas,
+                                                        'CustomUser': request.user,
+                                                        'error': error})
+
     else:
         pass
 
@@ -439,12 +439,12 @@ def sm_HPC(request):
             ban = True
             msg = ""
             documento = request.POST['documento']
-            
+
             if documento == "" or not documento:
                 ban = False
                 msg = "Ingrese el documento."
-            
-            if(ban):
+
+            if (ban):
                 try:
                     paciente = InfoPacientes.objects.get(documento=documento)
                 except InfoPacientes.DoesNotExist:
@@ -476,13 +476,13 @@ def sm_HPC(request):
                     'errorStep0': msg,
                     'step': 0
                 })
-                
+
         elif "actualizar_usuario" in request.POST:
             try:
                 documento = request.POST['e_documento']
                 ban = True
                 error = ""
-                
+
                 paciente = get_object_or_404(
                     InfoPacientes, documento=documento)
 
@@ -495,7 +495,7 @@ def sm_HPC(request):
                 barrio = request.POST['e_barrio']
                 correo = request.POST['e_correo']
                 celular = request.POST['e_celular']
-                
+
                 try:
                     edad = int(edad)
                     if edad < 0:
@@ -504,7 +504,7 @@ def sm_HPC(request):
                 except ValueError:
                     ban = False
                     error = "Error en el formato de la edad."
-                    
+
                 try:
                     datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
                 except ValueError:
@@ -521,15 +521,15 @@ def sm_HPC(request):
                     etnia = int(request.POST['e_etnia'])
                     ocupacion = int(request.POST['e_ocupacion'])
                     regimen = int(request.POST['e_rss'])
-                    
+
                 except ValueError:
                     ban = False
                     error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
-                
+
                 if not nombre or not sexo or not estado_civil:
                     ban = False
                     error = "Diligencie los campos obligatorios"
-                
+
                 if ban:
                     # Validación simplificada de sisben
                     sisben = request.POST.get('e_sisben') == 'on'
@@ -542,15 +542,18 @@ def sm_HPC(request):
                     sexo_instance = get_object_or_404(Sexo, id=sexo)
                     estado_civil_instance = get_object_or_404(
                         EstadoCivil, id=estado_civil)
-                    lecto1_instance = get_object_or_404(Lecto1, id=lectoescritura)
+                    lecto1_instance = get_object_or_404(
+                        Lecto1, id=lectoescritura)
                     lecto2_instance = get_object_or_404(Lecto2, id=lect_nivel)
                     razonamiento_instance = get_object_or_404(
                         Razonamiento, id=raz_analitico)
                     etnia_instance = get_object_or_404(Etnia, id=etnia)
-                    ocupacion_instance = get_object_or_404(Ocupacion, id=ocupacion)
+                    ocupacion_instance = get_object_or_404(
+                        Ocupacion, id=ocupacion)
                     regimen_seguridad_instance = get_object_or_404(
                         RegimenSeguridad, id=regimen)
-                    eps_instance = get_object_or_404(EPS, id=request.POST['eps'])
+                    eps_instance = get_object_or_404(
+                        EPS, id=request.POST['eps'])
 
                     # Iniciar una transacción
                     with transaction.atomic():
@@ -576,22 +579,22 @@ def sm_HPC(request):
                         paciente.eps = eps_instance
 
                         paciente.save()
-                        
+
                     return render(request, 'sm_HPC.html', {
-                            'CustomUser': request.user,
-                            'year': datetime.now(),
-                            'step': 2,
-                            'hpcsituaciones': hpcsituaciones,
-                            'hpcdemandas': hpcdemandas,
-                            'hpcrespuestas': hpcrespuestas,
-                            'spa': spa,
-                            'snn': snn,
-                            'fecha_nacimiento': fecha_nacimiento,
-                            'ep':ep,
-                            'cas': conductas,
-                            'documento': documento
+                        'CustomUser': request.user,
+                        'year': datetime.now(),
+                        'step': 2,
+                        'hpcsituaciones': hpcsituaciones,
+                        'hpcdemandas': hpcdemandas,
+                        'hpcrespuestas': hpcrespuestas,
+                        'spa': spa,
+                        'snn': snn,
+                        'fecha_nacimiento': fecha_nacimiento,
+                        'ep': ep,
+                        'cas': conductas,
+                        'documento': documento
                     })
-                else: 
+                else:
                     return render(request, 'sm_HPC.html', {
                         'CustomUser': request.user,
                         'paciente': paciente,
@@ -611,25 +614,25 @@ def sm_HPC(request):
                         'year': datetime.now(),
                         'documento': documento,
                         'tipos_documento': tipos_documento,
-                        'error' : error
+                        'error': error
                     })
-                
+
             except (TipoDocumento.DoesNotExist, Escolaridad.DoesNotExist, Sexo.DoesNotExist, EstadoCivil.DoesNotExist, Lecto1.DoesNotExist, Lecto2.DoesNotExist, Razonamiento.DoesNotExist, Etnia.DoesNotExist, Ocupacion.DoesNotExist, RegimenSeguridad.DoesNotExist, EPS.DoesNotExist):
 
                 pass
 
             # Redirigir a una página de detalles del paciente u otra vista después de la actualización
             return render(request, 'sm_HPC.html', {
-                            'CustomUser': request.user,
-                            'year': datetime.now(),
-                            'step': 2,
-                            'hpcsituaciones': hpcsituaciones,
-                            'hpcdemandas': hpcdemandas,
-                            'hpcrespuestas': hpcrespuestas,
-                            'spa': spa,
-                            'snn': snn,
-                            'fecha_nacimiento': fecha_nacimiento
-                    })
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'step': 2,
+                'hpcsituaciones': hpcsituaciones,
+                'hpcdemandas': hpcdemandas,
+                'hpcrespuestas': hpcrespuestas,
+                'spa': spa,
+                'snn': snn,
+                'fecha_nacimiento': fecha_nacimiento
+            })
         elif "crear_usuario" in request.POST:
             ban = True
             error = ""
@@ -640,16 +643,16 @@ def sm_HPC(request):
             documento = request.POST['documento']
             direccion = request.POST['direccion']
             fecha_nacimiento = request.POST['fecha_nacimiento']
-            hijos = request.POST['hijos'] 
+            hijos = request.POST['hijos']
             barrio = request.POST['barrio']
             correo = request.POST['correo']
             celular = request.POST['celular']
-            
+
             try:
                 tipo_documento = int(request.POST['tipo_documento'])
                 sexo = int(request.POST['sexo'])
                 edad = int(request.POST['edad'])
-                eps = int(request.POST['eps'])        
+                eps = int(request.POST['eps'])
                 escolaridad = int(request.POST['escolaridad'])
                 estado_civil = int(request.POST['estado_civil'])
                 lectoescritura = int(request.POST['lectoescritura'])
@@ -658,22 +661,23 @@ def sm_HPC(request):
                 ocupacion = int(request.POST['ocupacion'])
                 regimen = int(request.POST['rss'])
                 etnia = int(request.POST['etnia'])
-                
+
             except ValueError:
                 ban = False
                 error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
-            
-            print(f"{documento} | {nombre} | {tipo_documento} | {sexo} | {int(request.POST['ocupacion'])} ")
+
+            print(
+                f"{documento} | {nombre} | {tipo_documento} | {sexo} | {int(request.POST['ocupacion'])} ")
             if not documento or not nombre or not tipo_documento or not sexo or not int(request.POST['ocupacion']):
                 ban = False
                 error = "Diligencie los campos obligatorios"
-            
+
             if ban:
                 if 'sisben' in request.POST:
                     sisben = True
                 else:
                     sisben = False
-                
+
                 try:
                     tipo_documento_instance = TipoDocumento.objects.get(
                         id=tipo_documento)
@@ -681,7 +685,8 @@ def sm_HPC(request):
                     tipo_documento_instance = None
 
                 try:
-                    escolaridad_instance = Escolaridad.objects.get(id=escolaridad)
+                    escolaridad_instance = Escolaridad.objects.get(
+                        id=escolaridad)
                 except Escolaridad.DoesNotExist:
                     escolaridad_instance = None
 
@@ -795,9 +800,12 @@ def sm_HPC(request):
                     'spa': spa,
                     'snn': snn,
                     'fecha_nacimiento': fecha_nacimiento,
-                    'ep':ep,
+                    'ep': ep,
                     'cas': conductas,
-                    'documento' : documento
+                    'documento': documento,
+                    'btnClass': "btn-success",
+                    'btnText': "Guardar asesoría",
+                    'secretName': "threeCapitor"
                 })
             else:
                 return render(request, 'sm_HPC.html', {
@@ -821,7 +829,7 @@ def sm_HPC(request):
                     'error': error
                 })
         elif "detalles_asesoria" in request.POST:
-            
+
             documento = request.POST['documento']
             id_profesional = request.POST['id_prof']
             a_lugar = request.POST['a_lugar']
@@ -835,7 +843,7 @@ def sm_HPC(request):
             ap_notas = request.POST['ap_notas']
             sp_edad = request.POST['sp_edad']
             sp_susi = request.POST['sp_susi']  # i
-            sp_ulco = request.POST['sp_ulco'] #f
+            sp_ulco = request.POST['sp_ulco']  # f
             sp_susim = request.POST['sp_susim']  # i
 
             sp_csr = request.POST['sp_csr']
@@ -847,7 +855,7 @@ def sm_HPC(request):
             cs_pp = request.POST['cs_pp']  # i snn
             cs_dm = request.POST['cs_dm']  # i snn
             cs_ip = request.POST['cs_ip']
-            cs_fu = request.POST['cs_fu'] #f
+            cs_fu = request.POST['cs_fu']  # f
             cs_metodo = request.POST['cs_metodo']
             cs_let = request.POST['cs_let']
             cs_ss = request.POST['cs_ss']
@@ -867,283 +875,298 @@ def sm_HPC(request):
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
-
-            try:
-                pacienteInstance = InfoPacientes.objects.get(
-                    documento=documento)
-            except InfoPacientes.DoesNotExist:
-                pacienteInstance = None
-
-            try:
-                id_profesionalInstance = InfoMiembros.objects.get(
-                    id_usuario=id_profesional)
-            except InfoMiembros.DoesNotExist:
-                id_profesionalInstance = None
-
-            try:
-                spa_instance = SPA.objects.get(id=sp_susi)
-            except SPA.DoesNotExist:
-                spa_instance = None
-
-            try:
-                spa_instance2 = SPA.objects.get(id=sp_susim)
-            except SPA.DoesNotExist:
-                spa_instance2 = None
-
-            if 'sp_cf' in request.POST:
-                sp_cfins = True
-            else:
-                sp_cfins = False
                 
-            try:
-                cs_fu = datetime.strptime(cs_fu, '%Y-%m-%d')
-            except:
-                cs_fu = None
-
-            try:
-                sp_ulco = datetime.strptime(sp_ulco, '%Y-%m-%d')
-            except:
-                sp_ulco = None
-                
-            try:
-                fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
-            except:
-                fecha_nacimiento = None
-
-            try:
-                cs_pins = SiNoNunca.objects.get(id=cs_pi)
-            except SiNoNunca.DoesNotExist:
-                cs_pins = None
-
-            try:
-                cs_ppins = SiNoNunca.objects.get(id=cs_pp)
-            except SiNoNunca.DoesNotExist:
-                cs_ppins = None
-
-            try:
-                cs_dmins = SiNoNunca.objects.get(id=cs_dm)
-            except SiNoNunca.DoesNotExist:
-                cs_dmins = None
-
-            try:
-                cs_ebins = SiNoNunca.objects.get(id=cs_eb)
-            except SiNoNunca.DoesNotExist:
-                cs_ebins = None
-
-            try:
-                cs_epins = EstatusPersona.objects.get(id=cs_ep)
-            except EstatusPersona.DoesNotExist:
-                cs_epins = None
-
-            if 'sp_eoa' in request.POST:
-                sp_eoa = True
+            if "secretKey" in request.POST:
+                #actualizar la asesoría
+                pass
             else:
-                sp_eoa = False
+                #Crear nueva sesoría
+                try:
+                    pacienteInstance = InfoPacientes.objects.get(
+                        documento=documento)
+                except InfoPacientes.DoesNotExist:
+                    pacienteInstance = None
 
-            if 'cs_mh' in request.POST:
-                cs_mh = True
-            else:
-                cs_mh = False
+                try:
+                    id_profesionalInstance = InfoMiembros.objects.get(
+                        id_usuario=id_profesional)
+                except InfoMiembros.DoesNotExist:
+                    id_profesionalInstance = None
 
-            if 'cs_hf' in request.POST:
-                cs_hf = True
-            else:
-                cs_hf = False
+                try:
+                    spa_instance = SPA.objects.get(id=sp_susi)
+                except SPA.DoesNotExist:
+                    spa_instance = None
 
-            if 'av_vict' in request.POST:
-                av_vict = True
-            else:
-                av_vict = False
+                try:
+                    spa_instance2 = SPA.objects.get(id=sp_susim)
+                except SPA.DoesNotExist:
+                    spa_instance2 = None
 
-            if 're_ac' in request.POST:
-                re_ac = True
-            else:
-                re_ac = False
+                if 'sp_cf' in request.POST:
+                    sp_cfins = True
+                else:
+                    sp_cfins = False
 
-            if 're_sc' in request.POST:
-                re_sc = True
-            else:
-                re_sc = False
+                try:
+                    cs_fu = datetime.strptime(cs_fu, '%Y-%m-%d')
+                except:
+                    cs_fu = None
 
-            if 're_ic' in request.POST:
-                re_ic = True
-            else:
-                re_ic = False
+                try:
+                    sp_ulco = datetime.strptime(sp_ulco, '%Y-%m-%d')
+                except:
+                    sp_ulco = None
 
-            if 're_io' in request.POST:
-                re_io = True
-            else:
-                re_io = False
-                
-            try:
-                edadActual = fecha_actual.year - fecha_nacimiento.year - ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
-            except:
-                edadActual = None
+                try:
+                    fecha_nacimiento = datetime.strptime(
+                        fecha_nacimiento, '%Y-%m-%d')
+                except:
+                    fecha_nacimiento = None
 
-            asesoria = HPC(
-                cedula_usuario=pacienteInstance,
-                id_profesional=id_profesionalInstance,
-                lugar=a_lugar,
-                edad_usuario_actual=edadActual,
-                diag_trans_mental=ap_trans,
-                diag_categoria=ap_cate,
-                diag_por_profesional=ap_diag,
-                tratamiento=ap_trat,
-                medicamentos=ap_med,
-                adherencia=ap_adh,
-                barreras_acceso=ap_barr,
-                anotaciones_antecedentes_psiquiatricos=ap_notas,
-                es_hasido_consumidor=sp_eoa,
-                edad_inicio=sp_edad,
-                spa_inicio=spa_instance,
-                sustancia_impacto=spa_instance2,
-                periodo_ultimo_consumo=sp_ulco,
-                conductas_sex_riesgo=sp_csr,
-                intervenciones_previas=sp_ip,
-                consumo_familiar=sp_cfins,
-                vinculo=sp_vi,
-                anotaciones_consumoSPA=sp_notas,
-                tendencia_suicida=cs_pins,
-                presencia_planeacion=cs_ppins,
-                disponibilidad_medios=cs_dmins,
-                intentos_previos=cs_ip,
-                fecha_ultimo_intento=cs_fu,
-                manejo_hospitalario=cs_mh,
-                metodo=cs_metodo,
-                letalidad=cs_let,
-                signos=cs_ss,
-                tratamiento_psiquiatrico=cs_ebins,
-                estatus_persona=cs_epins,
-                acontecimientos_estresantes=cs_ae,
-                historial_familiar=cs_hf,
-                factores_protectores=cs_fp,
-                red_apoyo=cs_ra,
-                anotaciones_comportamiento_suic=cs_notas,
-                victima=av_vict,
-                tipo_violencia=av_tv,
-                agresor=av_agre,
-                inst_reporte_legal=av_ir,
-                anotaciones_antecedentes_violencia=av_notas,
-                asistencia_cita=re_ac,
-                contacto=re_sc,
-                contacto_interrumpido=re_ic,
-                inicia_otro_programa=re_io,
-                p_tamizaje=re_pt,
-                c_o_d=re_cd,
-                anotaciones_libres_profesional=re_notas,
-                seguimiento1=seg_1,
-                seguimiento2=seg_2
-            )
-            asesoria.save()
+                try:
+                    cs_pins = SiNoNunca.objects.get(id=cs_pi)
+                except SiNoNunca.DoesNotExist:
+                    cs_pins = None
 
-            # Hacer el save y después generar el id
-            id_asesoria = asesoria.id
+                try:
+                    cs_ppins = SiNoNunca.objects.get(id=cs_pp)
+                except SiNoNunca.DoesNotExist:
+                    cs_ppins = None
 
-            try:
-                as_instance = HPC.objects.get(id=id_asesoria)
-            except HPC.DoesNotExist:
-                as_instance = None
+                try:
+                    cs_dmins = SiNoNunca.objects.get(id=cs_dm)
+                except SiNoNunca.DoesNotExist:
+                    cs_dmins = None
 
-            for sit in hpcsituaciones:
-                checkbox_name = f'sit_{sit.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        sitInstance = HPCSituacionContacto.objects.get(
-                            id=sit.id)
-                    except HPCSituacionContacto.DoesNotExist:
-                        sitInstance = None
+                try:
+                    cs_ebins = SiNoNunca.objects.get(id=cs_eb)
+                except SiNoNunca.DoesNotExist:
+                    cs_ebins = None
 
-                    situacion_contacto = RHPCSituacionContacto(
-                        id_asesoria=as_instance,
-                        id_situacion=sitInstance
-                    )
-                    situacion_contacto.save()
+                try:
+                    cs_epins = EstatusPersona.objects.get(id=cs_ep)
+                except EstatusPersona.DoesNotExist:
+                    cs_epins = None
 
-            for dem in hpcdemandas:
-                checkbox_name = f'dem_{dem.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        demInstance = HPCTiposDemandas.objects.get(id=dem.id)
-                    except HPCTiposDemandas.DoesNotExist:
-                        demInstance = None
-                    demi = RHPCTiposDemandas(
-                        id_asesoria=as_instance,
-                        id_tipo_demanda=demInstance
-                    )
-                    demi.save()
+                if 'sp_eoa' in request.POST:
+                    sp_eoa = True
+                else:
+                    sp_eoa = False
 
-            for tpr in hpcrespuestas:
-                checkbox_name = f'r_{tpr.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
-                    except HPCTiposRespuestas.DoesNotExist:
-                        resInstance = None
-                    resTp = RHPCTiposRespuestas(
-                        id_asesoria=as_instance,
-                        id_respuesta=resInstance
-                    )
-                    resTp.save()
+                if 'cs_mh' in request.POST:
+                    cs_mh = True
+                else:
+                    cs_mh = False
 
-            for cs in conductas:
-                checkbox_name = f'cs_{cs.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        conInstance = ConductasASeguir.objects.get(id=cs.id)
-                    except ConductasASeguir.DoesNotExist:
-                        conInstance = None
-                    cond_s = RHPCConductasASeguir(
-                        id_asesoria=as_instance,
-                        id_conducta=conInstance
-                    )
-                    cond_s.save()
-                    
+                if 'cs_hf' in request.POST:
+                    cs_hf = True
+                else:
+                    cs_hf = False
 
-            return redirect(reverse('sm_citas'))
+                if 'av_vict' in request.POST:
+                    av_vict = True
+                else:
+                    av_vict = False
+
+                if 're_ac' in request.POST:
+                    re_ac = True
+                else:
+                    re_ac = False
+
+                if 're_sc' in request.POST:
+                    re_sc = True
+                else:
+                    re_sc = False
+
+                if 're_ic' in request.POST:
+                    re_ic = True
+                else:
+                    re_ic = False
+
+                if 're_io' in request.POST:
+                    re_io = True
+                else:
+                    re_io = False
+
+                try:
+                    edadActual = fecha_actual.year - fecha_nacimiento.year - \
+                        ((fecha_actual.month, fecha_actual.day) <
+                        (fecha_nacimiento.month, fecha_nacimiento.day))
+                except:
+                    edadActual = None
+
+                asesoria = HPC(
+                    cedula_usuario=pacienteInstance,
+                    id_profesional=id_profesionalInstance,
+                    lugar=a_lugar,
+                    edad_usuario_actual=edadActual,
+                    diag_trans_mental=ap_trans,
+                    diag_categoria=ap_cate,
+                    diag_por_profesional=ap_diag,
+                    tratamiento=ap_trat,
+                    medicamentos=ap_med,
+                    adherencia=ap_adh,
+                    barreras_acceso=ap_barr,
+                    anotaciones_antecedentes_psiquiatricos=ap_notas,
+                    es_hasido_consumidor=sp_eoa,
+                    edad_inicio=sp_edad,
+                    spa_inicio=spa_instance,
+                    sustancia_impacto=spa_instance2,
+                    periodo_ultimo_consumo=sp_ulco,
+                    conductas_sex_riesgo=sp_csr,
+                    intervenciones_previas=sp_ip,
+                    consumo_familiar=sp_cfins,
+                    vinculo=sp_vi,
+                    anotaciones_consumoSPA=sp_notas,
+                    tendencia_suicida=cs_pins,
+                    presencia_planeacion=cs_ppins,
+                    disponibilidad_medios=cs_dmins,
+                    intentos_previos=cs_ip,
+                    fecha_ultimo_intento=cs_fu,
+                    manejo_hospitalario=cs_mh,
+                    metodo=cs_metodo,
+                    letalidad=cs_let,
+                    signos=cs_ss,
+                    tratamiento_psiquiatrico=cs_ebins,
+                    estatus_persona=cs_epins,
+                    acontecimientos_estresantes=cs_ae,
+                    historial_familiar=cs_hf,
+                    factores_protectores=cs_fp,
+                    red_apoyo=cs_ra,
+                    anotaciones_comportamiento_suic=cs_notas,
+                    victima=av_vict,
+                    tipo_violencia=av_tv,
+                    agresor=av_agre,
+                    inst_reporte_legal=av_ir,
+                    anotaciones_antecedentes_violencia=av_notas,
+                    asistencia_cita=re_ac,
+                    contacto=re_sc,
+                    contacto_interrumpido=re_ic,
+                    inicia_otro_programa=re_io,
+                    p_tamizaje=re_pt,
+                    c_o_d=re_cd,
+                    anotaciones_libres_profesional=re_notas,
+                    seguimiento1=seg_1,
+                    seguimiento2=seg_2
+                )
+                asesoria.save()
+
+                # Hacer el save y después generar el id
+                id_asesoria = asesoria.id
+
+                try:
+                    as_instance = HPC.objects.get(id=id_asesoria)
+                except HPC.DoesNotExist:
+                    as_instance = None
+
+                for sit in hpcsituaciones:
+                    checkbox_name = f'sit_{sit.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            sitInstance = HPCSituacionContacto.objects.get(
+                                id=sit.id)
+                        except HPCSituacionContacto.DoesNotExist:
+                            sitInstance = None
+
+                        situacion_contacto = RHPCSituacionContacto(
+                            id_asesoria=as_instance,
+                            id_situacion=sitInstance
+                        )
+                        situacion_contacto.save()
+
+                for dem in hpcdemandas:
+                    checkbox_name = f'dem_{dem.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            demInstance = HPCTiposDemandas.objects.get(id=dem.id)
+                        except HPCTiposDemandas.DoesNotExist:
+                            demInstance = None
+                        demi = RHPCTiposDemandas(
+                            id_asesoria=as_instance,
+                            id_tipo_demanda=demInstance
+                        )
+                        demi.save()
+
+                for tpr in hpcrespuestas:
+                    checkbox_name = f'r_{tpr.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
+                        except HPCTiposRespuestas.DoesNotExist:
+                            resInstance = None
+                        resTp = RHPCTiposRespuestas(
+                            id_asesoria=as_instance,
+                            id_respuesta=resInstance
+                        )
+                        resTp.save()
+
+                for cs in conductas:
+                    checkbox_name = f'cs_{cs.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            conInstance = ConductasASeguir.objects.get(id=cs.id)
+                        except ConductasASeguir.DoesNotExist:
+                            conInstance = None
+                        cond_s = RHPCConductasASeguir(
+                            id_asesoria=as_instance,
+                            id_conducta=conInstance
+                        )
+                        cond_s.save()
+
+                return redirect(reverse('sm_citas'))
     elif request.method == "GET":
         try:
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
-            
+
             if citaInfo.periodo_ultimo_consumo == None:
                 citaInfo.periodo_ultimo_consumo = str("")
             else:
-                citaInfo.periodo_ultimo_consumo = str(citaInfo.periodo_ultimo_consumo)
-            
+                citaInfo.periodo_ultimo_consumo = str(
+                    citaInfo.periodo_ultimo_consumo)
+
             if citaInfo.fecha_ultimo_intento == None:
                 citaInfo.fecha_ultimo_intento = str("")
             else:
-                citaInfo.fecha_ultimo_intento = str(citaInfo.fecha_ultimo_intento)
-            
-            situacionesContacto = RHPCSituacionContacto.objects.filter(id_asesoria_id=cita).values_list('id_situacion_id', flat=True)
-            tiposDemandas = RHPCTiposDemandas.objects.filter(id_asesoria_id=cita).values_list('id_tipo_demanda_id', flat=True)
-            respuestasCita = RHPCTiposRespuestas.objects.filter(id_asesoria_id=cita).values_list('id_respuesta_id', flat=True)
-            conductasCita = RHPCConductasASeguir.objects.filter(id_asesoria_id=cita).values_list('id_conducta_id', flat=True)
+                citaInfo.fecha_ultimo_intento = str(
+                    citaInfo.fecha_ultimo_intento)
 
-            
+            situacionesContacto = RHPCSituacionContacto.objects.filter(
+                id_asesoria_id=cita).values_list('id_situacion_id', flat=True)
+            tiposDemandas = RHPCTiposDemandas.objects.filter(
+                id_asesoria_id=cita).values_list('id_tipo_demanda_id', flat=True)
+            respuestasCita = RHPCTiposRespuestas.objects.filter(
+                id_asesoria_id=cita).values_list('id_respuesta_id', flat=True)
+            conductasCita = RHPCConductasASeguir.objects.filter(
+                id_asesoria_id=cita).values_list('id_conducta_id', flat=True)
+
             return render(request, 'sm_HPC.html', {
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'step': 2,
-            'hpcsituaciones': hpcsituaciones,
-            'hpcdemandas': hpcdemandas,
-            'hpcrespuestas': hpcrespuestas,
-            'spa': spa,
-            'snn': snn,
-            'fecha_nacimiento': fecha_nacimiento,
-            'ep':ep,
-            'cas': conductas,
-            'data': citaInfo,
-            'situacionesCita': situacionesContacto,
-            'demandasCita': tiposDemandas,
-            'respuestasCita': respuestasCita,
-            'conductasCita': conductasCita
-        })
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'step': 2,
+                'hpcsituaciones': hpcsituaciones,
+                'hpcdemandas': hpcdemandas,
+                'hpcrespuestas': hpcrespuestas,
+                'spa': spa,
+                'snn': snn,
+                'fecha_nacimiento': fecha_nacimiento,
+                'ep': ep,
+                'cas': conductas,
+                'data': citaInfo,
+                'situacionesCita': situacionesContacto,
+                'demandasCita': tiposDemandas,
+                'respuestasCita': respuestasCita,
+                'conductasCita': conductasCita,
+                'btnClass': "btn-warning",
+                'btnText': "Actualizar asesoría",
+                'secretName': "secretKey"
+            })
         except:
             return render(request, 'sm_HPC.html', {
-            'CustomUser': request.user,
-            'step': 0
-        })
+                'CustomUser': request.user,
+                'step': 0
+            })
     else:
         return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
@@ -1154,19 +1177,20 @@ def sm_HPC(request):
             'CustomUser': request.user,
             'paciente': paciente,
             'year': datetime.now(),
-            'step' : 0
+            'step': 0
         })
     except:
         return render(request, 'sm_HPC.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
-            'step' : 0
+            'step': 0
         })
 
 
 @login_required
 def sm_citas(request):
-    citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria') 
+    citas_with_pacientes = HPC.objects.select_related(
+        'cedula_usuario').order_by('-fecha_asesoria')
     citas_por_pagina = 10
     page = request.GET.get('page', 1)
 

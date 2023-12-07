@@ -414,6 +414,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8 row justify-content-center">
                 <h2 class="text-center text-light mt-5">Asesoría Psicológica</h2>
+                <input type="hidden" name="{{secretName}}">
                 <input type="hidden" name="documento" value="{{documento}}">
                 <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
                 <input type="hidden" name="fecha_nacimiento" value="{{fecha_nacimiento}}">
@@ -765,7 +766,7 @@
                 <div class="form-group col-md-4"></div>
                 <div class="form-group col-md-3 mb-5 mt-5">
                     <input type="hidden" name="detalles_asesoria">
-                    <button type="submit" class="btn btn-success">Guardar asesoría</button>
+                    <button type="submit" class="btn {{btnClass}}">{{btnText}}</button>
                 </div>
                 <div class="form-group col-md-4" ></div>
             </div>
