@@ -579,6 +579,9 @@ def sm_HPC(request):
                         paciente.eps = eps_instance
                         paciente.save()
 
+                    spaActuales = SPAActuales.objects.filter(
+                            id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
+                    
                     return render(request, 'sm_HPC.html', {
                         'CustomUser': request.user,
                         'year': datetime.now(),
@@ -595,6 +598,7 @@ def sm_HPC(request):
                         'btnClass': "btn-success",
                         'btnText': "Guardar asesoría",
                         'secretName': "threeCapitor",
+                        'spaActuales': spaActuales,
                     })
                 else:
                     return render(request, 'sm_HPC.html', {
@@ -791,7 +795,9 @@ def sm_HPC(request):
                             id_pip=pip_instance
                         )
                         pp.save()
-
+                        
+                spaActuales = SPAActuales.objects.filter(
+                            id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
                 return render(request, 'sm_HPC.html', {
                     'CustomUser': request.user,
                     'year': datetime.now(),
@@ -808,7 +814,7 @@ def sm_HPC(request):
                     'btnClass': "btn-success",
                     'btnText': "Guardar asesoría",
                     'secretName': "threeCapitor",
-                    
+                    'spaActuales': spaActuales,
                 })
             else:
                 return render(request, 'sm_HPC.html', {
@@ -916,6 +922,7 @@ def sm_HPC(request):
             except:
                 sp_ulco = None
 
+            print(f'925 {fecha_nacimiento}')
             try:
                 fecha_nacimiento = datetime.strptime(
                     fecha_nacimiento, '%Y-%m-%d')
@@ -998,56 +1005,56 @@ def sm_HPC(request):
                     as_instance = HPC.objects.get(id=cita)
                 except HPC.DoesNotExist:
                     as_instance = None
-                
+                print(f'tipo: {type(spa_instance)}')
                 with transaction.atomic():
-                    citaInstance.lugar = a_lugar,
-                    citaInstance.diag_trans_mental = ap_trans,
-                    citaInstance.diag_categoria=ap_cate,
-                    citaInstance.diag_por_profesional=ap_diag,
-                    citaInstance.tratamiento=ap_trat,
-                    citaInstance.medicamentos=ap_med,
-                    citaInstance.adherencia=ap_adh,
-                    citaInstance.barreras_acceso=ap_barr,
-                    citaInstance.anotaciones_antecedentes_psiquiatricos=ap_notas,
-                    citaInstance.es_hasido_consumidor=sp_eoa,
-                    citaInstance.edad_inicio=sp_edad,
-                    citaInstance.spa_inicio=spa_instance,
-                    citaInstance.sustancia_impacto=spa_instance2,
-                    citaInstance.periodo_ultimo_consumo=sp_ulco,
-                    citaInstance.conductas_sex_riesgo=sp_csr,
-                    citaInstance.intervenciones_previas=sp_ip,
-                    citaInstance.consumo_familiar=sp_cfins,
-                    citaInstance.vinculo=sp_vi,
-                    citaInstance.anotaciones_consumoSPA=sp_notas,
-                    citaInstance.tendencia_suicida=cs_pins,
-                    citaInstance.presencia_planeacion=cs_ppins,
-                    citaInstance.disponibilidad_medios=cs_dmins,
-                    citaInstance.intentos_previos=cs_ip,
-                    citaInstance.fecha_ultimo_intento=cs_fu,
-                    citaInstance.manejo_hospitalario=cs_mh,
-                    citaInstance.metodo=cs_metodo,
-                    citaInstance.letalidad=cs_let,
-                    citaInstance.signos=cs_ss,
-                    citaInstance.tratamiento_psiquiatrico=cs_ebins,
-                    citaInstance.estatus_persona=cs_epins,
-                    citaInstance.acontecimientos_estresantes=cs_ae,
-                    citaInstance.historial_familiar=cs_hf,
-                    citaInstance.factores_protectores=cs_fp,
-                    citaInstance.red_apoyo=cs_ra,
-                    citaInstance.anotaciones_comportamiento_suic=cs_notas,
-                    citaInstance.victima=av_vict,
-                    citaInstance.tipo_violencia=av_tv,
-                    citaInstance.agresor=av_agre,
-                    citaInstance.inst_reporte_legal=av_ir,
-                    citaInstance.anotaciones_antecedentes_violencia=av_notas,
-                    citaInstance.asistencia_cita=re_ac,
-                    citaInstance.contacto=re_sc,
-                    citaInstance.contacto_interrumpido=re_ic,
-                    citaInstance.inicia_otro_programa=re_io,
-                    citaInstance.p_tamizaje=re_pt,
-                    citaInstance.c_o_d=re_cd,
-                    citaInstance.anotaciones_libres_profesional=re_notas,
-                    citaInstance.seguimiento1=seg_1,
+                    citaInstance.lugar = a_lugar
+                    citaInstance.diag_trans_mental = ap_trans
+                    citaInstance.diag_categoria=ap_cate
+                    citaInstance.diag_por_profesional=ap_diag
+                    citaInstance.tratamiento=ap_trat
+                    citaInstance.medicamentos=ap_med
+                    citaInstance.adherencia=ap_adh
+                    citaInstance.barreras_acceso=ap_barr
+                    citaInstance.anotaciones_antecedentes_psiquiatricos=ap_notas
+                    citaInstance.es_hasido_consumidor=sp_eoa
+                    citaInstance.edad_inicio=sp_edad
+                    citaInstance.spa_inicio=spa_instance
+                    citaInstance.sustancia_impacto=spa_instance2
+                    citaInstance.periodo_ultimo_consumo=sp_ulco
+                    citaInstance.conductas_sex_riesgo=sp_csr
+                    citaInstance.intervenciones_previas=sp_ip
+                    citaInstance.consumo_familiar=sp_cfins
+                    citaInstance.vinculo=sp_vi
+                    citaInstance.anotaciones_consumoSPA=sp_notas
+                    citaInstance.tendencia_suicida=cs_pins
+                    citaInstance.presencia_planeacion=cs_ppins
+                    citaInstance.disponibilidad_medios=cs_dmins
+                    citaInstance.intentos_previos=cs_ip
+                    citaInstance.fecha_ultimo_intento=cs_fu
+                    citaInstance.manejo_hospitalario=cs_mh
+                    citaInstance.metodo=cs_metodo
+                    citaInstance.letalidad=cs_let
+                    citaInstance.signos=cs_ss
+                    citaInstance.tratamiento_psiquiatrico=cs_ebins
+                    citaInstance.estatus_persona=cs_epins
+                    citaInstance.acontecimientos_estresantes=cs_ae
+                    citaInstance.historial_familiar=cs_hf
+                    citaInstance.factores_protectores=cs_fp
+                    citaInstance.red_apoyo=cs_ra
+                    citaInstance.anotaciones_comportamiento_suic=cs_notas
+                    citaInstance.victima=av_vict
+                    citaInstance.tipo_violencia=av_tv
+                    citaInstance.agresor=av_agre
+                    citaInstance.inst_reporte_legal=av_ir
+                    citaInstance.anotaciones_antecedentes_violencia=av_notas
+                    citaInstance.asistencia_cita=re_ac
+                    citaInstance.contacto=re_sc
+                    citaInstance.contacto_interrumpido=re_ic
+                    citaInstance.inicia_otro_programa=re_io
+                    citaInstance.p_tamizaje=re_pt
+                    citaInstance.c_o_d=re_cd
+                    citaInstance.anotaciones_libres_profesional=re_notas
+                    citaInstance.seguimiento1=seg_1
                     citaInstance.seguimiento2=seg_2
                     citaInstance.save()
                     
@@ -1115,6 +1122,7 @@ def sm_HPC(request):
                             
                 with transaction.atomic():
                     SPAActuales.objects.filter(id_paciente=documento).delete()
+                    infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
                     for sp in spa:
                         checkbox_name = f'spac_{sp.id}'
                         if checkbox_name in request.POST:
@@ -1124,13 +1132,14 @@ def sm_HPC(request):
                                 spa_instance = None
                                 
                             spact = SPAActuales(
-                                id_paciente = documento,
+                                id_paciente = infoPacientesInstance,
                                 id_sustancia = spa_instance
                             )
                             spact.save()
-                    
+                            
+                return redirect(reverse('sm_citas'))
             else:
-                #Crear nueva sesoría
+                #Crear nueva asesoría
                 try:
                     edadActual = fecha_actual.year - fecha_nacimiento.year - \
                         ((fecha_actual.month, fecha_actual.day) <
@@ -1201,20 +1210,24 @@ def sm_HPC(request):
                     as_instance = HPC.objects.get(id=id_asesoria)
                 except HPC.DoesNotExist:
                     as_instance = None
-                    
-                for sp in spa:
-                    checkbox_name = f'spac_{sp.id}'
-                    if checkbox_name in request.POST:
-                        try:
-                            spa_instance = SPA.objects.get(id=sp.id)
-                        except SPA.DoesNotExist:
-                            spa_instance = None
-                            
-                        spact = SPAActuales(
-                            id_paciente = documento,
-                            id_sustancia = spa_instance
-                        )
-                        spact.save()
+                
+                print(f'doc {documento}')
+                with transaction.atomic():
+                    SPAActuales.objects.filter(id_paciente=documento).delete()
+                    infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
+                    for sp in spa:
+                        checkbox_name = f'spac_{sp.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                spa_instance = SPA.objects.get(id=sp.id)
+                            except SPA.DoesNotExist:
+                                spa_instance = None
+                                
+                            spact = SPAActuales(
+                                id_paciente = infoPacientesInstance,
+                                id_sustancia = spa_instance
+                            )
+                            spact.save()
 
                 for sit in hpcsituaciones:
                     checkbox_name = f'sit_{sit.id}'
@@ -1275,7 +1288,7 @@ def sm_HPC(request):
         try:
             cita = request.GET.get('cita', 0)
             citaInfo = get_object_or_404(HPC, pk=cita)
-            paciente = citaInfo.cedula_usuario
+            paciente = citaInfo.cedula_usuario_id
 
             if citaInfo.periodo_ultimo_consumo == None:
                 citaInfo.periodo_ultimo_consumo = str("")
@@ -1320,7 +1333,8 @@ def sm_HPC(request):
                 'spaActuales': spaActuales,
                 'btnClass': "btn-warning",
                 'btnText': "Actualizar asesoría",
-                'secretName': "secretKey"
+                'secretName': "secretKey",
+                'documento': paciente
             })
         except:
             return render(request, 'sm_HPC.html', {
