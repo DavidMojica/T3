@@ -273,7 +273,7 @@ def sm_llamadas(request):
             documento_paciente = llamadaWithPaciente.documento  
             paciente = InfoPacientes.objects.get(documento=documento_paciente)
             
-            motivos = PsiLlamadasMotivos.objects.filter(id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
+            motivs = PsiLlamadasMotivos.objects.filter(id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
             conducts = PsiLlamadasConductas.objects.filter(id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
             
             
@@ -295,7 +295,7 @@ def sm_llamadas(request):
                                                 'btnClass': "btn-warning",
                                                 'btnText': "Actualizar llamada",
                                                 'secretName': "secretKey",
-                                                'motivs': motivos,
+                                                'motivs': motivs,
                                                 'conducts': conducts                                                
                                                 })
         except:
@@ -309,6 +309,10 @@ def sm_llamadas(request):
                                                         'epss': EPSS,
                                                         'poblacion_vulnerable': poblacion_vulnerable,
                                                         'CustomUser': request.user,
+                                                        'motivos': hpcsituaciones,
+                                                        'conductas': conductas,
+                                                        'btnClass': "btn-success",
+                                                        'btnText': "Guardar llamada",
                                                         })
 
 
