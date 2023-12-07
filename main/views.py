@@ -578,7 +578,7 @@ def sm_HPC(request):
                         paciente.sisben = sisben
                         paciente.eps = eps_instance
 
-                        paciente.save()
+                    paciente.save()
 
                     return render(request, 'sm_HPC.html', {
                         'CustomUser': request.user,
@@ -875,120 +875,175 @@ def sm_HPC(request):
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
+            
+            try:
+                    pacienteInstance = InfoPacientes.objects.get(
+                        documento=documento)
+            except InfoPacientes.DoesNotExist:
+                pacienteInstance = None
+
+            try:
+                id_profesionalInstance = InfoMiembros.objects.get(
+                    id_usuario=id_profesional)
+            except InfoMiembros.DoesNotExist:
+                id_profesionalInstance = None
+
+            try:
+                spa_instance = SPA.objects.get(id=sp_susi)
+            except SPA.DoesNotExist:
+                spa_instance = None
+
+            try:
+                spa_instance2 = SPA.objects.get(id=sp_susim)
+            except SPA.DoesNotExist:
+                spa_instance2 = None
+
+            if 'sp_cf' in request.POST:
+                sp_cfins = True
+            else:
+                sp_cfins = False
+
+            try:
+                cs_fu = datetime.strptime(cs_fu, '%Y-%m-%d')
+            except:
+                cs_fu = None
+
+            try:
+                sp_ulco = datetime.strptime(sp_ulco, '%Y-%m-%d')
+            except:
+                sp_ulco = None
+
+            try:
+                fecha_nacimiento = datetime.strptime(
+                    fecha_nacimiento, '%Y-%m-%d')
+            except:
+                fecha_nacimiento = None
+
+            try:
+                cs_pins = SiNoNunca.objects.get(id=cs_pi)
+            except SiNoNunca.DoesNotExist:
+                cs_pins = None
+
+            try:
+                cs_ppins = SiNoNunca.objects.get(id=cs_pp)
+            except SiNoNunca.DoesNotExist:
+                cs_ppins = None
+
+            try:
+                cs_dmins = SiNoNunca.objects.get(id=cs_dm)
+            except SiNoNunca.DoesNotExist:
+                cs_dmins = None
+
+            try:
+                cs_ebins = SiNoNunca.objects.get(id=cs_eb)
+            except SiNoNunca.DoesNotExist:
+                cs_ebins = None
+
+            try:
+                cs_epins = EstatusPersona.objects.get(id=cs_ep)
+            except EstatusPersona.DoesNotExist:
+                cs_epins = None
+
+            if 'sp_eoa' in request.POST:
+                sp_eoa = True
+            else:
+                sp_eoa = False
+
+            if 'cs_mh' in request.POST:
+                cs_mh = True
+            else:
+                cs_mh = False
+
+            if 'cs_hf' in request.POST:
+                cs_hf = True
+            else:
+                cs_hf = False
+
+            if 'av_vict' in request.POST:
+                av_vict = True
+            else:
+                av_vict = False
+
+            if 're_ac' in request.POST:
+                re_ac = True
+            else:
+                re_ac = False
+
+            if 're_sc' in request.POST:
+                re_sc = True
+            else:
+                re_sc = False
+
+            if 're_ic' in request.POST:
+                re_ic = True
+            else:
+                re_ic = False
+
+            if 're_io' in request.POST:
+                re_io = True
+            else:
+                re_io = False
                 
             if "secretKey" in request.POST:
                 #actualizar la asesoría
-                pass
+                cita = request.GET.get('cita', 0)
+                ban = True
+                error = ""
+                cita = get_object_or_404(HPC, id=cita)
+                
+                with transaction.atomic():
+                    cita.lugar = a_lugar,
+                    cita.diag_trans_mental = ap_trans,
+                    cita.diag_categoria=ap_cate,
+                    cita.diag_por_profesional=ap_diag,
+                    cita.tratamiento=ap_trat,
+                    cita.medicamentos=ap_med,
+                    cita.adherencia=ap_adh,
+                    cita.barreras_acceso=ap_barr,
+                    cita.anotaciones_antecedentes_psiquiatricos=ap_notas,
+                    cita.es_hasido_consumidor=sp_eoa,
+                    cita.edad_inicio=sp_edad,
+                    cita.spa_inicio=spa_instance,
+                    cita.sustancia_impacto=spa_instance2,
+                    cita.periodo_ultimo_consumo=sp_ulco,
+                    cita.conductas_sex_riesgo=sp_csr,
+                    cita.intervenciones_previas=sp_ip,
+                    cita.consumo_familiar=sp_cfins,
+                    cita.vinculo=sp_vi,
+                    cita.anotaciones_consumoSPA=sp_notas,
+                    cita.tendencia_suicida=cs_pins,
+                    cita.presencia_planeacion=cs_ppins,
+                    cita.disponibilidad_medios=cs_dmins,
+                    cita.intentos_previos=cs_ip,
+                    cita.fecha_ultimo_intento=cs_fu,
+                    cita.manejo_hospitalario=cs_mh,
+                    cita.metodo=cs_metodo,
+                    cita.letalidad=cs_let,
+                    cita.signos=cs_ss,
+                    cita.tratamiento_psiquiatrico=cs_ebins,
+                    cita.estatus_persona=cs_epins,
+                    cita.acontecimientos_estresantes=cs_ae,
+                    cita.historial_familiar=cs_hf,
+                    cita.factores_protectores=cs_fp,
+                    cita.red_apoyo=cs_ra,
+                    cita.anotaciones_comportamiento_suic=cs_notas,
+                    cita.victima=av_vict,
+                    cita.tipo_violencia=av_tv,
+                    cita.agresor=av_agre,
+                    cita.inst_reporte_legal=av_ir,
+                    cita.anotaciones_antecedentes_violencia=av_notas,
+                    cita.asistencia_cita=re_ac,
+                    cita.contacto=re_sc,
+                    cita.contacto_interrumpido=re_ic,
+                    cita.inicia_otro_programa=re_io,
+                    cita.p_tamizaje=re_pt,
+                    cita.c_o_d=re_cd,
+                    cita.anotaciones_libres_profesional=re_notas,
+                    cita.seguimiento1=seg_1,
+                    cita.seguimiento2=seg_2
+                cita.save()
             else:
                 #Crear nueva sesoría
-                try:
-                    pacienteInstance = InfoPacientes.objects.get(
-                        documento=documento)
-                except InfoPacientes.DoesNotExist:
-                    pacienteInstance = None
-
-                try:
-                    id_profesionalInstance = InfoMiembros.objects.get(
-                        id_usuario=id_profesional)
-                except InfoMiembros.DoesNotExist:
-                    id_profesionalInstance = None
-
-                try:
-                    spa_instance = SPA.objects.get(id=sp_susi)
-                except SPA.DoesNotExist:
-                    spa_instance = None
-
-                try:
-                    spa_instance2 = SPA.objects.get(id=sp_susim)
-                except SPA.DoesNotExist:
-                    spa_instance2 = None
-
-                if 'sp_cf' in request.POST:
-                    sp_cfins = True
-                else:
-                    sp_cfins = False
-
-                try:
-                    cs_fu = datetime.strptime(cs_fu, '%Y-%m-%d')
-                except:
-                    cs_fu = None
-
-                try:
-                    sp_ulco = datetime.strptime(sp_ulco, '%Y-%m-%d')
-                except:
-                    sp_ulco = None
-
-                try:
-                    fecha_nacimiento = datetime.strptime(
-                        fecha_nacimiento, '%Y-%m-%d')
-                except:
-                    fecha_nacimiento = None
-
-                try:
-                    cs_pins = SiNoNunca.objects.get(id=cs_pi)
-                except SiNoNunca.DoesNotExist:
-                    cs_pins = None
-
-                try:
-                    cs_ppins = SiNoNunca.objects.get(id=cs_pp)
-                except SiNoNunca.DoesNotExist:
-                    cs_ppins = None
-
-                try:
-                    cs_dmins = SiNoNunca.objects.get(id=cs_dm)
-                except SiNoNunca.DoesNotExist:
-                    cs_dmins = None
-
-                try:
-                    cs_ebins = SiNoNunca.objects.get(id=cs_eb)
-                except SiNoNunca.DoesNotExist:
-                    cs_ebins = None
-
-                try:
-                    cs_epins = EstatusPersona.objects.get(id=cs_ep)
-                except EstatusPersona.DoesNotExist:
-                    cs_epins = None
-
-                if 'sp_eoa' in request.POST:
-                    sp_eoa = True
-                else:
-                    sp_eoa = False
-
-                if 'cs_mh' in request.POST:
-                    cs_mh = True
-                else:
-                    cs_mh = False
-
-                if 'cs_hf' in request.POST:
-                    cs_hf = True
-                else:
-                    cs_hf = False
-
-                if 'av_vict' in request.POST:
-                    av_vict = True
-                else:
-                    av_vict = False
-
-                if 're_ac' in request.POST:
-                    re_ac = True
-                else:
-                    re_ac = False
-
-                if 're_sc' in request.POST:
-                    re_sc = True
-                else:
-                    re_sc = False
-
-                if 're_ic' in request.POST:
-                    re_ic = True
-                else:
-                    re_ic = False
-
-                if 're_io' in request.POST:
-                    re_io = True
-                else:
-                    re_io = False
-
                 try:
                     edadActual = fecha_actual.year - fecha_nacimiento.year - \
                         ((fecha_actual.month, fecha_actual.day) <
