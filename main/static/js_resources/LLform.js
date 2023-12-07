@@ -56,9 +56,6 @@ form_llamadas.addEventListener('submit', function(e){
     addPreventiveMsg(in_edad.value.trim() === "" || isNaN(in_edad.value.trim()), "Edad no especificada ¿Quiere continuar?", in_edad);
     addErrorMsg(in_eps.value.trim() < 1 || in_eps > numEps, "Si el paciente no tiene eps, seleccione 'Ninguna'", in_eps);
     addPreventiveMsg(in_direccion.value.trim() === "", "Dirección no especificada ¿Quiere continuar?", in_direccion);
-    addErrorMsg(in_pais.value != numPaises, "Comprobar país", in_pais);
-    addErrorMsg(in_departamento.value < 1, "Comprobar departamento", in_departamento);
-    addErrorMsg(in_municipio.value < 1, "Comprobar ciudad", in_municipio);
     addPreventiveMsg(in_telefono.value.trim() === "" || isNaN(in_telefono.value.trim()), "Teléfono no especificado ¿Quiere continuar?", in_telefono);
     addErrorMsg(in_poblacion_vulnerable.value < 1, "Si el paciente no es población vulnerable seleccione 'Ninguna'", in_poblacion_vulnerable);
     addPreventiveMsg(in_observaciones.value === "", "Observaciones vacías ¿Continuar?", in_observaciones);

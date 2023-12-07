@@ -12,49 +12,50 @@
 
         <div class="form-group col-sm-10 col-md-6 col-lg-4 col-xl-4">
           <label for="in_nombre" class="text-light">Nombre</label>
-          <input type="text" class="form-control" name="nombre" id="in_nombre" placeholder="Nombre del paciente">
+          <input type="text" class="form-control" name="nombre" id="in_nombre" placeholder="Nombre del paciente" value="{{ paciente.nombre }}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-4 col-xl-4">
           <label for="in_nombre" class="text-light">No. de documento</label>
-          <input type="text" class="form-control" name="documento" id="in_documento">
+          <input type="text" class="form-control" name="documento" id="in_documento" value="{{paciente.documento}}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-4 col-xl-4">
           <label for="in_tipo_documento" class="text-light">Tipo de documento</label>
           <select name="tipo_documento" class="form-select" id="in_tipo_documento">
             <option value="-1">Seleccione...</option>
             {% for tipo_doc in tipos_documento %}
-            <option value="{{tipo_doc.id}}">{{tipo_doc.description}}</option>
+            <option value="{{tipo_doc.id}}" {% if paciente.tipo_documento_id == tipo_doc.id %} selected {% endif %}>{{tipo_doc.description}}</option>
             {% endfor %}
           </select>
         </div>
-
+<!-- 256 -->
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_sexo" class="text-light">Sexo</label>
           <select name="sexo" class="form-select" id="in_sexo">
             <option value="-1">Seleccione...</option>
             {% for sexo in sexos %}
-            <option value="{{sexo.id}}">{{sexo.description}}</option>
+            <option value="{{sexo.id}}" {% if paciente.sexo_id == sexo.id %} selected {% endif %} >{{sexo.description}}</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_edad" class="text-light">Edad</label>
-          <input type="number" class="form-control" name="edad" id="in_edad">
+          <input type="number" class="form-control" name="edad" id="in_edad" value="{{paciente.edad}}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_eps" class="text-light">Eps</label>
           <select name="eps" class="form-select" id="in_eps">
             <option value="-1">Seleccione...</option>
             {% for eps in epss %}
-            <option value="{{eps.id}}">{{eps.description}}</option>
+            <option value="{{eps.id}}" {% if paciente.eps_id == eps.id %} selected {% endif %} >{{eps.description}}</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
           <label for="in_direccion" class="text-light">Dirección</label>
-          <input type="text" name="direccion" class="form-control" id="in_direccion" placeholder="Dirección del paciente">
+          <input type="text" name="direccion" class="form-control" value="{{paciente.direccion}}" id="in_direccion" placeholder="Dirección del paciente">
         </div>
 
+        {% if secretName != "secretKey" %}
         <div class="form-group col-sm-10 col-md-4 col-lg-3 col-xl-3">
           <label for="in_pais" class="text-light">País</label>
           <select name="pais" class="form-select" id="in_pais">
@@ -80,10 +81,11 @@
             <option value="-1">Seleccione...</option>
           </select>
         </div>
+        {% endif %}
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
           <label for="in_telefono" class="text-light">Telefono</label>
-          <input type="text" class="form-control" name="telefono" id="in_telefono" placeholder="Teléfono del paciente">
+          <input type="text" class="form-control" name="telefono" id="in_telefono" placeholder="Teléfono del paciente" value="{{paciente.celular}}">
         </div>
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
@@ -91,7 +93,7 @@
           <select name="poblacion_vulnerable" class="form-select" id="in_poblacion_vulnerable">
             <option value="-1">Seleccione...</option>
             {% for poblacion in poblacion_vulnerable %}
-            <option value="{{poblacion.id}}">{{poblacion.description}}</option>
+            <option value="{{poblacion.id}}" {% if paciente.poblacion_vulnerable_id == poblacion.id %} selected {% endif %} >{{poblacion.description}}</option>
             {% endfor %}
           </select>
         </div>
@@ -103,12 +105,13 @@
               {% for motivo in motivos %}
               <li class="mult-li">
                 <label class="mult-label"><input class="mult-input" type="checkbox" name="mot_{{motivo.id}}"
-                    value="{{motivo.id}}" />{{motivo.description}}</label>
+                    value="{{motivo.id}}" {% if motivs and motivo.id in motivs %} checked {% endif %} />{{motivo.description}}</label>
               </li>
               {% endfor %}
             </ul>
           </details>
         </div>
+
         <div class="form-group col-sm-8 col-md-6 mb-3 mt-3">
           <details class="mult-details">
             <summary class="mult-summary">Conductas a seguir</summary>
@@ -116,7 +119,7 @@
               {% for conducta in conductas %}
               <li class="mult-li">
                 <label class="mult-label"><input class="mult-input" type="checkbox" name="cond_{{conducta.id}}"
-                    value="{{conducta.id}}" />{{conducta.description}}</label>
+                    value="{{conducta.id}}" {% if conducts and conducta.id in conducts %} checked {% endif %} />{{conducta.description}}</label>
               </li>
               {% endfor %}
             </ul>
@@ -126,22 +129,22 @@
         <div class="form-group col-md-2"></div>
         <div class="form-group col-sm-10 col-md-4">
           <label for="in_observaciones" class="text-light">Observaciones</label>
-          <textarea name="observaciones" class="form-control" id="in_observaciones" cols="30" rows="10"></textarea>
+          <textarea name="observaciones" class="form-control" id="in_observaciones" cols="30" rows="10">{{data.observaciones}}</textarea>
         </div>
         <div class="form-group col-sm-10 col-md-4">
           <label for="in_seguimiento24" class="text-light">Seguimiento 24 horas</label>
-          <textarea name="seguimiento24" class="form-control" id="in_seguimiento24" cols="30" rows="10"></textarea>
+          <textarea name="seguimiento24" class="form-control" id="in_seguimiento24" cols="30" rows="10">{{data.seguimiento24}}</textarea>
         </div>
         <div class="form-group col-md-2"></div>
         
         <div class="form-group col-md-2"></div>
         <div class="form-group col-sm-10 col-md-4">
           <label for="in_seguimiento48" class="text-light">Seguimiento 48 horas</label>
-          <textarea name="seguimiento48" class="form-control" id="in_seguimiento48" cols="30" rows="10"></textarea>
+          <textarea name="seguimiento48" class="form-control" id="in_seguimiento48" cols="30" rows="10">{{data.seguimiento48}}</textarea>
         </div>
         <div class="form-group col-sm-10 col-md-4">
           <label for="in_seguimiento72" class="text-light">Seguimiento 72 horas</label>
-          <textarea name="seguimiento72" class="form-control" id="in_seguimiento72" cols="30" rows="10"></textarea>
+          <textarea name="seguimiento72" class="form-control" id="in_seguimiento72" cols="30" rows="10">{{data.seguimiento72}}</textarea>
         </div>
         <div class="form-group col-md-2"></div>
 
@@ -153,7 +156,8 @@
 
         <div class="form-group col-md-4"></div>
         <div class="col-md-4 mb-5 mt-3">
-          <input type="submit" value="Guardar" id="subtBtn" class="btn btn-success">
+          <input type="hidden" name="{{secretName}}">
+          <input type="submit" value="{{btnText}}" id="subtBtn" class="btn {{btnClass}}">
         </div>
         <div class="form-group col-md-4"></div>
 

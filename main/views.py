@@ -5,9 +5,11 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.db.models import Q, Value, IntegerField, CharField
 from django.db import IntegrityError, transaction
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm
-from .models import SiNoNunca, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from django.db.models.functions import Cast
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm
+from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
 ######### Errors related to register ##########
@@ -82,115 +84,61 @@ def sm_llamadas(request):
             tipo_documento = int(request.POST['tipo_documento'])
             sexo = int(request.POST['sexo'])
             eps = int(request.POST['eps'])
-            pais = int(request.POST['pais'])
-            municipio = int(request.POST['municipio'])
-            departamento = int(request.POST['departamento'])
+            municipio = int(request.POST.get('municipio', 0))
             pob_vulnerable = int(request.POST['poblacion_vulnerable'])
         except ValueError:
             ban = False
             error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
-
-        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0:
+        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pob_vulnerable <= 0:
             ban = False
             error = "Error en alguno de sus datos. Asegúrese de completar todos los campos obligatorios."
 
+        try:
+            sexo_instance = Sexo.objects.get(id=sexo)
+        except Sexo.DoesNotExist:
+            # Manejar el caso donde no se encontró una instancia de Sexo
+            sexo_instance = None
+        
+        try:
+            tipo_documento_instance = TipoDocumento.objects.get(
+                id=tipo_documento)
+        except TipoDocumento.DoesNotExist:
+            tipo_documento_instance = None
+
+        try:
+            eps_instance = EPS.objects.get(id=eps)
+        except EPS.DoesNotExist:
+            eps_instance = None
+
+        try:
+            municipio_instance = Municipio.objects.get(id=municipio)
+        except Municipio.DoesNotExist:
+            municipio_instance = None
+
+        try:
+            pob_vulnerable_instance = PoblacionVulnerable.objects.get(
+                id=pob_vulnerable)
+        except PoblacionVulnerable.DoesNotExist:
+            pob_vulnerable_instance = None
+            
+            
         if ban:
-            try:
-                sexo_instance = Sexo.objects.get(id=sexo)
-            except Sexo.DoesNotExist:
-                # Manejar el caso donde no se encontró una instancia de Sexo
-                sexo_instance = None
-
-            llamada = PsiLlamadas(
-                documento=documento,
-                nombre_paciente=nombre,
-                fecha_llamada=datetime.now().date(),
-                hora=datetime.now().hour,
-                observaciones=observaciones,
-                seguimiento24=seguimiento24,
-                seguimiento48=seguimiento48,
-                seguimiento72=seguimiento72,
-                dia_semana_id=datetime.now().weekday(),
-                id_psicologo_id=request.user.id,
-                sexo=sexo_instance,
-                edad=edad
-            )
-            llamada.save()
-            id_llamada = llamada.id
-
-            try:
-                psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
-            except PsiLlamadas.DoesNotExist:
-                psi_llamada_instance = None
-
-            # conductas y motivos
-            for conducta in ConductasASeguir.objects.all():
-                checkbox_name = f'cond_{conducta.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        conducta_instance = ConductasASeguir.objects.get(
-                            id=conducta.id)
-                    except ConductasASeguir.DoesNotExist:
-                        conducta_instance = None
-
-                    llamada_conducta = PsiLlamadasConductas(
-                        id_llamada=psi_llamada_instance,
-                        id_conducta=conducta_instance
-                    )
-                    llamada_conducta.save()
-
-            for motivo in PsiMotivos.objects.all():
-                checkbox_name = f'mot_{motivo.id}'
-                if checkbox_name in request.POST:
-                    try:
-                        motivo_instace = PsiMotivos.objects.get(id=motivo.id)
-                    except PsiMotivos.DoesNotExist:
-                        motivo_instace = None
-
-                    llamada_motivo = PsiLlamadasMotivos(
-                        id_llamada=psi_llamada_instance,
-                        id_motivo=motivo_instace
-                    )
-                    llamada_motivo.save()
-
-            # paciente
             paciente_existe = InfoPacientes.objects.filter(
                 documento=documento).first()
 
-            try:
-                tipo_documento_instance = TipoDocumento.objects.get(
-                    id=tipo_documento)
-            except TipoDocumento.DoesNotExist:
-                tipo_documento_instance = None
-
-            try:
-                eps_instance = EPS.objects.get(id=eps)
-            except EPS.DoesNotExist:
-                eps_instance = None
-
-            try:
-                municipio_instance = Municipio.objects.get(id=municipio)
-            except Municipio.DoesNotExist:
-                municipio_instance = None
-
-            try:
-                pob_vulnerable_instance = PoblacionVulnerable.objects.get(
-                    id=pob_vulnerable)
-            except PoblacionVulnerable.DoesNotExist:
-                pob_vulnerable_instance = None
-
             if paciente_existe:
                 # Si el paciente existe se actualizan los datos
-                paciente_existe.nombre = nombre.lower()
-                paciente_existe.tipo_documento = tipo_documento_instance
-
-                paciente_existe.sexo = sexo_instance
-                paciente_existe.edad = edad
-                paciente_existe.eps = eps_instance
-                paciente_existe.direccion = direccion.lower()
-                paciente_existe.municipio = municipio_instance
-                paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
-                paciente_existe.celular = telefono
+                paciente_existe.nombre = nombre.lower() if nombre else paciente_existe.nombre
+                paciente_existe.tipo_documento = tipo_documento_instance if tipo_documento_instance is not None else paciente_existe.tipo_documento
+                paciente_existe.sexo = sexo_instance if sexo_instance is not None else paciente_existe.sexo
+                paciente_existe.edad = edad if edad else paciente_existe.edad
+                paciente_existe.eps = eps_instance if eps_instance is not None else paciente_existe.eps
+                paciente_existe.direccion = direccion.lower() if direccion else paciente_existe.direccion
+                paciente_existe.municipio = municipio_instance if municipio_instance is not None else paciente_existe.municipio
+                paciente_existe.poblacion_vulnerable = pob_vulnerable_instance if pob_vulnerable is not None else paciente_existe.poblacion_vulnerable
+                paciente_existe.celular = telefono if telefono else paciente_existe.celular
+                cantidadLlamadas = paciente_existe.cant_llamadas
+                paciente_existe.cant_llamadas = cantidadLlamadas + 1
                 paciente_existe.save()
             else:
                 # Si no existe, se crea un paciente nuevo
@@ -207,6 +155,104 @@ def sm_llamadas(request):
                     celular=telefono
                 )
                 nuevo_paciente.save()
+                
+            if "secretKey" in request.POST:
+                #actualizar llamada
+                numLlamada = request.GET.get('llamada', 0)
+                llamadaInstance =get_object_or_404(PsiLlamadas, id=numLlamada)
+                
+                with transaction.atomic():
+                    llamadaInstance.observaciones = observaciones
+                    llamadaInstance.seguimiento24 = seguimiento24
+                    llamadaInstance.seguimiento48 = seguimiento48
+                    llamadaInstance.seguimiento72 = seguimiento72
+                    llamadaInstance.save()
+                
+                with transaction.atomic():
+                    PsiLlamadasConductas.objects.filter(id_llamada=numLlamada).delete()
+                    for conducta in ConductasASeguir.objects.all():
+                        checkbox_name = f'cond_{conducta.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                conducta_instance = ConductasASeguir.objects.get(
+                                    id=conducta.id)
+                            except ConductasASeguir.DoesNotExist:
+                                conducta_instance = None
+
+                            llamada_conducta = PsiLlamadasConductas(
+                                id_llamada=llamadaInstance,
+                                id_conducta=conducta_instance
+                            )
+                            llamada_conducta.save()
+                            
+                with transaction.atomic():
+                    PsiLlamadasMotivos.objects.filter(id_llamada=numLlamada).delete()
+                    for motivo in PsiMotivos.objects.all():
+                        checkbox_name = f'mot_{motivo.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
+                            except PsiMotivos.DoesNotExist:
+                                motivo_instace = None
+
+                            llamada_motivo = PsiLlamadasMotivos(
+                                id_llamada=llamadaInstance,
+                                id_motivo=motivo_instace
+                            )
+                            llamada_motivo.save()
+            else:
+                #crear nueva llamada
+                llamada = PsiLlamadas(
+                        documento=documento,
+                        nombre_paciente=nombre,
+                        observaciones=observaciones,
+                        seguimiento24=seguimiento24,
+                        seguimiento48=seguimiento48,
+                        seguimiento72=seguimiento72,
+                        dia_semana_id=datetime.now().weekday(),
+                        id_psicologo_id=request.user.id,
+                        sexo=sexo_instance,
+                        edad=edad
+                    )
+                llamada.save()
+                id_llamada = llamada.id
+
+                try:
+                    psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
+                except PsiLlamadas.DoesNotExist:
+                    psi_llamada_instance = None
+
+                # conductas y motivos
+                for conducta in ConductasASeguir.objects.all():
+                    checkbox_name = f'cond_{conducta.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            conducta_instance = ConductasASeguir.objects.get(
+                                id=conducta.id)
+                        except ConductasASeguir.DoesNotExist:
+                            conducta_instance = None
+
+                        llamada_conducta = PsiLlamadasConductas(
+                            id_llamada=psi_llamada_instance,
+                            id_conducta=conducta_instance
+                        )
+                        llamada_conducta.save()
+
+                for motivo in PsiMotivos.objects.all():
+                    checkbox_name = f'mot_{motivo.id}'
+                    if checkbox_name in request.POST:
+                        try:
+                            motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
+                        except PsiMotivos.DoesNotExist:
+                            motivo_instace = None
+
+                        llamada_motivo = PsiLlamadasMotivos(
+                            id_llamada=psi_llamada_instance,
+                            id_motivo=motivo_instace
+                        )
+                        llamada_motivo.save()
+            return redirect(reverse('sm_historial_llamadas'))
+            
         else:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
@@ -217,15 +263,22 @@ def sm_llamadas(request):
                                                         'sexos': sexos,
                                                         'epss': EPSS,
                                                         'poblacion_vulnerable': poblacion_vulnerable,
-                                                        'motivos': motivos,
-                                                        'conductas': conductas,
                                                         'CustomUser': request.user,
                                                         'error': error})
 
     else:
-        pass
-
-    return render(request, 'sm_llamadas.html', {'year': datetime.now(),
+        try:
+            llamada = request.GET.get('llamada', 0)
+            llamadaWithPaciente = PsiLlamadas.objects.get(id=llamada)
+            documento_paciente = llamadaWithPaciente.documento  
+            paciente = InfoPacientes.objects.get(documento=documento_paciente)
+            
+            motivs = PsiLlamadasMotivos.objects.filter(id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
+            conducts = PsiLlamadasConductas.objects.filter(id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
+            
+            
+            return render(request, 'sm_llamadas.html', {
+                                                'year': datetime.now(),
                                                 'CustomUser': request.user,
                                                 'paises': paises,
                                                 'departamentos': departamentos,
@@ -234,9 +287,33 @@ def sm_llamadas(request):
                                                 'sexos': sexos,
                                                 'epss': EPSS,
                                                 'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': motivos,
+                                                'motivos': hpcsituaciones,
                                                 'conductas': conductas,
-                                                'CustomUser': request.user})
+                                                'CustomUser': request.user,
+                                                'data': llamadaWithPaciente,
+                                                'paciente': paciente,
+                                                'btnClass': "btn-warning",
+                                                'btnText': "Actualizar llamada",
+                                                'secretName': "secretKey",
+                                                'motivs': motivs,
+                                                'conducts': conducts                                                
+                                                })
+        except:
+            return render(request, 'sm_llamadas.html', {'year': datetime.now(),
+                                                        'CustomUser': request.user,
+                                                        'paises': paises,
+                                                        'departamentos': departamentos,
+                                                        'municipios': municipios,
+                                                        'tipos_documento': tipos_documento,
+                                                        'sexos': sexos,
+                                                        'epss': EPSS,
+                                                        'poblacion_vulnerable': poblacion_vulnerable,
+                                                        'CustomUser': request.user,
+                                                        'motivos': hpcsituaciones,
+                                                        'conductas': conductas,
+                                                        'btnClass': "btn-success",
+                                                        'btnText': "Guardar llamada",
+                                                        })
 
 
 def get_departamentos(request):
@@ -419,14 +496,6 @@ def edit_account(request, user_id, user_type):
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 
-
-def boolInputs(request, i):
-    if i in request.POST:
-        return True
-    else:
-        return False
-
-# PSICOLOGIA VISTAS
 
 
 @login_required
@@ -995,8 +1064,6 @@ def sm_HPC(request):
             if "secretKey" in request.POST:
                 #actualizar la asesoría
                 cita = request.GET.get('cita', 0)
-                ban = True
-                error = ""
                 citaInstance = get_object_or_404(HPC, id=cita)
                 
                 try:
@@ -1135,7 +1202,7 @@ def sm_HPC(request):
                             )
                             spact.save()
                             
-                return redirect(reverse('sm_citas'))
+                return redirect(reverse('sm_historial_citas'))
             else:
                 #Crear nueva asesoría
                 
@@ -1275,7 +1342,7 @@ def sm_HPC(request):
                         )
                         cond_s.save()
 
-                return redirect(reverse('sm_citas'))
+                return redirect(reverse('sm_historial_citas'))
     elif request.method == "GET":
         try:
             cita = request.GET.get('cita', 0)
@@ -1354,27 +1421,70 @@ def sm_HPC(request):
 
 
 @login_required
-def sm_citas(request):
-    citas_with_pacientes = HPC.objects.select_related(
-        'cedula_usuario').order_by('-fecha_asesoria')
-    citas_por_pagina = 10
+def sm_historial_llamadas(request):
+    llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
+    
+    # Paginación
+    llamadas_por_pagina = 10
+    paginator = Paginator(llamadas, llamadas_por_pagina)
     page = request.GET.get('page', 1)
+    
+    try:
+        llamadas = paginator.page(page)
+    except EmptyPage:
+        llamadas = paginator.page(paginator.num_pages)
+    
+    form = FiltroCitasForm(request.GET)
+    return render(request, 'sm_historial_llamadas.html',{
+        'CustomUser': request.user,
+        'year': datetime.now(),
+        'form': form,
+        'llamadas': llamadas,
+    })
 
+@login_required
+def sm_historial_citas(request):
+    # Obtener todas las citas con información relacionada de pacientes
+    citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
+
+    # Sistema de filtrado
+    form = FiltroCitasForm(request.GET)
+    if form.is_valid():  # Asegúrate de llamar a is_valid antes de acceder a cleaned_data
+        id_profesional = form.cleaned_data.get('id_profesional')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        fecha_cita = form.cleaned_data.get('fecha_cita')
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
+
+        if id_profesional:
+            citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(Value(id_profesional), CharField())) | Q(id_profesional_id=None))
+        if documento_paciente:
+            citas_with_pacientes = citas_with_pacientes.filter(cedula_usuario__documento=documento_paciente)
+        if fecha_cita:
+            citas_with_pacientes = citas_with_pacientes.filter(fecha_asesoria__date=fecha_cita)
+        if solo_hechas_por_mi:
+            user_id = str(request.user.id)
+            citas_with_pacientes = citas_with_pacientes.filter(
+                Q(id_profesional_id=Cast(Value(user_id), CharField())) | Q(id_profesional_id=None)
+            )
+
+    # Paginación
+    citas_por_pagina = 10
     paginator = Paginator(citas_with_pacientes, citas_por_pagina)
+    page = request.GET.get('page', 1)
 
     try:
         citas = paginator.page(page)
     except EmptyPage:
         citas = paginator.page(paginator.num_pages)
 
-    return render(request, 'sm_citas.html', {
+    return render(request, 'sm_historial_citas.html', {
         'CustomUser': request.user,
         'year': datetime.now(),
         'citas': citas,
+        'form': form
     })
 
 # 404 VISTAS
-
 
 @login_required
 def restricted_area_404(request):

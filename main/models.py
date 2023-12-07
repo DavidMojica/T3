@@ -389,9 +389,8 @@ class PsiLlamadas(models.Model):
     documento = models.CharField(max_length=30, null=True, blank=True)
     nombre_paciente = models.CharField(null=True, max_length=100)
     id_psicologo = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
-    fecha_llamada = models.DateField(default=timezone.now)
+    fecha_llamada = models.DateTimeField(default=timezone.now)
     dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT)
-    hora = models.TimeField(auto_now_add=True)
     sexo = models.ForeignKey(Sexo, null=True, on_delete=models.CASCADE)
     edad = models.IntegerField(null=True)
     observaciones = models.TextField(null=True, max_length=5000)
@@ -409,14 +408,13 @@ class PsiLlamadasConductas(models.Model):
 
 class PsiLlamadasMotivos(models.Model):
     id_llamada = models.ForeignKey(PsiLlamadas, on_delete=models.CASCADE)
-    id_motivo = models.ForeignKey(PsiMotivos, on_delete=models.CASCADE)
+    id_motivo = models.ForeignKey(HPCSituacionContacto, on_delete=models.CASCADE)
 
 
 """ 
 ##### MODELO HPC #####
 En este modelo se recolectará la información proveniente de la hoja de primer contacto HPC
 """
-
 
 class HPC(models.Model):
     id = models.AutoField(primary_key=True)
