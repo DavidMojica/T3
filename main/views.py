@@ -91,32 +91,85 @@ def sm_llamadas(request):
         except ValueError:
             ban = False
             error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
-
         if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0:
             ban = False
             error = "Error en alguno de sus datos. Asegúrese de completar todos los campos obligatorios."
 
+        try:
+            sexo_instance = Sexo.objects.get(id=sexo)
+        except Sexo.DoesNotExist:
+            # Manejar el caso donde no se encontró una instancia de Sexo
+            sexo_instance = None
+        
+        try:
+            tipo_documento_instance = TipoDocumento.objects.get(
+                id=tipo_documento)
+        except TipoDocumento.DoesNotExist:
+            tipo_documento_instance = None
+
+        try:
+            eps_instance = EPS.objects.get(id=eps)
+        except EPS.DoesNotExist:
+            eps_instance = None
+
+        try:
+            municipio_instance = Municipio.objects.get(id=municipio)
+        except Municipio.DoesNotExist:
+            municipio_instance = None
+
+        try:
+            pob_vulnerable_instance = PoblacionVulnerable.objects.get(
+                id=pob_vulnerable)
+        except PoblacionVulnerable.DoesNotExist:
+            pob_vulnerable_instance = None
+            
+            
         if ban:
-            try:
-                sexo_instance = Sexo.objects.get(id=sexo)
-            except Sexo.DoesNotExist:
-                # Manejar el caso donde no se encontró una instancia de Sexo
-                sexo_instance = None
+            paciente_existe = InfoPacientes.objects.filter(
+                documento=documento).first()
+
+            if paciente_existe:
+                # Si el paciente existe se actualizan los datos
+                paciente_existe.nombre = nombre.lower() if nombre else paciente_existe.nombre
+                paciente_existe.tipo_documento = tipo_documento_instance if tipo_documento_instance is not None else paciente_existe.tipo_documento
+                paciente_existe.sexo = sexo_instance if sexo_instance is not None else paciente_existe.sexo
+                paciente_existe.edad = edad if edad else paciente_existe.edad
+                paciente_existe.eps = eps_instance if eps_instance is not None else paciente_existe.eps
+                paciente_existe.direccion = direccion.lower() if direccion else paciente_existe.direccion
+                paciente_existe.municipio = municipio_instance if municipio_instance is not None else paciente_existe.municipio
+                paciente_existe.poblacion_vulnerable = pob_vulnerable_instance if pob_vulnerable is not None else paciente_existe.poblacion_vulnerable
+                paciente_existe.celular = telefono if telefono else paciente_existe.celular
+                cantidadLlamadas = paciente_existe.cant_llamadas
+                paciente_existe.cant_llamadas = cantidadLlamadas + 1
+                paciente_existe.save()
+            else:
+                # Si no existe, se crea un paciente nuevo
+                nuevo_paciente = InfoPacientes(
+                    nombre=nombre.lower(),
+                    documento=documento,
+                    tipo_documento=tipo_documento_instance,
+                    sexo=sexo_instance,
+                    edad=edad,
+                    eps=eps_instance,
+                    direccion=direccion.lower(),
+                    municipio=municipio_instance,
+                    poblacion_vulnerable=pob_vulnerable_instance,
+                    celular=telefono
+                )
+                nuevo_paciente.save()
 
             llamada = PsiLlamadas(
-                documento=documento,
-                nombre_paciente=nombre,
-                fecha_llamada=datetime.now().date(),
-                hora=datetime.now().hour,
-                observaciones=observaciones,
-                seguimiento24=seguimiento24,
-                seguimiento48=seguimiento48,
-                seguimiento72=seguimiento72,
-                dia_semana_id=datetime.now().weekday(),
-                id_psicologo_id=request.user.id,
-                sexo=sexo_instance,
-                edad=edad
-            )
+                    documento=documento,
+                    nombre_paciente=nombre,
+                    observaciones=observaciones,
+                    seguimiento24=seguimiento24,
+                    seguimiento48=seguimiento48,
+                    seguimiento72=seguimiento72,
+                    dia_semana_id=datetime.now().weekday(),
+                    id_psicologo_id=request.user.id,
+                    sexo=sexo_instance,
+                    edad=edad
+                )
             llamada.save()
             id_llamada = llamada.id
 
@@ -145,7 +198,7 @@ def sm_llamadas(request):
                 checkbox_name = f'mot_{motivo.id}'
                 if checkbox_name in request.POST:
                     try:
-                        motivo_instace = PsiMotivos.objects.get(id=motivo.id)
+                        motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
                     except PsiMotivos.DoesNotExist:
                         motivo_instace = None
 
@@ -154,61 +207,8 @@ def sm_llamadas(request):
                         id_motivo=motivo_instace
                     )
                     llamada_motivo.save()
-
-            # paciente
-            paciente_existe = InfoPacientes.objects.filter(
-                documento=documento).first()
-
-            try:
-                tipo_documento_instance = TipoDocumento.objects.get(
-                    id=tipo_documento)
-            except TipoDocumento.DoesNotExist:
-                tipo_documento_instance = None
-
-            try:
-                eps_instance = EPS.objects.get(id=eps)
-            except EPS.DoesNotExist:
-                eps_instance = None
-
-            try:
-                municipio_instance = Municipio.objects.get(id=municipio)
-            except Municipio.DoesNotExist:
-                municipio_instance = None
-
-            try:
-                pob_vulnerable_instance = PoblacionVulnerable.objects.get(
-                    id=pob_vulnerable)
-            except PoblacionVulnerable.DoesNotExist:
-                pob_vulnerable_instance = None
-
-            if paciente_existe:
-                # Si el paciente existe se actualizan los datos
-                paciente_existe.nombre = nombre.lower()
-                paciente_existe.tipo_documento = tipo_documento_instance
-
-                paciente_existe.sexo = sexo_instance
-                paciente_existe.edad = edad
-                paciente_existe.eps = eps_instance
-                paciente_existe.direccion = direccion.lower()
-                paciente_existe.municipio = municipio_instance
-                paciente_existe.poblacion_vulnerable = pob_vulnerable_instance
-                paciente_existe.celular = telefono
-                paciente_existe.save()
-            else:
-                # Si no existe, se crea un paciente nuevo
-                nuevo_paciente = InfoPacientes(
-                    nombre=nombre.lower(),
-                    documento=documento,
-                    tipo_documento=tipo_documento_instance,
-                    sexo=sexo_instance,
-                    edad=edad,
-                    eps=eps_instance,
-                    direccion=direccion.lower(),
-                    municipio=municipio_instance,
-                    poblacion_vulnerable=pob_vulnerable_instance,
-                    celular=telefono
-                )
-                nuevo_paciente.save()
+            return redirect(reverse('sm_historial_llamadas'))
+            
         else:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
@@ -231,6 +231,10 @@ def sm_llamadas(request):
             documento_paciente = llamadaWithPaciente.documento  
             paciente = InfoPacientes.objects.get(documento=documento_paciente)
             
+            motivos = PsiLlamadasMotivos.objects.filter(id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
+            conducts = PsiLlamadasConductas.objects.filter(id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
+            
+            
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                 'CustomUser': request.user,
                                                 'paises': paises,
@@ -246,8 +250,10 @@ def sm_llamadas(request):
                                                 'data': llamadaWithPaciente,
                                                 'paciente': paciente,
                                                 'btnClass': "btn-warning",
-                                                'btnText': "Actualizar asesoría",
-                                                'secretName': "secretKey",                                                
+                                                'btnText': "Actualizar llamada",
+                                                'secretName': "secretKey",
+                                                'motivs': motivos,
+                                                'conducts': conducts                                                
                                                 })
         except:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
@@ -261,7 +267,10 @@ def sm_llamadas(request):
                                                 'poblacion_vulnerable': poblacion_vulnerable,
                                                 'motivos': hpcsituaciones,
                                                 'conductas': conductas,
-                                                'CustomUser': request.user})
+                                                'CustomUser': request.user,
+                                                'btnClass': "btn-success",
+                                                'btnText': "Guardar llamada",
+                                                'secretName': "asdadsasd"})
 
     return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                 'CustomUser': request.user,
@@ -274,7 +283,10 @@ def sm_llamadas(request):
                                                 'poblacion_vulnerable': poblacion_vulnerable,
                                                 'motivos': hpcsituaciones,
                                                 'conductas': conductas,
-                                                'CustomUser': request.user})
+                                                'CustomUser': request.user,
+                                                'btnClass': "btn-success",
+                                                'btnText': "Guardar llamada",
+                                                'secretName': "asdadsasd"})
 
 
 def get_departamentos(request):

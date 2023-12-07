@@ -416,7 +416,6 @@ class PsiLlamadasMotivos(models.Model):
 En este modelo se recolectará la información proveniente de la hoja de primer contacto HPC
 """
 
-
 class HPC(models.Model):
     id = models.AutoField(primary_key=True)
     cedula_usuario = models.ForeignKey(
