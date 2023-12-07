@@ -9,7 +9,7 @@ from django.db.models import Q, Value, IntegerField, CharField
 from django.db import IntegrityError, transaction
 from django.db.models.functions import Cast
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm
-from .models import SiNoNunca, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
+from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
 ######### Errors related to register ##########
@@ -225,7 +225,47 @@ def sm_llamadas(request):
                                                         'error': error})
 
     else:
-        pass
+        try:
+            
+            llamada = request.GET.get('llamada', 0)
+            print(f'paciente: {llamada}')
+            print("private")
+            llamadaWithPaciente = PsiLlamadas.objects.get(id=llamada)
+            
+            documento_paciente = llamadaWithPaciente.documento  # Accede al objeto InfoPacientes
+
+            paciente = InfoPacientes.objects.get(documento=documento_paciente)
+            return render(request, 'sm_llamadas.html', {'year': datetime.now(),
+                                                'CustomUser': request.user,
+                                                'paises': paises,
+                                                'departamentos': departamentos,
+                                                'municipios': municipios,
+                                                'tipos_documento': tipos_documento,
+                                                'sexos': sexos,
+                                                'epss': EPSS,
+                                                'poblacion_vulnerable': poblacion_vulnerable,
+                                                'motivos': motivos,
+                                                'conductas': conductas,
+                                                'CustomUser': request.user,
+                                                'data': llamadaWithPaciente,
+                                                'paciente': paciente,
+                                                'btnClass': "btn-warning",
+                                                'btnText': "Actualizar asesoría",
+                                                'secretName': "secretKey",                                                
+                                                })
+        except:
+            return render(request, 'sm_llamadas.html', {'year': datetime.now(),
+                                                'CustomUser': request.user,
+                                                'paises': paises,
+                                                'departamentos': departamentos,
+                                                'municipios': municipios,
+                                                'tipos_documento': tipos_documento,
+                                                'sexos': sexos,
+                                                'epss': EPSS,
+                                                'poblacion_vulnerable': poblacion_vulnerable,
+                                                'motivos': motivos,
+                                                'conductas': conductas,
+                                                'CustomUser': request.user})
 
     return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                 'CustomUser': request.user,
@@ -421,14 +461,6 @@ def edit_account(request, user_id, user_type):
                                                  'year': datetime.now(),
                                                  'CustomUser': request.user})
 
-
-def boolInputs(request, i):
-    if i in request.POST:
-        return True
-    else:
-        return False
-
-# PSICOLOGIA VISTAS
 
 
 @login_required
@@ -1137,7 +1169,7 @@ def sm_HPC(request):
                             )
                             spact.save()
                             
-                return redirect(reverse('sm_citas'))
+                return redirect(reverse('sm_historial_citas'))
             else:
                 #Crear nueva asesoría
                 
@@ -1277,7 +1309,7 @@ def sm_HPC(request):
                         )
                         cond_s.save()
 
-                return redirect(reverse('sm_citas'))
+                return redirect(reverse('sm_historial_citas'))
     elif request.method == "GET":
         try:
             cita = request.GET.get('cita', 0)
@@ -1355,8 +1387,6 @@ def sm_HPC(request):
         })
 
 
-from django.core.paginator import Paginator, EmptyPage
-
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
@@ -1422,7 +1452,6 @@ def sm_historial_citas(request):
     })
 
 # 404 VISTAS
-
 
 @login_required
 def restricted_area_404(request):
