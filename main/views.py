@@ -447,8 +447,10 @@ def sm_HPC(request):
             if (ban):
                 try:
                     paciente = InfoPacientes.objects.get(documento=documento)
+                    calculosPaciente = PacienteCalculo.objects.filter(documento_usuario=documento).values_list('id_calculo_id', flat=True)
                 except InfoPacientes.DoesNotExist:
                     paciente = None
+                    calculosPaciente = []
                 return render(request, 'sm_HPC.html', {
                     'CustomUser': request.user,
                     'paciente': paciente,
@@ -467,7 +469,8 @@ def sm_HPC(request):
                     'epss': EPSS,
                     'year': datetime.now(),
                     'documento': documento,
-                    'tipos_documento': tipos_documento
+                    'tipos_documento': tipos_documento,
+                    'calculosPaciente': calculosPaciente
                 })
             else:
                 return render(request, 'sm_HPC.html', {
@@ -798,6 +801,7 @@ def sm_HPC(request):
                         
                 spaActuales = SPAActuales.objects.filter(
                             id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
+                
                 return render(request, 'sm_HPC.html', {
                     'CustomUser': request.user,
                     'year': datetime.now(),
@@ -807,7 +811,7 @@ def sm_HPC(request):
                     'hpcrespuestas': hpcrespuestas,
                     'spa': spa,
                     'snn': snn,
-                    'fecha_nacimiento': fecha_nacimiento,
+                    'edad_actual': edad,
                     'ep': ep,
                     'cas': conductas,
                     'documento': documento,

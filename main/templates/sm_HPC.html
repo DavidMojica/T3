@@ -128,6 +128,21 @@
                         {% endfor %}
                     </select>
                </div>
+
+               <div class="form-group mt-3 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <details class="mult-details">
+                    <summary class="mult-summary">Cálculo del paciente</summary>
+                        <ul class="mult-ul">
+                            {% for calculo in calculos %}
+                            <li class="mult-li">
+                                <label class="mult-label"><input class="mult-input" type="checkbox" name="calc_{{calculo.id}}"
+                                        value="{{calculo.id}}" {% if calculo.id in calculosPaciente %} checked {% endif %} />{{calculo.description}}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
                     <label for="e_lect_nivel" class="text-light">Nivel de lectoescritura</label>
                     <select name="e_lect2" class="form-select" id="e_lect_nivel">
@@ -157,7 +172,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
                     <label for="e_ocupacion" class="text-light">Ocupación</label>
                     <select name="e_ocupacion" id="e_ocupacion" class="form-select">
                         {% for ocupacion in ocupaciones %}
@@ -167,7 +182,7 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-3">
+                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-4">
                     <label for="e_rss" class="text-light">Regimen de seguridad social</label>
                     <select name="e_rss" id="e_rss" class="form-select">
                         {% for rss in rsss %}
@@ -177,8 +192,7 @@
                     </select>
                 </div>
                 
-                <div class="form-group mb-2 col-sm-1 col-md-1 col-lg-1 col-xl-3 row justify-content-center"></div>
-                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-3">
+                <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-4">
                     <label for="eps" class="text-light">Nombre de la EPS</label>
                     <select name="eps" id="eps" class="form-select">
                         {% for eps in epss %}
