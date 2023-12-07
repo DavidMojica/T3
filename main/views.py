@@ -84,14 +84,12 @@ def sm_llamadas(request):
             tipo_documento = int(request.POST['tipo_documento'])
             sexo = int(request.POST['sexo'])
             eps = int(request.POST['eps'])
-            pais = int(request.POST['pais'])
-            municipio = int(request.POST['municipio'])
-            departamento = int(request.POST['departamento'])
+            municipio = int(request.POST.get('municipio', 0))
             pob_vulnerable = int(request.POST['poblacion_vulnerable'])
         except ValueError:
             ban = False
             error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
-        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pais <= 0 or departamento <= 0 or municipio <= 0 or pob_vulnerable <= 0:
+        if not nombre or not documento or tipo_documento <= 0 or sexo <= 0 or eps <= 0 or pob_vulnerable <= 0:
             ban = False
             error = "Error en alguno de sus datos. Asegúrese de completar todos los campos obligatorios."
 
@@ -170,7 +168,38 @@ def sm_llamadas(request):
                     llamadaInstance.seguimiento72 = seguimiento72
                     llamadaInstance.save()
                 
-                pass
+                with transaction.atomic():
+                    PsiLlamadasConductas.objects.filter(id_llamada=numLlamada).delete()
+                    for conducta in ConductasASeguir.objects.all():
+                        checkbox_name = f'cond_{conducta.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                conducta_instance = ConductasASeguir.objects.get(
+                                    id=conducta.id)
+                            except ConductasASeguir.DoesNotExist:
+                                conducta_instance = None
+
+                            llamada_conducta = PsiLlamadasConductas(
+                                id_llamada=llamadaInstance,
+                                id_conducta=conducta_instance
+                            )
+                            llamada_conducta.save()
+                            
+                with transaction.atomic():
+                    PsiLlamadasMotivos.objects.filter(id_llamada=numLlamada).delete()
+                    for motivo in PsiMotivos.objects.all():
+                        checkbox_name = f'mot_{motivo.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
+                            except PsiMotivos.DoesNotExist:
+                                motivo_instace = None
+
+                            llamada_motivo = PsiLlamadasMotivos(
+                                id_llamada=llamadaInstance,
+                                id_motivo=motivo_instace
+                            )
+                            llamada_motivo.save()
             else:
                 #crear nueva llamada
                 llamada = PsiLlamadas(
@@ -234,8 +263,6 @@ def sm_llamadas(request):
                                                         'sexos': sexos,
                                                         'epss': EPSS,
                                                         'poblacion_vulnerable': poblacion_vulnerable,
-                                                        'motivos': motivos,
-                                                        'conductas': conductas,
                                                         'CustomUser': request.user,
                                                         'error': error})
 
@@ -250,7 +277,8 @@ def sm_llamadas(request):
             conducts = PsiLlamadasConductas.objects.filter(id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
             
             
-            return render(request, 'sm_llamadas.html', {'year': datetime.now(),
+            return render(request, 'sm_llamadas.html', {
+                                                'year': datetime.now(),
                                                 'CustomUser': request.user,
                                                 'paises': paises,
                                                 'departamentos': departamentos,
@@ -272,36 +300,16 @@ def sm_llamadas(request):
                                                 })
         except:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
-                                                'CustomUser': request.user,
-                                                'paises': paises,
-                                                'departamentos': departamentos,
-                                                'municipios': municipios,
-                                                'tipos_documento': tipos_documento,
-                                                'sexos': sexos,
-                                                'epss': EPSS,
-                                                'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': hpcsituaciones,
-                                                'conductas': conductas,
-                                                'CustomUser': request.user,
-                                                'btnClass': "btn-success",
-                                                'btnText': "Guardar llamada",
-                                                'secretName': "asdadsasd"})
-
-    return render(request, 'sm_llamadas.html', {'year': datetime.now(),
-                                                'CustomUser': request.user,
-                                                'paises': paises,
-                                                'departamentos': departamentos,
-                                                'municipios': municipios,
-                                                'tipos_documento': tipos_documento,
-                                                'sexos': sexos,
-                                                'epss': EPSS,
-                                                'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': hpcsituaciones,
-                                                'conductas': conductas,
-                                                'CustomUser': request.user,
-                                                'btnClass': "btn-success",
-                                                'btnText': "Guardar llamada",
-                                                'secretName': "asdadsasd"})
+                                                        'CustomUser': request.user,
+                                                        'paises': paises,
+                                                        'departamentos': departamentos,
+                                                        'municipios': municipios,
+                                                        'tipos_documento': tipos_documento,
+                                                        'sexos': sexos,
+                                                        'epss': EPSS,
+                                                        'poblacion_vulnerable': poblacion_vulnerable,
+                                                        'CustomUser': request.user,
+                                                        })
 
 
 def get_departamentos(request):

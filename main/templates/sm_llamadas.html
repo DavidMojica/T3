@@ -55,6 +55,7 @@
           <input type="text" name="direccion" class="form-control" value="{{paciente.direccion}}" id="in_direccion" placeholder="Dirección del paciente">
         </div>
 
+        {% if secretName != "secretKey" %}
         <div class="form-group col-sm-10 col-md-4 col-lg-3 col-xl-3">
           <label for="in_pais" class="text-light">País</label>
           <select name="pais" class="form-select" id="in_pais">
@@ -80,6 +81,7 @@
             <option value="-1">Seleccione...</option>
           </select>
         </div>
+        {% endif %}
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
           <label for="in_telefono" class="text-light">Telefono</label>
