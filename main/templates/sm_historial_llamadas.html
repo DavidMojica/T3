@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="main-expanded">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center display-3 py-5">Llamadas</h2>
+            <form method="get" class="mb-4 card">
+                <div class="row justify-content-center p-4">
+                    <p class="card-title fw-bold ">Filtrar llamadas</p>
+
+                    <div class="col-md-3 mb-3">
+                        {{ form.id_profesional.label_tag }}
+                        {{ form.id_profesional }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.documento_paciente.label_tag }}
+                        {{ form.documento_paciente }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.fecha_cita.label_tag }}
+                        {{ form.fecha_cita }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.solo_hechas_por_mi.label_tag }}
+                        {{ form.solo_hechas_por_mi }}
+                    </div>
+                    <button type="submit" class="btn btn-primary col-md-4">Filtrar</button>
+                </div>
+            </form>
+
+            <ul class="list-group">
+                {% for l in llamadas %}
+                <a href="{% url 'sm_llamadas' %}=llamada={{l.id}}" class="list-group-item list-group-item-action">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="fw-bold text-success">Llamada <span class="badge bg-primary">#{{l.id}}</span> </h3>
+                        <span class="badge bg-primary">{{ l.fecha_llamada }}</span>
+                    </div>
+                    <p class="mb-0 fw-bold">
+                        <span class="bg-info badge">Paciente <i class="fa fa-arrow-right"></i></span> {{ l.nombre_paciente }}
+                        <span class="badge bg-success"> Doc: {{ l.documento }} </span> <br>
+                        <span class="bg-info badge">Profesional <i class="fa fa-arrow-right"></i></span> {{ l.id_psicologo.nombre }} 
+                        <span class="badge bg-success">ID {{ l.id_psicologo_id }} </span>
+                    </p>
+                </a>
+                {% endfor %}
+            </ul>
+
+            <!-- Navegación de páginas -->
+            <div class="pagination justify-content-center mt-4">
+                <ul class="pagination">
+                    {% if citas.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ citas.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Página {{ citas.number }} de {{ citas.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if citas.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ citas.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ citas.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in citas.paginator.page_range %}
+                        <li class="page-item {% if citas.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</main>
+{% endblock %}

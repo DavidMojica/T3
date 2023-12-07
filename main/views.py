@@ -1358,7 +1358,20 @@ def sm_HPC(request):
 from django.core.paginator import Paginator, EmptyPage
 
 @login_required
-def sm_citas(request):
+def sm_historial_llamadas(request):
+    llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
+    
+    
+    form = FiltroCitasForm(request.GET)
+    return render(request, 'sm_historial_llamadas.html',{
+        'CustomUser': request.user,
+        'year': datetime.now(),
+        'form': form,
+        'llamadas': llamadas,
+    })
+
+@login_required
+def sm_historial_citas(request):
     # Obtener todas las citas con información relacionada de pacientes
     citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
 
@@ -1392,7 +1405,7 @@ def sm_citas(request):
     except EmptyPage:
         citas = paginator.page(paginator.num_pages)
 
-    return render(request, 'sm_citas.html', {
+    return render(request, 'sm_historial_citas.html', {
         'CustomUser': request.user,
         'year': datetime.now(),
         'citas': citas,
