@@ -1508,10 +1508,6 @@ def sm_historial_citas(request):
         'CustomUser': request.user,
         'year': datetime.now(),
         'citas': citas,
-        'estadosC': estados_civiles,
-        'sexos': sexos,
-        'etnias': etnias,
-        'regimenes': regimenes,
         'form': form
     })
 
@@ -1531,9 +1527,13 @@ def detallesusuario(request):
             return render(request, 'userDetails.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
-            'user':userInstance,
+            'userI':userInstance,
             'tiposDoc':tipos_documento,
-            'eps': EPSS
+            'estadosC': estados_civiles,
+            'sexos': sexos,
+            'etnias': etnias,
+            'regimenes': regimenes,
+            'eps': EPSS,
             
         })
         else:

@@ -6,41 +6,41 @@
         <form class="row col-md-8">
             <div class="mb-3 col-md-5 col-sm-10">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" value="{% if user.nombre %} {{user.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" class="form-control" id="nombre" value="{% if userI.nombre %} {{userI.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-md-4 col-sm-10">
                 <label for="documento" class="form-label">Documento</label>
-                <input type="text" class="form-control" id="documento" value="{% if user.documento %} {{user.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" class="form-control" id="documento" value="{% if userI.documento %} {{userI.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
             <div class="mb-3 col-md-3 col-sm-10">
                 <label for="tipo_documento" class="form-label">Tipo documento</label>
                 <select name="tipo_documento" id="tipo_documento" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for tp in tiposDoc %}
-                    <option value="{{tp.id}}" {% if user.tipo_documento_id == tp.id %} selected {% endif %}>{{tp.description}}</option>
+                    <option value="{{tp.id}}" {% if userI.tipo_documento_id == tp.id %} selected {% endif %}>{{tp.description}}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="numHijos" class="form-label"># Hijos</label>
-                <input type="text" name="numHijos" class="form-control" id="numHijos" value="{{user.numero_hijos}}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="numHijos" class="form-control" id="numHijos" value="{{userI.numero_hijos}}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="barrio" class="form-label">Barrio</label>
-                <input type="text" name="barrio" class="form-control" id="barrio" value="{% if user.barrio %} {{user.barrio}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="barrio" class="form-control" id="barrio" value="{% if userI.barrio %} {{userI.barrio}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="direccion" class="form-label">Direccion</label>
-                <input type="text" name="direccion" class="form-control" id="direccion" value="{% if user.direccion %} {{user.direccion}} {% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
+                <input type="text" name="direccion" class="form-control" id="direccion" value="{% if userI.direccion %} {{userI.direccion}} {% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="celular" class="form-label">Celular</label>
-                <input type="text" name="celular" id="celular" class="form-control" value="{% if user.celular %} {{user.celular }} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="celular" id="celular" class="form-control" value="{% if userI.celular %} {{userI.celular }} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
@@ -48,14 +48,14 @@
                 <select name="eps" id="eps" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in eps %}
-                    <option value="{{e.id}}" {% if user.eps_id == e.id %} selected {% endif %} >{{e.description}}</option>
+                    <option value="{{e.id}}" {% if userI.eps_id == e.id %} selected {% endif %} >{{e.description}}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="sisben" class="form-label">¿Tiene sisben?</label>
-                <input type="checkbox" name="sisben" id="sisben" class="form-check-input" {% if user.sisben %} checked {% endif %} {% if not editable %} disabled {% endif %}>
+                <input type="checkbox" name="sisben" id="sisben" class="form-check-input" {% if userI.sisben %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
             
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
@@ -63,40 +63,41 @@
                 <select name="estadoCivil" id="estadoCivil" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in estadosC %}
-                    <option value="{{e.id}}" {% if user.estado_civil_id == e.id %} selected {% endif %} >{{e.description}}</option>
+                    <option value="{{e.id}}" {% if userI.estado_civil_id == e.id %} selected {% endif %}>{{e.description}}</option>
                     {% endfor %}
                 </select>
             </div>
-
+            
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
                 <label for="etnia" class="form-label">Etnia</label>
                 <select name="etnia" id="etnia" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in etnias %}
-                    <option value="{{e.id}}" {% if user.estado_civil_id == e.id %} selected {% endif %} >{{e.description}}</option>
+                    <option value="{{e.id}}" {% if userI.etnia_id == e.id %} selected {% endif %}>{{e.description}}</option>
                     {% endfor %}
                 </select>
             </div>
-
+            
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
                 <label for="regimen" class="form-label">Regimen de Seguridad</label>
                 <select name="regimen" id="regimen" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for r in regimenes %}
-                    <option value="{{r.id}}" {% if user.regimen_seguridad_id == r.id %} selected {% endif %} >{{r.description}}</option>
+                    <option value="{{r.id}}" {% if userI.regimen_seguridad_id == r.id %} selected {% endif %}>{{r.description}}</option>
                     {% endfor %}
                 </select>
             </div>
-
+            
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
                 <label for="sexo" class="form-label">Sexo</label>
                 <select name="sexo" id="sexo" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for s in sexos %}
-                    <option value="{{s.id}}" {% if user.sexo_id == s.id %} selected {% endif %} >{{s.description}}</option>
+                    <option value="{{s.id}}" {% if userI.sexo_id == s.id %} selected {% endif %}>{{s.description}}</option>
                     {% endfor %}
                 </select>
             </div>
+            
 
             <!-- Agrega más campos según sea necesario -->
 
