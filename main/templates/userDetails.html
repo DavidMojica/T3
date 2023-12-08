@@ -2,29 +2,37 @@
 {% block content %}
 <main class="main-expanded">
     <div class="row justify-content-center">
-        <div class="card col-md-12">
-            <div class="card-body">
-                <h5 class="card-title fw-bold">Detalles del usuario</h5>
-
-                <form>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" value="{{user.nombre}}" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="correo" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="correo" value="usuario@example.com" readonly>
-                    </div>
-
-                    <!-- Agrega más campos según sea necesario -->
-
-                    <div class="d-grid">
-                        <a href="#" class="btn btn-primary">Volver</a>
-                    </div>
-                </form>
+        <h5 class="card-title fw-bold">Detalles del usuario</h5>
+        <form class="row">
+            <div class="mb-3 col-md-6 col-sm-10">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" value="{% if user.nombre %} {{user.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
-        </div>
+
+            <div class="mb-3 col-md-6 col-sm-10">
+                <label for="documento" class="form-label">Documento</label>
+                <input type="text" class="form-control" id="documento" value="{% if user.documento %} {{user.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+                <label for="numHijos" class="form-label"># Hijos</label>
+                <input type="text" name="numHijos" class="form-control" id="numHijos" value="{{user.numero_hijos}}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+                <label for="barrio" class="form-label">Barrio</label>
+                <input type="text" name="barrio" class="form-control" id="barrio" value="{% if user.barrio %} {{user.barrio}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+
+            </div>
+            <!-- Agrega más campos según sea necesario -->
+
+            <div class="d-grid">
+                <a href="#" class="btn btn-primary">Volver</a>
+            </div>
+        </form>
     </div>
 </main>
 

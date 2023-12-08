@@ -54,11 +54,10 @@
                                     <a href="{% url 'detallesusuario' %}?userId={{u.id_usuario_id}}" class="mb-2 w-100">
                                         <button type="submit" class="btn btn-success w-100" name="action">Ver detalles</button>
                                     </a>
-                                    <form action="" method="GET" class="col-md-4 mb-2">
-                                        <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                        <input type="hidden" name="modify">
+                                    <a href="{% url 'detallesusuario' %}?userId={{u.id_usuario_id}}&editable=True" class="col-md-4 mb-2">
                                         <button type="submit" class="btn btn-warning w-100" name="action">Modificar</button>
-                                    </form>
+                                    </a>
+
                                     <form action="" method="GET" class="col-md-4 mb-2">
                                         <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
                                         <input type="hidden" name="ban">

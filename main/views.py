@@ -1522,6 +1522,7 @@ def detallesusuario(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
         userToBrowse = request.GET.get('userId', 0)
+       
         
         if userToBrowse and userToBrowse != 0:
             userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
@@ -1529,7 +1530,7 @@ def detallesusuario(request):
             return render(request, 'userDetails.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
-            'user':userInstance
+            'user':userInstance,
         })
         else:
             return redirect(reverse('adminuser'))
