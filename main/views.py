@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db.models import Q, Value, IntegerField, CharField
 from django.db import IntegrityError, transaction
 from django.db.models.functions import Cast
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -501,7 +501,6 @@ def edit_account(request, user_id, user_type):
 @login_required
 def sm_HPC(request):
     documento = ""
-    fecha_actual = datetime.now()
     fecha_nacimiento = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
@@ -1423,6 +1422,32 @@ def sm_HPC(request):
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
+    form = FiltroLlamadasForm(request.GET)
+    
+    
+    #sistema de filtrado
+    print("Afuera")
+    if form.is_valid():
+        print("adentro")
+        id_llamada = form.cleaned_data.get('id_llamada')
+        id_profesional = form.cleaned_data.get('id_profesional')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        fecha_llamada = form.cleaned_data.get('fecha_llamada')
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
+        
+        if id_llamada:
+            llamadas = llamadas.filter(id=id_llamada)
+        if id_profesional:
+            llamadas = llamadas.filter(Q(id_psicologo_id=Cast(Value(id_profesional), CharField())) | Q(id_psicologo_id=None))
+        if documento_paciente:
+            llamadas = llamadas.filter(documento=documento_paciente)
+        if fecha_llamada:
+            llamadas = llamadas.filter(fecha_llamada__date=fecha_llamada)
+        if solo_hechas_por_mi:
+            user_id = str(request.user.id)
+            llamadas = llamadas.filter(
+                Q(id_psicologo_id=Cast(Value(user_id), CharField())) | Q(id_psicologo_id=None)
+            )
     
     # Paginación
     llamadas_por_pagina = 10
@@ -1434,7 +1459,6 @@ def sm_historial_llamadas(request):
     except EmptyPage:
         llamadas = paginator.page(paginator.num_pages)
     
-    form = FiltroCitasForm(request.GET)
     return render(request, 'sm_historial_llamadas.html',{
         'CustomUser': request.user,
         'year': datetime.now(),
@@ -1444,17 +1468,19 @@ def sm_historial_llamadas(request):
 
 @login_required
 def sm_historial_citas(request):
-    # Obtener todas las citas con información relacionada de pacientes
     citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
 
     # Sistema de filtrado
     form = FiltroCitasForm(request.GET)
-    if form.is_valid():  # Asegúrate de llamar a is_valid antes de acceder a cleaned_data
+    if form.is_valid():  
+        id_cita = form.cleaned_data.get('id_cita')
         id_profesional = form.cleaned_data.get('id_profesional')
         documento_paciente = form.cleaned_data.get('documento_paciente')
         fecha_cita = form.cleaned_data.get('fecha_cita')
         solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
 
+        if id_cita:
+            citas_with_pacientes = citas_with_pacientes.filter(id=id_cita)
         if id_profesional:
             citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(Value(id_profesional), CharField())) | Q(id_profesional_id=None))
         if documento_paciente:
