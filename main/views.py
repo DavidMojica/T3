@@ -1524,8 +1524,7 @@ def detallesusuario(request):
         userToBrowse = request.GET.get('userId', 0)
         
         if userToBrowse and userToBrowse != 0:
-            userInstance = InfoMiembros.objects.select_related('id_usuario_id').filter(id_usuario=userToBrowse)
-            
+            userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
             
             return render(request, 'userDetails.html', {
             'CustomUser': request.user,
@@ -1545,6 +1544,7 @@ def adminuser(request):
         form = FiltroUsuarios(request.GET)  # Instancia del formulario
         usuarios_por_pagina = 10
         
+
         #Filtrado
         if form.is_valid():
             nombre = form.cleaned_data.get('nombre')

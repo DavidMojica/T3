@@ -51,11 +51,9 @@
                                     <p class="mb-0 fw-bold">{% if u.nombre and u.nombre != 'None' %} {{u.nombre}} {% else %} No diligenciado {% endif %}</p>
                                 </div>
                                 <div class="col-md-6 row">
-                                    <form action="" method="GET" class="mb-2 w-100">
-                                        <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                        <input type="hidden" name="details">
+                                    <a href="{% url 'detallesusuario' %}?userId={{u.id_usuario_id}}" class="mb-2 w-100">
                                         <button type="submit" class="btn btn-success w-100" name="action">Ver detalles</button>
-                                    </form>
+                                    </a>
                                     <form action="" method="GET" class="col-md-4 mb-2">
                                         <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
                                         <input type="hidden" name="modify">

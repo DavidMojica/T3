@@ -1,6 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
 <main class="main-expanded">
+    <div class="row justify-content-center">
+        <div class="card col-md-12">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">Detalles del usuario</h5>
 
+                <form>
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" value="{{user.nombre}}" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="correo" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="correo" value="usuario@example.com" readonly>
+                    </div>
+
+                    <!-- Agrega más campos según sea necesario -->
+
+                    <div class="d-grid">
+                        <a href="#" class="btn btn-primary">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </main>
+
 {% endblock %}
