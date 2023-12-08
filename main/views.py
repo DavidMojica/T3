@@ -25,17 +25,7 @@ ERROR_202 = "Las contraseñas no coinciden"
 SUCCESS_100 = "Contraseña actualizada correctamente."
 SUCCESS_101 = "Datos guardados correctamente."
 
-#Decorator view functions
-def admin_only(view_func):
-    @wraps(view_func)
-    def _wrapped_view(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.id in [1, 10]:
-            return view_func(request, *args, **kwargs)
-        else:
-            return render(request, 'home.html')
-
-    return _wrapped_view
-
+adminOnly = [1, 10]
 
 #Instancias de modelos
 paises = Pais.objects.all()
@@ -1523,8 +1513,30 @@ def sm_historial_citas(request):
         'form': form
     })
 
-# 404 VISTAS
+# Admin
+@login_required
+def adminuser(request):
+    #Super Proteger Ruta
+    if request.user.tipo_usuario_id in adminOnly:
+        return render(request, 'AdminUser.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+        })
+    else:
+        return redirect(reverse('home'))
 
+@login_required
+def adminregister(request):
+    #Super Proteger Ruta
+    if request.user.tipo_usuario_id in adminOnly:
+        return render(request, 'AdminRegister.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+        })
+    else:
+        return redirect(reverse('home'))
+    
+# 404 VISTAS
 @login_required
 def restricted_area_404(request):
     if request.method == "GET":
@@ -1537,8 +1549,4 @@ def not_deployed_404(request):
         return render(request, '404_not_deployed.html')
 
 
-# Admin
-@login_required
-def adminuser(request):
-    if request.method == "GET":
-        return render(request, 'AdminUser.html')
+
