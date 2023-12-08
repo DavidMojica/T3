@@ -3,15 +3,24 @@
 <main class="main-expanded">
     <div class="row justify-content-center">
         <h5 class="card-title fw-bold">Detalles del usuario</h5>
-        <form class="row">
-            <div class="mb-3 col-md-6 col-sm-10">
+        <form class="row col-md-8">
+            <div class="mb-3 col-md-5 col-sm-10">
                 <label for="nombre" class="form-label">Nombre</label>
                 <input type="text" class="form-control" id="nombre" value="{% if user.nombre %} {{user.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
-            <div class="mb-3 col-md-6 col-sm-10">
+            <div class="mb-3 col-md-4 col-sm-10">
                 <label for="documento" class="form-label">Documento</label>
                 <input type="text" class="form-control" id="documento" value="{% if user.documento %} {{user.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+            <div class="mb-3 col-md-3 col-sm-10">
+                <label for="tipo_documento" class="form-label">Tipo documento</label>
+                <select name="tipo_documento" id="tipo_documento" class="form-select" {% if not editable %} disabled {% endif %}>
+                    <option value="0">Seleccione...</option>
+                    {% for tp in tiposDoc %}
+                    <option value="{{tp.id}}" {% if user.tipo_documento_id == tp.id %} selected {% endif %}>{{tp.description}}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
@@ -25,7 +34,28 @@
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+                <label for="direccion" class="form-label">Direccion</label>
+                <input type="text" name="direccion" class="form-control" id="direccion" value="{% if user.direccion %} {{user.direccion}} {% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
+            </div>
 
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+                <label for="celular" class="form-label">Celular</label>
+                <input type="text" name="celular" id="celular" class="form-control" value="{% if user.celular %} {% user.celular %} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+                <label for="eps" class="form-label">Eps</label>
+                <select name="eps" id="eps" {% if not editable %} disabled {% endif %}>
+                    <option value="0">Seleccione...</option>
+                    {% for e in eps %}
+                    <option value="{{e.id}}" {% if user.nombre_eps == e.description %} selected {% endif %} >{{e.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+                <label for="sisben">¿Tiene sisben?</label>
+                <input type="checkbox" name="sisben" id="sisben" {% if user.sisben %} checked {% endif %} {% if not editable %} readonly {% endif %}>
             </div>
             <!-- Agrega más campos según sea necesario -->
 

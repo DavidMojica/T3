@@ -1531,6 +1531,8 @@ def detallesusuario(request):
             'CustomUser': request.user,
             'year': datetime.now(),
             'user':userInstance,
+            'tiposDoc':tipos_documento,
+            
         })
         else:
             return redirect(reverse('adminuser'))
