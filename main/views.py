@@ -1518,9 +1518,13 @@ def sm_historial_citas(request):
 def adminuser(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
+        users = InfoMiembros.objects.all()
+        
+        
         return render(request, 'AdminUser.html',{
             'CustomUser': request.user,
             'year': datetime.now(),
+            'users': users
         })
     else:
         return redirect(reverse('home'))
