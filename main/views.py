@@ -12,6 +12,7 @@ from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, Filt
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
+from functools import wraps
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -24,6 +25,19 @@ ERROR_202 = "Las contraseñas no coinciden"
 SUCCESS_100 = "Contraseña actualizada correctamente."
 SUCCESS_101 = "Datos guardados correctamente."
 
+#Decorator view functions
+def admin_only(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.id in [1, 10]:
+            return view_func(request, *args, **kwargs)
+        else:
+            return render(request, 'home.html')
+
+    return _wrapped_view
+
+
+#Instancias de modelos
 paises = Pais.objects.all()
 departamentos = Departamento.objects.all()
 municipios = Municipio.objects.all()
@@ -1424,7 +1438,6 @@ def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
     form = FiltroLlamadasForm(request.GET)
     
-    
     #sistema de filtrado
     print("Afuera")
     if form.is_valid():
@@ -1523,10 +1536,9 @@ def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
 
+
 # Admin
-
-
 @login_required
-def admon(request):
+def adminuser(request):
     if request.method == "GET":
-        return render(request, 'admon.html')
+        return render(request, 'AdminUser.html')
