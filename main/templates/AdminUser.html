@@ -80,6 +80,45 @@
                     <p class="text-center fw-bold">No hay usuarios disponibles</p>
                 {% endif %}
             </ul>
+            <!-- Paginator -->
+            <div class="pagination justify-content-center mt-4">
+                <ul class="pagination">
+                    {% if users.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ users.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Página {{ users.number }} de {{ users.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if users.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ users.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ users.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in users.paginator.page_range %}
+                        <li class="page-item {% if users.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>     
 </main>
