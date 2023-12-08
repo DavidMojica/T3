@@ -1508,13 +1508,14 @@ def sm_historial_citas(request):
         'CustomUser': request.user,
         'year': datetime.now(),
         'citas': citas,
+        'estadosC': estados_civiles,
+        'sexos': sexos,
+        'etnias': etnias,
+        'regimenes': regimenes,
         'form': form
     })
 
-class UnaccentLower(Func):
-    function = 'LOWER'
-    template = "UNACCENT(%(expressions)s)"
-    
+
 
 
 # Admin

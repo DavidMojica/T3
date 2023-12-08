@@ -58,14 +58,54 @@
                 <input type="checkbox" name="sisben" id="sisben" class="form-check-input" {% if user.sisben %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
             
+            <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
+                <label for="estadoCivil" class="form-label">Estado Civil</label>
+                <select name="estadoCivil" id="estadoCivil" class="form-select" {% if not editable %} disabled {% endif %}>
+                    <option value="0">Seleccione...</option>
+                    {% for e in estadosC %}
+                    <option value="{{e.id}}" {% if user.estado_civil_id == e.id %} selected {% endif %} >{{e.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
+            <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
+                <label for="etnia" class="form-label">Etnia</label>
+                <select name="etnia" id="etnia" class="form-select" {% if not editable %} disabled {% endif %}>
+                    <option value="0">Seleccione...</option>
+                    {% for e in etnias %}
+                    <option value="{{e.id}}" {% if user.estado_civil_id == e.id %} selected {% endif %} >{{e.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
+            <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
+                <label for="regimen" class="form-label">Regimen de Seguridad</label>
+                <select name="regimen" id="regimen" class="form-select" {% if not editable %} disabled {% endif %}>
+                    <option value="0">Seleccione...</option>
+                    {% for r in regimenes %}
+                    <option value="{{r.id}}" {% if user.regimen_seguridad_id == r.id %} selected {% endif %} >{{r.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
+            <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
+                <label for="sexo" class="form-label">Sexo</label>
+                <select name="sexo" id="sexo" class="form-select" {% if not editable %} disabled {% endif %}>
+                    <option value="0">Seleccione...</option>
+                    {% for s in sexos %}
+                    <option value="{{s.id}}" {% if user.sexo_id == s.id %} selected {% endif %} >{{s.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
             <!-- Agrega más campos según sea necesario -->
 
             <div class="d-grid">
-                <a href="#" class="btn btn-primary">Volver</a>
+                {% if not editable %} 
+                    <a href="/adminuser" class="btn btn-primary">Volver</a>
+                {% else %}
+
+                {% endif %}
             </div>
         </form>
     </div>
