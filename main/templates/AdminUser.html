@@ -5,6 +5,25 @@
         <div class="col-md-12">
             <h2 class="text-center display-3 py-5">Usuarios</h2>
             <!-- Filtro -->
+            <form action="" method="get" class="mb-4 card">
+                <div class="row justify-content-center p-4">
+                    <p class="card-title fw-bold">Filtrar usuarios</p>
+
+                    <div class="col-md-4 mb-3">
+                        {{form.nombre.label_tag}}
+                        {{form.nombre}}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{form.id_usuario.label_tag}}
+                        {{form.id_usuario}}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{form.documento_usuario.label_tag}}
+                        {{form.documento_usuario}}  
+                    </div>
+                    <button type="submit" class="btn btn-primary col-md-4">Filtrar</button>
+                </div>
+            </form>
             <!-- Lista de usuarios -->
             <ul class="list-group">
                 <li class="list-group-item list-group-item-action">

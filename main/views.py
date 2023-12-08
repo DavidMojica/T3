@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db.models import Q, Value, IntegerField, CharField
 from django.db import IntegrityError, transaction
 from django.db.models.functions import Cast
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -1429,9 +1429,7 @@ def sm_historial_llamadas(request):
     form = FiltroLlamadasForm(request.GET)
     
     #sistema de filtrado
-    print("Afuera")
     if form.is_valid():
-        print("adentro")
         id_llamada = form.cleaned_data.get('id_llamada')
         id_profesional = form.cleaned_data.get('id_profesional')
         documento_paciente = form.cleaned_data.get('documento_paciente')
@@ -1516,18 +1514,32 @@ def sm_historial_citas(request):
 # Admin
 @login_required
 def adminuser(request):
-    #Super Proteger Ruta
+    # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
         users = InfoMiembros.objects.all()
+        form = FiltroUsuarios(request.GET)  # Instancia del formulario
         
+        if form.is_valid():  # Ya no es necesario pasar request.GET aquí
+            nombre = form.cleaned_data.get('nombre')
+            id_usuario = form.cleaned_data.get('id_usuario')
+            documento_usuario = form.cleaned_data.get('documento_usuario')
+            
+            if nombre:
+                users = users.filter(nombre__icontains=nombre)
+            if id_usuario:
+                users = users.filter(id_usuario=id_usuario)
+            if documento_usuario:
+                users = users.filter(documento=documento_usuario)
         
-        return render(request, 'AdminUser.html',{
+        return render(request, 'AdminUser.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
-            'users': users
+            'users': users,
+            'form': form
         })
     else:
         return redirect(reverse('home'))
+
 
 @login_required
 def adminregister(request):

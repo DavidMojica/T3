@@ -4,18 +4,19 @@ from django import forms
 
 class FiltroUsuarios(forms.Form):
     nombre = forms.CharField(
-        required = False,
-        widget=forms.TextInput(attrs={'class', 'form-control'})
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     id_usuario = forms.IntegerField(
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control '})
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
     documento_usuario = forms.CharField(
         max_length=20,
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
+
     
     
 
