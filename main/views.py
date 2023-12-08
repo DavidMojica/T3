@@ -1530,8 +1530,8 @@ def adminuser(request):
             
             if nombre:
                 normalized_term = unidecode(nombre.lower())
-                query = f"SELECT * FROM main_infomiembros WHERE unaccent(lower(nombre)) ILIKE unaccent('{normalized_term}%')"
-                users = InfoMiembros.objects.raw(query)
+                users = users.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
+
             if id_usuario:
                 users = users.filter(id_usuario=id_usuario)
             if documento_usuario:
