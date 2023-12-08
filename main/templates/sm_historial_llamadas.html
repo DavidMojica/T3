@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 <main class="main-expanded">
-    <div class="row">
-        <div class="col-md-12">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
             <h2 class="text-center display-3 py-5">Llamadas</h2>
             <form method="get" class="mb-4 card">
                 <div class="row justify-content-center p-4">
                     <p class="card-title fw-bold ">Filtrar llamadas</p>
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-5 mb-3">
+                        {{ form.id_llamada.label_tag}}
+                        {{ form.id_llamada }}
+                    </div>
+                    <div class="col-md-5 mb-3">
                         {{ form.id_profesional.label_tag }}
                         {{ form.id_profesional }}
                     </div>
@@ -17,8 +21,8 @@
                         {{ form.documento_paciente }}
                     </div>
                     <div class="col-md-3 mb-3">
-                        {{ form.fecha_cita.label_tag }}
-                        {{ form.fecha_cita }}
+                        {{ form.fecha_llamada.label_tag }}
+                        {{ form.fecha_llamada }}
                     </div>
                     <div class="col-md-3 mb-3">
                         {{ form.solo_hechas_por_mi.label_tag }}

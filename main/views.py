@@ -1,17 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db.models import Q, Value, IntegerField, CharField
-from django.db import IntegrityError, transaction
-from django.db.models.functions import Cast
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm
+from django.db import IntegrityError, transaction, connection
+from django.db.models import Q, Value, CharField, Func, F
+from django.db.models.functions import Cast, Lower
+from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
+from unidecode import unidecode
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -24,6 +24,9 @@ ERROR_202 = "Las contraseñas no coinciden"
 SUCCESS_100 = "Contraseña actualizada correctamente."
 SUCCESS_101 = "Datos guardados correctamente."
 
+adminOnly = [1, 10]
+
+#Instancias de modelos
 paises = Pais.objects.all()
 departamentos = Departamento.objects.all()
 municipios = Municipio.objects.all()
@@ -501,7 +504,6 @@ def edit_account(request, user_id, user_type):
 @login_required
 def sm_HPC(request):
     documento = ""
-    fecha_actual = datetime.now()
     fecha_nacimiento = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
@@ -1423,6 +1425,29 @@ def sm_HPC(request):
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
+    form = FiltroLlamadasForm(request.GET)
+    
+    #sistema de filtrado
+    if form.is_valid():
+        id_llamada = form.cleaned_data.get('id_llamada')
+        id_profesional = form.cleaned_data.get('id_profesional')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        fecha_llamada = form.cleaned_data.get('fecha_llamada')
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
+        
+        if id_llamada:
+            llamadas = llamadas.filter(id=id_llamada)
+        if id_profesional:
+            llamadas = llamadas.filter(Q(id_psicologo_id=Cast(Value(id_profesional), CharField())) | Q(id_psicologo_id=None))
+        if documento_paciente:
+            llamadas = llamadas.filter(documento=documento_paciente)
+        if fecha_llamada:
+            llamadas = llamadas.filter(fecha_llamada__date=fecha_llamada)
+        if solo_hechas_por_mi:
+            user_id = str(request.user.id)
+            llamadas = llamadas.filter(
+                Q(id_psicologo_id=Cast(Value(user_id), CharField())) | Q(id_psicologo_id=None)
+            )
     
     # Paginación
     llamadas_por_pagina = 10
@@ -1434,7 +1459,6 @@ def sm_historial_llamadas(request):
     except EmptyPage:
         llamadas = paginator.page(paginator.num_pages)
     
-    form = FiltroCitasForm(request.GET)
     return render(request, 'sm_historial_llamadas.html',{
         'CustomUser': request.user,
         'year': datetime.now(),
@@ -1444,17 +1468,19 @@ def sm_historial_llamadas(request):
 
 @login_required
 def sm_historial_citas(request):
-    # Obtener todas las citas con información relacionada de pacientes
     citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
 
     # Sistema de filtrado
     form = FiltroCitasForm(request.GET)
-    if form.is_valid():  # Asegúrate de llamar a is_valid antes de acceder a cleaned_data
+    if form.is_valid():  
+        id_cita = form.cleaned_data.get('id_cita')
         id_profesional = form.cleaned_data.get('id_profesional')
         documento_paciente = form.cleaned_data.get('documento_paciente')
         fecha_cita = form.cleaned_data.get('fecha_cita')
         solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
 
+        if id_cita:
+            citas_with_pacientes = citas_with_pacientes.filter(id=id_cita)
         if id_profesional:
             citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(Value(id_profesional), CharField())) | Q(id_profesional_id=None))
         if documento_paciente:
@@ -1484,8 +1510,55 @@ def sm_historial_citas(request):
         'form': form
     })
 
-# 404 VISTAS
+class UnaccentLower(Func):
+    function = 'LOWER'
+    template = "UNACCENT(%(expressions)s)"
+    
+    
+# Admin
+@login_required
+def adminuser(request):
+    # Super Proteger Ruta
+    if request.user.tipo_usuario_id in adminOnly:
+        users = InfoMiembros.objects.all()
+        form = FiltroUsuarios(request.GET)  # Instancia del formulario
+        
+        if form.is_valid():  # Ya no es necesario pasar request.GET aquí
+            nombre = form.cleaned_data.get('nombre')
+            id_usuario = form.cleaned_data.get('id_usuario')
+            documento_usuario = form.cleaned_data.get('documento_usuario')
+            
+            if nombre:
+                normalized_term = unidecode(nombre.lower())
+                users = users.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
 
+            if id_usuario:
+                users = users.filter(id_usuario=id_usuario)
+            if documento_usuario:
+                users = users.filter(documento=documento_usuario)
+        
+        return render(request, 'AdminUser.html', {
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'users': users,
+            'form': form
+        })
+    else:
+        return redirect(reverse('home'))
+
+
+@login_required
+def adminregister(request):
+    #Super Proteger Ruta
+    if request.user.tipo_usuario_id in adminOnly:
+        return render(request, 'AdminRegister.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+        })
+    else:
+        return redirect(reverse('home'))
+    
+# 404 VISTAS
 @login_required
 def restricted_area_404(request):
     if request.method == "GET":
@@ -1497,10 +1570,5 @@ def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
 
-# Admin
 
 
-@login_required
-def admon(request):
-    if request.method == "GET":
-        return render(request, 'admon.html')

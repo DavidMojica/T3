@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
 <main class="main-expanded container mb-5">
-    <div class="row">
-        <div class="col-md-12">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
             <h2 class="text-center display-3 py-5">Citas Psicológicas</h2>
 
             <form method="get" class="mb-4 card">
                 <div class="row justify-content-center p-4">
                     <p class="card-title fw-bold ">Filtrar citas</p>
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-5 mb-3">
+                        {{ form.id_cita.label_tag}}
+                        {{ form.id_cita }}
+                    </div>
+
+                    <div class="col-md-5 mb-3">
                         {{ form.id_profesional.label_tag }}
                         {{ form.id_profesional }}
                     </div>
