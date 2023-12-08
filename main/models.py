@@ -369,7 +369,7 @@ class InfoMiembros(models.Model):
     regimen_seguridad = models.ForeignKey(
         RegimenSeguridad, on_delete=models.DO_NOTHING, null=True)
     sisben = models.BooleanField(null=True, default=False)
-    nombre_eps = models.CharField(max_length=50)
+    eps = models.ForeignKey(EPS,on_delete=models.CASCADE ,null = True )
     contador_llamadas_psicologicas = models.IntegerField(
         null=False, default=0)  # tr
     contador_asesorias_psicologicas = models.IntegerField(

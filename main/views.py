@@ -424,8 +424,9 @@ def autodata(request, user_id):
         form = AutodataForm(request.POST, instance=user)
 
         if form.is_valid():
-            form.save()  # Guarda los datos si el formulario es válido
-        # Si el formulario no es válido, puedes agregar manejo de errores o validaciones personalizadas aquí
+            form.save()
+            
+
             return render(request, 'autodata.html', {
                 'CustomUser': request.user,
                 'year': datetime.now(),
@@ -1469,7 +1470,7 @@ def sm_historial_llamadas(request):
 @login_required
 def sm_historial_citas(request):
     citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
-
+    citas_por_pagina = 10
     # Sistema de filtrado
     form = FiltroCitasForm(request.GET)
     if form.is_valid():  
@@ -1494,7 +1495,7 @@ def sm_historial_citas(request):
             )
 
     # Paginación
-    citas_por_pagina = 10
+    
     paginator = Paginator(citas_with_pacientes, citas_por_pagina)
     page = request.GET.get('page', 1)
 
@@ -1510,20 +1511,47 @@ def sm_historial_citas(request):
         'form': form
     })
 
-class UnaccentLower(Func):
-    function = 'LOWER'
-    template = "UNACCENT(%(expressions)s)"
-    
-    
+
+
+
 # Admin
+@login_required
+def detallesusuario(request):
+    # Super Proteger Ruta
+    if request.user.tipo_usuario_id in adminOnly:
+        userToBrowse = request.GET.get('userId', 0)   
+        
+        if userToBrowse and userToBrowse != 0:
+            userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
+            
+            return render(request, 'userDetails.html', {
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'userI':userInstance,
+            'tiposDoc':tipos_documento,
+            'estadosC': estados_civiles,
+            'sexos': sexos,
+            'etnias': etnias,
+            'regimenes': regimenes,
+            'eps': EPSS,
+            
+        })
+        else:
+            return redirect(reverse('adminuser'))
+    else:
+        return redirect(reverse('home'))
+
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
         users = InfoMiembros.objects.all()
         form = FiltroUsuarios(request.GET)  # Instancia del formulario
+        usuarios_por_pagina = 10
         
-        if form.is_valid():  # Ya no es necesario pasar request.GET aquí
+
+        #Filtrado
+        if form.is_valid():
             nombre = form.cleaned_data.get('nombre')
             id_usuario = form.cleaned_data.get('id_usuario')
             documento_usuario = form.cleaned_data.get('documento_usuario')
@@ -1536,6 +1564,15 @@ def adminuser(request):
                 users = users.filter(id_usuario=id_usuario)
             if documento_usuario:
                 users = users.filter(documento=documento_usuario)
+        
+        #paginación
+        paginator = Paginator(users, usuarios_por_pagina)
+        page = request.GET.get('page', 1)
+        
+        try:
+            users = paginator.page(page)
+        except:
+            users = paginator.page(page)
         
         return render(request, 'AdminUser.html', {
             'CustomUser': request.user,
