@@ -23,40 +23,45 @@
                 </select>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="numHijos" class="form-label"># Hijos</label>
                 <input type="text" name="numHijos" class="form-control" id="numHijos" value="{{user.numero_hijos}}" {% if not editable %} readonly {% endif %}>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="barrio" class="form-label">Barrio</label>
                 <input type="text" name="barrio" class="form-control" id="barrio" value="{% if user.barrio %} {{user.barrio}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="direccion" class="form-label">Direccion</label>
                 <input type="text" name="direccion" class="form-control" id="direccion" value="{% if user.direccion %} {{user.direccion}} {% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="celular" class="form-label">Celular</label>
-                <input type="text" name="celular" id="celular" class="form-control" value="{% if user.celular %} {% user.celular %} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="celular" id="celular" class="form-control" value="{% if user.celular %} {{user.celular }} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="eps" class="form-label">Eps</label>
-                <select name="eps" id="eps" {% if not editable %} disabled {% endif %}>
+                <select name="eps" id="eps" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in eps %}
-                    <option value="{{e.id}}" {% if user.nombre_eps == e.description %} selected {% endif %} >{{e.description}}</option>
+                    <option value="{{e.id}}" {% if user.eps_id == e.id %} selected {% endif %} >{{e.description}}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-4 col-sm-10">
-                <label for="sisben">¿Tiene sisben?</label>
-                <input type="checkbox" name="sisben" id="sisben" {% if user.sisben %} checked {% endif %} {% if not editable %} readonly {% endif %}>
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="sisben" class="form-label">¿Tiene sisben?</label>
+                <input type="checkbox" name="sisben" id="sisben" class="form-check-input" {% if user.sisben %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
+            
+
+
+
+
             <!-- Agrega más campos según sea necesario -->
 
             <div class="d-grid">

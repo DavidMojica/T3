@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
-from .models import CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
+from .models import EPS, CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
+
 
 class FiltroUsuarios(forms.Form):
     nombre = forms.CharField(
@@ -97,11 +98,6 @@ class TrabajadorEditForm(forms.ModelForm):
         fields = ('email',)
 
 
-from django import forms
-from .models import InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
-
-from django import forms
-from .models import InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 
 class AutodataForm(forms.ModelForm):
     tipo_documento = forms.ModelChoiceField(
@@ -144,6 +140,10 @@ class AutodataForm(forms.ModelForm):
         }),
         empty_label="Selecciona tu Etnia"
     )
+    eps = forms.ModelChoiceField(
+        queryset=EPS.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'id_nombre_eps'})
+    )
 
     # Agregar campos restantes con estilos Bootstrap
     nombre = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre'}))
@@ -153,12 +153,11 @@ class AutodataForm(forms.ModelForm):
     barrio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_barrio'}))
     celular = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_celular'}))
     sisben = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_sisben'}))
-    nombre_eps = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre_eps'}))
-
+    
     class Meta:
         model = InfoMiembros
         fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
-                  'direccion', 'barrio', 'celular', 'sisben', 'nombre_eps', 'regimen_seguridad', 'sexo',)
+                  'direccion', 'barrio', 'celular', 'sisben', 'eps', 'regimen_seguridad', 'sexo',)
 
 
 

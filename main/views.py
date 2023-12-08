@@ -424,8 +424,9 @@ def autodata(request, user_id):
         form = AutodataForm(request.POST, instance=user)
 
         if form.is_valid():
-            form.save()  # Guarda los datos si el formulario es válido
-        # Si el formulario no es válido, puedes agregar manejo de errores o validaciones personalizadas aquí
+            form.save()
+            
+
             return render(request, 'autodata.html', {
                 'CustomUser': request.user,
                 'year': datetime.now(),
@@ -1521,8 +1522,7 @@ class UnaccentLower(Func):
 def detallesusuario(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
-        userToBrowse = request.GET.get('userId', 0)
-       
+        userToBrowse = request.GET.get('userId', 0)   
         
         if userToBrowse and userToBrowse != 0:
             userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
@@ -1532,6 +1532,7 @@ def detallesusuario(request):
             'year': datetime.now(),
             'user':userInstance,
             'tiposDoc':tipos_documento,
+            'eps': EPSS
             
         })
         else:
