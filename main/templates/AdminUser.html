@@ -39,41 +39,44 @@
                         </div>
                     </div>
                 </li>
-                {% for u in users %}
-                <li class="list-group-item list-group-item-action">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <h3 class="fw-bold text-success"><span class="badge bg-primary">#{{u.id_usuario_id}}</span></h3>
+                {% if users %}
+                    {% for u in users %}
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h3 class="fw-bold text-success"><span class="badge bg-primary">#{{u.id_usuario_id}}</span></h3>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-0 fw-bold">{% if u.nombre and u.nombre != 'None' %} {{u.nombre}} {% else %} No diligenciado {% endif %}</p>
+                            </div>
+                            <div class="col-md-6 row">
+                                <form action="" method="GET" class="mb-2 w-100">
+                                    <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
+                                    <input type="hidden" name="details">
+                                    <button type="submit" class="btn btn-success w-100" name="action">Ver detalles</button>
+                                </form>
+                                <form action="" method="GET" class="col-md-4 mb-2">
+                                    <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
+                                    <input type="hidden" name="modify">
+                                    <button type="submit" class="btn btn-warning w-100" name="action">Modificar</button>
+                                </form>
+                                <form action="" method="GET" class="col-md-4 mb-2">
+                                    <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
+                                    <input type="hidden" name="ban">
+                                    <button type="submit" class="btn btn-dark w-100" name="action">Suspender</button>
+                                </form>
+                                <form action="" method="GET" class="col-md-4 mb-2">
+                                    <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
+                                    <input type="hidden" name="delete">
+                                    <button type="submit" class="btn btn-danger w-100" name="action">Borrar</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <p class="mb-0 fw-bold">{% if u.nombre and u.nombre != 'None' %} {{u.nombre}} {% else %} No diligenciado {% endif %}</p>
-                        </div>
-                        <div class="col-md-6 row">
-                            <form action="" method="GET" class="mb-2 w-100">
-                                <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                <input type="hidden" name="details">
-                                <button type="submit" class="btn btn-success w-100" name="action">Ver detalles</button>
-                            </form>
-                            <form action="" method="GET" class="col-md-4 mb-2">
-                                <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                <input type="hidden" name="modify">
-                                <button type="submit" class="btn btn-warning w-100" name="action">Modificar</button>
-                            </form>
-                            <form action="" method="GET" class="col-md-4 mb-2">
-                                <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                <input type="hidden" name="ban">
-                                <button type="submit" class="btn btn-dark w-100" name="action">Suspender</button>
-                            </form>
-                            <form action="" method="GET" class="col-md-4 mb-2">
-                                <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                <input type="hidden" name="delete">
-                                <button type="submit" class="btn btn-danger w-100" name="action">Borrar</button>
-                            </form>
-                        </div>
-                        
-                    </div>
-                </li>
-                {% endfor %}
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center fw-bold">No hay usuarios disponibles</p>
+                {% endif %}
             </ul>
         </div>
     </div>     

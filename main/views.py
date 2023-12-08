@@ -1,18 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db.models import Q, Value, IntegerField, CharField
-from django.db import IntegrityError, transaction
-from django.db.models.functions import Cast
+from django.db import IntegrityError, transaction, connection
+from django.db.models import Q, Value, CharField, Func, F
+from django.db.models.functions import Cast, Lower
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
-from functools import wraps
+from unidecode import unidecode
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -1511,6 +1510,11 @@ def sm_historial_citas(request):
         'form': form
     })
 
+class UnaccentLower(Func):
+    function = 'LOWER'
+    template = "UNACCENT(%(expressions)s)"
+    
+    
 # Admin
 @login_required
 def adminuser(request):
@@ -1525,7 +1529,9 @@ def adminuser(request):
             documento_usuario = form.cleaned_data.get('documento_usuario')
             
             if nombre:
-                users = users.filter(nombre__icontains=nombre)
+                normalized_term = unidecode(nombre.lower())
+                query = f"SELECT * FROM main_infomiembros WHERE unaccent(lower(nombre)) ILIKE unaccent('{normalized_term}%')"
+                users = InfoMiembros.objects.raw(query)
             if id_usuario:
                 users = users.filter(id_usuario=id_usuario)
             if documento_usuario:
