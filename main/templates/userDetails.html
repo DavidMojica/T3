@@ -5,16 +5,16 @@
         <h2 class="text-center display-3 py-5 mt-3">Detalles del usuario</h2>
         <form class="row col-md-8">
             <div class="mb-3 col-md-5 col-sm-10">
-                <label for="nombre" class="form-label">Nombre</label>
+                <label for="nombre" class="form-label"><span class="badge bg-info">Nombre</span></label>
                 <input type="text" class="form-control" name="nombre" id="nombre" value="{% if userI.nombre %} {{userI.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-md-4 col-sm-10">
-                <label for="documento" class="form-label">Documento</label>
+                <label for="documento" class="form-label"><span class="badge bg-success">Documento</span></label>
                 <input type="text" class="form-control" id="documento" name="documento" value="{% if userI.documento %} {{userI.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
             <div class="mb-3 col-md-3 col-sm-10">
-                <label for="tipo_documento" class="form-label">Tipo documento</label>
+                <label for="tipo_documento" class="form-label"><span class="badge bg-secondary">Tipo de documento</span></label>
                 <select name="tipo_documento" id="tipo_documento" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for tp in tiposDoc %}
@@ -24,27 +24,27 @@
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="numHijos" class="form-label"># Hijos</label>
+                <label for="numHijos" class="form-label"><span class="badge bg-primary"><i class="fa fa-hashtag"></i> de hijos</span></label>
                 <input type="text" name="numHijos" class="form-control" id="numHijos" value="{{userI.numero_hijos}}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="barrio" class="form-label">Barrio</label>
+                <label for="barrio" class="form-label"><span class="badge bg-info">Barrio</span></label>
                 <input type="text" name="barrio" class="form-control" id="barrio" value="{% if userI.barrio %} {{userI.barrio}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="direccion" class="form-label">Direccion</label>
+                <label for="direccion" class="form-label"><span class="badge bg-primary">Direccion</span></label>
                 <input type="text" name="direccion" class="form-control" id="direccion" value="{% if userI.direccion %} {{userI.direccion}} {% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="celular" class="form-label">Celular</label>
+                <label for="celular" class="form-label"><span class="badge bg-info">Celular</span></label>
                 <input type="text" name="celular" id="celular" class="form-control" value="{% if userI.celular %} {{userI.celular }} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="eps" class="form-label">Eps</label>
+                <label for="eps" class="form-label"><span class="badge bg-warning">EPS</span></label>
                 <select name="eps" id="eps" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in eps %}
@@ -54,12 +54,12 @@
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="sisben" class="form-label">¿Tiene sisben?</label>
+                <label for="sisben" class="form-label"><span class="badge bg-info">¿Sisben? <i class="fa fa-arrow-right"></i></span></label>
                 <input type="checkbox" name="sisben" id="sisben" class="form-check-input" {% if userI.sisben %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
             
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
-                <label for="estadoCivil" class="form-label">Estado Civil</label>
+                <label for="estadoCivil" class="form-label"><span class="badge bg-danger">Estado civil</span></label>
                 <select name="estadoCivil" id="estadoCivil" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in estadosC %}
@@ -69,7 +69,7 @@
             </div>
             
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
-                <label for="etnia" class="form-label">Etnia</label>
+                <label for="etnia" class="form-label"><span class="badge bg-secondary">Etnia</span></label>
                 <select name="etnia" id="etnia" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for e in etnias %}
@@ -79,7 +79,7 @@
             </div>
             
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
-                <label for="regimen" class="form-label">Regimen de Seguridad</label>
+                <label for="regimen" class="form-label"><span class="badge bg-success">Regimen de seguridad</span></label>
                 <select name="regimen" id="regimen" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for r in regimenes %}
@@ -89,7 +89,7 @@
             </div>
             
             <div class="mb-3 col-xxl-3 col-xl-3 col-md-6 col-sm-10">
-                <label for="sexo" class="form-label">Sexo</label>
+                <label for="sexo" class="form-label"><span class="badge bg-dark">Sexo</span></label>
                 <select name="sexo" id="sexo" class="form-select" {% if not editable %} disabled {% endif %}>
                     <option value="0">Seleccione...</option>
                     {% for s in sexos %}
@@ -105,12 +105,12 @@
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="username" class="form-label">Nombre de usuario</label>
+                <label for="username" class="form-label"><span class="badge bg-success">Nombre de usuario</span></label>
                 <input type="text" name="username" class="form-control" id="username" value="{% if userI.id_usuario.username%} {{userI.id_usuario.username}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label"><span class="badge bg-info">Email</span></label>
                 <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.email %} {{userI.id_usuario.email}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
@@ -122,14 +122,17 @@
                 <p class="fw-bold">Último ingreso: <span class="badge bg-info">{{userI.id_usuario.last_login}}</span></p>
             </div>
             
-            
-
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="ban" class="form-label">Baneado</label>
+                <label for="ban" class="form-label"><span class="badge bg-info">¿Baneado? <i class="fa fa-arrow-right"></i></span></label>
                 <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
 
-            <!-- Agrega más campos según sea necesario -->
+            <div class="mb-3 col-md-12"> 
+                <form action="" method="POST">
+                    <input type="hidden" name="emergencyChange">
+                    <button type="submit" class="btn btn-danger">Recuperar Contraseña</button>
+                </form>
+            </div>
 
             <div class="col-md-12 mb-5 mt-3">
                 {% if not editable %} 
