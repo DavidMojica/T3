@@ -97,7 +97,40 @@
                     {% endfor %}
                 </select>
             </div>
+
+            <h2 class="text-center display-3 py-5">Detalles de la cuenta</h2>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="userId" class="form-label">ID Usuario</label>
+                <input type="text" name="userId" class="form-control" id="userId" value="{% if userI.id_usuario_id %} {{userI.id_usuario_id}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="email" class="form-label">Nombre de usuario</label>
+                <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.username%} {{userI.id_usuario.username}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.email %} {{userI.id_usuario.email}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="dateJoined" class="form-label">Fecha de creación</label>
+                <input type="text" name="dateJoined" class="form-control" id="dateJoined" value="{% if userI.id_usuario.date_joined %} {{userI.id_usuario.date_joined}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="lastLogin" class="form-label">Último acceso</label>
+                <input type="text" name="lastLogin" class="form-control" id="lastLogin" value="{% if userI.id_usuario.last_login %} {{userI.id_usuario.last_login}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            </div>
             
+            
+
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
+                <label for="ban" class="form-label">Baneado</label>
+                <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %} {% if not editable %} readonly {% endif %}>
+            </div>
 
             <!-- Agrega más campos según sea necesario -->
 
