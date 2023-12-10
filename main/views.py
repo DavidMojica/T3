@@ -1523,19 +1523,35 @@ def detallesusuario(request):
         
         if userToBrowse and userToBrowse != 0:
             userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
+            editable = request.GET.get('editable', 0)
             
-            return render(request, 'userDetails.html', {
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'userI':userInstance,
-            'tiposDoc':tipos_documento,
-            'estadosC': estados_civiles,
-            'sexos': sexos,
-            'etnias': etnias,
-            'regimenes': regimenes,
-            'eps': EPSS,
-            
-        })
+            if not editable or editable == 0:
+                return render(request, 'userDetails.html', {
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'userI':userInstance,
+                'tiposDoc':tipos_documento,
+                'estadosC': estados_civiles,
+                'sexos': sexos,
+                'etnias': etnias,
+                'regimenes': regimenes,
+                'eps': EPSS, 
+                'btnClass': "btn btn-primary",
+                'btnText': 'Volver',})
+            else:
+                return render(request, 'userDetails.html', {
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'userI':userInstance,
+                'tiposDoc':tipos_documento,
+                'estadosC': estados_civiles,
+                'sexos': sexos,
+                'etnias': etnias,
+                'regimenes': regimenes,
+                'eps': EPSS,
+                'editable': editable,
+                'btnClass': "btn btn-warning",
+                'btnText': 'Actualizar usuario',})
         else:
             return redirect(reverse('adminuser'))
     else:

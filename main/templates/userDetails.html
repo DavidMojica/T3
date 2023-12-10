@@ -136,8 +136,12 @@
 
             <div class="col-md-12 mb-5 mt-3">
                 {% if not editable %} 
-                    <a href="/adminuser" class="btn btn-primary">Volver</a>
+                    <a href="/adminuser" class="{{btnClass}}">{{btnText}}</a>
                 {% else %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="{{btnClass}}">{{btnText}}</button>
+                </form>
 
                 {% endif %}
             </div>
