@@ -6,12 +6,12 @@
         <form class="row col-md-8">
             <div class="mb-3 col-md-5 col-sm-10">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" value="{% if userI.nombre %} {{userI.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" class="form-control" name="nombre" id="nombre" value="{% if userI.nombre %} {{userI.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-md-4 col-sm-10">
                 <label for="documento" class="form-label">Documento</label>
-                <input type="text" class="form-control" id="documento" value="{% if userI.documento %} {{userI.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" class="form-control" id="documento" name="documento" value="{% if userI.documento %} {{userI.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
             <div class="mb-3 col-md-3 col-sm-10">
                 <label for="tipo_documento" class="form-label">Tipo documento</label>
@@ -101,8 +101,7 @@
             <h2 class="text-center display-3 py-5">Detalles de la cuenta</h2>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="userId" class="form-label">ID Usuario</label>
-                <input type="text" name="userId" class="form-control" id="userId" value="{% if userI.id_usuario_id %} {{userI.id_usuario_id}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <p class="text-center fw-bold">ID de usuario <span class="badge bg-success">#{{userI.id_usuario_id}}</span></p>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
@@ -115,14 +114,12 @@
                 <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.email %} {{userI.id_usuario.email}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="dateJoined" class="form-label">Fecha de creación</label>
-                <input type="text" name="dateJoined" class="form-control" id="dateJoined" value="{% if userI.id_usuario.date_joined %} {{userI.id_usuario.date_joined}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10 text-center">
+                <p class="fw-bold">Fecha de creación: <span class="badge bg-info">{{userI.id_usuario.date_joined}}</span></p>
             </div>
-
-            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="lastLogin" class="form-label">Último acceso</label>
-                <input type="text" name="lastLogin" class="form-control" id="lastLogin" value="{% if userI.id_usuario.last_login %} {{userI.id_usuario.last_login}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+            
+            <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10 text-center">
+                <p class="fw-bold">Último ingreso: <span class="badge bg-info">{{userI.id_usuario.last_login}}</span></p>
             </div>
             
             
