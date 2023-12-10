@@ -1519,25 +1519,77 @@ def sm_historial_citas(request):
 def detallesusuario(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
-        userToBrowse = request.GET.get('userId', 0)   
+        userToBrowse = request.GET.get('userId', 0)  
         
-        if userToBrowse and userToBrowse != 0:
-            userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
+        if request.method == "POST": 
+            #InfoMiembros
+            nombre = request.POST['nombre']
+            documento = request.POST['documento']
+            tipo_documento = request.POST['tipo_documento']
+            numHijos = request.POST['numHijos']
+            barrio = request.POST['barrio']
+            direccion = request.POST['direccion']
+            celular = request.POST['celular']
+            eps = request.POST['eps']
+            estadoCivil = request.POST['estadoCivil']
+            etnia = request.POST['etnia']
+            regimen = request.POST['regimen']
+            sexo = request.POST['sexo']
             
-            return render(request, 'userDetails.html', {
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'userI':userInstance,
-            'tiposDoc':tipos_documento,
-            'estadosC': estados_civiles,
-            'sexos': sexos,
-            'etnias': etnias,
-            'regimenes': regimenes,
-            'eps': EPSS,
+            if "sisben" in request.POST:
+                sisben = True
+            else:
+                sisben = False
             
-        })
+            #Customuser
+            
+            
+            try:
+                infoMiembro = InfoMiembros.objects.get(id_usuario=userToBrowse)
+            except InfoMiembros.DoesNotExist:
+                infoMiembro = None
+            
+            try:
+                custoMuserInstance = CustomUser.objects.get(id=userToBrowse)
+            except CustomUser.DoesNotExist:
+                custoMuserInstance = None
+                
+                
+        
         else:
-            return redirect(reverse('adminuser'))
+            if userToBrowse and userToBrowse != 0:
+                userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
+                editable = request.GET.get('editable', 0)
+                
+                if not editable or editable == 0:
+                    return render(request, 'userDetails.html', {
+                    'CustomUser': request.user,
+                    'year': datetime.now(),
+                    'userI':userInstance,
+                    'tiposDoc':tipos_documento,
+                    'estadosC': estados_civiles,
+                    'sexos': sexos,
+                    'etnias': etnias,
+                    'regimenes': regimenes,
+                    'eps': EPSS, 
+                    'btnClass': "btn btn-primary",
+                    'btnText': 'Volver',})
+                else:
+                    return render(request, 'userDetails.html', {
+                    'CustomUser': request.user,
+                    'year': datetime.now(),
+                    'userI':userInstance,
+                    'tiposDoc':tipos_documento,
+                    'estadosC': estados_civiles,
+                    'sexos': sexos,
+                    'etnias': etnias,
+                    'regimenes': regimenes,
+                    'eps': EPSS,
+                    'editable': editable,
+                    'btnClass': "btn btn-warning",
+                    'btnText': 'Actualizar usuario',})
+            else:
+                return redirect(reverse('adminuser'))
     else:
         return redirect(reverse('home'))
 
