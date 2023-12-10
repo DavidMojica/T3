@@ -2,7 +2,7 @@
 {% block content %}
 <main class="main-expanded">
     <div class="row justify-content-center">
-        <h5 class="card-title fw-bold">Detalles del usuario</h5>
+        <h2 class="text-center display-3 py-5 mt-3">Detalles del usuario</h2>
         <form class="row col-md-8">
             <div class="mb-3 col-md-5 col-sm-10">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -106,8 +106,8 @@
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
-                <label for="email" class="form-label">Nombre de usuario</label>
-                <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.username%} {{userI.id_usuario.username}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <label for="username" class="form-label">Nombre de usuario</label>
+                <input type="text" name="username" class="form-control" id="username" value="{% if userI.id_usuario.username%} {{userI.id_usuario.username}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
@@ -129,12 +129,12 @@
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="ban" class="form-label">Baneado</label>
-                <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %} {% if not editable %} readonly {% endif %}>
+                <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
 
             <!-- Agrega más campos según sea necesario -->
 
-            <div class="d-grid">
+            <div class="col-md-12 mb-5 mt-3">
                 {% if not editable %} 
                     <a href="/adminuser" class="btn btn-primary">Volver</a>
                 {% else %}
