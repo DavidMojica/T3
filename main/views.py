@@ -399,16 +399,19 @@ def register(request):
                     return redirect(reverse('signin'))
                 except IntegrityError:
                     return render(request, 'register.html', {
+                        'CustomUser': request.user,
                         'form': form,
                         "error": ERROR_102
                     })
             else:
                 return render(request, 'register.html', {
+                    'CustomUser': request.user,
                     'form': form,
                     "error": ERROR_101
                 })
         else:
             return render(request, 'register.html', {
+                'CustomUser': request.user,
                 'form': form,
                 "error": ERROR_100
             })
@@ -1529,16 +1532,16 @@ def detallesusuario(request):
                 #InfoMiembros
                 nombre = request.POST['nombre']
                 documento = request.POST['documento']
-                tipo_documento = request.POST['tipo_documento']
+                tipo_documento = request.POST['tipo_documento'] #i
                 numHijos = request.POST['numHijos']
                 barrio = request.POST['barrio']
                 direccion = request.POST['direccion']
                 celular = request.POST['celular']
-                eps = request.POST['eps']
-                estadoCivil = request.POST['estadoCivil']
-                etnia = request.POST['etnia']
-                regimen = request.POST['regimen']
-                sexo = request.POST['sexo']
+                eps = request.POST['eps'] #i
+                estadoCivil = request.POST['estadoCivil'] #i
+                etnia = request.POST['etnia'] #i
+                regimen = request.POST['regimen'] #i
+                sexo = request.POST['sexo'] #i
                 
                 if "sisben" in request.POST:
                     sisben = True
@@ -1561,6 +1564,20 @@ def detallesusuario(request):
                 if infoMiembro and custoMuserInstance:
                     #Actualizar datos personales del usuario
                     infoMiembro.nombre = nombre.lower() if nombre else infoMiembro.nombre
+                    
+                    try:
+                        verifyDoc = InfoMiembros.objects.filter(documento=documento).first()
+                    except InfoMiembros.DoesNotExist:
+                        verifyDoc = None
+                    except:
+                        verifyDoc = None
+                        
+                    infoMiembro.documento = documento if verifyDoc == None else infoMiembro.documento
+                    infoMiembro.direccion = direccion if direccion else infoMiembro.direccion
+                    infoMiembro.barrio = barrio if barrio else infoMiembro.barrio
+                    infoMiembro.celular = celular if celular else infoMiembro.celular
+                    infoMiembro.numero_hijos = numHijos if numHijos else infoMiembro.numero_hijos
+                    
                     
                     
                     #actualizar datos de la cuenta del usuario
