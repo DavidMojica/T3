@@ -1527,7 +1527,7 @@ def detallesusuario(request):
         if request.method == "POST": 
             
             if "emergencyChange" in request.POST:
-                pass
+                return redirect(reverse('adminuser'))
             else:
                 #InfoMiembros
                 nombre = request.POST['nombre']
@@ -1552,7 +1552,7 @@ def detallesusuario(request):
                 
                 
                 try:
-                    infoMiembro = InfoMiembros.objects.filter(id_usuario=userToBrowse).first()
+                    infoMiembro = InfoMiembros.objects.filter(id_usuario_id=userToBrowse).first()
                 except InfoMiembros.DoesNotExist:
                     infoMiembro = None
                 
@@ -1563,7 +1563,7 @@ def detallesusuario(request):
                     
                 if infoMiembro and custoMuserInstance:
                     #Actualizar datos personales del usuario
-                    infoMiembro.nombre = nombre.lower() if nombre else infoMiembro.nombre
+                    infoMiembro.nombre = nombre if nombre else infoMiembro.nombre
                     
                     try:
                         verifyDoc = InfoMiembros.objects.filter(documento=documento).first()
@@ -1578,7 +1578,7 @@ def detallesusuario(request):
                     infoMiembro.celular = celular if celular else infoMiembro.celular
                     infoMiembro.numero_hijos = numHijos if numHijos else infoMiembro.numero_hijos
                     
-                    
+                    infoMiembro.save()
                     
                     #actualizar datos de la cuenta del usuario
                     
