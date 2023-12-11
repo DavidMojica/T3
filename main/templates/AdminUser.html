@@ -64,15 +64,12 @@
                                     </a>
                                     {% else %}
                                     <a href="{% url 'eventHandler' %}?eventId=2&userId={{u.id_usuario_id}}" class="col-md-4 mb-2">
-                                        <button class="btn btn-secondary ">Readmitir</button>
+                                        <button class="btn btn-secondary w-100">Readmitir</button>
                                     </a>
                                     {% endif %}
-                                    <form action="" method="POST" class="col-md-4 mb-2">
-                                        {% csrf_token %}
-                                        <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                        <input type="hidden" name="delete">
-                                        <button type="submit" class="btn btn-danger w-100" name="action">Borrar</button>
-                                    </form>
+                                    <a href="{% url 'eventHandler' %}?eventId=3&userId={{u.id_usuario_id}}" class="col-md-4 mb-2">
+                                        <button class="btn btn-danger w-100">Borrar</button>
+                                    </a>
                                 </div>
                             </div>
                         </li>
