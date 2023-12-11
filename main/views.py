@@ -1667,6 +1667,42 @@ def detallesusuario(request):
         return redirect(reverse('home'))
 
 @login_required
+def eventHandler(request):
+    if request.method == "GET":
+        event = request.GET.get('eventId', 0)
+        userId = request.GET.get('userId', 0)
+        
+        print(f"{event} - {userId}")
+        
+        try:
+            custoMuserInstance = CustomUser.objects.get(id=userId)
+        except CustomUser.DoesNotExist:
+            custoMuserInstance = None
+        print(custoMuserInstance)
+        #banear
+        if event == "1" and custoMuserInstance:
+            custoMuserInstance.is_active = False
+            print(custoMuserInstance.is_active)
+            custoMuserInstance.save()
+        #desbanear
+        elif event == "2" and custoMuserInstance:
+            custoMuserInstance.is_active = True
+            custoMuserInstance.save()
+        #borrar usuario
+        elif event == "3" and custoMuserInstance:
+            #borrar
+            if custoMuserInstance:
+            # Borra el usuario
+                custoMuserInstance.delete()
+        else:
+            pass
+        
+        return redirect(reverse('adminuser'))
+    else:
+        return redirect(reverse('adminuser'))
+    
+    
+@login_required
 def adminuser(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:

@@ -52,18 +52,23 @@
                                 </div>
                                 <div class="col-md-6 row">
                                     <a href="{% url 'detallesusuario' %}?userId={{u.id_usuario_id}}" class="mb-2 w-100">
-                                        <button type="submit" class="btn btn-success w-100" name="action">Ver detalles</button>
+                                        <button class="btn btn-success w-100" name="action">Ver detalles</button>
                                     </a>
                                     <a href="{% url 'detallesusuario' %}?userId={{u.id_usuario_id}}&editable=True" class="col-md-4 mb-2">
-                                        <button type="submit" class="btn btn-warning w-100" name="action">Modificar</button>
+                                        <button class="btn btn-warning w-100" name="action">Modificar</button>
                                     </a>
 
-                                    <form action="" method="GET" class="col-md-4 mb-2">
-                                        <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
-                                        <input type="hidden" name="ban">
-                                        <button type="submit" class="btn btn-dark w-100" name="action">Suspender</button>
-                                    </form>
-                                    <form action="" method="GET" class="col-md-4 mb-2">
+                                    {% if u.id_usuario.is_active %}
+                                    <a href="{% url 'eventHandler' %}?eventId=1&userId={{u.id_usuario_id}}" class="col-md-4 mb-2">
+                                        <button class="btn btn-dark w-100">Suspender</button>
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'eventHandler' %}?eventId=2&userId={{u.id_usuario_id}}" class="col-md-4 mb-2">
+                                        <button class="btn btn-secondary ">Readmitir</button>
+                                    </a>
+                                    {% endif %}
+                                    <form action="" method="POST" class="col-md-4 mb-2">
+                                        {% csrf_token %}
                                         <input type="hidden" value="{{u.id_usuario_id}}" name="userId">
                                         <input type="hidden" name="delete">
                                         <button type="submit" class="btn btn-danger w-100" name="action">Borrar</button>
