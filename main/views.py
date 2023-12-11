@@ -1548,9 +1548,6 @@ def detallesusuario(request):
                 else:
                     sisben = False
                 
-                #Customuser
-                
-                
                 try:
                     infoMiembro = InfoMiembros.objects.filter(id_usuario_id=userToBrowse).first()
                 except InfoMiembros.DoesNotExist:
@@ -1572,11 +1569,49 @@ def detallesusuario(request):
                     except:
                         verifyDoc = None
                         
+                    #Instances
+                    try:
+                        tpDocumentoInstance = TipoDocumento.objects.get(id=tipo_documento)
+                    except TipoDocumento.DoesNotExist:
+                        tpDocumentoInstance = None
+                    
+                    try:
+                        epsInstance = EPS.objects.get(id=eps)
+                    except EPS.DoesNotExist:
+                        epsInstance= None
+                        
+                    try:
+                        esCivilInstance = EstadoCivil.objects.get(id=estadoCivil)
+                    except EstadoCivil.DoesNotExist:
+                        esCivilInstance = None
+                        
+                    try:
+                        etniaInstance = Etnia.objects.get(id=etnia)
+                    except Etnia.DoesNotExist:
+                        etniaInstance = None
+                        
+                    try:
+                        regInstace = RegimenSeguridad.objects.get(id=regimen)
+                    except RegimenSeguridad.DoesNotExist:
+                        regInstace = None
+                        
+                    try:
+                        sexoInstance = Sexo.objects.get(id=sexo)
+                    except Sexo.DoesNotExist:
+                        sexoInstance = None
+                        
+                    
                     infoMiembro.documento = documento if verifyDoc == None else infoMiembro.documento
                     infoMiembro.direccion = direccion if direccion else infoMiembro.direccion
                     infoMiembro.barrio = barrio if barrio else infoMiembro.barrio
                     infoMiembro.celular = celular if celular else infoMiembro.celular
                     infoMiembro.numero_hijos = numHijos if numHijos else infoMiembro.numero_hijos
+                    infoMiembro.tipo_documento = tpDocumentoInstance if tpDocumentoInstance else infoMiembro.tipo_documento
+                    infoMiembro.eps = epsInstance if epsInstance else infoMiembro.eps
+                    infoMiembro.estado_civil = esCivilInstance if esCivilInstance else infoMiembro.estado_civil
+                    infoMiembro.etnia = etniaInstance if etniaInstance else infoMiembro.etnia
+                    infoMiembro.regimen_seguridad = regInstace if regInstace else infoMiembro.regimen_seguridad
+                    infoMiembro.sexo = sexoInstance if sexoInstance else infoMiembro.sexo
                     
                     infoMiembro.save()
                     
