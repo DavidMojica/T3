@@ -1522,40 +1522,50 @@ def detallesusuario(request):
         userToBrowse = request.GET.get('userId', 0)  
         
         if request.method == "POST": 
-            #InfoMiembros
-            nombre = request.POST['nombre']
-            documento = request.POST['documento']
-            tipo_documento = request.POST['tipo_documento']
-            numHijos = request.POST['numHijos']
-            barrio = request.POST['barrio']
-            direccion = request.POST['direccion']
-            celular = request.POST['celular']
-            eps = request.POST['eps']
-            estadoCivil = request.POST['estadoCivil']
-            etnia = request.POST['etnia']
-            regimen = request.POST['regimen']
-            sexo = request.POST['sexo']
             
-            if "sisben" in request.POST:
-                sisben = True
+            if "emergencyChange" in request.POST:
+                pass
             else:
-                sisben = False
-            
-            #Customuser
-            
-            
-            try:
-                infoMiembro = InfoMiembros.objects.get(id_usuario=userToBrowse)
-            except InfoMiembros.DoesNotExist:
-                infoMiembro = None
-            
-            try:
-                custoMuserInstance = CustomUser.objects.get(id=userToBrowse)
-            except CustomUser.DoesNotExist:
-                custoMuserInstance = None
+                #InfoMiembros
+                nombre = request.POST['nombre']
+                documento = request.POST['documento']
+                tipo_documento = request.POST['tipo_documento']
+                numHijos = request.POST['numHijos']
+                barrio = request.POST['barrio']
+                direccion = request.POST['direccion']
+                celular = request.POST['celular']
+                eps = request.POST['eps']
+                estadoCivil = request.POST['estadoCivil']
+                etnia = request.POST['etnia']
+                regimen = request.POST['regimen']
+                sexo = request.POST['sexo']
+                
+                if "sisben" in request.POST:
+                    sisben = True
+                else:
+                    sisben = False
+                
+                #Customuser
                 
                 
-        
+                try:
+                    infoMiembro = InfoMiembros.objects.filter(id_usuario=userToBrowse).first()
+                except InfoMiembros.DoesNotExist:
+                    infoMiembro = None
+                
+                try:
+                    custoMuserInstance = CustomUser.objects.filter(id=userToBrowse).first()
+                except CustomUser.DoesNotExist:
+                    custoMuserInstance = None
+                    
+                if infoMiembro and custoMuserInstance:
+                    #Actualizar datos personales del usuario
+                    infoMiembro.nombre = nombre.lower() if nombre else infoMiembro.nombre
+                    
+                    
+                    #actualizar datos de la cuenta del usuario
+                    
+                return redirect(reverse('adminuser'))
         else:
             if userToBrowse and userToBrowse != 0:
                 userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)

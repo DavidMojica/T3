@@ -3,7 +3,8 @@
 <main class="main-expanded">
     <div class="row justify-content-center">
         <h2 class="text-center display-3 py-5 mt-3">Detalles del usuario</h2>
-        <form class="row col-md-8">
+        <form class="row col-md-8" method="POST">
+            {% csrf_token %}
             <div class="mb-3 col-md-5 col-sm-10">
                 <label for="nombre" class="form-label"><span class="badge bg-info">Nombre</span></label>
                 <input type="text" class="form-control" name="nombre" id="nombre" value="{% if userI.nombre %} {{userI.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
@@ -127,22 +128,21 @@
                 <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %} {% if not editable %} disabled {% endif %}>
             </div>
 
-            <div class="mb-3 col-md-12"> 
-                <form action="" method="POST">
-                    <input type="hidden" name="emergencyChange">
-                    <button type="submit" class="btn btn-danger">Recuperar Contraseña</button>
-                </form>
-            </div>
+            
 
             <div class="col-md-12 mb-5 mt-3">
                 {% if not editable %} 
                     <a href="/adminuser" class="{{btnClass}}">{{btnText}}</a>
                 {% else %}
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="{{btnClass}}">{{btnText}}</button>
-                </form>
-
+                <div class="mb-3 col-md-12"> 
+                    <form action="" method="POST">
+                        <input type="hidden" name="emergencyChange">
+                        <button type="submit" class="btn btn-danger">Recuperar Contraseña</button>
+                    </form>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <button type="submit" class="{{btnClass}}">{{btnText}}</button> 
+                </div>
                 {% endif %}
             </div>
         </form>
