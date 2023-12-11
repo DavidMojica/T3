@@ -32,6 +32,7 @@ urlpatterns = [
     path('404_not_deployed/', views.not_deployed_404, name="404_not_deployed"),
     path('adminuser/', views.adminuser, name="adminuser"),
     path('adminregister/', views.adminregister, name="adminregister"),
+    path('eventHandler', views.eventHandler, name="eventHandler"),
     path('detallesusurio/', views.detallesusuario, name="detallesusuario"), 
     path('edit_account/<int:user_id>/<int:user_type>/', views.edit_account, name="edit_account"),
     path('autodata/<int:user_id>/', views.autodata, name="autodata"),

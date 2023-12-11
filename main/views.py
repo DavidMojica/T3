@@ -399,16 +399,19 @@ def register(request):
                     return redirect(reverse('signin'))
                 except IntegrityError:
                     return render(request, 'register.html', {
+                        'CustomUser': request.user,
                         'form': form,
                         "error": ERROR_102
                     })
             else:
                 return render(request, 'register.html', {
+                    'CustomUser': request.user,
                     'form': form,
                     "error": ERROR_101
                 })
         else:
             return render(request, 'register.html', {
+                'CustomUser': request.user,
                 'form': form,
                 "error": ERROR_100
             })
@@ -1522,40 +1525,110 @@ def detallesusuario(request):
         userToBrowse = request.GET.get('userId', 0)  
         
         if request.method == "POST": 
-            #InfoMiembros
-            nombre = request.POST['nombre']
-            documento = request.POST['documento']
-            tipo_documento = request.POST['tipo_documento']
-            numHijos = request.POST['numHijos']
-            barrio = request.POST['barrio']
-            direccion = request.POST['direccion']
-            celular = request.POST['celular']
-            eps = request.POST['eps']
-            estadoCivil = request.POST['estadoCivil']
-            etnia = request.POST['etnia']
-            regimen = request.POST['regimen']
-            sexo = request.POST['sexo']
             
-            if "sisben" in request.POST:
-                sisben = True
+            if "emergencyChange" in request.POST:
+                return redirect(reverse('adminuser'))
             else:
-                sisben = False
-            
-            #Customuser
-            
-            
-            try:
-                infoMiembro = InfoMiembros.objects.get(id_usuario=userToBrowse)
-            except InfoMiembros.DoesNotExist:
-                infoMiembro = None
-            
-            try:
-                custoMuserInstance = CustomUser.objects.get(id=userToBrowse)
-            except CustomUser.DoesNotExist:
-                custoMuserInstance = None
+                #InfoMiembros
+                nombre = request.POST['nombre']
+                documento = request.POST['documento']
+                tipo_documento = request.POST['tipo_documento'] #i
+                numHijos = request.POST['numHijos']
+                barrio = request.POST['barrio']
+                direccion = request.POST['direccion']
+                celular = request.POST['celular']
+                eps = request.POST['eps'] #i
+                estadoCivil = request.POST['estadoCivil'] #i
+                etnia = request.POST['etnia'] #i
+                regimen = request.POST['regimen'] #i
+                sexo = request.POST['sexo'] #i
+                #Account Customuser
+                username = request.POST['username']
+                email = request.POST['email']
                 
                 
-        
+                
+                if "sisben" in request.POST:
+                    sisben = True
+                else:
+                    sisben = False
+                
+                try:
+                    infoMiembro = InfoMiembros.objects.filter(id_usuario_id=userToBrowse).first()
+                except InfoMiembros.DoesNotExist:
+                    infoMiembro = None
+                
+                try:
+                    custoMuserInstance = CustomUser.objects.filter(id=userToBrowse).first()
+                except CustomUser.DoesNotExist:
+                    custoMuserInstance = None
+                    
+                if infoMiembro and custoMuserInstance:
+                    #Actualizar datos personales del usuario
+                    infoMiembro.nombre = nombre if nombre else infoMiembro.nombre
+                    
+                    try:
+                        verifyDoc = InfoMiembros.objects.filter(documento=documento).first()
+                    except InfoMiembros.DoesNotExist:
+                        verifyDoc = None
+                    except:
+                        verifyDoc = None
+                        
+                    #Instances
+                    try:
+                        tpDocumentoInstance = TipoDocumento.objects.get(id=tipo_documento)
+                    except TipoDocumento.DoesNotExist:
+                        tpDocumentoInstance = None
+                    
+                    try:
+                        epsInstance = EPS.objects.get(id=eps)
+                    except EPS.DoesNotExist:
+                        epsInstance= None
+                        
+                    try:
+                        esCivilInstance = EstadoCivil.objects.get(id=estadoCivil)
+                    except EstadoCivil.DoesNotExist:
+                        esCivilInstance = None
+                        
+                    try:
+                        etniaInstance = Etnia.objects.get(id=etnia)
+                    except Etnia.DoesNotExist:
+                        etniaInstance = None
+                        
+                    try:
+                        regInstace = RegimenSeguridad.objects.get(id=regimen)
+                    except RegimenSeguridad.DoesNotExist:
+                        regInstace = None
+                        
+                    try:
+                        sexoInstance = Sexo.objects.get(id=sexo)
+                    except Sexo.DoesNotExist:
+                        sexoInstance = None
+                        
+                    
+                    infoMiembro.documento = documento if verifyDoc == None else infoMiembro.documento
+                    infoMiembro.direccion = direccion if direccion else infoMiembro.direccion
+                    infoMiembro.barrio = barrio if barrio else infoMiembro.barrio
+                    infoMiembro.celular = celular if celular else infoMiembro.celular
+                    infoMiembro.numero_hijos = numHijos if numHijos else infoMiembro.numero_hijos
+                    infoMiembro.tipo_documento = tpDocumentoInstance if tpDocumentoInstance else infoMiembro.tipo_documento
+                    infoMiembro.eps = epsInstance if epsInstance else infoMiembro.eps
+                    infoMiembro.estado_civil = esCivilInstance if esCivilInstance else infoMiembro.estado_civil
+                    infoMiembro.etnia = etniaInstance if etniaInstance else infoMiembro.etnia
+                    infoMiembro.regimen_seguridad = regInstace if regInstace else infoMiembro.regimen_seguridad
+                    infoMiembro.sexo = sexoInstance if sexoInstance else infoMiembro.sexo
+                    infoMiembro.sisben = sisben
+                    
+                    infoMiembro.save()
+                    
+                    #actualizar datos de la cuenta del usuario
+                    custoMuserInstance.username = username if username else custoMuserInstance.username
+                    custoMuserInstance.email = email if email else custoMuserInstance.email
+                    
+                    custoMuserInstance.save()
+                    
+                    
+                return redirect(reverse('adminuser'))
         else:
             if userToBrowse and userToBrowse != 0:
                 userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
@@ -1593,6 +1666,42 @@ def detallesusuario(request):
     else:
         return redirect(reverse('home'))
 
+@login_required
+def eventHandler(request):
+    if request.method == "GET":
+        event = request.GET.get('eventId', 0)
+        userId = request.GET.get('userId', 0)
+        
+        print(f"{event} - {userId}")
+        
+        try:
+            custoMuserInstance = CustomUser.objects.get(id=userId)
+        except CustomUser.DoesNotExist:
+            custoMuserInstance = None
+        print(custoMuserInstance)
+        #banear
+        if event == "1" and custoMuserInstance:
+            custoMuserInstance.is_active = False
+            print(custoMuserInstance.is_active)
+            custoMuserInstance.save()
+        #desbanear
+        elif event == "2" and custoMuserInstance:
+            custoMuserInstance.is_active = True
+            custoMuserInstance.save()
+        #borrar usuario
+        elif event == "3" and custoMuserInstance:
+            #borrar
+            if custoMuserInstance:
+            # Borra el usuario
+                custoMuserInstance.delete()
+        else:
+            pass
+        
+        return redirect(reverse('adminuser'))
+    else:
+        return redirect(reverse('adminuser'))
+    
+    
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
