@@ -125,7 +125,7 @@
             
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="ban" class="form-label"><span class="badge bg-info">¿Baneado? <i class="fa fa-arrow-right"></i></span></label>
-                <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %} {% if not editable %} disabled {% endif %}>
+                <input type="checkbox" name="ban" class="form-check-input" id="ban" {% if not userI.id_usuario.is_active %} checked {% endif %}  disabled>
             </div>
 
             

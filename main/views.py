@@ -1542,6 +1542,11 @@ def detallesusuario(request):
                 etnia = request.POST['etnia'] #i
                 regimen = request.POST['regimen'] #i
                 sexo = request.POST['sexo'] #i
+                #Account Customuser
+                username = request.POST['username']
+                email = request.POST['email']
+                
+                
                 
                 if "sisben" in request.POST:
                     sisben = True
@@ -1612,10 +1617,16 @@ def detallesusuario(request):
                     infoMiembro.etnia = etniaInstance if etniaInstance else infoMiembro.etnia
                     infoMiembro.regimen_seguridad = regInstace if regInstace else infoMiembro.regimen_seguridad
                     infoMiembro.sexo = sexoInstance if sexoInstance else infoMiembro.sexo
+                    infoMiembro.sisben = sisben
                     
                     infoMiembro.save()
                     
                     #actualizar datos de la cuenta del usuario
+                    custoMuserInstance.username = username if username else custoMuserInstance.username
+                    custoMuserInstance.email = email if email else custoMuserInstance.email
+                    
+                    custoMuserInstance.save()
+                    
                     
                 return redirect(reverse('adminuser'))
         else:
