@@ -1,4 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
+<main class="main-expanded row">
+    <div class="mt-4 col-md-8">
+        <h1 class="mb-4">Registro de Usuario</h1>
+        <form method="post" action="/adminregister/" class="needs-validation">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            {{ error }}
+
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+        </form>
+    </div>
+</main>
 
 {% endblock %}

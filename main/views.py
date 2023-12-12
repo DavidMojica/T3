@@ -1766,8 +1766,12 @@ def adminuser(request):
 def adminregister(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
+        form = CustomUserRegistrationForm
+        
+        
         return render(request, 'AdminRegister.html',{
             'CustomUser': request.user,
+            'form': form,
             'year': datetime.now(),
         })
     else:

@@ -73,21 +73,22 @@ class FiltroCitasForm(forms.Form):
     )
 
 class CustomUserRegistrationForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': "Nombre de usuario"}
-    ))
-    email =forms.EmailField(widget=forms.EmailInput(
-        attrs={'class': 'form-control', 'placeholder': 'Email'}
-    ))
-    password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control', 'placeholder': 'Confirmar contraseña'}))
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirmar contraseña'})
+    )
     tipo_usuario = forms.ModelChoiceField(
         queryset=TipoUsuario.objects.all(),
-        widget=forms.Select(
-            attrs={'class': 'custom-class form-select', 'id': 'custom-id'}),
-        empty_label="Selecciona un tipo de usuario"
+        widget=forms.Select(attrs={'class': 'custom-class form-select', 'id': 'custom-id'}),
+        empty_label='Selecciona un tipo de usuario'
     )
 
     class Meta:
