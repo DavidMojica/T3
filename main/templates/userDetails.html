@@ -142,14 +142,44 @@
             </div>
         </form>
         {% if editable %}
-        <div class="mb-3 col-md-12"> 
-            <form action="" method="POST">
-                <input type="hidden" name="emergencyChange">
-                <button type="submit" class="btn btn-danger">Recuperar Contraseña</button>
-            </form>
+        <div class="mb-5 col-md-12"> 
+            <a href="{% url 'eventHandler' %}?eventId=4&userId={{userI.id_usuario_id}}" class="col-md-4 mb-2">
+                <button class="btn btn-danger" id="generar-contrasena-btn">Recuperar contraseña</button>
+            </a>
         </div>
         {% endif %}
     </div>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var generarContrasenaBtn = document.getElementById("generar-contrasena-btn");
+
+        generarContrasenaBtn.addEventListener("click", function() {
+            fetch("{% url 'eventHandler' %}?eventId=4&userId={{userI.id_usuario_id}}")
+                .then(response => response.json())
+                .then(data => {
+                    var mensaje = `Contraseña cambiada correctamente.\nPor favor, anote o notifique al usuario ${data.user}\nNueva contraseña: ${data.newPass}`;
+                    
+                    // Muestra la nueva contraseña y mensaje en un alert
+                    alert(mensaje);
+
+                    // Crea un elemento de texto temporal para copiar al portapapeles
+                    var tempInput = document.createElement("input");
+                    tempInput.value = data.newPass;
+                    document.body.appendChild(tempInput);
+
+                    // Selecciona y copia el texto al portapapeles
+                    tempInput.select();
+                    document.execCommand("copy");
+
+                    // Elimina el elemento temporal
+                    document.body.removeChild(tempInput);
+                })
+                .catch(error => {
+                    console.error("Error al generar la nueva contraseña:", error);
+                });
+        });
+    });
+</script>
 
 {% endblock %}

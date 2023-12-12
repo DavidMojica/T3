@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
 from django.db.models import Q, Value, CharField
-from django.db.models.functions import Cast, Lower
+from django.db.models.functions import Cast
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
@@ -1695,7 +1695,7 @@ def eventHandler(request):
         elif event == "3" and custoMuserInstance:
             #borrar
             if custoMuserInstance:
-            # Borra el usuario
+                # Borra el usuario
                 custoMuserInstance.delete()
         #cambiar contraseña
         elif event == "4" and custoMuserInstance:    
@@ -1703,7 +1703,9 @@ def eventHandler(request):
             hashedPassword = make_password(nuevaContrasena)
             custoMuserInstance.password = hashedPassword
             custoMuserInstance.save()
-            messages.success(request, f"Se ha generado una nueva contraseña para {custoMuserInstance.username}: {nuevaContrasena}")
+            response_data = {'newPass':nuevaContrasena,
+                             'user':custoMuserInstance.username}
+            return JsonResponse(response_data, content_type="application/json")
         else:
             pass
         
