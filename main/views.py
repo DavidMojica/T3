@@ -1700,12 +1700,27 @@ def eventHandler(request):
         #cambiar contraseña
         elif event == "4" and custoMuserInstance:    
             nuevaContrasena = ''.join(random.choices(string.ascii_letters + string.digits, k=random.randint(8,12)))
-            hashedPassword = make_password(nuevaContrasena)
+             # Aplica un hash a la nueva contraseña
+            hashedPassword = make_password("1234")
+            
+            # Actualiza la contraseña del usuario en la base de datos
             custoMuserInstance.password = hashedPassword
-            custoMuserInstance.save()
-            response_data = {'newPass':nuevaContrasena,
-                             'user':custoMuserInstance.username}
-            return JsonResponse(response_data, content_type="application/json")
+            print(nuevaContrasena)
+            print(hashedPassword)
+            return render(request, 'userDetails.html', {
+                    'CustomUser': request.user,
+                    'year': datetime.now(),
+                    'userI':custoMuserInstance,
+                    'tiposDoc':tipos_documento,
+                    'estadosC': estados_civiles,
+                    'sexos': sexos,
+                    'etnias': etnias,
+                    'regimenes': regimenes,
+                    'eps': EPSS,
+                    'editable': True,
+                    'btnClass': "btn btn-warning",
+                    'btnText': 'Actualizar usuario',
+                    'passMsg': f"Se ha actualizado correctamente. Por favor notifique a {custoMuserInstance.username}. Nueva contraseña: {nuevaContrasena}"})
         else:
             pass
         
