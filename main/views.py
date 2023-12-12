@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError, transaction
 from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
+from .forms import AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -23,8 +23,10 @@ ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
 ERROR_200 = "Nombre o contraseña inválido."
 ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
 ERROR_202 = "Las contraseñas no coinciden"
+ERROR_203 = "Algo falló en el proceso"
 SUCCESS_100 = "Contraseña actualizada correctamente."
 SUCCESS_101 = "Datos guardados correctamente."
+SUCCESS_102 = "Cuenta creada exitosamente"
 
 adminOnly = [1, 10]
 
@@ -63,6 +65,7 @@ def sm_llamadas(request):
     if request.method == "POST":
         ban = True
         error = ""
+        psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
 
         nombre = request.POST['nombre'].strip()
         documento = request.POST['documento'].strip()
@@ -157,7 +160,8 @@ def sm_llamadas(request):
                     direccion=direccion.lower(),
                     municipio=municipio_instance,
                     poblacion_vulnerable=pob_vulnerable_instance,
-                    celular=telefono
+                    celular=telefono,
+                    cant_llamadas =  1
                 )
                 nuevo_paciente.save()
                 
@@ -256,6 +260,13 @@ def sm_llamadas(request):
                             id_motivo=motivo_instace
                         )
                         llamada_motivo.save()
+                        
+                #Contador de llamadas del psicologo
+                llamadas = int(psicologo.contador_llamadas_psicologicas)
+                psicologo.contador_llamadas_psicologicas = llamadas + 1
+                psicologo.save()
+                
+                
             return redirect(reverse('sm_historial_llamadas'))
             
         else:
@@ -425,8 +436,9 @@ def register(request):
 
 
 @login_required
-def autodata(request, user_id):
-    user = get_object_or_404(InfoMiembros, pk=user_id)
+def autodata(request):
+    userId = str(request.user.id)
+    user = get_object_or_404(InfoMiembros, pk=userId)
     if request.method == "POST":
         form = AutodataForm(request.POST, instance=user)
 
@@ -450,6 +462,7 @@ def autodata(request, user_id):
     else:
         # En el caso de una solicitud GET, simplemente muestra el formulario
         form = AutodataForm(instance=user)
+        
 
     return render(request, 'autodata.html', {
         'CustomUser': request.user,
@@ -465,23 +478,26 @@ def signout(request):
 
 
 @login_required
-def edit_account(request, user_id, user_type):
-    user = get_object_or_404(CustomUser, pk=user_id)
+def edit_account(request):
+    user = get_object_or_404(CustomUser, pk=request.user.id)
     event = ""
     pass_event = ""
 
-    if request.method == "POST" and user_type in (20, 21, 22):
+    if request.method == "POST":
         if "account_data" in request.POST:
-            form = TrabajadorEditForm(request.POST, instance=user)
-            if form.is_valid():
-                form.save()
+            email = request.POST.get('email',"")
+            if email and email != "":
+                user.email = email
+                user.save()
                 event = "Se actualizaron sus datos correctamente :)."
+            else:
+                event = "Email está vacío"
         elif "change_password" in request.POST:
             old_password = request.POST.get('old_password').strip()
             new_password = request.POST.get('new_password').strip()
             new_password2 = request.POST.get('new_password2').strip()
             if user.check_password(old_password):
-                if new_password == new_password2:
+                if new_password == new_password2 and new_password != "" and new_password2 != "":
                     user.set_password(new_password)
                     user.save()
                     pass_event = SUCCESS_100
@@ -489,23 +505,19 @@ def edit_account(request, user_id, user_type):
                     pass_event = ERROR_202
             else:
                 pass_event = ERROR_201
-
-    if request.method == "post" and user_type in (1, 10, 11, 12):
-        form = AdministradorEditForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
+            
+        return render(request, 'edit_account.html', {
+                                                        'event': event,
+                                                        'pass_event': pass_event,
+                                                        'year': datetime.now(),
+                                                        'CustomUser': user})
 
     else:  # GET
-        if user_type in (20, 21, 22):
-            form = TrabajadorEditForm(instance=user)
-        elif user_type in (1, 10, 11, 12):
-            form = AdministradorEditForm
-
-    return render(request, 'edit_account.html', {'form': form,
-                                                 'event': event,
-                                                 'pass_event': pass_event,
-                                                 'year': datetime.now(),
-                                                 'CustomUser': request.user})
+        return render(request, 'edit_account.html', {
+                                                    'event': event,
+                                                    'pass_event': pass_event,
+                                                    'year': datetime.now(),
+                                                    'CustomUser': request.user})
 
 
 
@@ -513,6 +525,7 @@ def edit_account(request, user_id, user_type):
 def sm_HPC(request):
     documento = ""
     fecha_nacimiento = None
+    psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             ban = True
@@ -1351,6 +1364,16 @@ def sm_HPC(request):
                             id_conducta=conInstance
                         )
                         cond_s.save()
+                        
+                infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
+                
+                citasPaciente = int(infoPacientesInstance.cant_asesorias_psicologicas)
+                infoPacientesInstance.cant_asesorias_psicologicas = citasPaciente + 1
+                infoPacientesInstance.save()
+
+                citas = int(psicologo.contador_asesorias_psicologicas)
+                psicologo.contador_asesorias_psicologicas = citas + 1
+                psicologo.save()
 
                 return redirect(reverse('sm_historial_citas'))
     elif request.method == "GET":
@@ -1437,11 +1460,11 @@ def sm_historial_llamadas(request):
     
     #sistema de filtrado
     if form.is_valid():
-        id_llamada = form.cleaned_data.get('id_llamada').strip()
-        id_profesional = form.cleaned_data.get('id_profesional').strip()
-        documento_paciente = form.cleaned_data.get('documento_paciente').strip()
-        fecha_llamada = form.cleaned_data.get('fecha_llamada').strip()
-        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi').strip()
+        id_llamada = form.cleaned_data.get('id_llamada')
+        id_profesional = form.cleaned_data.get('id_profesional')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        fecha_llamada = form.cleaned_data.get('fecha_llamada')
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
         
         if id_llamada:
             llamadas = llamadas.filter(id=id_llamada)
@@ -1766,10 +1789,59 @@ def adminuser(request):
 def adminregister(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
-        return render(request, 'AdminRegister.html',{
-            'CustomUser': request.user,
-            'year': datetime.now(),
-        })
+        form = CustomUserRegistrationForm(request.POST)
+        if request.method == "POST":
+            if form.is_valid():
+                if request.POST['password'] == request.POST['password2']:
+                    try:
+                        user = form.save(commit=False)
+                        user.username = request.POST['username'].lower().strip()
+                        user.set_password(request.POST['password'])
+                        user.save()
+
+                        info_miembros, created = InfoMiembros.objects.get_or_create(
+                            id_usuario=user)
+                        
+                        if created:
+                            info_miembros.save()  # Solo guardar si es un objeto nuevo
+                            return render(request, 'AdminRegister.html', {
+                            'CustomUser': request.user,
+                            'form': form,
+                            "error": SUCCESS_102,
+                            "name": request.POST['username'],
+                            "pass": request.POST['password']
+                        })
+                        else:
+                            return render(request, 'AdminRegister.html', {
+                            'CustomUser': request.user,
+                            'form': form,
+                            "error": ERROR_203
+                        })
+                   
+                    except IntegrityError:
+                        return render(request, 'AdminRegister.html', {
+                            'CustomUser': request.user,
+                            'form': form,
+                            "error": ERROR_102
+                        })                        
+                else:
+                    return render(request, 'AdminRegister.html', {
+                        'CustomUser': request.user,
+                        'form': form,
+                        "error": ERROR_100
+                    })     
+            else:
+                print(form.errors)
+                return render(request, 'AdminRegister.html', {
+                    'CustomUser': request.user,
+                    'form': form,
+                    "error": ERROR_102
+                })
+        else:
+            return render(request, 'AdminRegister.html', {
+                'CustomUser': request.user,
+                'form': form,
+            })     
     else:
         return redirect(reverse('home'))
     

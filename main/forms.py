@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from .models import EPS, CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
+from django.utils.html import format_html
 
 
 class FiltroUsuarios(forms.Form):
@@ -73,22 +74,32 @@ class FiltroCitasForm(forms.Form):
     )
 
 class CustomUserRegistrationForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': "Nombre de usuario"}
-    ))
-    email =forms.EmailField(widget=forms.EmailInput(
-        attrs={'class': 'form-control', 'placeholder': 'Email'}
-    ))
-    password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control', 'placeholder': 'Confirmar contraseña'}))
-    tipo_usuario = forms.ModelChoiceField(
-        queryset=TipoUsuario.objects.all(),
-        widget=forms.Select(
-            attrs={'class': 'custom-class form-select', 'id': 'custom-id'}),
-        empty_label="Selecciona un tipo de usuario"
+    username = forms.CharField(
+        label='Nombre de usuario',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'})
     )
+    email = forms.EmailField(
+        label='Correo electrónico',
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
+    )
+    password = forms.CharField(
+        label='Contraseña',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
+    )
+    password2 = forms.CharField(
+        label='Confirmar contraseña',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirmar contraseña'})
+    )
+    tipo_usuario = forms.ModelChoiceField(
+        label='Seleccione tipo de usuario',
+        queryset=TipoUsuario.objects.all(),
+        widget=forms.Select(attrs={'class': 'custom-class form-select', 'id': 'custom-id'}),
+        empty_label='Selecciona un tipo de usuario'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password2'].label = 'Confirmar contraseña'
 
     class Meta:
         model = CustomUser
@@ -96,21 +107,11 @@ class CustomUserRegistrationForm(forms.ModelForm):
 
 
 
-class TrabajadorEditForm(forms.ModelForm):
-    email = forms.CharField(label="Correo electronico",
-                            widget=forms.EmailInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su email'}))
-
-    class Meta:
-        model = CustomUser
-        fields = ('email',)
-
-
-
 class AutodataForm(forms.ModelForm):
     tipo_documento = forms.ModelChoiceField(
         queryset=TipoDocumento.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_tipo_documento'
         }),
         empty_label="Selecciona tu tipo de documento"
@@ -118,7 +119,7 @@ class AutodataForm(forms.ModelForm):
     estado_civil = forms.ModelChoiceField(
         queryset=EstadoCivil.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_estado_civil'
         }),
         empty_label="Selecciona tu estado civil"
@@ -126,7 +127,7 @@ class AutodataForm(forms.ModelForm):
     regimen_seguridad = forms.ModelChoiceField(
         queryset=RegimenSeguridad.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_regimen_seguridad'
         }),
         empty_label="Selecciona tu régimen de seguridad"
@@ -134,7 +135,7 @@ class AutodataForm(forms.ModelForm):
     sexo = forms.ModelChoiceField(
         queryset=Sexo.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_sexo'
         }),
         empty_label="Selecciona tu sexo"
@@ -142,7 +143,7 @@ class AutodataForm(forms.ModelForm):
     etnia = forms.ModelChoiceField(
         queryset=Etnia.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_etnia'
         }),
         empty_label="Selecciona tu Etnia"
@@ -160,25 +161,11 @@ class AutodataForm(forms.ModelForm):
     barrio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_barrio'}))
     celular = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_celular'}))
     sisben = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_sisben'}))
-    
+    sisben = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'id':'sisben'}))
     class Meta:
         model = InfoMiembros
         fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
                   'direccion', 'barrio', 'celular', 'sisben', 'eps', 'regimen_seguridad', 'sexo',)
-
-
-
-class AdministradorEditForm(forms.ModelForm):
-    tipo_usuario = forms.ModelChoiceField(
-        queryset=TipoUsuario.objects.all(),
-        widget=forms.Select(
-            attrs={'class': 'custom-class', 'id': 'custom-id'}),
-        empty_label="Selecciona un tipo de usuario"
-    )
-
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'is_active', 'tipo_usuario')
 
 
 class CustomUserLoginForm(AuthenticationForm):
@@ -186,3 +173,4 @@ class CustomUserLoginForm(AuthenticationForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+

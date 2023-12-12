@@ -1,4 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
+<main class="main-expanded row justify-content-center card">
+    <div class="mt-4 row">
+        <h1 class="mb-4 card-header">Registro de Usuario</h1>
+        <form method="post" action="/adminregister/" class="needs-validation col-md-12 card-body">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="mb-3">
+                    <span class="badge bg-success mb-3">{{ field.label_tag }}</span> 
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {{ error }} <br>
+
+            <button type="submit" class="btn btn-primary mt-4">Registrarse</button>
+            <div class="container mt-4">
+                {% if name %}
+                <p>
+                    Usuario: <span class="badge bg-success">{{name}}</span> <br>
+                    Contraseña: <span class="badge bg-success">{{pass}}</span>
+                </p>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</main>
 
 {% endblock %}
