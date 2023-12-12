@@ -355,13 +355,15 @@ def get_municipios(request):
 
 
 def signin(request):
+    # Check if the request method is POST (form submission)
     if request.method == 'POST':
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
+        
         user = authenticate(request, username=username, password=password)
         if user is None:
             return render(request, 'signin.html', {
-                'error': ERROR_200,
+                'error': ERROR_200,  
                 'year': datetime.now(),
                 'posted_user': username
             })
@@ -1691,10 +1693,9 @@ def eventHandler(request):
                 custoMuserInstance.delete()
         #cambiar contraseña
         elif event == "4" and custoMuserInstance:    
-            nuevaContrasena = ''.join(random.choices(string.ascii_letters + string.digits, k=random.randint(8,12)))
+            nuevaContrasena = "1234"
             custoMuserInstance.set_password(nuevaContrasena)
             custoMuserInstance.save()
-            print(nuevaContrasena)
             
             return render(request, 'userDetails.html', {
                     'CustomUser': request.user,
@@ -1717,7 +1718,6 @@ def eventHandler(request):
     else:
         return redirect(reverse('adminuser'))
     
-    CBjwelZtyu
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
