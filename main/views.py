@@ -477,6 +477,7 @@ def signout(request):
     return redirect(reverse('home'))
 
 
+
 @login_required
 def edit_account(request):
     user = get_object_or_404(CustomUser, pk=request.user.id)
