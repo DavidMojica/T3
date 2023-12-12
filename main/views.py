@@ -23,8 +23,10 @@ ERROR_102 = "Ya existe un usuario con el mismo nombre de usuario."
 ERROR_200 = "Nombre o contraseña inválido."
 ERROR_201 = "No se actualizó su contraseña. Contraseña antigua invalida."
 ERROR_202 = "Las contraseñas no coinciden"
+ERROR_203 = "Algo falló en el proceso"
 SUCCESS_100 = "Contraseña actualizada correctamente."
 SUCCESS_101 = "Datos guardados correctamente."
+SUCCESS_102 = "Cuenta creada exitosamente"
 
 adminOnly = [1, 10]
 
@@ -1767,38 +1769,58 @@ def adminregister(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
         form = CustomUserRegistrationForm(request.POST)
-        if form.is_valid():
-            if request.POST['password'] == request.POST['password2']:
-                try:
-                    user = form.save(commit=False)
-                    user.username = request.POST['username'].lower().strip()
-                    user.set_password(request.POST['password'])
-                    user.save()
+        if request.method == "POST":
+            if form.is_valid():
+                if request.POST['password'] == request.POST['password2']:
+                    try:
+                        user = form.save(commit=False)
+                        user.username = request.POST['username'].lower().strip()
+                        user.set_password(request.POST['password'])
+                        user.save()
 
-                    info_miembros, created = InfoMiembros.objects.get_or_create(
-                        id_usuario=user)
-                    
-                    if created:
-                        info_miembros.save()  # Solo guardar si es un objeto nuevo
-                    return redirect(reverse('signin'))
-                except IntegrityError:
+                        info_miembros, created = InfoMiembros.objects.get_or_create(
+                            id_usuario=user)
+                        
+                        if created:
+                            info_miembros.save()  # Solo guardar si es un objeto nuevo
+                            return render(request, 'AdminRegister.html', {
+                            'CustomUser': request.user,
+                            'form': form,
+                            "error": SUCCESS_102,
+                            "name": request.POST['username'],
+                            "pass": request.POST['password']
+                        })
+                        else:
+                            return render(request, 'AdminRegister.html', {
+                            'CustomUser': request.user,
+                            'form': form,
+                            "error": ERROR_203
+                        })
+                   
+                    except IntegrityError:
+                        return render(request, 'AdminRegister.html', {
+                            'CustomUser': request.user,
+                            'form': form,
+                            "error": ERROR_102
+                        })                        
+                else:
                     return render(request, 'AdminRegister.html', {
                         'CustomUser': request.user,
                         'form': form,
-                        "error": ERROR_102
-                    })
+                        "error": ERROR_100
+                    })     
             else:
+                print(form.errors)
                 return render(request, 'AdminRegister.html', {
                     'CustomUser': request.user,
                     'form': form,
-                    "error": ERROR_101
-                })     
+                    "error": ERROR_102
+                })
         else:
             return render(request, 'AdminRegister.html', {
                 'CustomUser': request.user,
                 'form': form,
-                "error": ERROR_100
-            })         
+            })     
     else:
         return redirect(reverse('home'))
     
