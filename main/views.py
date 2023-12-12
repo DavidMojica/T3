@@ -1,17 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
 from django.urls import reverse
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError, transaction, connection
-from django.db.models import Q, Value, CharField, Func, F
-from django.db.models.functions import Cast, Lower
+from django.db import IntegrityError, transaction
+from django.db.models import Q, Value, CharField
+from django.db.models.functions import Cast
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
+import random, string
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -62,15 +64,15 @@ def sm_llamadas(request):
         ban = True
         error = ""
 
-        nombre = request.POST['nombre']
-        documento = request.POST['documento']
-        edad = request.POST['edad']
-        direccion = request.POST['direccion']
-        telefono = request.POST['telefono']
-        observaciones = request.POST['observaciones']
-        seguimiento24 = request.POST['seguimiento24']
-        seguimiento48 = request.POST['seguimiento48']
-        seguimiento72 = request.POST['seguimiento72']
+        nombre = request.POST['nombre'].strip()
+        documento = request.POST['documento'].strip()
+        edad = request.POST['edad'].strip()
+        direccion = request.POST['direccion'].strip()
+        telefono = request.POST['telefono'].strip()
+        observaciones = request.POST['observaciones'].strip()
+        seguimiento24 = request.POST['seguimiento24'].strip()
+        seguimiento48 = request.POST['seguimiento48'].strip()
+        seguimiento72 = request.POST['seguimiento72'].strip()
 
         # Campos numericos
         try:
@@ -352,13 +354,15 @@ def get_municipios(request):
 
 
 def signin(request):
+    # Check if the request method is POST (form submission)
     if request.method == 'POST':
         username = request.POST.get('username').lower()
         password = request.POST.get('password')
+        
         user = authenticate(request, username=username, password=password)
         if user is None:
             return render(request, 'signin.html', {
-                'error': ERROR_200,
+                'error': ERROR_200,  
                 'year': datetime.now(),
                 'posted_user': username
             })
@@ -385,9 +389,9 @@ def register(request):
         if form.is_valid():
             if request.POST['password'] == request.POST['password2']:
                 try:
-                    user = form.save(commit=False)
-                    user.username = request.POST['username'].lower()
-                    user.set_password(request.POST['password'])
+                    user = form.save(commit=False).strip()
+                    user.username = request.POST['username'].lower().strip()
+                    user.set_password(request.POST['password']).strip()
                     user.save()
 
                     info_miembros, created = InfoMiembros.objects.get_or_create(
@@ -473,9 +477,9 @@ def edit_account(request, user_id, user_type):
                 form.save()
                 event = "Se actualizaron sus datos correctamente :)."
         elif "change_password" in request.POST:
-            old_password = request.POST.get('old_password')
-            new_password = request.POST.get('new_password')
-            new_password2 = request.POST.get('new_password2')
+            old_password = request.POST.get('old_password').strip()
+            new_password = request.POST.get('new_password').strip()
+            new_password2 = request.POST.get('new_password2').strip()
             if user.check_password(old_password):
                 if new_password == new_password2:
                     user.set_password(new_password)
@@ -1433,11 +1437,11 @@ def sm_historial_llamadas(request):
     
     #sistema de filtrado
     if form.is_valid():
-        id_llamada = form.cleaned_data.get('id_llamada')
-        id_profesional = form.cleaned_data.get('id_profesional')
-        documento_paciente = form.cleaned_data.get('documento_paciente')
-        fecha_llamada = form.cleaned_data.get('fecha_llamada')
-        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
+        id_llamada = form.cleaned_data.get('id_llamada').strip()
+        id_profesional = form.cleaned_data.get('id_profesional').strip()
+        documento_paciente = form.cleaned_data.get('documento_paciente').strip()
+        fecha_llamada = form.cleaned_data.get('fecha_llamada').strip()
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi').strip()
         
         if id_llamada:
             llamadas = llamadas.filter(id=id_llamada)
@@ -1530,21 +1534,21 @@ def detallesusuario(request):
                 return redirect(reverse('adminuser'))
             else:
                 #InfoMiembros
-                nombre = request.POST['nombre']
-                documento = request.POST['documento']
-                tipo_documento = request.POST['tipo_documento'] #i
-                numHijos = request.POST['numHijos']
-                barrio = request.POST['barrio']
-                direccion = request.POST['direccion']
-                celular = request.POST['celular']
-                eps = request.POST['eps'] #i
-                estadoCivil = request.POST['estadoCivil'] #i
-                etnia = request.POST['etnia'] #i
-                regimen = request.POST['regimen'] #i
-                sexo = request.POST['sexo'] #i
+                nombre = request.POST['nombre'].strip()
+                documento = request.POST['documento'].strip()
+                tipo_documento = request.POST['tipo_documento'].strip()
+                numHijos = request.POST['numHijos'].strip()
+                barrio = request.POST['barrio'].strip()
+                direccion = request.POST['direccion'].strip()
+                celular = request.POST['celular'].strip()
+                eps = request.POST['eps'].strip()
+                estadoCivil = request.POST['estadoCivil'].strip()
+                etnia = request.POST['etnia'].strip()
+                regimen = request.POST['regimen'].strip()
+                sexo = request.POST['sexo'].strip()
                 #Account Customuser
-                username = request.POST['username']
-                email = request.POST['email']
+                username = request.POST['username'].strip()
+                email = request.POST['email'].strip()
                 
                 
                 
@@ -1671,18 +1675,11 @@ def eventHandler(request):
     if request.method == "GET":
         event = request.GET.get('eventId', 0)
         userId = request.GET.get('userId', 0)
-        
-        print(f"{event} - {userId}")
-        
-        try:
-            custoMuserInstance = CustomUser.objects.get(id=userId)
-        except CustomUser.DoesNotExist:
-            custoMuserInstance = None
-        print(custoMuserInstance)
+        custoMuserInstance = get_object_or_404(CustomUser,pk=userId)
+        infoUserInstance = get_object_or_404(InfoMiembros, id_usuario=userId)
         #banear
         if event == "1" and custoMuserInstance:
             custoMuserInstance.is_active = False
-            print(custoMuserInstance.is_active)
             custoMuserInstance.save()
         #desbanear
         elif event == "2" and custoMuserInstance:
@@ -1692,15 +1689,35 @@ def eventHandler(request):
         elif event == "3" and custoMuserInstance:
             #borrar
             if custoMuserInstance:
-            # Borra el usuario
+                # Borra el usuario
                 custoMuserInstance.delete()
+        #cambiar contraseña
+        elif event == "4" and custoMuserInstance:    
+            nuevaContrasena = str(random.randint(100000, 999999))
+            custoMuserInstance.set_password(nuevaContrasena)
+            custoMuserInstance.save()
+            
+            return render(request, 'userDetails.html', {
+                    'CustomUser': request.user,
+                    'year': datetime.now(),
+                    'userI':infoUserInstance,
+                    'tiposDoc':tipos_documento,
+                    'estadosC': estados_civiles,
+                    'sexos': sexos,
+                    'etnias': etnias,
+                    'regimenes': regimenes,
+                    'eps': EPSS,
+                    'editable': True,
+                    'btnClass': "btn btn-warning",
+                    'btnText': 'Actualizar usuario',
+                    'passUser': custoMuserInstance.username,
+                    'pass': nuevaContrasena})
         else:
             pass
         
         return redirect(reverse('adminuser'))
     else:
         return redirect(reverse('adminuser'))
-    
     
 @login_required
 def adminuser(request):
