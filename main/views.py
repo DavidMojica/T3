@@ -478,23 +478,26 @@ def signout(request):
 
 
 @login_required
-def edit_account(request, user_id, user_type):
-    user = get_object_or_404(CustomUser, pk=user_id)
+def edit_account(request):
+    user = get_object_or_404(CustomUser, pk=request.user.id)
     event = ""
     pass_event = ""
 
-    if request.method == "POST" and user_type in (20, 21, 22):
+    if request.method == "POST":
         if "account_data" in request.POST:
             email = request.POST.get('email',"")
-            user.email = email
-            user.save()
-            event = "Se actualizaron sus datos correctamente :)."
+            if email and email != "":
+                user.email = email
+                user.save()
+                event = "Se actualizaron sus datos correctamente :)."
+            else:
+                event = "Email está vacío"
         elif "change_password" in request.POST:
             old_password = request.POST.get('old_password').strip()
             new_password = request.POST.get('new_password').strip()
             new_password2 = request.POST.get('new_password2').strip()
             if user.check_password(old_password):
-                if new_password == new_password2:
+                if new_password == new_password2 and new_password != "" and new_password2 != "":
                     user.set_password(new_password)
                     user.save()
                     pass_event = SUCCESS_100
@@ -502,17 +505,12 @@ def edit_account(request, user_id, user_type):
                     pass_event = ERROR_202
             else:
                 pass_event = ERROR_201
-
-    if request.method == "POST" and user_type in (1, 10, 11, 12):
-        email = request.POST.get('email',"")
-        user.email = email
-        user.save()
             
         return render(request, 'edit_account.html', {
                                                         'event': event,
                                                         'pass_event': pass_event,
                                                         'year': datetime.now(),
-                                                        'CustomUser': request.user})
+                                                        'CustomUser': user})
 
     else:  # GET
         return render(request, 'edit_account.html', {
