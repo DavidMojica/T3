@@ -65,6 +65,7 @@ def sm_llamadas(request):
     if request.method == "POST":
         ban = True
         error = ""
+        psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
 
         nombre = request.POST['nombre'].strip()
         documento = request.POST['documento'].strip()
@@ -258,6 +259,13 @@ def sm_llamadas(request):
                             id_motivo=motivo_instace
                         )
                         llamada_motivo.save()
+                        
+                #Contador de llamadas del psicologo
+                llamadas = int(psicologo.contador_llamadas_psicologicas)
+                psicologo.contador_llamadas_psicologicas = llamadas + 1
+                psicologo.save()
+                
+                
             return redirect(reverse('sm_historial_llamadas'))
             
         else:
