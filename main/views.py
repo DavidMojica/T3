@@ -64,15 +64,15 @@ def sm_llamadas(request):
         ban = True
         error = ""
 
-        nombre = request.POST['nombre']
-        documento = request.POST['documento']
-        edad = request.POST['edad']
-        direccion = request.POST['direccion']
-        telefono = request.POST['telefono']
-        observaciones = request.POST['observaciones']
-        seguimiento24 = request.POST['seguimiento24']
-        seguimiento48 = request.POST['seguimiento48']
-        seguimiento72 = request.POST['seguimiento72']
+        nombre = request.POST['nombre'].strip()
+        documento = request.POST['documento'].strip()
+        edad = request.POST['edad'].strip()
+        direccion = request.POST['direccion'].strip()
+        telefono = request.POST['telefono'].strip()
+        observaciones = request.POST['observaciones'].strip()
+        seguimiento24 = request.POST['seguimiento24'].strip()
+        seguimiento48 = request.POST['seguimiento48'].strip()
+        seguimiento72 = request.POST['seguimiento72'].strip()
 
         # Campos numericos
         try:
@@ -389,9 +389,9 @@ def register(request):
         if form.is_valid():
             if request.POST['password'] == request.POST['password2']:
                 try:
-                    user = form.save(commit=False)
-                    user.username = request.POST['username'].lower()
-                    user.set_password(request.POST['password'])
+                    user = form.save(commit=False).strip()
+                    user.username = request.POST['username'].lower().strip()
+                    user.set_password(request.POST['password']).strip()
                     user.save()
 
                     info_miembros, created = InfoMiembros.objects.get_or_create(
@@ -477,9 +477,9 @@ def edit_account(request, user_id, user_type):
                 form.save()
                 event = "Se actualizaron sus datos correctamente :)."
         elif "change_password" in request.POST:
-            old_password = request.POST.get('old_password')
-            new_password = request.POST.get('new_password')
-            new_password2 = request.POST.get('new_password2')
+            old_password = request.POST.get('old_password').strip()
+            new_password = request.POST.get('new_password').strip()
+            new_password2 = request.POST.get('new_password2').strip()
             if user.check_password(old_password):
                 if new_password == new_password2:
                     user.set_password(new_password)
@@ -1437,11 +1437,11 @@ def sm_historial_llamadas(request):
     
     #sistema de filtrado
     if form.is_valid():
-        id_llamada = form.cleaned_data.get('id_llamada')
-        id_profesional = form.cleaned_data.get('id_profesional')
-        documento_paciente = form.cleaned_data.get('documento_paciente')
-        fecha_llamada = form.cleaned_data.get('fecha_llamada')
-        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
+        id_llamada = form.cleaned_data.get('id_llamada').strip()
+        id_profesional = form.cleaned_data.get('id_profesional').strip()
+        documento_paciente = form.cleaned_data.get('documento_paciente').strip()
+        fecha_llamada = form.cleaned_data.get('fecha_llamada').strip()
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi').strip()
         
         if id_llamada:
             llamadas = llamadas.filter(id=id_llamada)
@@ -1534,21 +1534,21 @@ def detallesusuario(request):
                 return redirect(reverse('adminuser'))
             else:
                 #InfoMiembros
-                nombre = request.POST['nombre']
-                documento = request.POST['documento']
-                tipo_documento = request.POST['tipo_documento'] #i
-                numHijos = request.POST['numHijos']
-                barrio = request.POST['barrio']
-                direccion = request.POST['direccion']
-                celular = request.POST['celular']
-                eps = request.POST['eps'] #i
-                estadoCivil = request.POST['estadoCivil'] #i
-                etnia = request.POST['etnia'] #i
-                regimen = request.POST['regimen'] #i
-                sexo = request.POST['sexo'] #i
+                nombre = request.POST['nombre'].strip()
+                documento = request.POST['documento'].strip()
+                tipo_documento = request.POST['tipo_documento'].strip()
+                numHijos = request.POST['numHijos'].strip()
+                barrio = request.POST['barrio'].strip()
+                direccion = request.POST['direccion'].strip()
+                celular = request.POST['celular'].strip()
+                eps = request.POST['eps'].strip()
+                estadoCivil = request.POST['estadoCivil'].strip()
+                etnia = request.POST['etnia'].strip()
+                regimen = request.POST['regimen'].strip()
+                sexo = request.POST['sexo'].strip()
                 #Account Customuser
-                username = request.POST['username']
-                email = request.POST['email']
+                username = request.POST['username'].strip()
+                email = request.POST['email'].strip()
                 
                 
                 
@@ -1696,7 +1696,6 @@ def eventHandler(request):
             custoMuserInstance.set_password(nuevaContrasena)
             custoMuserInstance.save()
             is_password_correct = check_password(nuevaContrasena, custoMuserInstance.password)
-            print(is_password_correct)
             
             return render(request, 'userDetails.html', {
                     'CustomUser': request.user,
