@@ -8,7 +8,7 @@
             
             {% for field in form %}
                 <div class="mb-3">
-                    {{ field.label_tag }}
+                    <span class="badge bg-success">{{ field.label_tag }}</span> 
                     {{ field }}
                     {% if field.help_text %}
                         <small class="form-text text-muted">{{ field.help_text }}</small>

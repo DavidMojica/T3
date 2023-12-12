@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from .models import EPS, CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
+from django.utils.html import format_html
 
 
 class FiltroUsuarios(forms.Form):
@@ -74,22 +75,31 @@ class FiltroCitasForm(forms.Form):
 
 class CustomUserRegistrationForm(forms.ModelForm):
     username = forms.CharField(
+        label='Nombre de usuario',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'})
     )
     email = forms.EmailField(
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
+        label='Correo electrónico',
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
     )
     password = forms.CharField(
+        label='Contraseña',
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
     )
     password2 = forms.CharField(
+        label='Confirmar contraseña',
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirmar contraseña'})
     )
     tipo_usuario = forms.ModelChoiceField(
+        label='Seleccione tipo de usuario',
         queryset=TipoUsuario.objects.all(),
         widget=forms.Select(attrs={'class': 'custom-class form-select', 'id': 'custom-id'}),
         empty_label='Selecciona un tipo de usuario'
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password2'].label = 'Confirmar contraseña'
 
     class Meta:
         model = CustomUser
@@ -166,3 +176,4 @@ class CustomUserLoginForm(AuthenticationForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
