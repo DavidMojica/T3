@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
 from django.urls import reverse
-from django.contrib import messages
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
@@ -1696,6 +1695,8 @@ def eventHandler(request):
             nuevaContrasena = "1234"
             custoMuserInstance.set_password(nuevaContrasena)
             custoMuserInstance.save()
+            is_password_correct = check_password(nuevaContrasena, custoMuserInstance.password)
+            print(is_password_correct)
             
             return render(request, 'userDetails.html', {
                     'CustomUser': request.user,
