@@ -160,7 +160,8 @@ def sm_llamadas(request):
                     direccion=direccion.lower(),
                     municipio=municipio_instance,
                     poblacion_vulnerable=pob_vulnerable_instance,
-                    celular=telefono
+                    celular=telefono,
+                    cant_llamadas =  1
                 )
                 nuevo_paciente.save()
                 
@@ -524,6 +525,7 @@ def edit_account(request, user_id, user_type):
 def sm_HPC(request):
     documento = ""
     fecha_nacimiento = None
+    psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             ban = True
@@ -1362,6 +1364,16 @@ def sm_HPC(request):
                             id_conducta=conInstance
                         )
                         cond_s.save()
+                        
+                infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
+                
+                citasPaciente = int(infoPacientesInstance.cant_asesorias_psicologicas)
+                infoPacientesInstance.cant_asesorias_psicologicas = citasPaciente + 1
+                infoPacientesInstance.save()
+
+                citas = int(psicologo.contador_asesorias_psicologicas)
+                psicologo.contador_asesorias_psicologicas = citas + 1
+                psicologo.save()
 
                 return redirect(reverse('sm_historial_citas'))
     elif request.method == "GET":
