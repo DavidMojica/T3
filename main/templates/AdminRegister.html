@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="main-expanded row">
-    <div class="mt-4 col-md-8">
-        <h1 class="mb-4">Registro de Usuario</h1>
-        <form method="post" action="/adminregister/" class="needs-validation">
+<main class="main-expanded row justify-content-center card">
+    <div class="mt-4 row">
+        <h1 class="mb-4 card-header">Registro de Usuario</h1>
+        <form method="post" action="/adminregister/" class="needs-validation col-md-12 card-body">
             {% csrf_token %}
             
             {% for field in form %}
                 <div class="mb-3">
-                    <span class="badge bg-success">{{ field.label_tag }}</span> 
+                    <span class="badge bg-success mb-3">{{ field.label_tag }}</span> 
                     {{ field }}
                     {% if field.help_text %}
                         <small class="form-text text-muted">{{ field.help_text }}</small>

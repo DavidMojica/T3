@@ -107,14 +107,11 @@ class CustomUserRegistrationForm(forms.ModelForm):
 
 
 
-
-
-
 class AutodataForm(forms.ModelForm):
     tipo_documento = forms.ModelChoiceField(
         queryset=TipoDocumento.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_tipo_documento'
         }),
         empty_label="Selecciona tu tipo de documento"
@@ -122,7 +119,7 @@ class AutodataForm(forms.ModelForm):
     estado_civil = forms.ModelChoiceField(
         queryset=EstadoCivil.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_estado_civil'
         }),
         empty_label="Selecciona tu estado civil"
@@ -130,7 +127,7 @@ class AutodataForm(forms.ModelForm):
     regimen_seguridad = forms.ModelChoiceField(
         queryset=RegimenSeguridad.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_regimen_seguridad'
         }),
         empty_label="Selecciona tu régimen de seguridad"
@@ -138,7 +135,7 @@ class AutodataForm(forms.ModelForm):
     sexo = forms.ModelChoiceField(
         queryset=Sexo.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_sexo'
         }),
         empty_label="Selecciona tu sexo"
@@ -146,7 +143,7 @@ class AutodataForm(forms.ModelForm):
     etnia = forms.ModelChoiceField(
         queryset=Etnia.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-select',
             'id': 'id_etnia'
         }),
         empty_label="Selecciona tu Etnia"
@@ -164,7 +161,7 @@ class AutodataForm(forms.ModelForm):
     barrio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_barrio'}))
     celular = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_celular'}))
     sisben = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_sisben'}))
-    
+    sisben = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'id':'sisben'}))
     class Meta:
         model = InfoMiembros
         fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
