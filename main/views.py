@@ -474,10 +474,10 @@ def edit_account(request, user_id, user_type):
 
     if request.method == "POST" and user_type in (20, 21, 22):
         if "account_data" in request.POST:
-            
-            if form.is_valid():
-                form.save()
-                event = "Se actualizaron sus datos correctamente :)."
+            email = request.POST.get('email',"")
+            user.email = email
+            user.save()
+            event = "Se actualizaron sus datos correctamente :)."
         elif "change_password" in request.POST:
             old_password = request.POST.get('old_password').strip()
             new_password = request.POST.get('new_password').strip()
@@ -492,11 +492,10 @@ def edit_account(request, user_id, user_type):
             else:
                 pass_event = ERROR_201
 
-    if request.method == "post" and user_type in (1, 10, 11, 12):
-        form = AdministradorEditForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            
+    if request.method == "POST" and user_type in (1, 10, 11, 12):
+        email = request.POST.get('email',"")
+        user.email = email
+        user.save()
             
         return render(request, 'edit_account.html', {
                                                         'event': event,
@@ -1441,11 +1440,11 @@ def sm_historial_llamadas(request):
     
     #sistema de filtrado
     if form.is_valid():
-        id_llamada = form.cleaned_data.get('id_llamada').strip()
-        id_profesional = form.cleaned_data.get('id_profesional').strip()
-        documento_paciente = form.cleaned_data.get('documento_paciente').strip()
-        fecha_llamada = form.cleaned_data.get('fecha_llamada').strip()
-        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi').strip()
+        id_llamada = form.cleaned_data.get('id_llamada')
+        id_profesional = form.cleaned_data.get('id_profesional')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        fecha_llamada = form.cleaned_data.get('fecha_llamada')
+        solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
         
         if id_llamada:
             llamadas = llamadas.filter(id=id_llamada)
