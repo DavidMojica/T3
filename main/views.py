@@ -436,8 +436,9 @@ def register(request):
 
 
 @login_required
-def autodata(request, user_id):
-    user = get_object_or_404(InfoMiembros, pk=user_id)
+def autodata(request):
+    userId = str(request.user.id)
+    user = get_object_or_404(InfoMiembros, pk=userId)
     if request.method == "POST":
         form = AutodataForm(request.POST, instance=user)
 
@@ -461,6 +462,7 @@ def autodata(request, user_id):
     else:
         # En el caso de una solicitud GET, simplemente muestra el formulario
         form = AutodataForm(instance=user)
+        
 
     return render(request, 'autodata.html', {
         'CustomUser': request.user,

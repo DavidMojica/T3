@@ -35,7 +35,7 @@ urlpatterns = [
     path('eventHandler', views.eventHandler, name="eventHandler"),
     path('detallesusurio/', views.detallesusuario, name="detallesusuario"), 
     path('edit_account/<int:user_id>/<int:user_type>/', views.edit_account, name="edit_account"),
-    path('autodata/<int:user_id>/', views.autodata, name="autodata"),
+    path('autodata/', views.autodata, name="autodata"),
     path('get_departamentos/', views.get_departamentos, name='get_departamentos'),
     path('get_municipios/', views.get_municipios, name='get_municipios'),
 ]
