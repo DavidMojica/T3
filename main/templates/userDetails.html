@@ -7,12 +7,12 @@
             {% csrf_token %}
             <div class="mb-3 col-md-5 col-sm-10">
                 <label for="nombre" class="form-label"><span class="badge bg-info">Nombre</span></label>
-                <input type="text" class="form-control" name="nombre" id="nombre" value="{% if userI.nombre %} {{userI.nombre}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" class="form-control" name="nombre" id="nombre" value="{% if userI.nombre %}{{userI.nombre}}{% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-md-4 col-sm-10">
                 <label for="documento" class="form-label"><span class="badge bg-success">Documento</span></label>
-                <input type="text" class="form-control" id="documento" name="documento" value="{% if userI.documento %} {{userI.documento}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" class="form-control" id="documento" name="documento" value="{% if userI.documento %}{{userI.documento}}{% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
             <div class="mb-3 col-md-3 col-sm-10">
                 <label for="tipo_documento" class="form-label"><span class="badge bg-secondary">Tipo de documento</span></label>
@@ -31,17 +31,17 @@
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="barrio" class="form-label"><span class="badge bg-info">Barrio</span></label>
-                <input type="text" name="barrio" class="form-control" id="barrio" value="{% if userI.barrio %} {{userI.barrio}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="barrio" class="form-control" id="barrio" value="{% if userI.barrio %}{{userI.barrio}}{% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="direccion" class="form-label"><span class="badge bg-primary">Direccion</span></label>
-                <input type="text" name="direccion" class="form-control" id="direccion" value="{% if userI.direccion %} {{userI.direccion}} {% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
+                <input type="text" name="direccion" class="form-control" id="direccion" value="{% if userI.direccion %}{{userI.direccion}}{% else %} No proporcionado {% endif %}"{% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="celular" class="form-label"><span class="badge bg-info">Celular</span></label>
-                <input type="text" name="celular" id="celular" class="form-control" value="{% if userI.celular %} {{userI.celular }} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="celular" id="celular" class="form-control" value="{% if userI.celular %}{{userI.celular }}{% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
@@ -107,12 +107,12 @@
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="username" class="form-label"><span class="badge bg-success">Nombre de usuario</span></label>
-                <input type="text" name="username" class="form-control" id="username" value="{% if userI.id_usuario.username%} {{userI.id_usuario.username}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="username" class="form-control" id="username" value="{% if userI.id_usuario.username%}{{userI.id_usuario.username}}{% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10">
                 <label for="email" class="form-label"><span class="badge bg-info">Email</span></label>
-                <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.email %} {{userI.id_usuario.email}} {% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
+                <input type="text" name="email" class="form-control" id="email" value="{% if userI.id_usuario.email %}{{userI.id_usuario.email}}{% else %} No proporcionado {% endif %}" {% if not editable %} readonly {% endif %}>
             </div>
 
             <div class="mb-3 col-xxl-4 col-xl-4 col-md-6 col-sm-10 text-center">
@@ -146,7 +146,14 @@
             <a href="{% url 'eventHandler' %}?eventId=4&userId={{userI.id_usuario_id}}" class="col-md-4 mb-2">
                 <button class="btn btn-danger" id="generar-contrasena-btn">Recuperar contraseña</button>
             </a>
-            <p class="text-bg-info">{{passMsg}}</p>
+           <div class="mt-3">
+            <p>
+                Contraseña actualizada correctamente. <br>
+                Usuario: <span class="badge bg-success">{{passUser}}</span> <br>
+                Nueva contraseña: <span class="badge bg-info">{{pass}}</span><br>
+                <span class="badge bg-danger">Por favor informe al usuario que cambie la contraseña una vez entre a su cuenta.</span>
+            </p>
+           </div>
         </div>
         {% endif %}
     </div>

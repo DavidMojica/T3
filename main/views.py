@@ -1676,6 +1676,7 @@ def eventHandler(request):
         event = request.GET.get('eventId', 0)
         userId = request.GET.get('userId', 0)
         custoMuserInstance = get_object_or_404(CustomUser,pk=userId)
+        infoUserInstance = get_object_or_404(InfoMiembros, id_usuario=userId)
         #banear
         if event == "1" and custoMuserInstance:
             custoMuserInstance.is_active = False
@@ -1692,15 +1693,14 @@ def eventHandler(request):
                 custoMuserInstance.delete()
         #cambiar contraseña
         elif event == "4" and custoMuserInstance:    
-            nuevaContrasena = "1234"
+            nuevaContrasena = str(random.randint(100000, 999999))
             custoMuserInstance.set_password(nuevaContrasena)
             custoMuserInstance.save()
-            is_password_correct = check_password(nuevaContrasena, custoMuserInstance.password)
             
             return render(request, 'userDetails.html', {
                     'CustomUser': request.user,
                     'year': datetime.now(),
-                    'userI':custoMuserInstance,
+                    'userI':infoUserInstance,
                     'tiposDoc':tipos_documento,
                     'estadosC': estados_civiles,
                     'sexos': sexos,
@@ -1710,7 +1710,8 @@ def eventHandler(request):
                     'editable': True,
                     'btnClass': "btn btn-warning",
                     'btnText': 'Actualizar usuario',
-                    'passMsg': f"Se ha actualizado correctamente. Por favor notifique a {custoMuserInstance.username}. Nueva contraseña: {nuevaContrasena}"})
+                    'passUser': custoMuserInstance.username,
+                    'pass': nuevaContrasena})
         else:
             pass
         
