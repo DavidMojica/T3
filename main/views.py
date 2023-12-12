@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError, transaction
 from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast
-from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
+from .forms import AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -474,7 +474,7 @@ def edit_account(request, user_id, user_type):
 
     if request.method == "POST" and user_type in (20, 21, 22):
         if "account_data" in request.POST:
-            form = TrabajadorEditForm(request.POST, instance=user)
+            
             if form.is_valid():
                 form.save()
                 event = "Se actualizaron sus datos correctamente :)."
@@ -496,18 +496,20 @@ def edit_account(request, user_id, user_type):
         form = AdministradorEditForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            
+            
+        return render(request, 'edit_account.html', {
+                                                        'event': event,
+                                                        'pass_event': pass_event,
+                                                        'year': datetime.now(),
+                                                        'CustomUser': request.user})
 
     else:  # GET
-        if user_type in (20, 21, 22):
-            form = TrabajadorEditForm(instance=user)
-        elif user_type in (1, 10, 11, 12):
-            form = AdministradorEditForm
-
-    return render(request, 'edit_account.html', {'form': form,
-                                                 'event': event,
-                                                 'pass_event': pass_event,
-                                                 'year': datetime.now(),
-                                                 'CustomUser': request.user})
+        return render(request, 'edit_account.html', {
+                                                    'event': event,
+                                                    'pass_event': pass_event,
+                                                    'year': datetime.now(),
+                                                    'CustomUser': request.user})
 
 
 

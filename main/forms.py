@@ -97,13 +97,6 @@ class CustomUserRegistrationForm(forms.ModelForm):
 
 
 
-class TrabajadorEditForm(forms.ModelForm):
-    email = forms.CharField(label="Correo electronico",
-                            widget=forms.EmailInput(attrs={'class': 'blackout-input', 'placeholder': 'Ingrese su email'}))
-
-    class Meta:
-        model = CustomUser
-        fields = ('email',)
 
 
 
@@ -166,20 +159,6 @@ class AutodataForm(forms.ModelForm):
         model = InfoMiembros
         fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
                   'direccion', 'barrio', 'celular', 'sisben', 'eps', 'regimen_seguridad', 'sexo',)
-
-
-
-class AdministradorEditForm(forms.ModelForm):
-    tipo_usuario = forms.ModelChoiceField(
-        queryset=TipoUsuario.objects.all(),
-        widget=forms.Select(
-            attrs={'class': 'custom-class', 'id': 'custom-id'}),
-        empty_label="Selecciona un tipo de usuario"
-    )
-
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'is_active', 'tipo_usuario')
 
 
 class CustomUserLoginForm(AuthenticationForm):
