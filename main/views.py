@@ -1,17 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserRegistrationForm
 from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError, transaction, connection
-from django.db.models import Q, Value, CharField, Func, F
+from django.db import IntegrityError, transaction
+from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast, Lower
 from .forms import TrabajadorEditForm, AdministradorEditForm, AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
+import random, string
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -1694,6 +1697,13 @@ def eventHandler(request):
             if custoMuserInstance:
             # Borra el usuario
                 custoMuserInstance.delete()
+        #cambiar contraseña
+        elif event == "4" and custoMuserInstance:    
+            nuevaContrasena = ''.join(random.choices(string.ascii_letters + string.digits, k=random.randint(8,12)))
+            hashedPassword = make_password(nuevaContrasena)
+            custoMuserInstance.password = hashedPassword
+            custoMuserInstance.save()
+            messages.success(request, f"Se ha generado una nueva contraseña para {custoMuserInstance.username}: {nuevaContrasena}")
         else:
             pass
         
