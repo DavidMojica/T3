@@ -1674,18 +1674,10 @@ def eventHandler(request):
     if request.method == "GET":
         event = request.GET.get('eventId', 0)
         userId = request.GET.get('userId', 0)
-        
-        print(f"{event} - {userId}")
-        
-        try:
-            custoMuserInstance = CustomUser.objects.get(id=userId)
-        except CustomUser.DoesNotExist:
-            custoMuserInstance = None
-        print(custoMuserInstance)
+        custoMuserInstance = get_object_or_404(CustomUser,pk=userId)
         #banear
         if event == "1" and custoMuserInstance:
             custoMuserInstance.is_active = False
-            print(custoMuserInstance.is_active)
             custoMuserInstance.save()
         #desbanear
         elif event == "2" and custoMuserInstance:
@@ -1700,13 +1692,10 @@ def eventHandler(request):
         #cambiar contraseña
         elif event == "4" and custoMuserInstance:    
             nuevaContrasena = ''.join(random.choices(string.ascii_letters + string.digits, k=random.randint(8,12)))
-             # Aplica un hash a la nueva contraseña
-            hashedPassword = make_password("1234")
-            
-            # Actualiza la contraseña del usuario en la base de datos
-            custoMuserInstance.password = hashedPassword
+            custoMuserInstance.set_password(nuevaContrasena)
+            custoMuserInstance.save()
             print(nuevaContrasena)
-            print(hashedPassword)
+            
             return render(request, 'userDetails.html', {
                     'CustomUser': request.user,
                     'year': datetime.now(),
@@ -1728,7 +1717,7 @@ def eventHandler(request):
     else:
         return redirect(reverse('adminuser'))
     
-    
+    CBjwelZtyu
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
