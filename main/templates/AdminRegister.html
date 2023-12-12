@@ -18,9 +18,14 @@
 
             {{ error }} <br>
 
-            <button type="submit" class="btn btn-primary">Registrarse</button>
-            <div class="container">
-                
+            <button type="submit" class="btn btn-primary mt-4">Registrarse</button>
+            <div class="container mt-4">
+                {% if name %}
+                <p>
+                    Usuario: <span class="badge bg-success">{{name}}</span> <br>
+                    Contraseña: <span class="badge bg-success">{{pass}}</span>
+                </p>
+                {% endif %}
             </div>
         </form>
     </div>
