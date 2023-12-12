@@ -1766,14 +1766,39 @@ def adminuser(request):
 def adminregister(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
-        form = CustomUserRegistrationForm
-        
-        
-        return render(request, 'AdminRegister.html',{
-            'CustomUser': request.user,
-            'form': form,
-            'year': datetime.now(),
-        })
+        form = CustomUserRegistrationForm(request.POST)
+        if form.is_valid():
+            if request.POST['password'] == request.POST['password2']:
+                try:
+                    user = form.save(commit=False)
+                    user.username = request.POST['username'].lower().strip()
+                    user.set_password(request.POST['password'])
+                    user.save()
+
+                    info_miembros, created = InfoMiembros.objects.get_or_create(
+                        id_usuario=user)
+                    
+                    if created:
+                        info_miembros.save()  # Solo guardar si es un objeto nuevo
+                    return redirect(reverse('signin'))
+                except IntegrityError:
+                    return render(request, 'AdminRegister.html', {
+                        'CustomUser': request.user,
+                        'form': form,
+                        "error": ERROR_102
+                    })
+            else:
+                return render(request, 'AdminRegister.html', {
+                    'CustomUser': request.user,
+                    'form': form,
+                    "error": ERROR_101
+                })     
+        else:
+            return render(request, 'AdminRegister.html', {
+                'CustomUser': request.user,
+                'form': form,
+                "error": ERROR_100
+            })         
     else:
         return redirect(reverse('home'))
     
