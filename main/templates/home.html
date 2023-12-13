@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="swiper mySwiper">
+    <div class="swiper mySwiper mx-auto">
         <div class="swiper-wrapper">
           <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
           <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
@@ -35,20 +35,37 @@
         </div>
         <div class="swiper-pagination"></div>
     </div>
-    <!-- Initialize Swiper -->
-    <!-- Swiper JS -->
-    <script>
-        var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 3,
-        spaceBetween: 30,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        });
-    </script>
+    
+    <section class="bg-semilight mb-4 mt-4 w-50 mx-auto p-4 rounded-2"> <!-- w-80 establece el ancho al 80%, mx-auto centra la sección -->
+        <div class="row">
+            <div class="col-md-4">   
+                <p class="mb-0"><span class="badge bg-info"><i class="fa fa-whatsapp"></i> Llámanos</span></p>
+                <p class="mb-0"><b>305 435 69 30</b></p>
+            </div>
+            <div class="col-md-4">
+                <p class="mb-0"><span class="badge bg-info">Dirección</span></p>
+                <p class="mb-0"><b>Calle 65 a 12</b></p>
+            </div>
+            <div class="col-md-4">
+                <p class="mb-0"><span class="badge bg-info">Horarios de atención</span></p>
+                <p class="mb-0"><b>8am-12m y 1pm-4pm</b></p>
+            </div>
+        </div>
+    </section>
+    
+    
 
 </main>
-
+<!-- Swiper JS -->
+<script>
+    var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 3,
+    spaceBetween: 30,
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+    });
+</script>
 
 {% endblock %}

@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;500;800;900&display=swap');
 :root{
     --color-brand:#002DD8;
+    --bg-semilight: #F1F1F1 ;
 }
 
 *{
@@ -17,7 +18,7 @@ textarea{
     overflow-x: hidden;
 }
 .swiper {
-    width: 100%;
+    width: 90%;
     height: 100%;
   }
 
@@ -49,6 +50,9 @@ textarea{
 .logo-gob{
     max-width: 300px;
     height: auto;
+}
+.bg-semilight{
+    background-color: var(--bg-semilight);
 }
 
 .bg-gradient-blue{
