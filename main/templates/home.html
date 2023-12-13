@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<main class="main-expanded">
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<main class="main-expanded" id="main-home">
     <div class="container-fluid p-0">
         <div class="row no-gutters">
             <div class="col-md-6 py-4">
@@ -16,9 +20,35 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid" id="main-home">
-        
-        <img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id="banner">
+
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+          <div class="swiper-slide"><img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id=""></div>
+        </div>
+        <div class="swiper-pagination"></div>
     </div>
+    <!-- Initialize Swiper -->
+    <!-- Swiper JS -->
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        });
+    </script>
+
 </main>
+
+
 {% endblock %}

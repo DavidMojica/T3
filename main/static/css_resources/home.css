@@ -14,18 +14,38 @@ textarea{
 }
 
 #main-home{
-    margin: 0;
-    padding: 0;
+    overflow-x: hidden;
 }
-.text-brand{
-    color: var(--color-brand);
+.swiper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1em;
+  }
+.text-brand {
+    color: white;
     font-weight: 800;
     font-family: 'Rubik', sans-serif;
+    -webkit-text-stroke: 2px green; /* Ancho y color del borde para navegadores basados en WebKit (Chrome, Safari) */
+    text-stroke: 2px green; /* Ancho y color del borde para navegadores no basados en WebKit (Firefox) */
+    background-clip: text; /* Clip de fondo para que el borde no afecte el relleno del texto */
 }
-#banner{
-    width: 100vw;
-    max-height: 70vh;
-}
+
 .logo-gob{
     max-width: 300px;
     height: auto;
