@@ -1,9 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
 <main class="main-expanded">
-    <div class="" id="main-home">
-        {% load static %}
-        <img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="" id="banner">
+    <div class="container-fluid p-0">
+        <div class="row no-gutters">
+            <div class="col-md-6 py-4">
+                <h1 class="m-lg-1 m-0 flex align-items-center text-break text-brand">
+                    Secretaría de salud de Bello
+                </h1>
+            </div>
+            <div class="col-md-6 py-4">
+                <div class="img-fluid">
+                    <img src="https://ansv.gov.co/sites/default/files/imagenes/LOGO%20COLOMBIA%20POTENCIA%20DE%20LA%20VIDA-TRANSPORTE.png" alt="" class="logo-gob">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="main-home">
+        
+        <img src="{% static 'images/banner.jpg' %}" alt="banner bello" class="img-fluid" id="banner">
     </div>
 </main>
 {% endblock %}

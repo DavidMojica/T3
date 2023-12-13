@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;500;800;900&display=swap');
+:root{
+    --color-brand:#002DD8;
+}
+
 *{
     font-family: 'Ubuntu', sans-serif;
     scroll-behavior: smooth;
-    overflow-x: hidden;
 }
 textarea{
     resize: none;
@@ -13,10 +17,18 @@ textarea{
     margin: 0;
     padding: 0;
 }
-
+.text-brand{
+    color: var(--color-brand);
+    font-weight: 800;
+    font-family: 'Rubik', sans-serif;
+}
 #banner{
     width: 100vw;
     max-height: 70vh;
+}
+.logo-gob{
+    max-width: 300px;
+    height: auto;
 }
 
 .bg-gradient-blue{
