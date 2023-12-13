@@ -150,7 +150,7 @@
                 </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_lect_nivel" class="text-light">Nivel de lectoescritura</label>
+                    <label for="e_lect_nivel" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nivel de lectoescritura</span></label>
                     <select name="e_lect2" class="form-select" id="e_lect_nivel">
                         {% for lec_n in lectoescritura_nivel %}
                         <option value="{{lec_n.id}}" {% if lec_n.id == paciente.lectoescritura_nivel_id %}selected{% endif %}>
@@ -159,7 +159,7 @@
                     </select>
                </div>
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_raz_analitico" class="text-light">Razonamiento analítico</label>
+                    <label for="e_raz_analitico" class="text-light"><span class="badge bg-primary mb-2 mt-2">Razonamiento analítico</span></label>
                     <select name="e_raz_analitico" id="e_raz_analitico" class="form-select">
                         {% for raz in razonamiento_analitico %}
                         <option value="{{raz.id}}" {% if raz.id == paciente.razonamiento_analitico_id %}selected{% endif %}>
@@ -169,7 +169,7 @@
                </div>
                
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_etnia" class="text-light">Etnia</label>
+                    <label for="e_etnia" class="text-light"><span class="badge bg-primary mb-2 mt-2">Etnia</span></label>
                     <select name="e_etnia" class="form-select" id="e_etnia">
                         {% for etnia in etnias %}
                         <option value="{{etnia.id}}" {% if etnia.id == paciente.etnia_id %}selected{% endif %}>
@@ -179,7 +179,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_ocupacion" class="text-light">Ocupación</label>
+                    <label for="e_ocupacion" class="text-light"><span class="badge bg-primary mb-2 mt-2">Ocupación</span></label>
                     <select name="e_ocupacion" id="e_ocupacion" class="form-select">
                         {% for ocupacion in ocupaciones %}
                         <option value="{{ocupacion.id}}" {% if ocupacion.id == paciente.ocupacion_id %}selected{% endif %} >
@@ -189,7 +189,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-4">
-                    <label for="e_rss" class="text-light">Regimen de seguridad social</label>
+                    <label for="e_rss" class="text-light"><span class="badge bg-primary mb-2 mt-2">Regimen de seguridad social</span></label>
                     <select name="e_rss" id="e_rss" class="form-select">
                         {% for rss in rsss %}
                         <option value="{{rss.id}}" {% if rss.id == paciente.regimen_seguridad_id %} selected {% endif %} >
@@ -199,7 +199,7 @@
                 </div>
                 
                 <div class="form-group mb-2 col-sm-12 col-md-5 col-lg-5 col-xl-4">
-                    <label for="eps" class="text-light">Nombre de la EPS</label>
+                    <label for="eps" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nombre de la EPS</span></label>
                     <select name="eps" id="eps" class="form-select">
                         {% for eps in epss %}
                         <option value="{{eps.id}}" {% if eps.id == paciente.eps_id %} selected {% endif %} >
@@ -208,11 +208,11 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-2 col-sm-12 col-md-10 col-lg-10 col-xl-3 row justify-content-center">
-                    <label for="e_sisben" class="text-light">¿Tiene sisbén?</label>
+                <div class="form-group mb-2 col-sm-12 col-md-10 col-lg-10 col-xl-12 row justify-content-center">
+                    <label for="e_sisben" class="text-light"><span class="badge bg-success mb-2 mt-2">¿Tiene sisbén?</span></label>
                     <input type="checkbox" name="e_sisben" class="form-check" id="e_sisben" {% if paciente.sisben %} checked {% endif %}>
                 </div>
-                <div class="form-group mb-2 col-xl-3 row justify-content-center"></div>
+                <div class="form-group mb-2 col-xl-12 row justify-content-center"></div>
                 
                 <div class="form-group mb-2 col-md-2 mb-5">
                     <p class="text-danger" id="step2Error">{{error}}</p>
