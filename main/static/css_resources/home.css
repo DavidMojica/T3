@@ -2,10 +2,21 @@
 *{
     font-family: 'Ubuntu', sans-serif;
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 textarea{
     resize: none;
     height: 150px;
+}
+
+#main-home{
+    margin: 0;
+    padding: 0;
+}
+
+#banner{
+    width: 100vw;
+    max-height: 70vh;
 }
 
 .bg-gradient-blue{
@@ -36,7 +47,6 @@ textarea{
     }
     
 }
-
 
 :root {
     --blue: #0255f0;
