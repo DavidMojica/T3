@@ -102,11 +102,11 @@
                     </select>
                </div>
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_hijos" class="text-light">Numero de hijos</label>
+                    <label for="e_hijos" class="text-light"><span class="badge bg-warning mb-2 mt-2">Numero de hijos</span></label>
                     <input type="number" class="form-control" name="e_hijos" id="e_hijos" value="{{paciente.numero_hijos}}">
                </div>
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_estado_civil" class="text-light">Estado civil</label>
+                    <label for="e_estado_civil" class="text-light"><span class="badge bg-primary mb-2 mt-2">Estado civil</span></label>
                     <select name="e_estado_civil" class="form-select" id="e_estado_civil">
                         {% for estado in estados_civil %}
                         <option value="{{estado.id}}" {% if estado.id == paciente.estado_id %}selected{% endif %}>
@@ -116,16 +116,16 @@
                </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_celular" class="text-light">No. Celular</label>
+                    <label for="e_celular" class="text-light"><span class="badge bg-success mb-2 mt-2">No. Celular</span></label>
                     <input type="text" name="e_celular" class="form-control" id="e_celular" placeholder="Numero de celular del paciente"
                         value="{{paciente.celular}}">
                </div>
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_correo" class="text-light">Correo</label>
+                    <label for="e_correo" class="text-light"><span class="badge bg-warning mb-2 mt-2">Correo</span></label>
                     <input type="email" name="e_correo" class="form-control" id="e_correo" value="{{paciente.correo}}" placeholder="Correo electrónico">
                </div>
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_lectoescritura" class="text-light">Lectoescritura</label>
+                    <label for="e_lectoescritura" class="text-light"><span class="badge bg-primary mb-2 mt-2">Lectoescritura</span></label>
                     <select name="e_lect" class="form-select" id="e_lectoescritura">
                         {% for lec in lectoescrituras %}
                         <option value="{{lec.id}}" {% if lec.id == paciente.lectoescritura_indicador_id %}selected{% endif %}>
@@ -135,6 +135,7 @@
                </div>
 
                <div class="form-group mt-3 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <span class="badge bg-success mb-2 mt-2">Calculo</span>
                 <details class="mult-details">
                     <summary class="mult-summary">Cálculo del paciente</summary>
                         <ul class="mult-ul">
