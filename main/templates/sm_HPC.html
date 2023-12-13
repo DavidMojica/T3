@@ -393,7 +393,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-5">
-                    <label for="lectoescritura_nivel" class="text-light">Regimen de seguridad social</label>
+                    <label for="lectoescritura_nivel" class="text-light"><span class="badge bg-primary mb-2 mt-2">Regimen de seguridad social</span></label>
                     <select name="rss" class="form-select" id="rss">
                         <option value="-1">Seleccione...</option>
                         {% for rss in rsss %}
@@ -402,11 +402,11 @@
                     </select>
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-2 row justify-content-center">
-                    <label for="sisben" class="text-light">¿Tiene sisbén?</label>
+                    <label for="sisben" class="text-light"><span class="badge bg-success mt-2 mb-2">¿Tiene sisbén?</span></label>
                     <input type="checkbox" name="sisben" class="form-check" id="sisben">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-5">
-                    <label for="eps" class="text-light">Nombre de la EPS</label>
+                    <label for="eps" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nombre de la EPS</span></label>
                     <select name="eps" class="form-select" id="eps">
                         <option value="-1">Seleccione...</option>
                         {% for eps in epss %}
