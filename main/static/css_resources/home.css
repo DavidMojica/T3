@@ -4,6 +4,9 @@
     --color-brand:#002DD8;
     --bg-semilight: #F1F1F1 ;
 }
+ul{
+    list-style: none;
+}
 
 *{
     font-family: 'Ubuntu', sans-serif;
@@ -125,8 +128,8 @@ textarea{
     overflow-x: hidden;
 }
 .swiper {
-    width: 90%;
-    height: 100%;
+    width: 100%;
+    height: 385px;
   }
 
   .swiper-slide {
