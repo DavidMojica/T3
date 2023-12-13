@@ -9,22 +9,22 @@
     <div class="row justify-content-center text-center">
       <h2 class="text-light mt-5 mb-3">Formulario de llamadas</h2>
       <p>
-        <span class="badge bg-danger">Obligatorio</span> <br>
+        <span class="badge bg-primary">Obligatorio</span> <br>
         <span class="badge bg-warning">No obligatorio pero mejor si se llena</span> <br>
         <span class="badge bg-success">No obligatorio</span>
       </p>
       <div class="col-md-8 row justify-content-center">
 
         <div class="form-group col-sm-10 col-md-6 col-lg-4 col-xl-4">
-          <label for="in_nombre" class="text-light"><span class="badge bg-danger mb-2">Nombre *</span></label>
+          <label for="in_nombre" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nombre *</span></label>
           <input type="text" class="form-control" name="nombre" id="in_nombre" placeholder="Nombre del paciente" value="{{ paciente.nombre }}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-4 col-xl-4">
-          <label for="in_nombre" class="text-light"><span class="badge bg-danger mb-2">No. de documento *</span></label>
+          <label for="in_nombre" class="text-light"><span class="badge bg-primary mb-2 mt-2">No. de documento *</span></label>
           <input type="text" class="form-control" name="documento" id="in_documento" placeholder="Documento del paciente" value="{{paciente.documento}}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-4 col-xl-4">
-          <label for="in_tipo_documento" class="text-light"><span class="badge bg-danger mb-2">Tipo de documento *</span></label>
+          <label for="in_tipo_documento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Tipo de documento *</span></label>
           <select name="tipo_documento" class="form-select" id="in_tipo_documento">
             <option value="-1">Seleccione...</option>
             {% for tipo_doc in tipos_documento %}
@@ -34,7 +34,7 @@
         </div>
 <!-- 256 -->
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
-          <label for="in_sexo" class="text-light"><span class="badge bg-danger mb-2">Sexo *</span></label>
+          <label for="in_sexo" class="text-light"><span class="badge bg-primary mb-2 mt-2">Sexo *</span></label>
           <select name="sexo" class="form-select" id="in_sexo">
             <option value="-1">Seleccione...</option>
             {% for sexo in sexos %}
@@ -43,11 +43,11 @@
           </select>
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
-          <label for="in_edad" class="text-light"><span class="badge bg-warning mb-2">Edad</span></label>
+          <label for="in_edad" class="text-light"><span class="badge bg-warning mb-2 mt-2">Edad</span></label>
           <input type="number" class="form-control" name="edad" id="in_edad" placeholder="Edad del paciente" value="{{paciente.edad}}">
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
-          <label for="in_eps" class="text-light"><span class="badge bg-danger mb-2">Eps *</span></label>
+          <label for="in_eps" class="text-light"><span class="badge bg-primary mb-2 mt-2">Eps *</span></label>
           <select name="eps" class="form-select" id="in_eps">
             <option value="-1">Seleccione...</option>
             {% for eps in epss %}
@@ -56,13 +56,13 @@
           </select>
         </div>
         <div class="form-group col-sm-10 col-md-6 col-lg-3 col-xl-3">
-          <label for="in_direccion" class="text-light"><span class="badge bg-warning">Dirección</span></label>
+          <label for="in_direccion" class="text-light"><span class="badge bg-warning mb-2 mt-2">Dirección</span></label>
           <input type="text" name="direccion" class="form-control" value="{{paciente.direccion}}" id="in_direccion" placeholder="Dirección del paciente">
         </div>
 
         {% if secretName != "secretKey" %}
         <div class="form-group col-sm-10 col-md-4 col-lg-3 col-xl-3">
-          <label for="in_pais" class="text-light"><span class="badge bg-warning">País</span></label>
+          <label for="in_pais" class="text-light"><span class="badge bg-warning mb-2 mt-2">País</span></label>
           <select name="pais" class="form-select" id="in_pais">
             <option value="-1">Seleccione...</option>
             {% for pais in paises %}
@@ -73,7 +73,7 @@
 
       
         <div class="form-group col-sm-10 col-md-4 col-lg-3 col-xl-3">
-          <label for="in_departamento" class="text-light"><span class="badge bg-warning">Departamento</span></label>
+          <label for="in_departamento" class="text-light "><span class="badge bg-warning mb-2 mt-2">Departamento</span></label>
           <select name="departamento" class="form-select" id="in_departamento">
             <option value="-1">Seleccione...</option>
           </select>
@@ -81,7 +81,7 @@
  
       
         <div class="form-group col-sm-10 col-md-4 col-lg-3 col-xl-3">
-          <label for="in_municipio" class="text-light"><span class="badge bg-warning">Ciudad</span></label>
+          <label for="in_municipio" class="text-light"><span class="badge bg-warning mb-2 mt-2">Ciudad</span></label>
           <select name="municipio" class="form-select" id="in_municipio">
             <option value="-1">Seleccione...</option>
           </select>
@@ -89,15 +89,15 @@
         {% endif %}
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
-          <label for="in_telefono" class="text-light"><span class="badge bg-warning">Telefono</span></label>
+          <label for="in_telefono" class="text-light"><span class="badge bg-warning mb-2 mt-2">Telefono</span></label>
           <input type="text" class="form-control" name="telefono" id="in_telefono" placeholder="Teléfono del paciente" value="{{paciente.celular}}">
         </div>
 
         <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
-          <label for="in_poblacion_vulnerable" class="text-light"><span class="badge bg-danger">Población vulnerable *</span></label>
+          <label for="in_poblacion_vulnerable" class="text-light "><span class="badge bg-primary mb-2 mt-2">Población vulnerable *</span></label>
           <select name="poblacion_vulnerable" class="form-select" id="in_poblacion_vulnerable">
             <option value="-1">Seleccione...</option>
-            {% for poblacion in poblacion_vulnerable %}
+            {% for poblacion in poblacion_vulnerable%}
             <option value="{{poblacion.id}}" {% if paciente.poblacion_vulnerable_id == poblacion.id %} selected {% endif %} >{{poblacion.description}}</option>
             {% endfor %}
           </select>
@@ -133,22 +133,22 @@
         
         <div class="form-group col-md-2"></div>
         <div class="form-group col-sm-10 col-md-4">
-          <label for="in_observaciones" class="text-light">Observaciones</label>
+          <label for="in_observaciones" class="text-light"><span class="badge bg-success mb-2 mt-2">Observaciones</span></label>
           <textarea name="observaciones" class="form-control" id="in_observaciones" cols="30" rows="10">{{data.observaciones}}</textarea>
         </div>
         <div class="form-group col-sm-10 col-md-4">
-          <label for="in_seguimiento24" class="text-light">Seguimiento 24 horas</label>
+          <label for="in_seguimiento24" class="text-light"><span class="badge bg-success mb-2 mt-2">Seguimiento 24 horas</span></label>
           <textarea name="seguimiento24" class="form-control" id="in_seguimiento24" cols="30" rows="10">{{data.seguimiento24}}</textarea>
         </div>
         <div class="form-group col-md-2"></div>
         
         <div class="form-group col-md-2"></div>
         <div class="form-group col-sm-10 col-md-4">
-          <label for="in_seguimiento48" class="text-light">Seguimiento 48 horas</label>
+          <label for="in_seguimiento48" class="text-light"><span class="badge bg-success mb-2 mt-2">Seguimiento 48 horas</span></label>
           <textarea name="seguimiento48" class="form-control" id="in_seguimiento48" cols="30" rows="10">{{data.seguimiento48}}</textarea>
         </div>
         <div class="form-group col-sm-10 col-md-4">
-          <label for="in_seguimiento72" class="text-light">Seguimiento 72 horas</label>
+          <label for="in_seguimiento72" class="text-light"><span class="badge bg-success mb-2 mt-2">Seguimiento 72 horas</span></label>
           <textarea name="seguimiento72" class="form-control" id="in_seguimiento72" cols="30" rows="10">{{data.seguimiento72}}</textarea>
         </div>
         <div class="form-group col-md-2"></div>
