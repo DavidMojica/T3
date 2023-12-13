@@ -29,17 +29,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" ></script>
     <form action="" method="POST" id="step1FormUpdate">
         {% csrf_token %}
-        <div class="row justify-content-center">
+        <div class="row justify-content-center text-center">
             <div class="col-md-8 row justify-content-center">
                 <h1 class="text-center text-light mt-5">PACIENTE EXISTENTE</h1>
                 <h4 class="text-center text-light mt-2">Verifique los datos y actualice si es necesario.</h4>
+                <p>
+                    <span class="badge bg-primary">Obligatorio</span> <br>
+                    <span class="badge bg-warning">No obligatorio pero mejor si se llena</span> <br>
+                    <span class="badge bg-success">No obligatorio</span>
+                  </p>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="e_documento" class="text-light">Documento</label>
+                    <label for="e_documento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Documento</span></label>
                     <input type="text" class="form-control" name="e_documento" id="e_documento" readonly value="{{paciente.documento}}">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="e_tipo_documento" class="text-light">Tipo de documento</label>
+                    <label for="e_tipo_documento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Tipo de documento</span></label>
                     <select name="e_tipo_documento" class="form-select" id="e_tipo_documento">
                         {% for tipo_documento in tipos_documento %}
                         <option value="{{ tipo_documento.id }}" {% if tipo_documento.id == paciente.tipo_documento_id %}selected{% endif %}>
@@ -51,23 +56,23 @@
                 
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="e_nombre" class="text-light">Nombre</label>
+                    <label for="e_nombre" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nombre</span></label>
                     <input type="text" class="form-control" name="e_nombre" id="e_nombre" value="{{ paciente.nombre }}">
                </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="fecha_nacimiento" class="text-light">Fecha de nacimiento</label>
+                    <label for="fecha_nacimiento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Fecha de nacimiento</span></label>
                     <input type="date" name="e_fecha_nacimiento" class="form-control" id="fecha_nacimiento"
                         value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}">
                </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="e_edad" class="text-light">Edad:</label>
+                    <label for="e_edad" class="text-light"><span class="badge bg-primary mb-2 mt-2">Edad</span></label>
                     <input type="text" class="form-control" name="e_edad" id="e_edad" readonly value="{{paciente.edad}}">
                </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_sexo" class="text-light">Sexo</label>
+                    <label for="e_sexo" class="text-light"><span class="badge bg-primary mb-2 mt-2">Sexo</span></label>
                     <select name="e_sexo" class="form-select" id="e_sexo">
                         {% for sexo in sexos %}
                         <option value="{{sexo.id}}" {% if sexo.id == paciente.sexo_id %}selected{% endif %}>
@@ -77,18 +82,18 @@
                </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_direccion" class="text-light">Dirección</label>
+                    <label for="e_direccion" class="text-light"><span class="badge bg-warning mb-2 mt-2">Dirección</span></label>
                     <input type="text" name="e_direccion" class="form-control" id="e_direccion" placeholder="Dirección de residencia"
                         value="{{paciente.direccion}}">
                </div>
 
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_barrio" class="text-light">Barrio</label>
+                    <label for="e_barrio" class="text-light"><span class="badge bg-success mb-2 mt-2">Barrio</span></label>
                     <input type="text" name="e_barrio" class="form-control" id="e_barrio" placeholder="Barrio de residencia" value="{{paciente.barrio}}">
                </div>
             
                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="e_escolaridad" class="text-light">Escolaridad</label>
+                    <label for="e_escolaridad" class="text-light"><span class="badge bg-warning mb-2 mt-2">Escolaridad</span></label>
                     <select name="e_escolaridad" class="form-select" id="e_escolaridad">
                         {% for escolaridad in escolaridades %}
                         <option value="{{escolaridad.id}}" {% if escolaridad.id == paciente.escolaridad_id %}selected{% endif %}>
