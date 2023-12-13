@@ -36,7 +36,7 @@
 
             <ul class="list-group">
                 {% for cita in citas %}
-                    <a href="{% url 'sm_HPC' %}?cita={{ cita.id }}" class="list-group-item list-group-item-action">
+                    <a href="{% url 'sm_HPC' %}?cita={{ cita.id }}" class="list-group-item list-group-item-action text-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="fw-bold text-success">Cita <span class="badge bg-primary">#{{cita.id}}</span> </h3>
                             <span class="badge bg-primary">{{ cita.fecha_asesoria }}</span>
