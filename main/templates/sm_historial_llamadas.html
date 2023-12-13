@@ -34,7 +34,7 @@
 
             <ul class="list-group">
                 {% for l in llamadas %}
-                <a href="{% url 'sm_llamadas' %}?llamada={{l.id}}" class="list-group-item list-group-item-action">
+                <a href="{% url 'sm_llamadas' %}?llamada={{l.id}}" class="list-group-item list-group-item-action text-center">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="fw-bold text-success">Llamada <span class="badge bg-primary">#{{l.id}}</span> </h3>
                         <span class="badge bg-primary">{{ l.fecha_llamada }}</span>
