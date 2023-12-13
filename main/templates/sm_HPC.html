@@ -15,7 +15,7 @@
                 </div>
                 <div class="text-center">
                     <input type="hidden" name="comprobar_documento">
-                    <p class="text-danger text-bg-light" id="step1Msg">{{errorStep0}}</p>
+                    <p class="text-danger text-bg-light w-50 mx-auto rounded-2" id="step1Msg">{{errorStep0}}</p>
                     <button type="submit" class="btn btn-primary" >Continuar</button>
                 </div>
             </div>
@@ -225,17 +225,22 @@
     <form action="" method="POST" id="step2FormUpdate">
         {% csrf_token %}
         <div class="row justify-content-center">
-            <div class="col-md-8 row justify-content-center">
+            <div class="col-md-8 row justify-content-center text-center">
                 <h1 class="text-center text-light mt-5">PACIENTE NO EXISTE</h1>
+                <p>
+                    <span class="badge bg-primary">Obligatorio</span> <br>
+                    <span class="badge bg-warning">No obligatorio pero mejor si se llena</span> <br>
+                    <span class="badge bg-success">No obligatorio</span>
+                  </p>
                 <h2 class="text-center text-light mt-2">Registro de un nuevo paciente</h2>
                 <div class="form-group mb-2 col-md-6">
-                    <label for="documento" class="text-light">Documento</label>
+                    <label for="documento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Documento *</span></label>
                     <input type="text" name="documento_bait" class="form-control" id="documento_bait" value="{{documento}}">
-                    <input type="hidden" name="documento" id="documento" value="{{documento}}">
+                    <input type="hidden" name="documento" id="documento" value="{{documento}}" readonly>
                 </div>
                 
                 <div class="form-group mb-2 col-md-6">
-                    <label for="tipo_documento" class="text-light">Tipo de documento</label>
+                    <label for="tipo_documento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Tipo de documento *</span></label>
                     <select name="tipo_documento" class="form-select" id="tipo_documento">
                         <option value="-1">Seleccione...</option>
                         {% for tipo_documento in tipos_documento %}
@@ -245,24 +250,24 @@
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="nombre" class="text-light">Nombre</label>
+                    <label for="nombre" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nombre</span></label>
                     <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="apellido" class="text-light">Apellido</label>
+                    <label for="apellido" class="text-light"><span class="badge bg-primary mb-2 mt-2">Apellido</span></label>
                     <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Apellido">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="fecha_nacimiento" class="text-light">Fecha de nacimiento</label>
+                    <label for="fecha_nacimiento" class="text-light"><span class="badge bg-primary mb-2 mt-2">Fecha de nacimiento</span></label>
                     <input type="date" class="form-control" name="fecha_nacimiento" id="fecha_nacimiento">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="edad" class="text-light">Edad</label>
+                    <label for="edad" class="text-light"><span class="badge bg-warning mb-2 mt-2">Edad</span></label>
                     <input type="number" class="form-control" placeholder="Edad del paciente" name="edad" id="edad">
                 </div>
 
-                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="in_sexo" class="text-light">Sexo</label>
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4"> 
+                    <label for="in_sexo" class="text-light"><span class="badge bg-primary mb-2 mt-2">Sexo</span></label>
                     <select name="sexo" class="form-select" id="sexo">
                         <option value="-1">Seleccione...</option>
                         {% for sexo in sexos %}
@@ -272,7 +277,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="escolaridad" class="text-light">Escolaridad</label>
+                    <label for="escolaridad" class="text-light"><span class="badge bg-primary mb-2 mt-2">Escolaridad</span></label>
                     <select name="escolaridad" class="form-select" id="escolaridad">
                         <option value="-1">Seleccione...</option>
                         {% for escolaridad in escolaridades %}
@@ -281,21 +286,21 @@
                     </select>
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="hijos" class="text-light">Número de hijos</label>
+                    <label for="hijos" class="text-light"><span class="badge bg-warning mb-2 mt-2">Número de hijos</span></label>
                     <input type="number" name="hijos" class="form-control" id="hijos" placeholder="No. de hijos del paciente">
                 </div>
 
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="direccion" class="text-light">Dirección</label>
+                    <label for="direccion" class="text-light"><span class="badge bg-warning mb-2 mt-2">Dirección</span></label>
                     <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Dirección de residencia">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="barrio" class="text-light">Barrio</label>
+                    <label for="barrio" class="text-light"><span class="badge bg-warning mb-2 mt-2">Barrio</span></label>
                     <input type="text" class="form-control" name="barrio" id="barrio" placeholder="Barrio de residencia">
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="estado_civil" class="text-light">Estado civil</label>
+                    <label for="estado_civil" class="text-light"><span class="badge bg-primary mt-2 mb-2">Estado civil</span></label>
                     <select name="estado_civil" class="form-select" id="estado_civil">
                         <option value="-1">Seleccione...</option>
                         {% for estado in estados_civil %}
@@ -305,16 +310,16 @@
                 </div>
 
                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="celular" class="text-light">No. Celular</label>
+                    <label for="celular" class="text-light"><span class="badge bg-success mt-2 mb-2">No. Celular</span></label>
                     <input type="text" class="form-control" name="celular" id="celular" placeholder="Numero de celular del paciente">
                 </div>
                 <div class="form-group col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                    <label for="correo" class="text-light">Correo</label>
+                    <label for="correo" class="text-light"><span class="badge bg-success mt-2 mb-2">Correo</span></label>
                     <input type="email" class="form-control" name="correo" id="correo" placeholder="Correo electrónico">
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="lectoescritura" class="text-light">Lectoescritura</label>
+                    <label for="lectoescritura" class="text-light"><span class="badge bg-primary mb-2 mt-2">Lectoescritura</span></label>
                     <select name="lectoescritura" class="form-select" id="lectoescritura">
                         <option value="-1">Seleccione...</option>
                         {% for lec in lectoescrituras %}
@@ -323,7 +328,7 @@
                     </select>
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="lectoescritura_nivel" class="text-light">Nivel de lectoescritura</label>
+                    <label for="lectoescritura_nivel" class="text-light"><span class="badge bg-primary mb-2 mt-2">Nivel de lectoescritura</span></label>
                     <select name="lect_nivel" class="form-select" id="lectoescritura_nivel">
                         <option value="-1">Seleccione...</option>
                         {% for lec_n in lectoescritura_nivel %}
@@ -331,8 +336,9 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <details class="mult-details">
+                <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3 align-items-center">
+                    <label for="calc" class="text-light"><span class="badge bg-primary mb-2 mt-2">Cálculo</span></label>
+                    <details class="mult-details" id="calc">
                         <summary class="mult-summary">Cálculo del paciente</summary>
                         <ul class="mult-ul">
                             {% for calculo in calculos %}
@@ -345,7 +351,7 @@
                     </details>
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-3">
-                    <label for="lectoescritura_nivel" class="text-light">Razonamiento analítico</label>
+                    <label for="lectoescritura_nivel" class="text-light"><span class="badge bg-primary mb-2 mt-2">Razonamiento analítico</span></label>
                     <select name="raz_analitico" class="form-select" id="raz_analitico">
                         <option value="-1">Seleccione...</option>
                         {% for raz in razonamiento_analitico %}
@@ -355,7 +361,7 @@
                 </div>
 
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="etnia" class="text-light">Etnia</label>
+                    <label for="etnia" class="text-light"><span class="badge bg-primary mb-2 mt-2">Etnia</span></label>
                     <select name="etnia" class="form-select" id="etnia">
                         <option value="-1">Seleccione...</option>
                         {% for etnia in etnias %}
@@ -364,7 +370,7 @@
                     </select>
                 </div>
                 <div class="form-group mb-2 col-sm-12 col-md-6 col-lg-6 col-xl-4">
-                    <label for="ocupacion" class="text-light">Ocupación</label>
+                    <label for="ocupacion" class="text-light"><span class="badge bg-primary mb-2 mt-2">Ocupación</span></label>
                     <select name="ocupacion" class="form-select" id="ocupacion">
                         <option value="-1">Seleccione...</option>
                         {% for ocupacion in ocupaciones %}
