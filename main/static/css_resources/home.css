@@ -152,8 +152,6 @@ textarea{
     color: white;
     font-weight: 800;
     font-family: 'Rubik', sans-serif;
-    -webkit-text-stroke: 2px green; /* Ancho y color del borde para navegadores basados en WebKit (Chrome, Safari) */
-    text-stroke: 2px green; /* Ancho y color del borde para navegadores no basados en WebKit (Firefox) */
     background-clip: text; /* Clip de fondo para que el borde no afecte el relleno del texto */
 }
 
