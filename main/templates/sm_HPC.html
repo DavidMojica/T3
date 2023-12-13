@@ -438,8 +438,10 @@
     <form action="" method="POST" id="hpcForm">
         {% csrf_token %}
         <div class="row justify-content-center">
-            <div class="col-md-8 row justify-content-center">
+            <div class="col-md-8 row justify-content-center text-center">
                 <h2 class="text-center text-light mt-5">Asesoría Psicológica</h2>
+                <p><span class="badge bg-info"><i class="fa fa-info-circle"></i> En este formulario ningún campo es obligatorio porque algunos pacientes no van a querer dar algunos detalles. <br>
+                    Pero de ser posible, llenarlos todos <i class="fa fa-info-circle"></i></span></p>
                 <input type="hidden" name="{{secretName}}">
                 <input type="hidden" name="documento" value="{{documento}}">
                 <input type="hidden" name="id_prof" value="{{CustomUser.id}}">
