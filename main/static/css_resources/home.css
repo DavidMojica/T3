@@ -14,47 +14,6 @@ textarea{
     height: 150px;
 }
 
-#main-home{
-    overflow-x: hidden;
-}
-.swiper {
-    width: 90%;
-    height: 100%;
-  }
-
-  .swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 1em;
-  }
-.text-brand {
-    color: white;
-    font-weight: 800;
-    font-family: 'Rubik', sans-serif;
-    -webkit-text-stroke: 2px green; /* Ancho y color del borde para navegadores basados en WebKit (Chrome, Safari) */
-    text-stroke: 2px green; /* Ancho y color del borde para navegadores no basados en WebKit (Firefox) */
-    background-clip: text; /* Clip de fondo para que el borde no afecte el relleno del texto */
-}
-
-.logo-gob{
-    max-width: 300px;
-    height: auto;
-}
-.bg-semilight{
-    background-color: var(--bg-semilight);
-}
-
 .bg-gradient-blue{
     background-image: linear-gradient(to right top, #039bcc, #1ca5c9, #37aec5, #51b7c1, #69bfbe);
     overflow-x: hidden;
@@ -66,10 +25,7 @@ textarea{
 .navbar{
     z-index: 1000;
 }
-.row{
-    place-items: center;
-    text-align: center;
-}
+
 #navbarNav ul li .dropdown-center button i, .btn_star i{
     font-size: 18px;
 }
@@ -161,4 +117,73 @@ textarea{
 .bg-warning {
     background-color: yellow;
     transition: background-color 0.5s ease; 
+}
+
+/* HOME */
+
+#main-home{
+    overflow-x: hidden;
+}
+.swiper {
+    width: 90%;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1em;
+  }
+.text-brand {
+    color: white;
+    font-weight: 800;
+    font-family: 'Rubik', sans-serif;
+    -webkit-text-stroke: 2px green; /* Ancho y color del borde para navegadores basados en WebKit (Chrome, Safari) */
+    text-stroke: 2px green; /* Ancho y color del borde para navegadores no basados en WebKit (Firefox) */
+    background-clip: text; /* Clip de fondo para que el borde no afecte el relleno del texto */
+}
+
+.logo-gob{
+    max-width: 300px;
+    height: auto;
+}
+.bg-semilight{
+    background-color: var(--bg-semilight);
+}
+@media (max-width:768px) {
+    .swiper {
+        margin-top: 10%;
+        width: 90%;
+        height: 220px;
+        /* height: 100%; */ /* Puedes eliminar esta línea o ajustar según tus necesidades */
+      }
+    
+      .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+      }
+    
+      .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 1em;
+      }
 }
