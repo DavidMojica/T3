@@ -1887,10 +1887,31 @@ def pacientesView(request):
 
 @login_required
 def detallespaciente(request):
-    return render(request, 'detallespaciente.html',{
-        'CustomUser': request.user,
-        'year': datetime.now()
-    })
+    documento = request.GET.get('pacienteId', '0')
+    
+    if documento and documento != 0:
+        pacienteInstance = get_object_or_404(InfoPacientes, pk=documento)
+        
+        if pacienteInstance:
+            return render(request, 'detallespaciente.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'found': True,
+            'paciente':pacienteInstance
+            })
+            
+        else:
+            return render(request, 'detallespaciente.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'found': False,
+                })
+    else:
+        return render(request, 'detallespaciente.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'found': False
+        })
     
 # 404 VISTAS
 @login_required
