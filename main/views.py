@@ -1911,7 +1911,22 @@ def detallespaciente(request):
             'year': datetime.now(),
             'found': True,
             'paciente':pacienteInstance,
-            'edadActual': edad
+            'edadActual': edad,
+            
+            'pobVulnerable': poblacion_vulnerable,
+            'epss': EPSS,
+            'escolaridad': escolaridades,
+            'estadoC':estados_civiles,
+            'etnia': etnias,
+            'lecto': lectoescritura1,
+            'lecto2': lectoescritura2,
+            'municipios':municipios,
+            'ocupaciones': ocupaciones,
+            
+            'razonamientos': razonamiento,
+            'regimen':regimenes,
+            'sexos': sexos,
+            'tpDoc': tipos_documento
             })
             
         else:
