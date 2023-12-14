@@ -1881,9 +1881,17 @@ def pacientesView(request):
     return render(request, 'pacientesView.html',{
         'pacientes': pacientes,
         'CustomUser': request.user,
-        'year': datetime.now()
+        'year': datetime.now(),
+        'form': form
     })    
 
+@login_required
+def detallespaciente(request):
+    return render(request, 'detallespaciente.html',{
+        'CustomUser': request.user,
+        'year': datetime.now()
+    })
+    
 # 404 VISTAS
 @login_required
 def restricted_area_404(request):

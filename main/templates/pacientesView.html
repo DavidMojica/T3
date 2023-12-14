@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <h2 class="text-center display-3 py-5">Pacientes</h2>
             <form action="" method="get" class="mb-4 card">
-                <div class="row justify-content-center p-4">
+                <div class="row justify-content-center p-4 text-center">
                     <p class="card-title fw-bold">Filtrar pacientes <i class="fa fa-search"></i></p>
 
                     <div class="col-md-4 mb-3">
@@ -25,14 +25,14 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-action text-center">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <span class=" badge bg-primary">Documento</span>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <span class="badge bg-black text-light">Nombre</span>
                         </div>
-                        <div class="col-md-6">
-                            <span class="badge bg-danger">Opciones</span>
+                        <div class="col-md-3">
+                            <span class="badge bg-success">Opciones</span>
                         </div>
                     </div>
                 </li>
@@ -41,13 +41,13 @@
                         {% if p.documento %}
                             <li class="list-group-item list-group-item-action text-center">
                                 <div class="row">
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <h3 class="fw-bold text-success"><span class="badge bg-primary">#{{p.documento}}</span></h3>
                                     </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-0 fw-bold">{% if p.nombre and p.nombre != 'None' %}{{p.nombre}{% else %}}No proporcionado</p>
+                                    <div class="col-md-6">
+                                        <p class="mb-0 fw-bold">{% if p.nombre and p.nombre != 'None' %}{{p.nombre}}{% else %}No proporcionado{% endif %}</p>
                                     </div>
-                                    <div class="col-md-6 row">
+                                    <div class="col-md-3 row">
                                         <a href="{% url 'detallespaciente' %}?pacienteId={{p.documento}}" class="mb-2 w-100">
                                             <button class="btn btn-success">Ver detalles</button>
                                         </a>
