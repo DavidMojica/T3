@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="main-expanded">
+    <div class="row justify-content-center">
+        <h2 class="text-center display-3 py-5 mt-3">Detalles del paciente</h2>
+        <form action="" class="row col-md-8">
+            <div class="col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="nombre" class="form-label"><span class="badge bg-success">Nombre</span></label>
+                <input type="text" id="nombre" class="form-control" disabled value="{{paciente.nombre}}">
+            </div>
+            <div class=" col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="email" class="form-label"><span class="badge bg-success">Correo</span></label>
+                <input type="text" class="form-control" id="email" disabled value="{{paciente.email}}">
+            </div>
+            <div class=" col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="fechaNacimiento" class="form-label"><span class="badge bg-success">Fecha de nacimiento</span></label>
+                <input type="text" disabled value="{{paciente.fecha_nacimiento}}" class="form-control" id="fechaNacimiento">
+    
+            </div>
+            <div class=" col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="edadActual" class="form-label"><span class="badge bg-success">Edad Actual</span></label>
+                <input type="text" disabled value="{{edadActual}}" class="form-control" id="edadActual">
+            </div>
+            <div class=" col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="edadUltimoServicio" class="form-label"><span class="badge bg-success">Edad Último Servicio</span></label>
+                <input type="text" disabled value="{{paciente.edad}}" class="form-control" id="edadUltimoServicio">
+            </div>
+            <div class=" col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="" class="form-label"><span class="badge bg-success"></span></label>
+                <input type="text" disabled value="" class="form-control" id="">
+            </div>
+            <div class=" col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="" class="form-label"><span class="badge bg-success"></span></label>
+                <input type="text" disabled value="" class="form-control" id="">
+            </div>
+
+        </form>
+       
+    </div>
+</main>
+{% endblock %}

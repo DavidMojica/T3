@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError, transaction
 from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast
-from .forms import AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
+from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -56,6 +56,12 @@ hpcrespuestas = HPCTiposRespuestas.objects.all()
 spa = SPA.objects.all()
 snn = SiNoNunca.objects.all()
 ep = EstatusPersona.objects.all()
+
+#Extra Functions
+def calcular_edad(fecha_nacimiento):
+    hoy = datetime.now()
+    edad = hoy.year - fecha_nacimiento.year - ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+    return edad
 
 
 # Create your views here.
@@ -1815,35 +1821,111 @@ def adminregister(request):
                             return render(request, 'AdminRegister.html', {
                             'CustomUser': request.user,
                             'form': form,
-                            "error": ERROR_203
+                            "error": ERROR_203,
+                            'year': datetime.now(),
                         })
                    
                     except IntegrityError:
                         return render(request, 'AdminRegister.html', {
                             'CustomUser': request.user,
                             'form': form,
+                            'year': datetime.now(),
                             "error": ERROR_102
                         })                        
                 else:
                     return render(request, 'AdminRegister.html', {
                         'CustomUser': request.user,
                         'form': form,
+                        'year': datetime.now(),
                         "error": ERROR_100
                     })     
             else:
-                print(form.errors)
                 return render(request, 'AdminRegister.html', {
                     'CustomUser': request.user,
                     'form': form,
+                    'year': datetime.now(),
                     "error": ERROR_102
                 })
         else:
             return render(request, 'AdminRegister.html', {
                 'CustomUser': request.user,
                 'form': form,
+                'year': datetime.now(),
             })     
     else:
         return redirect(reverse('home'))
+    
+@login_required
+def pacientesView(request):
+    pacientes = InfoPacientes.objects.all()
+    form = FiltroPacientes(request.GET)
+    pacientes_por_pagina = 10
+    
+    #filtrado
+    if form.is_valid():
+        nombre = form.cleaned_data.get('nombre')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        
+        if nombre:
+            normalized_term = unidecode(nombre.lower())
+            pacientes = pacientes.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
+        
+        if documento_paciente and documento_paciente != "":
+            pacientes = pacientes.filter(documento=documento_paciente)
+            
+        #paginacion 
+        paginator = Paginator(pacientes, pacientes_por_pagina)
+        page = request.GET.get('page', 1)
+    
+        try:
+            pacientes = paginator.page(page)
+        except:
+            pacientes = paginator.page(page)
+    
+    
+    
+    return render(request, 'pacientesView.html',{
+        'pacientes': pacientes,
+        'CustomUser': request.user,
+        'year': datetime.now(),
+        'form': form
+    })    
+
+
+@login_required
+def detallespaciente(request):
+    documento = request.GET.get('pacienteId', '0')
+    
+    if documento and documento != 0:
+        pacienteInstance = get_object_or_404(InfoPacientes, pk=documento)
+        
+        if pacienteInstance:
+            fecha_nacimiento = pacienteInstance.fecha_nacimiento
+            if fecha_nacimiento and fecha_nacimiento != None and fecha_nacimiento != "":
+                edad = calcular_edad(fecha_nacimiento)
+            else:
+                edad = "Fecha de nacimiento no proporcionada"
+            
+            return render(request, 'detallespaciente.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'found': True,
+            'paciente':pacienteInstance,
+            'edadActual': edad
+            })
+            
+        else:
+            return render(request, 'detallespaciente.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'found': False,
+                })
+    else:
+        return render(request, 'detallespaciente.html',{
+            'CustomUser': request.user,
+            'year': datetime.now(),
+            'found': False
+        })
     
 # 404 VISTAS
 @login_required
