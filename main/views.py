@@ -1864,8 +1864,17 @@ def pacientesView(request):
             normalized_term = unidecode(nombre.lower())
             pacientes = pacientes.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
         
-        if documento_paciente:
+        if documento_paciente and documento_paciente != "":
             pacientes = pacientes.filter(documento=documento_paciente)
+            
+        #paginacion 
+        paginator = Paginator(pacientes, pacientes_por_pagina)
+        page = request.GET.get('page', 1)
+    
+        try:
+            pacientes = paginator.page(page)
+        except:
+            pacientes = paginator.page(page)
     
     
     
