@@ -57,6 +57,12 @@ spa = SPA.objects.all()
 snn = SiNoNunca.objects.all()
 ep = EstatusPersona.objects.all()
 
+#Extra Functions
+def calcular_edad(fecha_nacimiento):
+    hoy = datetime.now()
+    edad = hoy.year - fecha_nacimiento.year - ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+    return edad
+
 
 # Create your views here.
 
@@ -1885,6 +1891,7 @@ def pacientesView(request):
         'form': form
     })    
 
+
 @login_required
 def detallespaciente(request):
     documento = request.GET.get('pacienteId', '0')
@@ -1893,11 +1900,18 @@ def detallespaciente(request):
         pacienteInstance = get_object_or_404(InfoPacientes, pk=documento)
         
         if pacienteInstance:
+            fecha_nacimiento = pacienteInstance.fecha_nacimiento
+            if fecha_nacimiento and fecha_nacimiento != None and fecha_nacimiento != "":
+                edad = calcular_edad(fecha_nacimiento)
+            else:
+                edad = "Fecha de nacimiento no proporcionada"
+            
             return render(request, 'detallespaciente.html',{
             'CustomUser': request.user,
             'year': datetime.now(),
             'found': True,
-            'paciente':pacienteInstance
+            'paciente':pacienteInstance,
+            'edadActual': edad
             })
             
         else:
