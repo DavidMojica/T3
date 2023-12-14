@@ -48,7 +48,7 @@
                                     <h3 class="fw-bold text-success"><span class="badge bg-primary">#{{u.id_usuario_id}}</span></h3>
                                 </div>
                                 <div class="col-md-4">
-                                    <p class="mb-0 fw-bold">{% if u.nombre and u.nombre != 'None' %} {{u.nombre}} {% else %} No diligenciado {% endif %}</p>
+                                    <p class="mb-0 fw-bold">{% if u.nombre and u.nombre != 'None' %}{{u.nombre}}{% else %}No diligenciado {% endif %}</p>
                                 </div>
                                 <div class="col-md-6 row">
                                     <a href="{% url 'detallesusuario' %}?userId={{u.id_usuario_id}}" class="mb-2 w-100">

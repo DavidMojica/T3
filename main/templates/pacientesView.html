@@ -36,7 +36,69 @@
                         </div>
                     </div>
                 </li>
+                {% if pacientes %}
+                    {% for p in pacientes %}
+                        {% if p.documento %}
+                            <li class="list-group-item list-group-item-action text-center">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <h3 class="fw-bold text-success"><span class="badge bg-primary">#{{p.documento}}</span></h3>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="mb-0 fw-bold">{% if p.nombre and p.nombre != 'None' %}{{p.nombre}{% else %}}No proporcionado</p>
+                                    </div>
+                                    <div class="col-md-6 row">
+                                        <a href="{% url 'detallespaciente' %}?pacienteId={{p.documento}}" class="mb-2 w-100">
+                                            <button class="btn btn-success">Ver detalles</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center fw-bold">No hay pacientes disponibles</p>
+                {% endif %}
             </ul>
+            <!-- Paginator -->
+            <div class="pagination justify-content-center mt-4">
+                <ul class="pagination">
+                    {% if pacientes.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pacientes.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Página {{ pacientes.number }} de {{ pacientes.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if pacientes.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pacientes.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pacientes.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in pacientes.paginator.page_range %}
+                        <li class="page-item {% if pacientes.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 </main>
