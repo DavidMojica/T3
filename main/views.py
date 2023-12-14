@@ -1815,36 +1815,46 @@ def adminregister(request):
                             return render(request, 'AdminRegister.html', {
                             'CustomUser': request.user,
                             'form': form,
-                            "error": ERROR_203
+                            "error": ERROR_203,
+                            'year': datetime.now(),
                         })
                    
                     except IntegrityError:
                         return render(request, 'AdminRegister.html', {
                             'CustomUser': request.user,
                             'form': form,
+                            'year': datetime.now(),
                             "error": ERROR_102
                         })                        
                 else:
                     return render(request, 'AdminRegister.html', {
                         'CustomUser': request.user,
                         'form': form,
+                        'year': datetime.now(),
                         "error": ERROR_100
                     })     
             else:
-                print(form.errors)
                 return render(request, 'AdminRegister.html', {
                     'CustomUser': request.user,
                     'form': form,
+                    'year': datetime.now(),
                     "error": ERROR_102
                 })
         else:
             return render(request, 'AdminRegister.html', {
                 'CustomUser': request.user,
                 'form': form,
+                'year': datetime.now(),
             })     
     else:
         return redirect(reverse('home'))
     
+@login_required
+def pacientesView(request):
+    return render(request, 'pacientesView.html',{
+        'year': datetime.now()
+    })    
+
 # 404 VISTAS
 @login_required
 def restricted_area_404(request):
