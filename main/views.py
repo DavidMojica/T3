@@ -1917,12 +1917,12 @@ def detallespaciente(request):
             'epss': EPSS,
             'escolaridad': escolaridades,
             'estadoC':estados_civiles,
-            
             'etnia': etnias,
             'lecto': lectoescritura1,
             'lecto2': lectoescritura2,
             'municipios':municipios,
             'ocupaciones': ocupaciones,
+            
             'razonamientos': razonamiento,
             'regimen':regimenes,
             'sexos': sexos,
