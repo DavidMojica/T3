@@ -67,7 +67,95 @@
                 </select>
             </div>
 
-            
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="eps" class="form-label"><span class="badge bg-success">EPS del paciente</span></label>
+                <select name="eps" id="eps" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in epss %}
+                        <option value="{{i.id}}" {% if paciente.eps_id  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="escolaridad" class="form-label"><span class="badge bg-success">Escolaridad</span></label>
+                <select name="escolaridad" id="escolaridad" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in escolaridad %}
+                        <option value="{{i.id}}" {% if paciente.escolaridad_id  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="estadoCivil" class="form-label"><span class="badge bg-success">Estado Civil</span></label>
+                <select name="estadoCivil" id="estadoCivil" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in estadoC %}
+                        <option value="{{i.id}}" {% if paciente.estado_civil_id  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="etnia" class="form-label"><span class="badge bg-success">Etnia</span></label>
+                <select name="etnia" id="etnia" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in etnia %}
+                        <option value="{{i.id}}" {% if paciente.etnia_id  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="lecto" class="form-label"><span class="badge bg-success">Lectoescritura</span></label>
+                <select name="lecto" id="lecto" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in lecto %}
+                        <option value="{{i.id}}" {% if paciente.lectoescritura_indicador_id == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="lecto2" class="form-label"><span class="badge bg-success">Nivel de lectoescritura</span></label>
+                <select name="lecto2" id="lecto2" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in lecto2 %}
+                        <option value="{{i.id}}" {% if paciente.lectoescritura_nivel_id == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="mpio" class="form-label"><span class="badge bg-success">Municipio de residencia</span></label>
+                <select name="mpio" id="mpio" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in municipios %}
+                        <option value="{{i.id}}" {% if paciente.municipio_id == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="ocupacion" class="form-label"><span class="badge bg-success"></span></label>
+                <select name="ocupacion" id="ocupacion" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in  %}
+                        <option value="{{i.id}}" {% if paciente.  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="" class="form-label"><span class="badge bg-success"></span></label>
+                <select name="" id="" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in  %}
+                        <option value="{{i.id}}" {% if paciente.  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
         </form>
     </div>
