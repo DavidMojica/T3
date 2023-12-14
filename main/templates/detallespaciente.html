@@ -4,6 +4,16 @@
     <div class="row justify-content-center">
         <h2 class="text-center display-3 py-5 mt-3">Detalles del paciente</h2>
         <form action="" class="row col-md-8">
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="tpDocumento" class="form-label"><span class="badge bg-success">Tipo de documento</span></label>
+                <option value="-1">No diligenciado</option>
+                <select name="tpDocumento" id="tpDocumento" class="form-select" disabled>
+                    {% for i in tpDoc %}
+                        <option value="{{i.id}}" {% if paciente.tipo_documento_id  == i.id %} selected {% endif %}>{{i.description}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
             <div class="col-sm-10 col-md-6 col-lg-4 col-xl-4 mt-3">
                 <label for="nombre" class="form-label"><span class="badge bg-success">Nombre</span></label>
                 <input type="text" id="nombre" class="form-control" disabled value="{{paciente.nombre}}">
@@ -34,27 +44,32 @@
                 <input type="text" disabled value="{{paciente.celular}}" class="form-control" id="celular">
             </div>
             <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
-                <label for="celular" class="form-label"><span class="badge bg-success">Cantidad de asesorías</span></label>
+                <label for="cantCitas" class="form-label"><span class="badge bg-success">Cantidad de asesorías</span></label>
+                <input type="text" name="cantCitas" id="cantCitas" disabled class="form-control" value="{{paciente.cant_asesorias_psicologicas}}">
+            </div>
+            <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
+                <label for="cantLlamadas" class="form-label"><span class="badge bg-success">Cantidad de llamadas</span></label>
+                <input type="text" name="cantLlamadas" id="cantLlamadas" disabled class="form-control" value="{{paciente.cant_llamadas}}">
             </div>
 
             <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
                 <label for="sisben" class="form-label"><span class="badge bg-success">Posee sisben</span></label>
-                <input type="text" disabled value="" class="form-check-input" id="sisben" {% if paciente.sisben %} checked {% endif %}>
+                <input type="checkbox" disabled class="form-check-input" id="sisben" {% if paciente.sisben %} checked {% endif %}>
             </div> 
 
-            
-
             <div class="mt-3 col-sm-10 col-md-6 col-lg-4 col-xl-4">
-                <label for="" class="form-label"><span class="badge bg-success"></span></label>
-                <select name="" id="">
-                    {% for i in  %}
-                        <option value="{{i.id}}" {% if paciente.  == i.id %} selected {% endif %}>{{i.description}}</option>
+                <label for="pobVulnerable" class="form-label"><span class="badge bg-success">Población vulnerable</span></label>
+                <select name="pobVulnerable" id="pobVulnerable" class="form-select" disabled>
+                    <option value="-1">No diligenciado</option>
+                    {% for i in pobVulnerable %}
+                        <option value="{{i.id}}" {% if paciente.poblacion_vulnerable_id  == i.id %} selected {% endif %}>{{i.description}}</option>
                     {% endfor %}
                 </select>
             </div>
 
+            
+
         </form>
-       
     </div>
 </main>
 {% endblock %}
