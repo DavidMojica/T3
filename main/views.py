@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError, transaction
 from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast
-from .forms import AutodataForm, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
+from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -1851,7 +1851,27 @@ def adminregister(request):
     
 @login_required
 def pacientesView(request):
+    pacientes = InfoPacientes.objects.all()
+    form = FiltroPacientes(request.GET)
+    pacientes_por_pagina = 10
+    
+    #filtrado
+    if form.is_valid():
+        nombre = form.cleaned_data.get('nombre')
+        documento_paciente = form.cleaned_data.get('documento_paciente')
+        
+        if nombre:
+            normalized_term = unidecode(nombre.lower())
+            pacientes = pacientes.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
+        
+        if documento_paciente:
+            pacientes = pacientes.filter(documento=documento_paciente)
+    
+    
+    
     return render(request, 'pacientesView.html',{
+        'pacientes': pacientes,
+        'CustomUser': request.user,
         'year': datetime.now()
     })    
 

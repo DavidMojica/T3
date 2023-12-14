@@ -19,6 +19,17 @@ class FiltroUsuarios(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
+class FiltroPacientes(forms.Form):
+    nombre = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    documento_paciente = forms.CharField(
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
     
     
 
