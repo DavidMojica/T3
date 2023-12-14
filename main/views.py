@@ -1911,7 +1911,8 @@ def detallespaciente(request):
             'year': datetime.now(),
             'found': True,
             'paciente':pacienteInstance,
-            'edadActual': edad
+            'edadActual': edad,
+            
             })
             
         else:
