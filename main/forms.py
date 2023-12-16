@@ -171,8 +171,8 @@ class AutodataForm(forms.ModelForm):
     direccion = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_direccion'}))
     barrio = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_barrio'}))
     celular = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_celular'}))
-    sisben = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'id': 'id_sisben'}))
-    sisben = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'id':'sisben'}))
+    sisben = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'id':'sisben'}),
+                                required=False)
     class Meta:
         model = InfoMiembros
         fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',

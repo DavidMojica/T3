@@ -1740,7 +1740,7 @@ def eventHandler(request):
                     'btnClass': "btn btn-warning",
                     'btnText': 'Actualizar usuario',
                     'passUser': custoMuserInstance.username,
-                    'pass': nuevaContrasena})
+                    'newPass': nuevaContrasena})
         else:
             pass
         
