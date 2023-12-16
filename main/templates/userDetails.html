@@ -130,13 +130,13 @@
 
             
 
-            <div class="col-md-12 mb-5 mt-3 text-center">
-                    <a href="/adminuser" class="btn btn-primary">Regresar</a>
-                
+            <div class="col-md-12 mb-5 mt-3 text-center">   
+                {% if editable %} 
                 <div class="col-md-12 mb-3">
                     <button type="submit" class="{{btnClass}}">{{btnText}}</button> 
                 </div>
                 {% endif %}
+                <a href="/adminuser" class="btn btn-primary mb-3 mt-3">Regresar</a>
             </div>
         </form>
         {% if editable %}
