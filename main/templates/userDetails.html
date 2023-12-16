@@ -130,10 +130,8 @@
 
             
 
-            <div class="col-md-12 mb-5 mt-3">
-                {% if not editable %} 
-                    <a href="/adminuser" class="{{btnClass}}">{{btnText}}</a>
-                {% else %}
+            <div class="col-md-12 mb-5 mt-3 text-center">
+                    <a href="/adminuser" class="btn btn-primary">Regresar</a>
                 
                 <div class="col-md-12 mb-3">
                     <button type="submit" class="{{btnClass}}">{{btnText}}</button> 
@@ -142,18 +140,20 @@
             </div>
         </form>
         {% if editable %}
-        <div class="mb-5 col-md-12"> 
+        <div class="mb-5 col-md-12 justify-content-center text-center"> 
             <a href="{% url 'eventHandler' %}?eventId=4&userId={{userI.id_usuario_id}}" class="col-md-4 mb-2">
                 <button class="btn btn-danger" id="generar-contrasena-btn">Recuperar contraseña</button>
             </a>
+           {% if newPass %}
            <div class="mt-3">
             <p>
                 Contraseña actualizada correctamente. <br>
                 Usuario: <span class="badge bg-success">{{passUser}}</span> <br>
-                Nueva contraseña: <span class="badge bg-info">{{pass}}</span><br>
+                Nueva contraseña: <span class="badge bg-info">{{newPass}}</span><br>
                 <span class="badge bg-danger">Por favor informe al usuario que cambie la contraseña una vez entre a su cuenta.</span>
             </p>
            </div>
+           {% endif %}
         </div>
         {% endif %}
     </div>
