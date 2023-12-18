@@ -98,6 +98,14 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class=" col-sm-10 col-md-6 col-xl-6 col-xxl-6">
+                <label for="llamAtendidas"><i class="fa fa-hashtag"></i> de llamadas atendidas: </label>
+                <span id="llamAtendidas" class="badge bg-success">{{userI.contador_llamadas_psicologicas}}</span>
+            </div>
+            <div class=" col-sm-10 col-md-6 col-xl-6 col-xxl-6">
+                <label for="citasAtendidas"><i class="fa fa-hashtag"></i> de citas atendidas: </label>
+                <span id="citasAtendidas" class="badge bg-success">{{userI.contador_asesorias_psicologicas}}</span>
+            </div>
 
             <h2 class="text-center display-3 py-5">Detalles de la cuenta</h2>
 
