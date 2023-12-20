@@ -422,23 +422,27 @@ def register(request):
                     return render(request, 'register.html', {
                         'CustomUser': request.user,
                         'form': form,
-                        "error": ERROR_102
+                        "error": ERROR_102,
+                        'year': datetime.now(),
                     })
             else:
                 return render(request, 'register.html', {
                     'CustomUser': request.user,
+                    'year': datetime.now(),
                     'form': form,
                     "error": ERROR_101
                 })
         else:
             return render(request, 'register.html', {
                 'CustomUser': request.user,
+                'year': datetime.now(),
                 'form': form,
                 "error": ERROR_100
             })
     else:
         form = CustomUserRegistrationForm()  # Crear una instancia del formulario
-        return render(request, 'register.html', {'form': form})
+        return render(request, 'register.html', {'form': form,
+                                                 'year': datetime.now(),})
 
 
 @login_required
@@ -772,9 +776,6 @@ def sm_HPC(request):
             except ValueError:
                 ban = False
                 error = "Error en alguno de sus datos. Los campos numéricos deben contener valores válidos."
-
-            print(
-                f"{documento} | {nombre} | {tipo_documento} | {sexo} | {int(request.POST['ocupacion'])} ")
             if not documento or not nombre or not tipo_documento or not sexo or not int(request.POST['ocupacion']):
                 ban = False
                 error = "Diligencie los campos obligatorios"
@@ -1299,7 +1300,6 @@ def sm_HPC(request):
                 except HPC.DoesNotExist:
                     as_instance = None
                 
-                print(f'doc {documento}')
                 with transaction.atomic():
                     SPAActuales.objects.filter(id_paciente=documento).delete()
                     infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
@@ -1437,10 +1437,12 @@ def sm_HPC(request):
         except:
             return render(request, 'sm_HPC.html', {
                 'CustomUser': request.user,
-                'step': 0
+                'step': 0,
+                'year': datetime.now(),
             })
     else:
         return render(request, 'sm_HPC.html', {
+            'year': datetime.now(),
             'CustomUser': request.user,
             'step': 0
         })
