@@ -40,6 +40,6 @@ urlpatterns = [
     path('get_municipios/', views.get_municipios, name='get_municipios'),
     path('pacientesView/',views.pacientesView, name='pacientesView'),
     path('detallespaciente/', views.detallespaciente, name="detallespaciente"),
-    path('admininformes', views.admininformes, name='admininformes'),
+    path('informes/', views.admininformes, name='informes'),
     path('generar_pdf/', views.generar_pdf, name='generate_pdf'),
 ]

@@ -1846,6 +1846,22 @@ def adminregister(request):
         return redirect(reverse('home'))
     
 @login_required
+def admininformes(request):
+    # Super Proteger Ruta
+    if request.user.tipo_usuario_id in adminOnly: 
+        if request.method == "POST":
+            return render(request, 'AdminInformes.html', {
+                                'CustomUser': request.user,
+                                'year': datetime.now()
+                            })
+        else:
+            return render(request, 'AdminInformes.html', {
+                                'CustomUser': request.user,
+                                'year': datetime.now()
+                            })
+            
+            
+@login_required
 def pacientesView(request):
     pacientes = InfoPacientes.objects.all()
     form = FiltroPacientes(request.GET)
@@ -1883,6 +1899,8 @@ def pacientesView(request):
 
 @login_required
 def detallespaciente(request):
+    
+    
     documento = request.GET.get('pacienteId', '0')
     
     if documento and documento != 0:
@@ -1954,6 +1972,5 @@ def generar_pdf(request):
     p.save()
     return response
 
-def admininformes(request):
-    return 0
+
     
