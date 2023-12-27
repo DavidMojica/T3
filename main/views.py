@@ -1962,7 +1962,7 @@ def not_deployed_404(request):
     
 @login_required
 def generar_pdf(request):
-    data = ["cooco", "channel"]
+    data = []
     response = HttpResponse(content_type='applicaton/pdf')
     response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
     p = canvas.Canvas(response)
