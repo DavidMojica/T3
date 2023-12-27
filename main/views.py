@@ -1949,6 +1949,7 @@ def detallespaciente(request):
             'found': False
         })
     
+
 # 404 VISTAS
 @login_required
 def restricted_area_404(request):
