@@ -10,10 +10,11 @@ from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
-import random, string
+from reportlab.pdfgen import canvas
+import random
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -1940,3 +1941,19 @@ def restricted_area_404(request):
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
+    
+@login_required
+def generar_pdf(request):
+    data = 0
+    response = HttpResponse(content_type='applicaton/pdf')
+    response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
+    p = canvas.Canvas(response)
+    for item in data:
+        p.drawString(100, 100, str(item))
+    p.showPage()    
+    p.save()
+    return response
+
+def admininformes(request):
+    return 0
+    
