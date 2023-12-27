@@ -1949,7 +1949,6 @@ def detallespaciente(request):
             'found': False
         })
     
-
 # 404 VISTAS
 @login_required
 def restricted_area_404(request):
@@ -1960,7 +1959,6 @@ def restricted_area_404(request):
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
-    
     
 @login_required
 def generar_pdf(request):
