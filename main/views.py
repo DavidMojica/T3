@@ -337,7 +337,6 @@ def sm_llamadas(request):
                                                         'btnText': "Guardar llamada",
                                                         })
 
-
 def get_departamentos(request):
     pais_id = request.GET.get('pais_id')
     if pais_id:
@@ -351,7 +350,6 @@ def get_departamentos(request):
             return JsonResponse([], safe=False)
 
     return JsonResponse([], safe=False)
-
 
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
@@ -369,12 +367,11 @@ def get_municipios(request):
     return JsonResponse([], safe=False)
 # LOGIN
 
-
 def signin(request):
     # Check if the request method is POST (form submission)
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
-        password = request.POST.get('password')
+        username = request.POST.get('username').lower().strip()
+        password = request.POST.get('password').strip()
         
         user = authenticate(request, username=username, password=password)
         if user is None:
@@ -389,7 +386,6 @@ def signin(request):
     else:
         return render(request, 'signin.html', {'year': datetime.now()})
 
-
 def home(request):
     if request.user.is_authenticated:
         # El usuario está autenticado
@@ -399,7 +395,7 @@ def home(request):
         # El usuario no está autenticado
         return render(request, 'home.html', {'year': datetime.now()})
 
-
+@login_required
 def register(request):
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
@@ -444,7 +440,6 @@ def register(request):
         return render(request, 'register.html', {'form': form,
                                                  'year': datetime.now(),})
 
-
 @login_required
 def autodata(request):
     userId = str(request.user.id)
@@ -480,12 +475,10 @@ def autodata(request):
         'form': form
     })
 
-
 @login_required
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
-
 
 @login_required
 def edit_account(request):
@@ -528,8 +521,6 @@ def edit_account(request):
                                                     'pass_event': pass_event,
                                                     'year': datetime.now(),
                                                     'CustomUser': request.user})
-
-
 
 @login_required
 def sm_HPC(request):
@@ -1460,7 +1451,6 @@ def sm_HPC(request):
             'step': 0
         })
 
-
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
@@ -1548,8 +1538,6 @@ def sm_historial_citas(request):
         'citas': citas,
         'form': form
     })
-
-
 
 
 # Admin
@@ -1792,7 +1780,6 @@ def adminuser(request):
     else:
         return redirect(reverse('home'))
 
-
 @login_required
 def adminregister(request):
     #Super Proteger Ruta
@@ -1893,7 +1880,6 @@ def pacientesView(request):
         'form': form
     })    
 
-
 @login_required
 def detallespaciente(request):
     documento = request.GET.get('pacienteId', '0')
@@ -1950,11 +1936,7 @@ def restricted_area_404(request):
     if request.method == "GET":
         return render(request, '404_restricted_area.html')
 
-
 @login_required
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
-
-
-
