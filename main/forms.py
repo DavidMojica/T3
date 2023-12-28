@@ -1,8 +1,28 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from .models import EPS, CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
+import datetime
 from django.utils.html import format_html
 
+
+class InformesForm(forms.Form):
+    # Obtener el año actual
+    año_actual = datetime.datetime.now().year
+
+    # Generar las opciones para el campo de año desde el año actual hasta 10 años en el futuro
+    opciones_año = [(año, str(año)) for año in range(año_actual, año_actual + 11)]
+
+    # Definir el campo de año con las opciones generadas
+    año = forms.ChoiceField(choices=opciones_año, label='Año', widget=forms.Select(attrs={'class': 'form-select'}))
+
+    # Definir el campo de mes con opciones fijas para todos los meses
+    opciones_mes = [
+        ('1', 'Enero'), ('2', 'Febrero'), ('3', 'Marzo'), ('4', 'Abril'),
+        ('5', 'Mayo'), ('6', 'Junio'), ('7', 'Julio'), ('8', 'Agosto'),
+        ('9', 'Septiembre'), ('10', 'Octubre'), ('11', 'Noviembre'), ('12', 'Diciembre')
+    ]
+
+    mes = forms.ChoiceField(choices=opciones_mes, label='Mes', widget=forms.Select(attrs={'class': 'form-select'}))
 
 class FiltroUsuarios(forms.Form):
     nombre = forms.CharField(
@@ -115,8 +135,6 @@ class CustomUserRegistrationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password', 'password2', 'tipo_usuario')
-
-
 
 class AutodataForm(forms.ModelForm):
     tipo_documento = forms.ModelChoiceField(
