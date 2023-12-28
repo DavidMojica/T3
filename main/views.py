@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db import IntegrityError, transaction
 from django.db.models import Q, Value, CharField
 from django.db.models.functions import Cast
-from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios
+from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator, EmptyPage
@@ -1849,16 +1849,14 @@ def adminregister(request):
 def admininformes(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly: 
-        if request.method == "POST":
-            return render(request, 'AdminInformes.html', {
-                                'CustomUser': request.user,
-                                'year': datetime.now()
-                            })
+        if request.method == 'POST':
+            form = InformesForm(request.POST)
+            if form.is_valid():
+                pass
         else:
-            return render(request, 'AdminInformes.html', {
-                                'CustomUser': request.user,
-                                'year': datetime.now()
-                            })
+            form = InformesForm()
+
+        return render(request, 'AdminInformes.html', {'form': form})
             
             
 @login_required
