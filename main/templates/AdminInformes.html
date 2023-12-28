@@ -2,7 +2,15 @@
 {% block content %}
 <main class="main-expanded">
 
-    <a href="{% url 'generate_pdf' %}" class="btn btn-primary">Descargar PDF</a>
+    <form method="post" action="{% url 'generar_pdf' año=form.cleaned_data.año mes=form.cleaned_data.mes %}">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Descargar</button>
+    </form>
 
 </main>
 {% endblock %}
