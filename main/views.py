@@ -1997,15 +1997,13 @@ def generar_pdf(request, anio, mes):
         primer_dia_mes = datetime(anio, mes, 1)
         ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
         
-        top_psicologos_llamadas_mes = (
-            InfoMiembros.objects
-            .annotate(cantidad_llamadas=Count('psillamadas', filter=models.Q(psillamadas__fecha_llamada__range=[primer_dia_mes, ultimo_dia_mes])))
-            .order_by('-cantidad_llamadas')
-            .values('id_usuario_id', 'nombre', 'cantidad_llamadas')
-            .annotate(id_usuario_text=Cast(F('id_usuario_id'), output_field=TextField()))
-            .values('id_usuario_text', 'nombre', 'cantidad_llamadas')[:10]
-        )
-        
+        # top_psicologos_llamadas_mes = (
+        #     InfoMiembros.objects
+        #     .annotate(cantidad_llamadas=Count('psillamadas', filter=models.Q(psillamadas__fecha_llamada__range=[primer_dia_mes, ultimo_dia_mes])))
+        #     .order_by('-cantidad_llamadas')
+        #     .annotate(id_usuario_text=F('id_usuario__id'))
+        #     .values('id_usuario_text', 'nombre', 'cantidad_llamadas')[:10]
+        # )
         
         
         top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
@@ -2036,7 +2034,12 @@ def generar_pdf(request, anio, mes):
         p.drawString(100, 350, f"Top 10 de Psicologos por llamadas en {nombre_mes}")
         y_position = 330
         
-        print(top_psicologos_llamadas_mes)
+        # for psicologo in top_psicologos_llamadas_mes:
+        #     nombre_psicologo = psicologo['id_psicologo__nombre']  # Ajusta esto según la estructura real de tus datos
+        #     cantidad_llamadas = psicologo['cantidad_llamadas']
+            
+        #     p.drawString(120, y_position, f"{nombre_psicologo}: {cantidad_llamadas}")
+        #     y_position -= 20
         
         p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
         y_position = 730
