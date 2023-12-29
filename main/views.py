@@ -5,8 +5,8 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError, transaction
-from django.db.models import Q, Value, CharField
+from django.db import IntegrityError, transaction, models
+from django.db.models import Q, F, Value, CharField, Count, TextField, IntegerField, BigIntegerField
 from django.db.models.functions import Cast
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
@@ -14,7 +14,9 @@ from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 import random
+import calendar
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -30,6 +32,12 @@ SUCCESS_101 = "Datos guardados correctamente."
 SUCCESS_102 = "Cuenta creada exitosamente"
 
 adminOnly = [1, 10]
+meses = {1: 'Enero', 2: 'Febrero',
+         3: 'Marzo', 4: 'Abril',
+         5: 'Mayo', 6: 'Junio',
+         7: 'Julio', 8: 'Agosto',
+         9: 'Septiembre', 10: 'Octubre',
+         11: 'Noviembre', 12: 'Diciembre'}
 
 #Instancias de modelos
 paises = Pais.objects.all()
@@ -1852,7 +1860,13 @@ def admininformes(request):
         if request.method == 'POST':
             form = InformesForm(request.POST)
             if form.is_valid():
-                pass
+                # Acceder a form.cleaned_data aquí, después de la validación del formulario
+                anio = form.cleaned_data['anio']
+                mes = form.cleaned_data['mes']
+
+                # Utilizar la función reverse para generar la URL basada en el nombre de la vista
+                url_generar_pdf = reverse('generar_pdf', kwargs={'anio': anio, 'mes': mes})
+                return redirect(url_generar_pdf)
         else:
             form = InformesForm()
 
@@ -1959,16 +1973,93 @@ def not_deployed_404(request):
         return render(request, '404_not_deployed.html')
     
 @login_required
-def generar_pdf(request):
-    data = ["cooco", "channel"]
-    response = HttpResponse(content_type='applicaton/pdf')
-    response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
-    p = canvas.Canvas(response)
-    for item in data:
-        p.drawString(100, 100, str(item))
-    p.showPage()    
-    p.save()
-    return response
+def generar_pdf(request, anio, mes):
+    if 1 <= mes <= 12:
+        citas = HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+        llamadas = PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
+        
+        # Obtener el nombre del mes
+        
+        nombre_mes = meses[mes]
+        nombre_mes = nombre_mes.capitalize()
 
+        # Página 1: Informe Mensual
+        width, height = letter
+        center_x = width / 2
+        center_y = height / 2
+        informe_mensual = f"Informe Mensual: {nombre_mes} - {anio}"
+        
+        #Pagina 2: cantidades
+        cantidad_citas = citas.count()
+        cantidad_llamadas = llamadas.count()
+        
+        #Pagina 3 y 4. Top Empleados
+        primer_dia_mes = datetime(anio, mes, 1)
+        ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
+        
+        # top_psicologos_llamadas_mes = (
+        #     InfoMiembros.objects
+        #     .annotate(cantidad_llamadas=Count('psillamadas', filter=models.Q(psillamadas__fecha_llamada__range=[primer_dia_mes, ultimo_dia_mes])))
+        #     .order_by('-cantidad_llamadas')
+        #     .annotate(id_usuario_text=F('id_usuario__id'))
+        #     .values('id_usuario_text', 'nombre', 'cantidad_llamadas')[:10]
+        # )
+        
+        
+        top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
+        top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
+        
+        
+        #Construir el PDF
+        response = HttpResponse(content_type='applicaton/pdf')
+        response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
+        p = canvas.Canvas(response)
+        
+        #pagina 1
+        p.setFont("Helvetica-Bold", 16)
+        text_width = p.stringWidth(informe_mensual, "Helvetica-Bold", 16)
+        x_position = center_x - (text_width / 2)
+        y_position = center_y - 8
+        p.drawString(x_position, y_position, informe_mensual)
+        
+        #Pagina 2
+        p.showPage()
+        p.setFont("Helvetica", 12)
+        p.drawString(120, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
+        p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
+
+        #Pagina 3
+        p.showPage()
+        p.drawString(100, 350, f"Top 10 de Psicologos por llamadas en {nombre_mes}")
+        y_position = 330
+        
+        # for psicologo in top_psicologos_llamadas_mes:
+        #     nombre_psicologo = psicologo['id_psicologo__nombre']  # Ajusta esto según la estructura real de tus datos
+        #     cantidad_llamadas = psicologo['cantidad_llamadas']
+            
+        #     p.drawString(120, y_position, f"{nombre_psicologo}: {cantidad_llamadas}")
+        #     y_position -= 20
+        
+        p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
+        y_position = 730
+        for psicologo in top_psicologos_llamadas:
+            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            y_position -= 20
+
+        # Nueva página (Página 4)
+        p.showPage()
+        p.setFont("Helvetica", 12)
+        p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
+        y_position = 730
+        for psicologo in top_psicologos_citas:
+            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            y_position -= 20
+            
+            
+        p.save()
+        return response
+    else:
+        return redirect(reverse('home'))
 
     
