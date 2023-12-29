@@ -14,6 +14,7 @@ from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 import random
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
@@ -30,6 +31,12 @@ SUCCESS_101 = "Datos guardados correctamente."
 SUCCESS_102 = "Cuenta creada exitosamente"
 
 adminOnly = [1, 10]
+meses = {1: 'Enero', 2: 'Febrero',
+         3: 'Marzo', 4: 'Abril',
+         5: 'Mayo', 6: 'Junio',
+         7: 'Julio', 8: 'Agosto',
+         9: 'Septiembre', 10: 'Octubre',
+         11: 'Noviembre', 12: 'Diciembre'}
 
 #Instancias de modelos
 paises = Pais.objects.all()
@@ -1966,60 +1973,70 @@ def not_deployed_404(request):
     
 @login_required
 def generar_pdf(request, anio, mes):
-    citas = HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
-    llamadas = PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
-    
-    # Obtener el nombre del mes
-    nombre_mes = datetime.strptime(str(mes), "%m").strftime("%B")
+    if 1 <= mes <= 12:
+        citas = HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+        llamadas = PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
+        
+        # Obtener el nombre del mes
+        
+        nombre_mes = meses[mes]
+        nombre_mes = nombre_mes.capitalize()
 
-    # Página 1: Informe Mensual
-    informe_mensual = f"Informe Mensual: {nombre_mes} - {anio}"
-    
-    #Pagina 2: cantidades
-    cantidad_citas = citas.count()
-    cantidad_llamadas = llamadas.count()
-    
-    #Pagina 3 y 4. Top Empleados
-    top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
-    top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
-    
-    
-    #Construir el PDF
-    response = HttpResponse(content_type='applicaton/pdf')
-    response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
-    p = canvas.Canvas(response)
-    
-    #pagina 1
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(100, 750, informe_mensual)
-    
-    #Pagina 2
-    p.showPage()
-    p.setFont("Helvetica", 12)
-    p.drawString(100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
-    p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
-    p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
-
-    #Pagina 3
-    p.showPage()
-    p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
-    y_position = 730
-    for psicologo in top_psicologos_llamadas:
-        p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
-        y_position -= 20
-
-    # Nueva página (Página 4)
-    p.showPage()
-    p.setFont("Helvetica", 12)
-    p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
-    y_position = 730
-    for psicologo in top_psicologos_citas:
-        p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
-        y_position -= 20
+        # Página 1: Informe Mensual
+        width, height = letter
+        center_x = width / 2
+        center_y = height / 2
+        informe_mensual = f"Informe Mensual: {nombre_mes} - {anio}"
+        
+        #Pagina 2: cantidades
+        cantidad_citas = citas.count()
+        cantidad_llamadas = llamadas.count()
+        
+        #Pagina 3 y 4. Top Empleados
+        top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
+        top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
         
         
-    p.save()
-    return response
+        #Construir el PDF
+        response = HttpResponse(content_type='applicaton/pdf')
+        response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
+        p = canvas.Canvas(response)
+        
+        #pagina 1
+        p.setFont("Helvetica-Bold", 16)
+        text_width = p.stringWidth(informe_mensual, "Helvetica-Bold", 16)
+        x_position = center_x - (text_width / 2)
+        y_position = center_y - 8
+        p.drawString(x_position, y_position, informe_mensual)
+        
+        #Pagina 2
+        p.showPage()
+        p.setFont("Helvetica", 12)
+        p.drawString(120, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
+        p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
 
+        #Pagina 3
+        p.showPage()
+        p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
+        y_position = 730
+        for psicologo in top_psicologos_llamadas:
+            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            y_position -= 20
+
+        # Nueva página (Página 4)
+        p.showPage()
+        p.setFont("Helvetica", 12)
+        p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
+        y_position = 730
+        for psicologo in top_psicologos_citas:
+            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            y_position -= 20
+            
+            
+        p.save()
+        return response
+    else:
+        return redirect(reverse('home'))
 
     
