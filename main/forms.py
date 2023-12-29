@@ -13,7 +13,7 @@ class InformesForm(forms.Form):
     opciones_año = [(año, str(año)) for año in range(año_minimo, año_actual + 1)]
 
     # Definir el campo de año con las opciones generadas
-    año = forms.ChoiceField(choices=opciones_año, label='Año', widget=forms.Select(attrs={'class': 'form-select'}), required=True)
+    anio = forms.ChoiceField(choices=opciones_año, label='Año', widget=forms.Select(attrs={'class': 'form-select'}), required=True)
 
     # Definir el campo de mes con opciones fijas para todos los meses
     opciones_mes = [

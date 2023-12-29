@@ -1853,11 +1853,11 @@ def admininformes(request):
             form = InformesForm(request.POST)
             if form.is_valid():
                 # Acceder a form.cleaned_data aquí, después de la validación del formulario
-                año = form.cleaned_data['año']
+                anio = form.cleaned_data['anio']
                 mes = form.cleaned_data['mes']
 
                 # Utilizar la función reverse para generar la URL basada en el nombre de la vista
-                url_generar_pdf = reverse('generar_pdf', kwargs={'request': request, 'anio': año, 'mes': mes})
+                url_generar_pdf = reverse('generar_pdf', kwargs={'anio': anio, 'mes': mes})
                 return redirect(url_generar_pdf)
         else:
             form = InformesForm()
