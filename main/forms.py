@@ -7,13 +7,13 @@ from django.utils.html import format_html
 
 class InformesForm(forms.Form):
     # Obtener el año actual
+    año_minimo = 2023
     año_actual = datetime.datetime.now().year
 
-    # Generar las opciones para el campo de año desde el año actual hasta 10 años en el futuro
-    opciones_año = [(año, str(año)) for año in range(año_actual, año_actual + 11)]
+    opciones_año = [(año, str(año)) for año in range(año_minimo, año_actual + 1)]
 
     # Definir el campo de año con las opciones generadas
-    año = forms.ChoiceField(choices=opciones_año, label='Año', widget=forms.Select(attrs={'class': 'form-select'}))
+    año = forms.ChoiceField(choices=opciones_año, label='Año', widget=forms.Select(attrs={'class': 'form-select'}), required=True)
 
     # Definir el campo de mes con opciones fijas para todos los meses
     opciones_mes = [
@@ -22,7 +22,7 @@ class InformesForm(forms.Form):
         ('9', 'Septiembre'), ('10', 'Octubre'), ('11', 'Noviembre'), ('12', 'Diciembre')
     ]
 
-    mes = forms.ChoiceField(choices=opciones_mes, label='Mes', widget=forms.Select(attrs={'class': 'form-select'}))
+    mes = forms.ChoiceField(choices=opciones_mes, label='Mes', widget=forms.Select(attrs={'class': 'form-select'}), required=True)
 
 class FiltroUsuarios(forms.Form):
     nombre = forms.CharField(

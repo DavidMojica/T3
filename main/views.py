@@ -1983,8 +1983,35 @@ def generar_pdf(request, anio, mes):
     response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
     p = canvas.Canvas(response)
     
+    #pagina 1
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, 750, informe_mensual)
+    
+    #Pagina 2
+    p.showPage()
+    p.setFont("Helvetica", 12)
+    p.drawString(100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+    p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
+    p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
 
-    p.showPage()    
+    #Pagina 3
+    p.showPage()
+    p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
+    y_position = 730
+    for psicologo in top_psicologos_llamadas:
+        p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+        y_position -= 20
+
+    # Nueva página (Página 4)
+    p.showPage()
+    p.setFont("Helvetica", 12)
+    p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
+    y_position = 730
+    for psicologo in top_psicologos_citas:
+        p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+        y_position -= 20
+        
+        
     p.save()
     return response
 
