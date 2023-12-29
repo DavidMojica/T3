@@ -5,8 +5,8 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError, transaction
-from django.db.models import Q, F, Value, CharField, Count
+from django.db import IntegrityError, transaction, models
+from django.db.models import Q, F, Value, CharField, Count, TextField, IntegerField, BigIntegerField
 from django.db.models.functions import Cast
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
@@ -16,6 +16,7 @@ from unidecode import unidecode
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import random
+import calendar
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -1993,6 +1994,20 @@ def generar_pdf(request, anio, mes):
         cantidad_llamadas = llamadas.count()
         
         #Pagina 3 y 4. Top Empleados
+        primer_dia_mes = datetime(anio, mes, 1)
+        ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
+        
+        top_psicologos_llamadas_mes = (
+            InfoMiembros.objects
+            .annotate(cantidad_llamadas=Count('psillamadas', filter=models.Q(psillamadas__fecha_llamada__range=[primer_dia_mes, ultimo_dia_mes])))
+            .order_by('-cantidad_llamadas')
+            .values('id_usuario_id', 'nombre', 'cantidad_llamadas')
+            .annotate(id_usuario_text=Cast(F('id_usuario_id'), output_field=TextField()))
+            .values('id_usuario_text', 'nombre', 'cantidad_llamadas')[:10]
+        )
+        
+        
+        
         top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
         
@@ -2018,6 +2033,11 @@ def generar_pdf(request, anio, mes):
 
         #Pagina 3
         p.showPage()
+        p.drawString(100, 350, f"Top 10 de Psicologos por llamadas en {nombre_mes}")
+        y_position = 330
+        
+        print(top_psicologos_llamadas_mes)
+        
         p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
         y_position = 730
         for psicologo in top_psicologos_llamadas:
