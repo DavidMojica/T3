@@ -1852,7 +1852,13 @@ def admininformes(request):
         if request.method == 'POST':
             form = InformesForm(request.POST)
             if form.is_valid():
-                pass
+                # Acceder a form.cleaned_data aquí, después de la validación del formulario
+                año = form.cleaned_data['año']
+                mes = form.cleaned_data['mes']
+
+                # Utilizar la función reverse para generar la URL basada en el nombre de la vista
+                url_generar_pdf = reverse('generar_pdf', kwargs={'request': request, 'anio': año, 'mes': mes})
+                return redirect(url_generar_pdf)
         else:
             form = InformesForm()
 
