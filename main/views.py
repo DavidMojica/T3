@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction
-from django.db.models import Q, Value, CharField
+from django.db.models import Q, F, Value, CharField, Count
 from django.db.models.functions import Cast
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
@@ -1959,13 +1959,31 @@ def not_deployed_404(request):
         return render(request, '404_not_deployed.html')
     
 @login_required
-def generar_pdf(request):
-    data = ["cooco", "channel"]
+def generar_pdf(request, anio, mes):
+    citas = HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+    llamadas = PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
+    
+    # Obtener el nombre del mes
+    nombre_mes = datetime.strptime(str(mes), "%m").strftime("%B")
+
+    # Página 1: Informe Mensual
+    informe_mensual = f"Informe Mensual: {nombre_mes} - {anio}"
+    
+    #Pagina 2: cantidades
+    cantidad_citas = citas.count()
+    cantidad_llamadas = llamadas.count()
+    
+    #Pagina 3 y 4. Top Empleados
+    top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
+    top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
+    
+    
+    #Construir el PDF
     response = HttpResponse(content_type='applicaton/pdf')
     response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
     p = canvas.Canvas(response)
-    for item in data:
-        p.drawString(100, 100, str(item))
+    
+
     p.showPage()    
     p.save()
     return response
