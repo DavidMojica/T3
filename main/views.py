@@ -2032,7 +2032,8 @@ def generar_pdf(request, anio, mes):
         mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
         mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
         sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-        escolaridad_llamadas = llamadas.values('cedula_usuario__escolaridad')
+        escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(total=Count('documento__escolaridad'))
+        escolaridad_llamadas_cantidad = [0,0,0,0,0,0,0]
         
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
 
@@ -2046,7 +2047,18 @@ def generar_pdf(request, anio, mes):
             
         #llamadas
         generos_citas = citas.values('cedula_usuario__sexo').annotate(total=Count('cedula_usuario__sexo'))
+        escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
+        
         generos_citas_cantidad = [0, 0, 0]
+        escolaridad_citas_cantidad = [0,0,0,0,0,0,0]
+        
+        for e in escolaridad_citas:
+            escolaridad_id = e['cedula_usuario__escolaridad']
+            total = e['total']
+            
+            if escolaridad_id == 1:
+                escolaridad_citas_cantidad[0] = total
+        
         for genero_cita in generos_citas:
             genero_id = genero_cita['cedula_usuario__sexo']
             total = genero_cita['total']
