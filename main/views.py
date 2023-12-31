@@ -2043,8 +2043,19 @@ def generar_pdf(request, anio, mes):
                 sexos_llamadas_cantidad[index] = total
             
         #llamadas
-        sexos_citas = citas
-        sexos_citas_cantidad = [0] * len(mapeo_generos)
+        generos_citas = citas.values('cedula_usuario__sexo').annotate(total=Count('cedula_usuario__sexo'))
+        generos_citas_cantidad = [0, 0, 0]
+        for genero_cita in generos_citas:
+            genero_id = genero_cita['cedula_usuario__sexo']
+            total = genero_cita['total']
+            
+            if genero_id == 1:
+                generos_citas_cantidad[0] = total
+            elif genero_id == 2:
+                generos_citas_cantidad[1] = total
+            elif genero_id == 3:
+                generos_citas_cantidad[2] = total
+                
         
         #Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
@@ -2081,12 +2092,16 @@ def generar_pdf(request, anio, mes):
         
         # Pagina 4: sexos
         p.showPage()
-        p.drawString(100, 750, f"Usuarios de llamadas por sexo")
+        p.drawString(100, 750, f"Usuarios de llamadas por sexo en {nombre_mes}")
         y_position = 730
         for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
             p.drawString(120, y_position, f"{genero}: {total}")
             y_position -= 20
-        
+            
+        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes}")
+        p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
+        p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
+        p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
             
         #datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
