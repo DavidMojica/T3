@@ -2027,10 +2027,12 @@ def generar_pdf(request, anio, mes):
             cursor.execute(query, [anio, mes])
             top_psicologos_citas = cursor.fetchall()
         
-        #Pagina 4: sexos
+        #Pagina 4: sexos - escolaridad
         #llamadas
         mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
+        mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
         sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
+        escolaridad_llamadas = llamadas.values('cedula_usuario__escolaridad')
         
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
 
