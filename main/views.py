@@ -536,7 +536,7 @@ def sm_HPC(request):
     documento = ""
     fecha_nacimiento = None
     psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
-    sexo_usuario = None
+    
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             ban = True
@@ -628,7 +628,6 @@ def sm_HPC(request):
                     etnia = int(request.POST['e_etnia'])
                     ocupacion = int(request.POST['e_ocupacion'])
                     regimen = int(request.POST['e_rss'])
-                    
 
                 except ValueError:
                     ban = False
@@ -648,7 +647,6 @@ def sm_HPC(request):
                     escolaridad_instance = get_object_or_404(
                         Escolaridad, id=escolaridad)
                     sexo_instance = get_object_or_404(Sexo, id=sexo)
-                    sexo_usuario = sexo_instance
                     estado_civil_instance = get_object_or_404(
                         EstadoCivil, id=estado_civil)
                     lecto1_instance = get_object_or_404(
@@ -775,7 +773,6 @@ def sm_HPC(request):
                 ocupacion = int(request.POST['ocupacion'])
                 regimen = int(request.POST['rss'])
                 etnia = int(request.POST['etnia'])
-                
 
             except ValueError:
                 ban = False
@@ -804,10 +801,8 @@ def sm_HPC(request):
 
                 try:
                     sexo_instance = Sexo.objects.get(id=sexo)
-                    sexo_usuario = sexo_instance
                 except Sexo.DoesNotExist:
                     sexo_instance = None
-
 
                 try:
                     estado_civil_instance = EstadoCivil.objects.get(
@@ -1248,7 +1243,6 @@ def sm_HPC(request):
                     lugar=a_lugar,
                     edad_usuario_actual=edad_actual,
                     diag_trans_mental=ap_trans,
-                    sexo_usuario = sexo_usuario,
                     diag_categoria=ap_cate,
                     diag_por_profesional=ap_diag,
                     tratamiento=ap_trat,
