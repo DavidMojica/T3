@@ -5,9 +5,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError, transaction, models
+from django.db import IntegrityError, transaction, connection
 from django.db.models import Q, F, Value, CharField, Count, TextField, IntegerField, BigIntegerField
-from django.db.models.functions import Cast
+from django.db.models.functions import Cast, Coalesce
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse, HttpResponse
@@ -1994,9 +1994,21 @@ def generar_pdf(request, anio, mes):
         cantidad_llamadas = llamadas.count()
         
         #Pagina 3 y 4. Top Empleados
-        top_psicologos = llamadas.values('id_psicologo__nombre') \
-                         .annotate(total_llamadas=Count('id_psicologo')) \
-                         .order_by('-total_llamadas')[:10]
+        query = """
+            SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
+            FROM "main_psillamadas"
+            JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+            WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
+            AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
+            GROUP BY "main_infomiembros"."nombre"
+            ORDER BY total_llamadas DESC
+            LIMIT 10
+        """
+
+        # Ejecutar la consulta SQL cruda
+        with connection.cursor() as cursor:
+            cursor.execute(query, [anio, mes])
+            top_psicologos = cursor.fetchall()
         
         # primer_dia_mes = datetime(anio, mes, 1)
         # ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
@@ -2047,8 +2059,10 @@ def generar_pdf(request, anio, mes):
         
         p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
         y_position = 730
+        
+        print(top_psicologos)
         for psicologo in top_psicologos:
-            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            p.drawString(120, y_position, f"{psicologo['nombre']}: {psicologo['total_llamadas']}")
             y_position -= 20
 
         # Nueva página (Página 4)
