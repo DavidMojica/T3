@@ -5,9 +5,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.db import IntegrityError, transaction, models
+from django.db import IntegrityError, transaction, connection
 from django.db.models import Q, F, Value, CharField, Count, TextField, IntegerField, BigIntegerField
-from django.db.models.functions import Cast
+from django.db.models.functions import Cast, Coalesce
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse, HttpResponse
@@ -536,6 +536,7 @@ def sm_HPC(request):
     documento = ""
     fecha_nacimiento = None
     psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
+    
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             ban = True
@@ -1789,7 +1790,7 @@ def adminuser(request):
     else:
         return redirect(reverse('home'))
 
-@login_required
+# @login_required
 def adminregister(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
@@ -1993,22 +1994,116 @@ def generar_pdf(request, anio, mes):
         cantidad_citas = citas.count()
         cantidad_llamadas = llamadas.count()
         
-        #Pagina 3 y 4. Top Empleados
-        primer_dia_mes = datetime(anio, mes, 1)
-        ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
+        #Pagina 3 Top Empleados
+        #LLAMADAS
+        query = """
+            SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
+            FROM "main_psillamadas"
+            JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+            WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
+            AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
+            GROUP BY "main_infomiembros"."nombre"
+            ORDER BY total_llamadas DESC
+            LIMIT 10
+        """
+        # Ejecutar la consulta SQL cruda
+        with connection.cursor() as cursor:
+            cursor.execute(query, [anio, mes])
+            top_psicologos_llamadas = cursor.fetchall()
+
+        #CITAS
+        query = """
+        SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
+            FROM "main_hpc"
+            JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+            WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
+            AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
+            GROUP BY "main_infomiembros"."nombre"
+            ORDER BY total_citas DESC
+            LIMIT 10
+        """
         
-        # top_psicologos_llamadas_mes = (
-        #     InfoMiembros.objects
-        #     .annotate(cantidad_llamadas=Count('psillamadas', filter=models.Q(psillamadas__fecha_llamada__range=[primer_dia_mes, ultimo_dia_mes])))
-        #     .order_by('-cantidad_llamadas')
-        #     .annotate(id_usuario_text=F('id_usuario__id'))
-        #     .values('id_usuario_text', 'nombre', 'cantidad_llamadas')[:10]
-        # )
+        with connection.cursor() as cursor:
+            cursor.execute(query, [anio, mes])
+            top_psicologos_citas = cursor.fetchall()
         
+        #Pagina 4: sexos - escolaridad
+        #llamadas
+        mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
+        mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
+        sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
+        escolaridad_llamadas = llamadas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
+        escolaridad_llamadas_cantidad = [0,0,0,0,0,0,0]
         
-        top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
-        top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
+        sexos_llamadas_cantidad = [0] * len(mapeo_generos)
+
+        for s in sexos_llamadas:
+            genero = s['sexo']
+            total = s['total']
+            
+            
+            if genero in mapeo_generos:
+                index = genero - 1  # Ajuste para el índice de la lista
+                sexos_llamadas_cantidad[index] = total
         
+        for e in escolaridad_llamadas:
+            escolaridad_id = e['cedula_usuario__escolaridad']
+            total = e['total']
+            
+            if escolaridad_id == 1:
+                escolaridad_llamadas_cantidad[0] = total
+            elif escolaridad_id == 2:
+                escolaridad_llamadas_cantidad[1] = total
+            elif escolaridad_id == 3:
+                escolaridad_llamadas_cantidad[2] = total
+            elif escolaridad_id == 4:
+                escolaridad_llamadas_cantidad[3] = total
+            elif escolaridad_id == 5:
+                escolaridad_llamadas_cantidad[4] = total
+            elif escolaridad_id == 6:
+                escolaridad_llamadas_cantidad[5] = total
+            elif escolaridad_id == 7:
+                escolaridad_llamadas_cantidad[6] = total
+                
+                
+        #citas
+        generos_citas = citas.values('cedula_usuario__sexo').annotate(total=Count('cedula_usuario__sexo'))
+        escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
+        
+        generos_citas_cantidad = [0, 0, 0]
+        escolaridad_citas_cantidad = [0,0,0,0,0,0,0]
+        
+        for e in escolaridad_citas:
+            escolaridad_id = e['cedula_usuario__escolaridad']
+            total = e['total']
+            
+            if escolaridad_id == 1:
+                escolaridad_citas_cantidad[0] = total
+            elif escolaridad_id == 2:
+                escolaridad_citas_cantidad[1] = total
+            elif escolaridad_id == 3:
+                escolaridad_citas_cantidad[2] = total
+            elif escolaridad_id == 4:
+                escolaridad_citas_cantidad[3] = total
+            elif escolaridad_id == 5:
+                escolaridad_citas_cantidad[4] = total
+            elif escolaridad_id == 6:
+                escolaridad_citas_cantidad[5] = total
+            elif escolaridad_id == 7:
+                escolaridad_citas_cantidad[6] = total
+                
+                
+        for genero_cita in generos_citas:
+            genero_id = genero_cita['cedula_usuario__sexo']
+            total = genero_cita['total']
+            
+            if genero_id == 1:
+                generos_citas_cantidad[0] = total
+            elif genero_id == 2:
+                generos_citas_cantidad[1] = total
+            elif genero_id == 3:
+                generos_citas_cantidad[2] = total
+                
         
         #Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
@@ -2031,32 +2126,60 @@ def generar_pdf(request, anio, mes):
 
         #Pagina 3
         p.showPage()
-        p.drawString(100, 350, f"Top 10 de Psicologos por llamadas en {nombre_mes}")
-        y_position = 330
-        
-        # for psicologo in top_psicologos_llamadas_mes:
-        #     nombre_psicologo = psicologo['id_psicologo__nombre']  # Ajusta esto según la estructura real de tus datos
-        #     cantidad_llamadas = psicologo['cantidad_llamadas']
-            
-        #     p.drawString(120, y_position, f"{nombre_psicologo}: {cantidad_llamadas}")
-        #     y_position -= 20
-        
-        p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
+        p.drawString(100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes}")
         y_position = 730
         for psicologo in top_psicologos_llamadas:
-            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
-
-        # Nueva página (Página 4)
-        p.showPage()
-        p.setFont("Helvetica", 12)
-        p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
-        y_position = 730
+        
+        p.drawString(100, 350, f"Psicologos que más citas atendieron en {nombre_mes}")
+        y_position = 330
         for psicologo in top_psicologos_citas:
-            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+            p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
+            y_position -= 20
+        
+        # Pagina 4: sexos
+        p.showPage()
+        p.drawString(100, 750, f"Usuarios de llamadas por sexo en {nombre_mes}")
+        y_position = 730
+        for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
+            p.drawString(120, y_position, f"{genero}: {total}")
             y_position -= 20
             
-            
+        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes}")
+        p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
+        p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
+        p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
+        
+        p.drawString(100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes}")
+        p.drawString(120, 430, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
+        p.drawString(120, 410, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
+        p.drawString(120, 390, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
+        p.drawString(120, 370, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
+        p.drawString(120, 350, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
+        p.drawString(120, 330, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
+        p.drawString(120, 310, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
+        
+        p.drawString(100, 270, f"Escolaridades de los usuarios de citas en {nombre_mes}")
+        p.drawString(120, 250, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
+        p.drawString(120, 230, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
+        p.drawString(120, 210, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
+        p.drawString(120, 190, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
+        p.drawString(120, 170, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
+        p.drawString(120, 150, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
+        p.drawString(120, 130, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
+        
+        #datos totales
+        # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
+        # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
+        # p.showPage()
+        # p.setFont("Helvetica", 12)
+        # p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
+        # y_position = 730
+        # for psicologo in top_psicologos_citas:
+        #     p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+        #     y_position -= 20
+       
         p.save()
         return response
     else:
