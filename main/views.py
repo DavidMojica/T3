@@ -536,6 +536,7 @@ def sm_HPC(request):
     documento = ""
     fecha_nacimiento = None
     psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
+    sexo_usuario = None
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             ban = True
@@ -627,6 +628,7 @@ def sm_HPC(request):
                     etnia = int(request.POST['e_etnia'])
                     ocupacion = int(request.POST['e_ocupacion'])
                     regimen = int(request.POST['e_rss'])
+                    
 
                 except ValueError:
                     ban = False
@@ -646,6 +648,7 @@ def sm_HPC(request):
                     escolaridad_instance = get_object_or_404(
                         Escolaridad, id=escolaridad)
                     sexo_instance = get_object_or_404(Sexo, id=sexo)
+                    sexo_usuario = sexo_instance
                     estado_civil_instance = get_object_or_404(
                         EstadoCivil, id=estado_civil)
                     lecto1_instance = get_object_or_404(
@@ -772,6 +775,7 @@ def sm_HPC(request):
                 ocupacion = int(request.POST['ocupacion'])
                 regimen = int(request.POST['rss'])
                 etnia = int(request.POST['etnia'])
+                
 
             except ValueError:
                 ban = False
@@ -800,8 +804,10 @@ def sm_HPC(request):
 
                 try:
                     sexo_instance = Sexo.objects.get(id=sexo)
+                    sexo_usuario = sexo_instance
                 except Sexo.DoesNotExist:
                     sexo_instance = None
+
 
                 try:
                     estado_civil_instance = EstadoCivil.objects.get(
@@ -1242,6 +1248,7 @@ def sm_HPC(request):
                     lugar=a_lugar,
                     edad_usuario_actual=edad_actual,
                     diag_trans_mental=ap_trans,
+                    sexo_usuario = sexo_usuario,
                     diag_categoria=ap_cate,
                     diag_por_profesional=ap_diag,
                     tratamiento=ap_trat,
@@ -2027,6 +2034,23 @@ def generar_pdf(request, anio, mes):
             top_psicologos_citas = cursor.fetchall()
         
         #Pagina 4: sexos
+        #llamadas
+        mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
+        sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
+        
+        sexos_llamadas_cantidad = [0] * len(mapeo_generos)
+
+        for s in sexos_llamadas:
+            genero = s['sexo']
+            total = s['total']
+            
+            if genero in mapeo_generos:
+                index = genero - 1  # Ajuste para el índice de la lista
+                sexos_llamadas_cantidad[index] = total
+            
+        #llamadas
+        sexos_citas = citas
+        sexos_citas_cantidad = [0] * len(mapeo_generos)
         
         #Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
@@ -2049,7 +2073,7 @@ def generar_pdf(request, anio, mes):
 
         #Pagina 3
         p.showPage()
-        p.drawString(100, 750, f"Psicologos que más atendieron llamadas en {nombre_mes}")
+        p.drawString(100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes}")
         y_position = 730
         for psicologo in top_psicologos_llamadas:
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
@@ -2061,9 +2085,13 @@ def generar_pdf(request, anio, mes):
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
         
-        
-
-        # Nueva página (Página 4)
+        # Pagina 4: sexos
+        p.showPage()
+        p.drawString(100, 750, f"Usuarios de llamadas por sexo")
+        y_position = 730
+        for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
+            p.drawString(120, y_position, f"{genero}: {total}")
+            y_position -= 20
         
             
         #datos totales
