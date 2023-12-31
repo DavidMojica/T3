@@ -1994,8 +1994,12 @@ def generar_pdf(request, anio, mes):
         cantidad_llamadas = llamadas.count()
         
         #Pagina 3 y 4. Top Empleados
-        primer_dia_mes = datetime(anio, mes, 1)
-        ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
+        top_psicologos = llamadas.values('id_psicologo__nombre') \
+                         .annotate(total_llamadas=Count('id_psicologo')) \
+                         .order_by('-total_llamadas')[:10]
+        
+        # primer_dia_mes = datetime(anio, mes, 1)
+        # ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
         
         # top_psicologos_llamadas_mes = (
         #     InfoMiembros.objects
@@ -2043,7 +2047,7 @@ def generar_pdf(request, anio, mes):
         
         p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
         y_position = 730
-        for psicologo in top_psicologos_llamadas:
+        for psicologo in top_psicologos:
             p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
             y_position -= 20
 

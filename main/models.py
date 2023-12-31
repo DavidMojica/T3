@@ -388,7 +388,7 @@ class PsiLlamadas(models.Model):
     id = models.AutoField(primary_key=True)
     documento = models.CharField(max_length=30, null=True, blank=True)
     nombre_paciente = models.CharField(null=True, max_length=100)
-    id_psicologo = models.ForeignKey(InfoMiembros, on_delete=models.DO_NOTHING)
+    id_psicologo = models.OneToOneField(CustomUser, on_delete=models.DO_NOTHING)
     fecha_llamada = models.DateTimeField(default=timezone.now)
     dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT)
     sexo = models.ForeignKey(Sexo, null=True, on_delete=models.CASCADE)
