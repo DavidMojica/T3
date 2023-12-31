@@ -2041,6 +2041,7 @@ def generar_pdf(request, anio, mes):
             genero = s['sexo']
             total = s['total']
             
+            
             if genero in mapeo_generos:
                 index = genero - 1  # Ajuste para el índice de la lista
                 sexos_llamadas_cantidad[index] = total
