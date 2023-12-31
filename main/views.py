@@ -2032,7 +2032,7 @@ def generar_pdf(request, anio, mes):
         mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
         mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
         sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-        # escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(total=Count('documento__escolaridad'))
+        escolaridad_llamadas = llamadas.values('documento__documento__escolaridad').annotate(total=Count('documento__documento__escolaridad'))
         escolaridad_llamadas_cantidad = [0,0,0,0,0,0,0]
         
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
@@ -2045,24 +2045,24 @@ def generar_pdf(request, anio, mes):
                 index = genero - 1  # Ajuste para el índice de la lista
                 sexos_llamadas_cantidad[index] = total
         
-        # for e in escolaridad_llamadas:
-        #     escolaridad_id = e['cedula_usuario__escolaridad']
-        #     total = e['total']
+        for e in escolaridad_llamadas:
+            escolaridad_id = e['cedula_usuario__escolaridad']
+            total = e['total']
             
-        #     if escolaridad_id == 1:
-        #         escolaridad_llamadas_cantidad[0] = total
-        #     elif escolaridad_id == 2:
-        #         escolaridad_llamadas_cantidad[1] = total
-        #     elif escolaridad_id == 3:
-        #         escolaridad_llamadas_cantidad[2] = total
-        #     elif escolaridad_id == 4:
-        #         escolaridad_llamadas_cantidad[3] = total
-        #     elif escolaridad_id == 5:
-        #         escolaridad_llamadas_cantidad[4] = total
-        #     elif escolaridad_id == 6:
-        #         escolaridad_llamadas_cantidad[5] = total
-        #     elif escolaridad_id == 7:
-        #         escolaridad_llamadas_cantidad[6] = total
+            if escolaridad_id == 1:
+                escolaridad_llamadas_cantidad[0] = total
+            elif escolaridad_id == 2:
+                escolaridad_llamadas_cantidad[1] = total
+            elif escolaridad_id == 3:
+                escolaridad_llamadas_cantidad[2] = total
+            elif escolaridad_id == 4:
+                escolaridad_llamadas_cantidad[3] = total
+            elif escolaridad_id == 5:
+                escolaridad_llamadas_cantidad[4] = total
+            elif escolaridad_id == 6:
+                escolaridad_llamadas_cantidad[5] = total
+            elif escolaridad_id == 7:
+                escolaridad_llamadas_cantidad[6] = total
                 
                 
         #citas
