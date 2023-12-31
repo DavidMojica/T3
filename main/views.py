@@ -2044,8 +2044,28 @@ def generar_pdf(request, anio, mes):
             if genero in mapeo_generos:
                 index = genero - 1  # Ajuste para el índice de la lista
                 sexos_llamadas_cantidad[index] = total
+        
+        for e in escolaridad_llamadas:
+            escolaridad_id = e['cedula_usuario__escolaridad']
+            total = e['total']
             
-        #llamadas
+            if escolaridad_id == 1:
+                escolaridad_llamadas_cantidad[0] = total
+            elif escolaridad_id == 2:
+                escolaridad_llamadas_cantidad[1] = total
+            elif escolaridad_id == 3:
+                escolaridad_llamadas_cantidad[2] = total
+            elif escolaridad_id == 4:
+                escolaridad_llamadas_cantidad[3] = total
+            elif escolaridad_id == 5:
+                escolaridad_llamadas_cantidad[4] = total
+            elif escolaridad_id == 6:
+                escolaridad_llamadas_cantidad[5] = total
+            elif escolaridad_id == 7:
+                escolaridad_llamadas_cantidad[6] = total
+                
+                
+        #citas
         generos_citas = citas.values('cedula_usuario__sexo').annotate(total=Count('cedula_usuario__sexo'))
         escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
         
@@ -2058,7 +2078,20 @@ def generar_pdf(request, anio, mes):
             
             if escolaridad_id == 1:
                 escolaridad_citas_cantidad[0] = total
-        
+            elif escolaridad_id == 2:
+                escolaridad_citas_cantidad[1] = total
+            elif escolaridad_id == 3:
+                escolaridad_citas_cantidad[2] = total
+            elif escolaridad_id == 4:
+                escolaridad_citas_cantidad[3] = total
+            elif escolaridad_id == 5:
+                escolaridad_citas_cantidad[4] = total
+            elif escolaridad_id == 6:
+                escolaridad_citas_cantidad[5] = total
+            elif escolaridad_id == 7:
+                escolaridad_citas_cantidad[6] = total
+                
+                
         for genero_cita in generos_citas:
             genero_id = genero_cita['cedula_usuario__sexo']
             total = genero_cita['total']
@@ -2116,7 +2149,19 @@ def generar_pdf(request, anio, mes):
         p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
         p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
         p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
-            
+        
+        p.drawString(100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes}")
+        p.drawString(120, 430, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
+        p.drawString(120, 410, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
+        p.drawString(120, 390, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
+        p.drawString(120, 370, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
+        p.drawString(120, 350, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
+        p.drawString(120, 330, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
+        p.drawString(120, 310, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
+        
+        p.drawString(100, 270, f"Escolaridades de los usuarios de llamadas en {nombre_mes}")
+        
+        
         #datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
