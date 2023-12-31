@@ -1993,7 +1993,8 @@ def generar_pdf(request, anio, mes):
         cantidad_citas = citas.count()
         cantidad_llamadas = llamadas.count()
         
-        #Pagina 3 y 4. Top Empleados
+        #Pagina 3 Top Empleados
+        #LLAMADAS
         query = """
             SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
             FROM "main_psillamadas"
@@ -2004,27 +2005,28 @@ def generar_pdf(request, anio, mes):
             ORDER BY total_llamadas DESC
             LIMIT 10
         """
-
         # Ejecutar la consulta SQL cruda
         with connection.cursor() as cursor:
             cursor.execute(query, [anio, mes])
-            top_psicologos = cursor.fetchall()
+            top_psicologos_llamadas = cursor.fetchall()
+
+        #CITAS
+        query = """
+        SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
+            FROM "main_hpc"
+            JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+            WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
+            AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
+            GROUP BY "main_infomiembros"."nombre"
+            ORDER BY total_citas DESC
+            LIMIT 10
+        """
         
-        # primer_dia_mes = datetime(anio, mes, 1)
-        # ultimo_dia_mes = datetime(anio, mes, calendar.monthrange(anio, mes)[1], 23, 59, 59)
+        with connection.cursor() as cursor:
+            cursor.execute(query, [anio, mes])
+            top_psicologos_citas = cursor.fetchall()
         
-        # top_psicologos_llamadas_mes = (
-        #     InfoMiembros.objects
-        #     .annotate(cantidad_llamadas=Count('psillamadas', filter=models.Q(psillamadas__fecha_llamada__range=[primer_dia_mes, ultimo_dia_mes])))
-        #     .order_by('-cantidad_llamadas')
-        #     .annotate(id_usuario_text=F('id_usuario__id'))
-        #     .values('id_usuario_text', 'nombre', 'cantidad_llamadas')[:10]
-        # )
-        
-        
-        top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
-        top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
-        
+        #Pagina 4: sexos
         
         #Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
@@ -2047,34 +2049,34 @@ def generar_pdf(request, anio, mes):
 
         #Pagina 3
         p.showPage()
-        p.drawString(100, 350, f"Top 10 de Psicologos por llamadas en {nombre_mes}")
-        y_position = 330
-        
-        # for psicologo in top_psicologos_llamadas_mes:
-        #     nombre_psicologo = psicologo['id_psicologo__nombre']  # Ajusta esto según la estructura real de tus datos
-        #     cantidad_llamadas = psicologo['cantidad_llamadas']
-            
-        #     p.drawString(120, y_position, f"{nombre_psicologo}: {cantidad_llamadas}")
-        #     y_position -= 20
-        
-        p.drawString(100, 750, "Top 10 de Psicólogos por Llamadas:")
+        p.drawString(100, 750, f"Psicologos que más atendieron llamadas en {nombre_mes}")
         y_position = 730
-        
-        print(top_psicologos)
-        for psicologo in top_psicologos:
-            p.drawString(120, y_position, f"{psicologo['nombre']}: {psicologo['total_llamadas']}")
+        for psicologo in top_psicologos_llamadas:
+            p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
+        
+        p.drawString(100, 350, f"Psicologos que más citas atendieron en {nombre_mes}")
+        y_position = 330
+        for psicologo in top_psicologos_citas:
+            p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
+            y_position -= 20
+        
+        
 
         # Nueva página (Página 4)
-        p.showPage()
-        p.setFont("Helvetica", 12)
-        p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
-        y_position = 730
-        for psicologo in top_psicologos_citas:
-            p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
-            y_position -= 20
+        
             
-            
+        #datos totales
+        # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
+        # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
+        # p.showPage()
+        # p.setFont("Helvetica", 12)
+        # p.drawString(100, 750, "Top 10 de Psicólogos por Citas:")
+        # y_position = 730
+        # for psicologo in top_psicologos_citas:
+        #     p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
+        #     y_position -= 20
+       
         p.save()
         return response
     else:
