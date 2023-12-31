@@ -1790,7 +1790,7 @@ def adminuser(request):
     else:
         return redirect(reverse('home'))
 
-@login_required
+# @login_required
 def adminregister(request):
     #Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
@@ -2032,7 +2032,7 @@ def generar_pdf(request, anio, mes):
         mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
         mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
         sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-        escolaridad_llamadas = llamadas.values('documento__documento__escolaridad').annotate(total=Count('documento__documento__escolaridad'))
+        escolaridad_llamadas = llamadas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
         escolaridad_llamadas_cantidad = [0,0,0,0,0,0,0]
         
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
