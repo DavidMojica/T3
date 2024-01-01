@@ -225,21 +225,26 @@ def sm_llamadas(request):
                             )
                             llamada_motivo.save()
             else:
+                try:
+                    documento_instance = InfoPacientes.objects.get(documento=documento)
+                except:
+                    documento_instance = None
                 #crear nueva llamada
-                llamada = PsiLlamadas(
-                        documento=documento,
-                        nombre_paciente=nombre,
-                        observaciones=observaciones,
-                        seguimiento24=seguimiento24,
-                        seguimiento48=seguimiento48,
-                        seguimiento72=seguimiento72,
-                        dia_semana_id=datetime.now().weekday(),
-                        id_psicologo_id=request.user.id,
-                        sexo=sexo_instance,
-                        edad=edad
-                    )
-                llamada.save()
-                id_llamada = llamada.id
+                if documento_instance is not None:
+                    llamada = PsiLlamadas(
+                            documento_id=documento_instance,
+                            nombre_paciente=nombre,
+                            observaciones=observaciones,
+                            seguimiento24=seguimiento24,
+                            seguimiento48=seguimiento48,
+                            seguimiento72=seguimiento72,
+                            dia_semana_id=datetime.now().weekday(),
+                            id_psicologo_id=request.user.id,
+                            sexo=sexo_instance,
+                            edad=edad
+                        )
+                    llamada.save()
+                    id_llamada = llamada.id
 
                 try:
                     psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
