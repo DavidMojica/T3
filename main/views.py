@@ -6,8 +6,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction, connection
-from django.db.models import Q, F, Value, CharField, Count, TextField, IntegerField, BigIntegerField
-from django.db.models.functions import Cast, Coalesce
+from django.db.models import Q, F, Value, CharField, Count
+from django.db.models.functions import Cast, ExtractHour
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse, HttpResponse
@@ -2105,7 +2105,8 @@ def generar_pdf(request, anio, mes):
         escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(
             total=Count('documento__escolaridad'))
         dias_llamadas = llamadas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
-        
+        horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
         dias_llamadas_cantidad = [0] * len(mapeo_dias)
         escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
@@ -2218,8 +2219,6 @@ def generar_pdf(request, anio, mes):
             100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
         y_position = 730
         for psicologo in top_psicologos_llamadas:
-            if psicologo[0] is None:
-                psicologo[0] = "No diligenciado"
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
 
@@ -2227,8 +2226,6 @@ def generar_pdf(request, anio, mes):
             100, 350, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
         y_position = 330
         for psicologo in top_psicologos_citas:
-            if psicologo[0] is None:
-                psicologo[0] = "No diligenciado"
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
 
@@ -2280,10 +2277,9 @@ def generar_pdf(request, anio, mes):
         p.drawString(
             120, 130, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
 
-        #pagina 5:días y horas
+        #pagina 5:días 
         p.showPage()
-        p.drawString(
-            100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
+        p.drawString(100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
         y_position = 730
         for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
             p.drawString(120, y_position, f"{dia}: {total}")
@@ -2296,8 +2292,16 @@ def generar_pdf(request, anio, mes):
             p.drawString(120, y_position, f"{dia}: {total}")
             y_position -= 20
 
-
-
+        #pagina 6: Horas - llamadas
+        p.showPage()
+        p.drawString(100, 750, f"Llamadas por horas en {nombre_mes} - {anio}")
+        y_position = 730
+        for h in horas_llamadas:
+            hora = h['hora']
+            cantidad = h['cantidad']
+            y_position -= 20
+            p.drawString(120, y_position, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
+        
         # datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
