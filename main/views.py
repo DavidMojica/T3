@@ -2138,7 +2138,7 @@ def generar_pdf(request, anio, mes):
                 escolaridad_llamadas_cantidad[6] = total
 
         for d in dias_llamadas:
-            dia= d['dia_semana_id']
+            dia = d['dia_semana_id']
             total = d['total']
             
             if dia in mapeo_dias:
@@ -2149,8 +2149,9 @@ def generar_pdf(request, anio, mes):
             total=Count('cedula_usuario__sexo'))
         escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
             total=Count('cedula_usuario__escolaridad'))
-
-
+        dias_citas = citas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
+        
+        dias_citas_cantidad = [0] * len(mapeo_dias)
         generos_citas_cantidad = [0, 0, 0]
         escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
 
@@ -2184,7 +2185,12 @@ def generar_pdf(request, anio, mes):
             elif genero_id == 3:
                 generos_citas_cantidad[2] = total
 
-        
+        for d in dias_citas:
+            dia = d['dia_semana_id']
+            total = d['total']
+            
+            if dia in mapeo_dias:
+                dias_citas_cantidad[dia] = total
         
         # Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
@@ -2209,35 +2215,39 @@ def generar_pdf(request, anio, mes):
         # Pagina 3
         p.showPage()
         p.drawString(
-            100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes}")
+            100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
         y_position = 730
         for psicologo in top_psicologos_llamadas:
+            if psicologo[0] is None:
+                psicologo[0] = "No diligenciado"
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
 
         p.drawString(
-            100, 350, f"Psicologos que más citas atendieron en {nombre_mes}")
+            100, 350, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
         y_position = 330
         for psicologo in top_psicologos_citas:
+            if psicologo[0] is None:
+                psicologo[0] = "No diligenciado"
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
 
         # Pagina 4: sexos
         p.showPage()
         p.drawString(
-            100, 750, f"Usuarios de llamadas por sexo en {nombre_mes}")
+            100, 750, f"Usuarios de llamadas por sexo en {nombre_mes} - {anio}")
         y_position = 730
         for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
             p.drawString(120, y_position, f"{genero}: {total}")
             y_position -= 20
 
-        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes}")
+        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
         p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
         p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
         p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
 
         p.drawString(
-            100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes}")
+            100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes} - {anio}")
         p.drawString(
             120, 430, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
         p.drawString(
@@ -2254,7 +2264,7 @@ def generar_pdf(request, anio, mes):
             120, 310, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
 
         p.drawString(
-            100, 270, f"Escolaridades de los usuarios de citas en {nombre_mes}")
+            100, 270, f"Escolaridades de los usuarios de citas en {nombre_mes} - {anio}")
         p.drawString(
             120, 250, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
         p.drawString(
@@ -2276,6 +2286,13 @@ def generar_pdf(request, anio, mes):
             100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
         y_position = 730
         for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
+            p.drawString(120, y_position, f"{dia}: {total}")
+            y_position -= 20
+            
+        p.drawString(
+            100, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
+        y_position = 530
+        for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
             p.drawString(120, y_position, f"{dia}: {total}")
             y_position -= 20
 
