@@ -2060,6 +2060,30 @@ def generar_pdf(request, anio, mes):
         # Pagina 2: cantidades
         cantidad_citas = citas.count()
         cantidad_llamadas = llamadas.count()
+        
+        seguimientos_llamadas_no_realizados = llamadas.filter(
+            (
+                (Q(seguimiento24__isnull=False) & ~Q(seguimiento24__exact='')) |
+                (Q(seguimiento48__isnull=False) & ~Q(seguimiento48__exact='')) |
+                (Q(seguimiento72__isnull=False) & ~Q(seguimiento72__exact=''))
+            ) &
+            ~Q(seguimiento24__isnull=False, seguimiento48__isnull=False, seguimiento72__isnull=False)
+        ).count()
+        
+        seguimientos_llamadas_incompletas = llamadas.filter(
+            (
+                (Q(seguimiento24__isnull=False) | Q(seguimiento24__exact='')) |
+                (Q(seguimiento48__isnull=False) | Q(seguimiento48__exact='')) |
+                (Q(seguimiento72__isnull=False) | Q(seguimiento72__exact=''))
+            ) &
+            ~Q(seguimiento24__isnull=False, seguimiento48__isnull=False, seguimiento72__isnull=False)
+        ).count()
+        
+        seguimientos_llamadas_completas = llamadas.filter(
+            seguimiento24__isnull=False, 
+            seguimiento48__isnull=False, 
+            seguimiento72__isnull=False
+        ).count()
 
         # Pagina 3 Top Empleados
         # LLAMADAS
@@ -2151,6 +2175,7 @@ def generar_pdf(request, anio, mes):
         escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
             total=Count('cedula_usuario__escolaridad'))
         dias_citas = citas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
+        horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
         
         dias_citas_cantidad = [0] * len(mapeo_dias)
         generos_citas_cantidad = [0, 0, 0]
@@ -2208,11 +2233,22 @@ def generar_pdf(request, anio, mes):
         # Pagina 2
         p.showPage()
         p.setFont("Helvetica", 12)
-        p.drawString(
-            120, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
         p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
         p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
-
+        
+        texto = (
+                f"De {cantidad_llamadas} llamadas este mes:\n"
+                f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
+                f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
+                f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento."
+            )
+        tamaño_fuente = 12
+        x, y = 100, 670
+        for linea in texto.split('\n'):
+            p.drawString(x, y, linea)
+            y -= tamaño_fuente
+            
         # Pagina 3
         p.showPage()
         p.drawString(
@@ -2299,9 +2335,18 @@ def generar_pdf(request, anio, mes):
         for h in horas_llamadas:
             hora = h['hora']
             cantidad = h['cantidad']
-            y_position -= 20
             p.drawString(120, y_position, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
+            y_position -= 20
         
+        #pagina 7: Horas - citas
+        p.showPage()
+        p.drawString(100, 750, f"Citas por horas en {nombre_mes} - {anio}")
+        y_position = 730
+        for h in horas_citas:
+            hora = h['hora']
+            cantidad = h['cantidad']
+            p.drawString(120, y_position, f"Hora: {hora}, Cantidad de citas: {cantidad}")
+            y_position -= 20
         # datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
