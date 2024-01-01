@@ -2082,6 +2082,26 @@ def generar_pdf(request, anio, mes):
             ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
             ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
         ).count()
+        
+        #citas
+        seguimientos_citas_no_realizados = citas.filter(
+            seguimiento1__isnull=False, seguimiento1__exact='',
+            seguimiento2__isnull=False, seguimiento2__exact=''
+        ).count()
+        
+        seguimientos_citas_incompletos = citas.filter(
+            ~Q(seguimiento1__isnull=False, seguimiento1__exact='') |
+            ~Q(seguimiento2__isnull=False, seguimiento2__exact='') 
+        ).exclude(Q(
+            ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+            ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
+        )).count()
+        
+        seguimientos_citas_completos = citas.filter(
+            ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+            ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
+        ).count()
+        
 
         # Pagina 3 Top Empleados
         # LLAMADAS
@@ -2247,6 +2267,19 @@ def generar_pdf(request, anio, mes):
             p.drawString(x, y, linea)
             y -= tamaño_fuente
             
+        #Citas
+        texto = (
+            f"De {cantidad_citas} citas este mes:\n"
+            f"{seguimientos_citas_completos} citas tienen sus seguimientos completos\n"
+            f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
+            f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento"
+        )    
+        y -= 20
+        
+        for linea in texto.split('\n'):
+            p.drawString(x, y, linea)
+            y -= tamaño_fuente
+        
         # Pagina 3
         p.showPage()
         p.drawString(
