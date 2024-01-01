@@ -232,7 +232,7 @@ def sm_llamadas(request):
                 #crear nueva llamada
                 if documento_instance is not None:
                     llamada = PsiLlamadas(
-                            documento_id=documento_instance,
+                            documento_id=documento,
                             nombre_paciente=nombre,
                             observaciones=observaciones,
                             seguimiento24=seguimiento24,
@@ -241,50 +241,49 @@ def sm_llamadas(request):
                             dia_semana_id=datetime.now().weekday(),
                             id_psicologo_id=request.user.id,
                             sexo=sexo_instance,
-                            edad=edad
-                        )
+                            edad=edad)
                     llamada.save()
                     id_llamada = llamada.id
 
-                try:
-                    psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
-                except PsiLlamadas.DoesNotExist:
-                    psi_llamada_instance = None
+                    try:
+                        psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
+                    except PsiLlamadas.DoesNotExist:
+                        psi_llamada_instance = None
 
-                # conductas y motivos
-                for conducta in ConductasASeguir.objects.all():
-                    checkbox_name = f'cond_{conducta.id}'
-                    if checkbox_name in request.POST:
-                        try:
-                            conducta_instance = ConductasASeguir.objects.get(
-                                id=conducta.id)
-                        except ConductasASeguir.DoesNotExist:
-                            conducta_instance = None
+                    # conductas y motivos
+                    for conducta in ConductasASeguir.objects.all():
+                        checkbox_name = f'cond_{conducta.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                conducta_instance = ConductasASeguir.objects.get(
+                                    id=conducta.id)
+                            except ConductasASeguir.DoesNotExist:
+                                conducta_instance = None
 
-                        llamada_conducta = PsiLlamadasConductas(
-                            id_llamada=psi_llamada_instance,
-                            id_conducta=conducta_instance
-                        )
-                        llamada_conducta.save()
+                            llamada_conducta = PsiLlamadasConductas(
+                                id_llamada=psi_llamada_instance,
+                                id_conducta=conducta_instance
+                            )
+                            llamada_conducta.save()
 
-                for motivo in PsiMotivos.objects.all():
-                    checkbox_name = f'mot_{motivo.id}'
-                    if checkbox_name in request.POST:
-                        try:
-                            motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
-                        except PsiMotivos.DoesNotExist:
-                            motivo_instace = None
+                    for motivo in PsiMotivos.objects.all():
+                        checkbox_name = f'mot_{motivo.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
+                            except PsiMotivos.DoesNotExist:
+                                motivo_instace = None
 
-                        llamada_motivo = PsiLlamadasMotivos(
-                            id_llamada=psi_llamada_instance,
-                            id_motivo=motivo_instace
-                        )
-                        llamada_motivo.save()
-                        
-                #Contador de llamadas del psicologo
-                llamadas = int(psicologo.contador_llamadas_psicologicas)
-                psicologo.contador_llamadas_psicologicas = llamadas + 1
-                psicologo.save()
+                            llamada_motivo = PsiLlamadasMotivos(
+                                id_llamada=psi_llamada_instance,
+                                id_motivo=motivo_instace
+                            )
+                            llamada_motivo.save()
+                            
+                    #Contador de llamadas del psicologo
+                    llamadas = int(psicologo.contador_llamadas_psicologicas)
+                    psicologo.contador_llamadas_psicologicas = llamadas + 1
+                    psicologo.save()
                 
                 
             return redirect(reverse('sm_historial_llamadas'))
@@ -332,7 +331,8 @@ def sm_llamadas(request):
                                                 'btnText': "Actualizar llamada",
                                                 'secretName': "secretKey",
                                                 'motivs': motivs,
-                                                'conducts': conducts                                                
+                                                'conducts': conducts,
+                                                'escolaridades': escolaridades,                                          
                                                 })
         except:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
@@ -349,6 +349,7 @@ def sm_llamadas(request):
                                                         'conductas': conductas,
                                                         'btnClass': "btn-success",
                                                         'btnText': "Guardar llamada",
+                                                        'escolaridades': escolaridades,
                                                         })
 
 def get_departamentos(request):
@@ -2037,7 +2038,7 @@ def generar_pdf(request, anio, mes):
         mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
         mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
         sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-        escolaridad_llamadas = llamadas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
+        escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(total=Count('documento__escolaridad'))
         escolaridad_llamadas_cantidad = [0,0,0,0,0,0,0]
         
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
@@ -2052,7 +2053,7 @@ def generar_pdf(request, anio, mes):
                 sexos_llamadas_cantidad[index] = total
         
         for e in escolaridad_llamadas:
-            escolaridad_id = e['cedula_usuario__escolaridad']
+            escolaridad_id = e['documento__escolaridad']
             total = e['total']
             
             if escolaridad_id == 1:
