@@ -89,8 +89,8 @@
         {% endif %}
         
         <div class="form-group col-sm-10 col-md-4 col-lg-4 col-xl-4">
-          <label for="in_poblacion_vulnerable" class="text-light "><span class="badge bg-warning mb-2 mt-2">Escolaridad</span></label>
-          <select name="poblacion_vulnerable" class="form-select" id="in_poblacion_vulnerable">
+          <label for="escolaridad" class="text-light "><span class="badge bg-warning mb-2 mt-2">Escolaridad</span></label>
+          <select name="escolaridad" class="form-select" id="escolaridad">
             <option value="-1">Seleccione...</option>
             {% for e in escolaridades %}
             <option value="{{e.id}}" {% if paciente.escolaridad_id == e.id %} selected {% endif %} >{{e.description}}</option>

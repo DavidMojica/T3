@@ -91,7 +91,7 @@ def sm_llamadas(request):
         seguimiento24 = request.POST['seguimiento24'].strip()
         seguimiento48 = request.POST['seguimiento48'].strip()
         seguimiento72 = request.POST['seguimiento72'].strip()
-
+        escolaridad = request.POST.get('escolaridad', None)
         # Campos numericos
         try:
             edad = int(edad)
@@ -144,6 +144,10 @@ def sm_llamadas(request):
         except PoblacionVulnerable.DoesNotExist:
             pob_vulnerable_instance = None
             
+        try:
+            escolaridad_instance = Escolaridad.objects.get(id=escolaridad)
+        except Escolaridad.DoesNotExist:
+            escolaridad_instance = None
             
         if ban:
             paciente_existe = InfoPacientes.objects.filter(
@@ -156,6 +160,7 @@ def sm_llamadas(request):
                 paciente_existe.sexo = sexo_instance if sexo_instance is not None else paciente_existe.sexo
                 paciente_existe.edad = edad if edad else paciente_existe.edad
                 paciente_existe.eps = eps_instance if eps_instance is not None else paciente_existe.eps
+                paciente_existe.escolaridad = escolaridad_instance if escolaridad_instance is not None else paciente.escolaridad
                 paciente_existe.direccion = direccion.lower() if direccion else paciente_existe.direccion
                 paciente_existe.municipio = municipio_instance if municipio_instance is not None else paciente_existe.municipio
                 paciente_existe.poblacion_vulnerable = pob_vulnerable_instance if pob_vulnerable is not None else paciente_existe.poblacion_vulnerable
@@ -169,6 +174,7 @@ def sm_llamadas(request):
                     nombre=nombre.lower(),
                     documento=documento,
                     tipo_documento=tipo_documento_instance,
+                    escolaridad= escolaridad_instance,
                     sexo=sexo_instance,
                     edad=edad,
                     eps=eps_instance,
