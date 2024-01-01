@@ -87,13 +87,23 @@
           </select>
         </div>
         {% endif %}
+        
+        <div class="form-group col-sm-10 col-md-4 col-lg-4 col-xl-4">
+          <label for="escolaridad" class="text-light "><span class="badge bg-warning mb-2 mt-2">Escolaridad</span></label>
+          <select name="escolaridad" class="form-select" id="escolaridad">
+            <option value="-1">Seleccione...</option>
+            {% for e in escolaridades %}
+            <option value="{{e.id}}" {% if paciente.escolaridad_id == e.id %} selected {% endif %} >{{e.description}}</option>
+            {% endfor %}
+          </select>
+        </div>
 
-        <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
+        <div class="form-group col-sm-10 col-md-4 col-lg-4 col-xl-4">
           <label for="in_telefono" class="text-light"><span class="badge bg-warning mb-2 mt-2">Telefono</span></label>
           <input type="text" class="form-control" name="telefono" id="in_telefono" placeholder="Teléfono del paciente" value="{{paciente.celular}}">
         </div>
 
-        <div class="form-group col-sm-10 col-md-6 col-lg-6 col-xl-6">
+        <div class="form-group col-sm-10 col-md-4 col-lg-4 col-xl-4">
           <label for="in_poblacion_vulnerable" class="text-light "><span class="badge bg-primary mb-2 mt-2">Población vulnerable *</span></label>
           <select name="poblacion_vulnerable" class="form-select" id="in_poblacion_vulnerable">
             <option value="-1">Seleccione...</option>

@@ -386,12 +386,12 @@ Aquí se guarda la información proveniente de las llamadas psicologicas.
 
 class PsiLlamadas(models.Model):
     id = models.AutoField(primary_key=True)
-    cedula_usuario = models.ForeignKey(
-        InfoPacientes, on_delete=models.DO_NOTHING)
+    documento = models.ForeignKey(
+        InfoPacientes,null=True, on_delete=models.DO_NOTHING)
     nombre_paciente = models.CharField(null=True, max_length=100)
-    id_psicologo = models.ForeignKey(InfoMiembros, db_column='id_psicologo_id', on_delete=models.CASCADE)
+    id_psicologo = models.ForeignKey(InfoMiembros,null=True, db_column='id_psicologo_id', on_delete=models.CASCADE)
     fecha_llamada = models.DateTimeField(default=timezone.now)
-    dia_semana = models.ForeignKey(DiaNombre, on_delete=models.PROTECT)
+    dia_semana = models.ForeignKey(DiaNombre, null=True, on_delete=models.CASCADE)
     sexo = models.ForeignKey(Sexo, null=True, on_delete=models.CASCADE)
     edad = models.IntegerField(null=True)
     observaciones = models.TextField(null=True, max_length=5000)
@@ -399,9 +399,6 @@ class PsiLlamadas(models.Model):
     seguimiento48 = models.TextField(null=True, max_length=5000)
     seguimiento72 = models.TextField(null=True, max_length=5000)
 
-    class Meta:
-        managed = False
-        db_table = 'main_psillamadas'
 # Rompimientos
 
 
@@ -429,6 +426,7 @@ class HPC(models.Model):
     fecha_asesoria = models.DateTimeField(default=timezone.now)
     lugar = models.TextField(max_length=150, null=True)
     edad_usuario_actual = models.IntegerField(null=True)
+    dia_semana = models.ForeignKey(DiaNombre, null=True, on_delete=models.CASCADE)
     diag_trans_mental = models.TextField(
         max_length=300, null=True, default=models.SET_NULL)
     diag_categoria = models.TextField(

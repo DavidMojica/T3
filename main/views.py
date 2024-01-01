@@ -6,8 +6,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.db import IntegrityError, transaction, connection
-from django.db.models import Q, F, Value, CharField, Count, TextField, IntegerField, BigIntegerField
-from django.db.models.functions import Cast, Coalesce
+from django.db.models import Q, F, Value, CharField, Count
+from django.db.models.functions import Cast, ExtractHour
 from .forms import AutodataForm, FiltroPacientes, FiltroCitasForm, FiltroLlamadasForm, FiltroUsuarios, InformesForm
 from .models import SiNoNunca, TipoDocumento, EstatusPersona, SPAActuales, RHPCConductasASeguir, EstatusPersona, HPCMetodosSuicida, RHPCTiposRespuestas, RHPCTiposDemandas, HPC, HPCSituacionContacto, RHPCSituacionContacto, CustomUser, EstadoCivil, InfoMiembros, InfoPacientes, Pais, Departamento, Municipio, TipoDocumento, Sexo, EPS, PoblacionVulnerable, PsiMotivos, ConductasASeguir, PsiLlamadas, PsiLlamadasConductas, PsiLlamadasMotivos, Escolaridad, Lecto1, Lecto2, Calculo, PacienteCalculo, Razonamiento, Etnia, Ocupacion, Pip, PacientePip, RegimenSeguridad, HPCSituacionContacto, HPCTiposDemandas, HPCTiposRespuestas, SPA
 from django.http import JsonResponse, HttpResponse
@@ -39,7 +39,7 @@ meses = {1: 'Enero', 2: 'Febrero',
          9: 'Septiembre', 10: 'Octubre',
          11: 'Noviembre', 12: 'Diciembre'}
 
-#Instancias de modelos
+# Instancias de modelos
 paises = Pais.objects.all()
 departamentos = Departamento.objects.all()
 municipios = Municipio.objects.all()
@@ -66,10 +66,13 @@ spa = SPA.objects.all()
 snn = SiNoNunca.objects.all()
 ep = EstatusPersona.objects.all()
 
-#Extra Functions
+# Extra Functions
+
+
 def calcular_edad(fecha_nacimiento):
     hoy = datetime.now()
-    edad = hoy.year - fecha_nacimiento.year - ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+    edad = hoy.year - fecha_nacimiento.year - \
+        ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
     return edad
 
 
@@ -91,7 +94,7 @@ def sm_llamadas(request):
         seguimiento24 = request.POST['seguimiento24'].strip()
         seguimiento48 = request.POST['seguimiento48'].strip()
         seguimiento72 = request.POST['seguimiento72'].strip()
-
+        escolaridad = request.POST.get('escolaridad', None)
         # Campos numericos
         try:
             edad = int(edad)
@@ -121,7 +124,7 @@ def sm_llamadas(request):
         except Sexo.DoesNotExist:
             # Manejar el caso donde no se encontró una instancia de Sexo
             sexo_instance = None
-        
+
         try:
             tipo_documento_instance = TipoDocumento.objects.get(
                 id=tipo_documento)
@@ -143,8 +146,12 @@ def sm_llamadas(request):
                 id=pob_vulnerable)
         except PoblacionVulnerable.DoesNotExist:
             pob_vulnerable_instance = None
-            
-            
+
+        try:
+            escolaridad_instance = Escolaridad.objects.get(id=escolaridad)
+        except Escolaridad.DoesNotExist:
+            escolaridad_instance = None
+
         if ban:
             paciente_existe = InfoPacientes.objects.filter(
                 documento=documento).first()
@@ -156,7 +163,9 @@ def sm_llamadas(request):
                 paciente_existe.sexo = sexo_instance if sexo_instance is not None else paciente_existe.sexo
                 paciente_existe.edad = edad if edad else paciente_existe.edad
                 paciente_existe.eps = eps_instance if eps_instance is not None else paciente_existe.eps
-                paciente_existe.direccion = direccion.lower() if direccion else paciente_existe.direccion
+                paciente_existe.escolaridad = escolaridad_instance if escolaridad_instance is not None else paciente.escolaridad
+                paciente_existe.direccion = direccion.lower(
+                ) if direccion else paciente_existe.direccion
                 paciente_existe.municipio = municipio_instance if municipio_instance is not None else paciente_existe.municipio
                 paciente_existe.poblacion_vulnerable = pob_vulnerable_instance if pob_vulnerable is not None else paciente_existe.poblacion_vulnerable
                 paciente_existe.celular = telefono if telefono else paciente_existe.celular
@@ -169,6 +178,7 @@ def sm_llamadas(request):
                     nombre=nombre.lower(),
                     documento=documento,
                     tipo_documento=tipo_documento_instance,
+                    escolaridad=escolaridad_instance,
                     sexo=sexo_instance,
                     edad=edad,
                     eps=eps_instance,
@@ -176,24 +186,25 @@ def sm_llamadas(request):
                     municipio=municipio_instance,
                     poblacion_vulnerable=pob_vulnerable_instance,
                     celular=telefono,
-                    cant_llamadas =  1
+                    cant_llamadas=1
                 )
                 nuevo_paciente.save()
-                
+
             if "secretKey" in request.POST:
-                #actualizar llamada
+                # actualizar llamada
                 numLlamada = request.GET.get('llamada', 0)
-                llamadaInstance =get_object_or_404(PsiLlamadas, id=numLlamada)
-                
+                llamadaInstance = get_object_or_404(PsiLlamadas, id=numLlamada)
+
                 with transaction.atomic():
                     llamadaInstance.observaciones = observaciones
                     llamadaInstance.seguimiento24 = seguimiento24
                     llamadaInstance.seguimiento48 = seguimiento48
                     llamadaInstance.seguimiento72 = seguimiento72
                     llamadaInstance.save()
-                
+
                 with transaction.atomic():
-                    PsiLlamadasConductas.objects.filter(id_llamada=numLlamada).delete()
+                    PsiLlamadasConductas.objects.filter(
+                        id_llamada=numLlamada).delete()
                     for conducta in ConductasASeguir.objects.all():
                         checkbox_name = f'cond_{conducta.id}'
                         if checkbox_name in request.POST:
@@ -208,14 +219,16 @@ def sm_llamadas(request):
                                 id_conducta=conducta_instance
                             )
                             llamada_conducta.save()
-                            
+
                 with transaction.atomic():
-                    PsiLlamadasMotivos.objects.filter(id_llamada=numLlamada).delete()
+                    PsiLlamadasMotivos.objects.filter(
+                        id_llamada=numLlamada).delete()
                     for motivo in PsiMotivos.objects.all():
                         checkbox_name = f'mot_{motivo.id}'
                         if checkbox_name in request.POST:
                             try:
-                                motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
+                                motivo_instace = HPCSituacionContacto.objects.get(
+                                    id=motivo.id)
                             except PsiMotivos.DoesNotExist:
                                 motivo_instace = None
 
@@ -225,9 +238,15 @@ def sm_llamadas(request):
                             )
                             llamada_motivo.save()
             else:
-                #crear nueva llamada
-                llamada = PsiLlamadas(
-                        documento=documento,
+                try:
+                    documento_instance = InfoPacientes.objects.get(
+                        documento=documento)
+                except:
+                    documento_instance = None
+                # crear nueva llamada
+                if documento_instance is not None:
+                    llamada = PsiLlamadas(
+                        documento_id=documento,
                         nombre_paciente=nombre,
                         observaciones=observaciones,
                         seguimiento24=seguimiento24,
@@ -236,54 +255,54 @@ def sm_llamadas(request):
                         dia_semana_id=datetime.now().weekday(),
                         id_psicologo_id=request.user.id,
                         sexo=sexo_instance,
-                        edad=edad
-                    )
-                llamada.save()
-                id_llamada = llamada.id
+                        edad=edad)
+                    llamada.save()
+                    id_llamada = llamada.id
 
-                try:
-                    psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
-                except PsiLlamadas.DoesNotExist:
-                    psi_llamada_instance = None
+                    try:
+                        psi_llamada_instance = PsiLlamadas.objects.get(
+                            id=id_llamada)
+                    except PsiLlamadas.DoesNotExist:
+                        psi_llamada_instance = None
 
-                # conductas y motivos
-                for conducta in ConductasASeguir.objects.all():
-                    checkbox_name = f'cond_{conducta.id}'
-                    if checkbox_name in request.POST:
-                        try:
-                            conducta_instance = ConductasASeguir.objects.get(
-                                id=conducta.id)
-                        except ConductasASeguir.DoesNotExist:
-                            conducta_instance = None
+                    # conductas y motivos
+                    for conducta in ConductasASeguir.objects.all():
+                        checkbox_name = f'cond_{conducta.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                conducta_instance = ConductasASeguir.objects.get(
+                                    id=conducta.id)
+                            except ConductasASeguir.DoesNotExist:
+                                conducta_instance = None
 
-                        llamada_conducta = PsiLlamadasConductas(
-                            id_llamada=psi_llamada_instance,
-                            id_conducta=conducta_instance
-                        )
-                        llamada_conducta.save()
+                            llamada_conducta = PsiLlamadasConductas(
+                                id_llamada=psi_llamada_instance,
+                                id_conducta=conducta_instance
+                            )
+                            llamada_conducta.save()
 
-                for motivo in PsiMotivos.objects.all():
-                    checkbox_name = f'mot_{motivo.id}'
-                    if checkbox_name in request.POST:
-                        try:
-                            motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
-                        except PsiMotivos.DoesNotExist:
-                            motivo_instace = None
+                    for motivo in PsiMotivos.objects.all():
+                        checkbox_name = f'mot_{motivo.id}'
+                        if checkbox_name in request.POST:
+                            try:
+                                motivo_instace = HPCSituacionContacto.objects.get(
+                                    id=motivo.id)
+                            except PsiMotivos.DoesNotExist:
+                                motivo_instace = None
 
-                        llamada_motivo = PsiLlamadasMotivos(
-                            id_llamada=psi_llamada_instance,
-                            id_motivo=motivo_instace
-                        )
-                        llamada_motivo.save()
-                        
-                #Contador de llamadas del psicologo
-                llamadas = int(psicologo.contador_llamadas_psicologicas)
-                psicologo.contador_llamadas_psicologicas = llamadas + 1
-                psicologo.save()
-                
-                
+                            llamada_motivo = PsiLlamadasMotivos(
+                                id_llamada=psi_llamada_instance,
+                                id_motivo=motivo_instace
+                            )
+                            llamada_motivo.save()
+
+                    # Contador de llamadas del psicologo
+                    llamadas = int(psicologo.contador_llamadas_psicologicas)
+                    psicologo.contador_llamadas_psicologicas = llamadas + 1
+                    psicologo.save()
+
             return redirect(reverse('sm_historial_llamadas'))
-            
+
         else:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
@@ -301,34 +320,36 @@ def sm_llamadas(request):
         try:
             llamada = request.GET.get('llamada', 0)
             llamadaWithPaciente = PsiLlamadas.objects.get(id=llamada)
-            documento_paciente = llamadaWithPaciente.documento  
+            documento_paciente = llamadaWithPaciente.documento_id
             paciente = InfoPacientes.objects.get(documento=documento_paciente)
-            
-            motivs = PsiLlamadasMotivos.objects.filter(id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
-            conducts = PsiLlamadasConductas.objects.filter(id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
-            
-            
+
+            motivs = PsiLlamadasMotivos.objects.filter(
+                id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
+            conducts = PsiLlamadasConductas.objects.filter(
+                id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
+
             return render(request, 'sm_llamadas.html', {
-                                                'year': datetime.now(),
-                                                'CustomUser': request.user,
-                                                'paises': paises,
-                                                'departamentos': departamentos,
-                                                'municipios': municipios,
-                                                'tipos_documento': tipos_documento,
-                                                'sexos': sexos,
-                                                'epss': EPSS,
-                                                'poblacion_vulnerable': poblacion_vulnerable,
-                                                'motivos': hpcsituaciones,
-                                                'conductas': conductas,
-                                                'CustomUser': request.user,
-                                                'data': llamadaWithPaciente,
-                                                'paciente': paciente,
-                                                'btnClass': "btn-warning",
-                                                'btnText': "Actualizar llamada",
-                                                'secretName': "secretKey",
-                                                'motivs': motivs,
-                                                'conducts': conducts                                                
-                                                })
+                'year': datetime.now(),
+                'CustomUser': request.user,
+                'paises': paises,
+                'departamentos': departamentos,
+                'municipios': municipios,
+                'tipos_documento': tipos_documento,
+                'sexos': sexos,
+                'epss': EPSS,
+                'poblacion_vulnerable': poblacion_vulnerable,
+                'motivos': hpcsituaciones,
+                'conductas': conductas,
+                'CustomUser': request.user,
+                'data': llamadaWithPaciente,
+                'paciente': paciente,
+                'btnClass': "btn-warning",
+                'btnText': "Actualizar llamada",
+                'secretName': "secretKey",
+                'motivs': motivs,
+                'conducts': conducts,
+                'escolaridades': escolaridades,
+            })
         except:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
@@ -344,7 +365,9 @@ def sm_llamadas(request):
                                                         'conductas': conductas,
                                                         'btnClass': "btn-success",
                                                         'btnText': "Guardar llamada",
+                                                        'escolaridades': escolaridades,
                                                         })
+
 
 def get_departamentos(request):
     pais_id = request.GET.get('pais_id')
@@ -360,6 +383,7 @@ def get_departamentos(request):
 
     return JsonResponse([], safe=False)
 
+
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
     if departamento_id:
@@ -374,18 +398,18 @@ def get_municipios(request):
             return JsonResponse([], safe=False)
 
     return JsonResponse([], safe=False)
-# LOGIN
 
+# LOGIN
 def signin(request):
     # Check if the request method is POST (form submission)
     if request.method == 'POST':
         username = request.POST.get('username').lower().strip()
         password = request.POST.get('password').strip()
-        
+
         user = authenticate(request, username=username, password=password)
         if user is None:
             return render(request, 'signin.html', {
-                'error': ERROR_200,  
+                'error': ERROR_200,
                 'year': datetime.now(),
                 'posted_user': username
             })
@@ -395,6 +419,7 @@ def signin(request):
     else:
         return render(request, 'signin.html', {'year': datetime.now()})
 
+
 def home(request):
     if request.user.is_authenticated:
         # El usuario está autenticado
@@ -403,6 +428,7 @@ def home(request):
     else:
         # El usuario no está autenticado
         return render(request, 'home.html', {'year': datetime.now()})
+
 
 @login_required
 def register(request):
@@ -447,7 +473,8 @@ def register(request):
     else:
         form = CustomUserRegistrationForm()  # Crear una instancia del formulario
         return render(request, 'register.html', {'form': form,
-                                                 'year': datetime.now(),})
+                                                 'year': datetime.now(), })
+
 
 @login_required
 def autodata(request):
@@ -458,7 +485,6 @@ def autodata(request):
 
         if form.is_valid():
             form.save()
-            
 
             return render(request, 'autodata.html', {
                 'CustomUser': request.user,
@@ -476,7 +502,6 @@ def autodata(request):
     else:
         # En el caso de una solicitud GET, simplemente muestra el formulario
         form = AutodataForm(instance=user)
-        
 
     return render(request, 'autodata.html', {
         'CustomUser': request.user,
@@ -484,10 +509,12 @@ def autodata(request):
         'form': form
     })
 
+
 @login_required
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
+
 
 @login_required
 def edit_account(request):
@@ -497,7 +524,7 @@ def edit_account(request):
 
     if request.method == "POST":
         if "account_data" in request.POST:
-            email = request.POST.get('email',"")
+            email = request.POST.get('email', "")
             if email and email != "":
                 user.email = email
                 user.save()
@@ -517,26 +544,27 @@ def edit_account(request):
                     pass_event = ERROR_202
             else:
                 pass_event = ERROR_201
-            
+
         return render(request, 'edit_account.html', {
-                                                        'event': event,
-                                                        'pass_event': pass_event,
-                                                        'year': datetime.now(),
-                                                        'CustomUser': user})
+            'event': event,
+            'pass_event': pass_event,
+            'year': datetime.now(),
+            'CustomUser': user})
 
     else:  # GET
         return render(request, 'edit_account.html', {
-                                                    'event': event,
-                                                    'pass_event': pass_event,
-                                                    'year': datetime.now(),
-                                                    'CustomUser': request.user})
+            'event': event,
+            'pass_event': pass_event,
+            'year': datetime.now(),
+            'CustomUser': request.user})
+
 
 @login_required
 def sm_HPC(request):
     documento = ""
     fecha_nacimiento = None
     psicologo = get_object_or_404(InfoMiembros, pk=request.user.id)
-    
+
     if request.method == "POST":
         if "comprobar_documento" in request.POST:
             ban = True
@@ -550,7 +578,8 @@ def sm_HPC(request):
             if (ban):
                 try:
                     paciente = InfoPacientes.objects.get(documento=documento)
-                    calculosPaciente = PacienteCalculo.objects.filter(documento_usuario=documento).values_list('id_calculo_id', flat=True)
+                    calculosPaciente = PacienteCalculo.objects.filter(
+                        documento_usuario=documento).values_list('id_calculo_id', flat=True)
                 except InfoPacientes.DoesNotExist:
                     paciente = None
                     calculosPaciente = []
@@ -612,11 +641,11 @@ def sm_HPC(request):
                     error = "Error en el formato de la edad."
 
                 try:
-                    fecha_nacimiento = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+                    fecha_nacimiento = datetime.strptime(
+                        fecha_nacimiento, '%Y-%m-%d')
                 except ValueError:
                     ban = False
                     error = "La fecha de nacimiento debe estar en formato YYYY-MM-DD."
-                
 
                 try:
                     tipo_documento = int(request.POST['e_tipo_documento'])
@@ -687,8 +716,8 @@ def sm_HPC(request):
                         paciente.save()
 
                     spaActuales = SPAActuales.objects.filter(
-                            id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
-                    
+                        id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
+
                     return render(request, 'sm_HPC.html', {
                         'CustomUser': request.user,
                         'year': datetime.now(),
@@ -705,7 +734,7 @@ def sm_HPC(request):
                         'btnText': "Guardar asesoría",
                         'secretName': "threeCapitor",
                         'spaActuales': spaActuales,
-                        'edad_actual':edad
+                        'edad_actual': edad
                     })
                 else:
                     return render(request, 'sm_HPC.html', {
@@ -898,10 +927,10 @@ def sm_HPC(request):
                             id_pip=pip_instance
                         )
                         pp.save()
-                        
+
                 spaActuales = SPAActuales.objects.filter(
-                            id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
-                
+                    id_paciente_id=documento).values_list('id_sustancia_id', flat=True)
+
                 return render(request, 'sm_HPC.html', {
                     'CustomUser': request.user,
                     'year': datetime.now(),
@@ -989,7 +1018,7 @@ def sm_HPC(request):
             re_notas = request.POST['re_notas']
             seg_1 = request.POST['seg_1']
             seg_2 = request.POST['seg_2']
-            
+
             try:
                 pacienteInstance = InfoPacientes.objects.get(
                     documento=documento)
@@ -1091,12 +1120,12 @@ def sm_HPC(request):
                 re_io = True
             else:
                 re_io = False
-                
+
             if "secretKey" in request.POST:
-                #actualizar la asesoría
+                # actualizar la asesoría
                 cita = request.GET.get('cita', 0)
                 citaInstance = get_object_or_404(HPC, id=cita)
-                
+
                 try:
                     as_instance = HPC.objects.get(id=cita)
                 except HPC.DoesNotExist:
@@ -1105,63 +1134,65 @@ def sm_HPC(request):
                 with transaction.atomic():
                     citaInstance.lugar = a_lugar
                     citaInstance.diag_trans_mental = ap_trans
-                    citaInstance.diag_categoria=ap_cate
-                    citaInstance.diag_por_profesional=ap_diag
-                    citaInstance.tratamiento=ap_trat
-                    citaInstance.medicamentos=ap_med
-                    citaInstance.adherencia=ap_adh
-                    citaInstance.barreras_acceso=ap_barr
-                    citaInstance.anotaciones_antecedentes_psiquiatricos=ap_notas
-                    citaInstance.es_hasido_consumidor=sp_eoa
-                    citaInstance.edad_inicio=sp_edad
-                    citaInstance.spa_inicio=spa_instance
-                    citaInstance.sustancia_impacto=spa_instance2
-                    citaInstance.periodo_ultimo_consumo=sp_ulco
-                    citaInstance.conductas_sex_riesgo=sp_csr
-                    citaInstance.intervenciones_previas=sp_ip
-                    citaInstance.consumo_familiar=sp_cfins
-                    citaInstance.vinculo=sp_vi
-                    citaInstance.anotaciones_consumoSPA=sp_notas
-                    citaInstance.tendencia_suicida=cs_pins
-                    citaInstance.presencia_planeacion=cs_ppins
-                    citaInstance.disponibilidad_medios=cs_dmins
-                    citaInstance.intentos_previos=cs_ip
-                    citaInstance.fecha_ultimo_intento=cs_fu
-                    citaInstance.manejo_hospitalario=cs_mh
-                    citaInstance.metodo=cs_metodo
-                    citaInstance.letalidad=cs_let
-                    citaInstance.signos=cs_ss
-                    citaInstance.tratamiento_psiquiatrico=cs_ebins
-                    citaInstance.estatus_persona=cs_epins
-                    citaInstance.acontecimientos_estresantes=cs_ae
-                    citaInstance.historial_familiar=cs_hf
-                    citaInstance.factores_protectores=cs_fp
-                    citaInstance.red_apoyo=cs_ra
-                    citaInstance.anotaciones_comportamiento_suic=cs_notas
-                    citaInstance.victima=av_vict
-                    citaInstance.tipo_violencia=av_tv
-                    citaInstance.agresor=av_agre
-                    citaInstance.inst_reporte_legal=av_ir
-                    citaInstance.anotaciones_antecedentes_violencia=av_notas
-                    citaInstance.asistencia_cita=re_ac
-                    citaInstance.contacto=re_sc
-                    citaInstance.contacto_interrumpido=re_ic
-                    citaInstance.inicia_otro_programa=re_io
-                    citaInstance.p_tamizaje=re_pt
-                    citaInstance.c_o_d=re_cd
-                    citaInstance.anotaciones_libres_profesional=re_notas
-                    citaInstance.seguimiento1=seg_1
-                    citaInstance.seguimiento2=seg_2
+                    citaInstance.diag_categoria = ap_cate
+                    citaInstance.diag_por_profesional = ap_diag
+                    citaInstance.tratamiento = ap_trat
+                    citaInstance.medicamentos = ap_med
+                    citaInstance.adherencia = ap_adh
+                    citaInstance.barreras_acceso = ap_barr
+                    citaInstance.anotaciones_antecedentes_psiquiatricos = ap_notas
+                    citaInstance.es_hasido_consumidor = sp_eoa
+                    citaInstance.edad_inicio = sp_edad
+                    citaInstance.spa_inicio = spa_instance
+                    citaInstance.sustancia_impacto = spa_instance2
+                    citaInstance.periodo_ultimo_consumo = sp_ulco
+                    citaInstance.conductas_sex_riesgo = sp_csr
+                    citaInstance.intervenciones_previas = sp_ip
+                    citaInstance.consumo_familiar = sp_cfins
+                    citaInstance.vinculo = sp_vi
+                    citaInstance.anotaciones_consumoSPA = sp_notas
+                    citaInstance.tendencia_suicida = cs_pins
+                    citaInstance.presencia_planeacion = cs_ppins
+                    citaInstance.disponibilidad_medios = cs_dmins
+                    citaInstance.intentos_previos = cs_ip
+                    citaInstance.fecha_ultimo_intento = cs_fu
+                    citaInstance.manejo_hospitalario = cs_mh
+                    citaInstance.metodo = cs_metodo
+                    citaInstance.letalidad = cs_let
+                    citaInstance.signos = cs_ss
+                    citaInstance.tratamiento_psiquiatrico = cs_ebins
+                    citaInstance.estatus_persona = cs_epins
+                    citaInstance.acontecimientos_estresantes = cs_ae
+                    citaInstance.historial_familiar = cs_hf
+                    citaInstance.factores_protectores = cs_fp
+                    citaInstance.red_apoyo = cs_ra
+                    citaInstance.anotaciones_comportamiento_suic = cs_notas
+                    citaInstance.victima = av_vict
+                    citaInstance.tipo_violencia = av_tv
+                    citaInstance.agresor = av_agre
+                    citaInstance.inst_reporte_legal = av_ir
+                    citaInstance.anotaciones_antecedentes_violencia = av_notas
+                    citaInstance.asistencia_cita = re_ac
+                    citaInstance.contacto = re_sc
+                    citaInstance.contacto_interrumpido = re_ic
+                    citaInstance.inicia_otro_programa = re_io
+                    citaInstance.p_tamizaje = re_pt
+                    citaInstance.c_o_d = re_cd
+                    citaInstance.anotaciones_libres_profesional = re_notas
+                    citaInstance.seguimiento1 = seg_1
+                    citaInstance.seguimiento2 = seg_2
                     citaInstance.save()
-                    
+
                 with transaction.atomic():
-                    RHPCSituacionContacto.objects.filter(id_asesoria=cita).delete()
-                    
+                    RHPCSituacionContacto.objects.filter(
+                        id_asesoria=cita).delete()
+
                     for sit in hpcsituaciones:
                         checkbox_name = f'sit_{sit.id}'
                         if checkbox_name in request.POST:
                             try:
-                                sitInstance = HPCSituacionContacto.objects.get(id=sit.id)
+                                sitInstance = HPCSituacionContacto.objects.get(
+                                    id=sit.id)
                             except HPCSituacionContacto.DoesNotExist:
                                 sitInstance = None
 
@@ -1170,14 +1201,15 @@ def sm_HPC(request):
                                 id_situacion=sitInstance
                             )
                             situacion_contacto.save()
-                            
+
                 with transaction.atomic():
                     RHPCTiposDemandas.objects.filter(id_asesoria=cita).delete()
                     for dem in hpcdemandas:
                         checkbox_name = f'dem_{dem.id}'
                         if checkbox_name in request.POST:
                             try:
-                                demInstance = HPCTiposDemandas.objects.get(id=dem.id)
+                                demInstance = HPCTiposDemandas.objects.get(
+                                    id=dem.id)
                             except HPCTiposDemandas.DoesNotExist:
                                 demInstance = None
                             demi = RHPCTiposDemandas(
@@ -1185,14 +1217,16 @@ def sm_HPC(request):
                                 id_tipo_demanda=demInstance
                             )
                             demi.save()
-                            
+
                 with transaction.atomic():
-                    RHPCTiposRespuestas.objects.filter(id_asesoria=cita).delete()
+                    RHPCTiposRespuestas.objects.filter(
+                        id_asesoria=cita).delete()
                     for tpr in hpcrespuestas:
                         checkbox_name = f'r_{tpr.id}'
                         if checkbox_name in request.POST:
                             try:
-                                resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
+                                resInstance = HPCTiposRespuestas.objects.get(
+                                    id=tpr.id)
                             except HPCTiposRespuestas.DoesNotExist:
                                 resInstance = None
                             resTp = RHPCTiposRespuestas(
@@ -1200,14 +1234,16 @@ def sm_HPC(request):
                                 id_respuesta=resInstance
                             )
                             resTp.save()
-                
+
                 with transaction.atomic():
-                    RHPCConductasASeguir.objects.filter(id_asesoria=cita).delete()
+                    RHPCConductasASeguir.objects.filter(
+                        id_asesoria=cita).delete()
                     for cs in conductas:
                         checkbox_name = f'cs_{cs.id}'
                         if checkbox_name in request.POST:
                             try:
-                                conInstance = ConductasASeguir.objects.get(id=cs.id)
+                                conInstance = ConductasASeguir.objects.get(
+                                    id=cs.id)
                             except ConductasASeguir.DoesNotExist:
                                 conInstance = None
                             cond_s = RHPCConductasASeguir(
@@ -1215,10 +1251,11 @@ def sm_HPC(request):
                                 id_conducta=conInstance
                             )
                             cond_s.save()
-                            
+
                 with transaction.atomic():
                     SPAActuales.objects.filter(id_paciente=documento).delete()
-                    infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
+                    infoPacientesInstance = get_object_or_404(
+                        InfoPacientes, documento=documento)
                     for sp in spa:
                         checkbox_name = f'spac_{sp.id}'
                         if checkbox_name in request.POST:
@@ -1226,17 +1263,17 @@ def sm_HPC(request):
                                 spa_instance = SPA.objects.get(id=sp.id)
                             except SPA.DoesNotExist:
                                 spa_instance = None
-                                
+
                             spact = SPAActuales(
-                                id_paciente = infoPacientesInstance,
-                                id_sustancia = spa_instance
+                                id_paciente=infoPacientesInstance,
+                                id_sustancia=spa_instance
                             )
                             spact.save()
-                            
+
                 return redirect(reverse('sm_historial_citas'))
             else:
-                #Crear nueva asesoría
-                
+                # Crear nueva asesoría
+
                 asesoria = HPC(
                     cedula_usuario=pacienteInstance,
                     id_profesional=id_profesionalInstance,
@@ -1245,6 +1282,7 @@ def sm_HPC(request):
                     diag_trans_mental=ap_trans,
                     diag_categoria=ap_cate,
                     diag_por_profesional=ap_diag,
+                    dia_semana_id=datetime.now().weekday(),
                     tratamiento=ap_trat,
                     medicamentos=ap_med,
                     adherencia=ap_adh,
@@ -1300,10 +1338,11 @@ def sm_HPC(request):
                     as_instance = HPC.objects.get(id=id_asesoria)
                 except HPC.DoesNotExist:
                     as_instance = None
-                
+
                 with transaction.atomic():
                     SPAActuales.objects.filter(id_paciente=documento).delete()
-                    infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
+                    infoPacientesInstance = get_object_or_404(
+                        InfoPacientes, documento=documento)
                     for sp in spa:
                         checkbox_name = f'spac_{sp.id}'
                         if checkbox_name in request.POST:
@@ -1311,10 +1350,10 @@ def sm_HPC(request):
                                 spa_instance = SPA.objects.get(id=sp.id)
                             except SPA.DoesNotExist:
                                 spa_instance = None
-                                
+
                             spact = SPAActuales(
-                                id_paciente = infoPacientesInstance,
-                                id_sustancia = spa_instance
+                                id_paciente=infoPacientesInstance,
+                                id_sustancia=spa_instance
                             )
                             spact.save()
 
@@ -1337,7 +1376,8 @@ def sm_HPC(request):
                     checkbox_name = f'dem_{dem.id}'
                     if checkbox_name in request.POST:
                         try:
-                            demInstance = HPCTiposDemandas.objects.get(id=dem.id)
+                            demInstance = HPCTiposDemandas.objects.get(
+                                id=dem.id)
                         except HPCTiposDemandas.DoesNotExist:
                             demInstance = None
                         demi = RHPCTiposDemandas(
@@ -1350,7 +1390,8 @@ def sm_HPC(request):
                     checkbox_name = f'r_{tpr.id}'
                     if checkbox_name in request.POST:
                         try:
-                            resInstance = HPCTiposRespuestas.objects.get(id=tpr.id)
+                            resInstance = HPCTiposRespuestas.objects.get(
+                                id=tpr.id)
                         except HPCTiposRespuestas.DoesNotExist:
                             resInstance = None
                         resTp = RHPCTiposRespuestas(
@@ -1363,7 +1404,8 @@ def sm_HPC(request):
                     checkbox_name = f'cs_{cs.id}'
                     if checkbox_name in request.POST:
                         try:
-                            conInstance = ConductasASeguir.objects.get(id=cs.id)
+                            conInstance = ConductasASeguir.objects.get(
+                                id=cs.id)
                         except ConductasASeguir.DoesNotExist:
                             conInstance = None
                         cond_s = RHPCConductasASeguir(
@@ -1371,10 +1413,12 @@ def sm_HPC(request):
                             id_conducta=conInstance
                         )
                         cond_s.save()
-                        
-                infoPacientesInstance = get_object_or_404(InfoPacientes, documento=documento)
-                
-                citasPaciente = int(infoPacientesInstance.cant_asesorias_psicologicas)
+
+                infoPacientesInstance = get_object_or_404(
+                    InfoPacientes, documento=documento)
+
+                citasPaciente = int(
+                    infoPacientesInstance.cant_asesorias_psicologicas)
                 infoPacientesInstance.cant_asesorias_psicologicas = citasPaciente + 1
                 infoPacientesInstance.save()
 
@@ -1461,23 +1505,25 @@ def sm_HPC(request):
             'step': 0
         })
 
+
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
     form = FiltroLlamadasForm(request.GET)
-    
-    #sistema de filtrado
+
+    # sistema de filtrado
     if form.is_valid():
         id_llamada = form.cleaned_data.get('id_llamada')
         id_profesional = form.cleaned_data.get('id_profesional')
         documento_paciente = form.cleaned_data.get('documento_paciente')
         fecha_llamada = form.cleaned_data.get('fecha_llamada')
         solo_hechas_por_mi = form.cleaned_data.get('solo_hechas_por_mi')
-        
+
         if id_llamada:
             llamadas = llamadas.filter(id=id_llamada)
         if id_profesional:
-            llamadas = llamadas.filter(Q(id_psicologo_id=Cast(Value(id_profesional), CharField())) | Q(id_psicologo_id=None))
+            llamadas = llamadas.filter(Q(id_psicologo_id=Cast(
+                Value(id_profesional), CharField())) | Q(id_psicologo_id=None))
         if documento_paciente:
             llamadas = llamadas.filter(documento=documento_paciente)
         if fecha_llamada:
@@ -1485,33 +1531,36 @@ def sm_historial_llamadas(request):
         if solo_hechas_por_mi:
             user_id = str(request.user.id)
             llamadas = llamadas.filter(
-                Q(id_psicologo_id=Cast(Value(user_id), CharField())) | Q(id_psicologo_id=None)
+                Q(id_psicologo_id=Cast(Value(user_id), CharField())) | Q(
+                    id_psicologo_id=None)
             )
-    
+
     # Paginación
     llamadas_por_pagina = 10
     paginator = Paginator(llamadas, llamadas_por_pagina)
     page = request.GET.get('page', 1)
-    
+
     try:
         llamadas = paginator.page(page)
     except EmptyPage:
         llamadas = paginator.page(paginator.num_pages)
-    
-    return render(request, 'sm_historial_llamadas.html',{
+
+    return render(request, 'sm_historial_llamadas.html', {
         'CustomUser': request.user,
         'year': datetime.now(),
         'form': form,
         'llamadas': llamadas,
     })
 
+
 @login_required
 def sm_historial_citas(request):
-    citas_with_pacientes = HPC.objects.select_related('cedula_usuario').order_by('-fecha_asesoria')
+    citas_with_pacientes = HPC.objects.select_related(
+        'cedula_usuario').order_by('-fecha_asesoria')
     citas_por_pagina = 10
     # Sistema de filtrado
     form = FiltroCitasForm(request.GET)
-    if form.is_valid():  
+    if form.is_valid():
         id_cita = form.cleaned_data.get('id_cita')
         id_profesional = form.cleaned_data.get('id_profesional')
         documento_paciente = form.cleaned_data.get('documento_paciente')
@@ -1521,19 +1570,23 @@ def sm_historial_citas(request):
         if id_cita:
             citas_with_pacientes = citas_with_pacientes.filter(id=id_cita)
         if id_profesional:
-            citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(Value(id_profesional), CharField())) | Q(id_profesional_id=None))
+            citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(
+                Value(id_profesional), CharField())) | Q(id_profesional_id=None))
         if documento_paciente:
-            citas_with_pacientes = citas_with_pacientes.filter(cedula_usuario__documento=documento_paciente)
+            citas_with_pacientes = citas_with_pacientes.filter(
+                cedula_usuario__documento=documento_paciente)
         if fecha_cita:
-            citas_with_pacientes = citas_with_pacientes.filter(fecha_asesoria__date=fecha_cita)
+            citas_with_pacientes = citas_with_pacientes.filter(
+                fecha_asesoria__date=fecha_cita)
         if solo_hechas_por_mi:
             user_id = str(request.user.id)
             citas_with_pacientes = citas_with_pacientes.filter(
-                Q(id_profesional_id=Cast(Value(user_id), CharField())) | Q(id_profesional_id=None)
+                Q(id_profesional_id=Cast(Value(user_id), CharField())) | Q(
+                    id_profesional_id=None)
             )
 
     # Paginación
-    
+
     paginator = Paginator(citas_with_pacientes, citas_por_pagina)
     page = request.GET.get('page', 1)
 
@@ -1555,14 +1608,14 @@ def sm_historial_citas(request):
 def detallesusuario(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
-        userToBrowse = request.GET.get('userId', 0)  
-        
-        if request.method == "POST": 
-            
+        userToBrowse = request.GET.get('userId', 0)
+
+        if request.method == "POST":
+
             if "emergencyChange" in request.POST:
                 return redirect(reverse('adminuser'))
             else:
-                #InfoMiembros
+                # InfoMiembros
                 nombre = request.POST['nombre'].strip()
                 documento = request.POST['documento'].strip()
                 tipo_documento = request.POST['tipo_documento'].strip()
@@ -1575,70 +1628,72 @@ def detallesusuario(request):
                 etnia = request.POST['etnia'].strip()
                 regimen = request.POST['regimen'].strip()
                 sexo = request.POST['sexo'].strip()
-                #Account Customuser
+                # Account Customuser
                 username = request.POST['username'].strip()
                 email = request.POST['email'].strip()
-                
-                
-                
+
                 if "sisben" in request.POST:
                     sisben = True
                 else:
                     sisben = False
-                
+
                 try:
-                    infoMiembro = InfoMiembros.objects.filter(id_usuario_id=userToBrowse).first()
+                    infoMiembro = InfoMiembros.objects.filter(
+                        id_usuario_id=userToBrowse).first()
                 except InfoMiembros.DoesNotExist:
                     infoMiembro = None
-                
+
                 try:
-                    custoMuserInstance = CustomUser.objects.filter(id=userToBrowse).first()
+                    custoMuserInstance = CustomUser.objects.filter(
+                        id=userToBrowse).first()
                 except CustomUser.DoesNotExist:
                     custoMuserInstance = None
-                    
+
                 if infoMiembro and custoMuserInstance:
-                    #Actualizar datos personales del usuario
+                    # Actualizar datos personales del usuario
                     infoMiembro.nombre = nombre if nombre else infoMiembro.nombre
-                    
+
                     try:
-                        verifyDoc = InfoMiembros.objects.filter(documento=documento).first()
+                        verifyDoc = InfoMiembros.objects.filter(
+                            documento=documento).first()
                     except InfoMiembros.DoesNotExist:
                         verifyDoc = None
                     except:
                         verifyDoc = None
-                        
-                    #Instances
+
+                    # Instances
                     try:
-                        tpDocumentoInstance = TipoDocumento.objects.get(id=tipo_documento)
+                        tpDocumentoInstance = TipoDocumento.objects.get(
+                            id=tipo_documento)
                     except TipoDocumento.DoesNotExist:
                         tpDocumentoInstance = None
-                    
+
                     try:
                         epsInstance = EPS.objects.get(id=eps)
                     except EPS.DoesNotExist:
-                        epsInstance= None
-                        
+                        epsInstance = None
+
                     try:
-                        esCivilInstance = EstadoCivil.objects.get(id=estadoCivil)
+                        esCivilInstance = EstadoCivil.objects.get(
+                            id=estadoCivil)
                     except EstadoCivil.DoesNotExist:
                         esCivilInstance = None
-                        
+
                     try:
                         etniaInstance = Etnia.objects.get(id=etnia)
                     except Etnia.DoesNotExist:
                         etniaInstance = None
-                        
+
                     try:
                         regInstace = RegimenSeguridad.objects.get(id=regimen)
                     except RegimenSeguridad.DoesNotExist:
                         regInstace = None
-                        
+
                     try:
                         sexoInstance = Sexo.objects.get(id=sexo)
                     except Sexo.DoesNotExist:
                         sexoInstance = None
-                        
-                    
+
                     infoMiembro.documento = documento if verifyDoc == None else infoMiembro.documento
                     infoMiembro.direccion = direccion if direccion else infoMiembro.direccion
                     infoMiembro.barrio = barrio if barrio else infoMiembro.barrio
@@ -1651,103 +1706,105 @@ def detallesusuario(request):
                     infoMiembro.regimen_seguridad = regInstace if regInstace else infoMiembro.regimen_seguridad
                     infoMiembro.sexo = sexoInstance if sexoInstance else infoMiembro.sexo
                     infoMiembro.sisben = sisben
-                    
+
                     infoMiembro.save()
-                    
-                    #actualizar datos de la cuenta del usuario
+
+                    # actualizar datos de la cuenta del usuario
                     custoMuserInstance.username = username if username else custoMuserInstance.username
                     custoMuserInstance.email = email if email else custoMuserInstance.email
-                    
+
                     custoMuserInstance.save()
-                    
-                    
+
                 return redirect(reverse('adminuser'))
         else:
             if userToBrowse and userToBrowse != 0:
-                userInstance = InfoMiembros.objects.select_related('id_usuario').get(id_usuario=userToBrowse)
+                userInstance = InfoMiembros.objects.select_related(
+                    'id_usuario').get(id_usuario=userToBrowse)
                 editable = request.GET.get('editable', 0)
-                
+
                 if not editable or editable == 0:
                     return render(request, 'userDetails.html', {
-                    'CustomUser': request.user,
-                    'year': datetime.now(),
-                    'userI':userInstance,
-                    'tiposDoc':tipos_documento,
-                    'estadosC': estados_civiles,
-                    'sexos': sexos,
-                    'etnias': etnias,
-                    'regimenes': regimenes,
-                    'eps': EPSS, 
-                    'btnClass': "btn btn-primary",
-                    'btnText': 'Volver',})
+                        'CustomUser': request.user,
+                        'year': datetime.now(),
+                        'userI': userInstance,
+                        'tiposDoc': tipos_documento,
+                        'estadosC': estados_civiles,
+                        'sexos': sexos,
+                        'etnias': etnias,
+                        'regimenes': regimenes,
+                        'eps': EPSS,
+                        'btnClass': "btn btn-primary",
+                        'btnText': 'Volver', })
                 else:
                     return render(request, 'userDetails.html', {
-                    'CustomUser': request.user,
-                    'year': datetime.now(),
-                    'userI':userInstance,
-                    'tiposDoc':tipos_documento,
-                    'estadosC': estados_civiles,
-                    'sexos': sexos,
-                    'etnias': etnias,
-                    'regimenes': regimenes,
-                    'eps': EPSS,
-                    'editable': editable,
-                    'btnClass': "btn btn-warning",
-                    'btnText': 'Actualizar usuario',})
+                        'CustomUser': request.user,
+                        'year': datetime.now(),
+                        'userI': userInstance,
+                        'tiposDoc': tipos_documento,
+                        'estadosC': estados_civiles,
+                        'sexos': sexos,
+                        'etnias': etnias,
+                        'regimenes': regimenes,
+                        'eps': EPSS,
+                        'editable': editable,
+                        'btnClass': "btn btn-warning",
+                        'btnText': 'Actualizar usuario', })
             else:
                 return redirect(reverse('adminuser'))
     else:
         return redirect(reverse('home'))
+
 
 @login_required
 def eventHandler(request):
     if request.method == "GET":
         event = request.GET.get('eventId', 0)
         userId = request.GET.get('userId', 0)
-        custoMuserInstance = get_object_or_404(CustomUser,pk=userId)
+        custoMuserInstance = get_object_or_404(CustomUser, pk=userId)
         infoUserInstance = get_object_or_404(InfoMiembros, id_usuario=userId)
-        #banear
+        # banear
         if event == "1" and custoMuserInstance:
             custoMuserInstance.is_active = False
             custoMuserInstance.save()
-        #desbanear
+        # desbanear
         elif event == "2" and custoMuserInstance:
             custoMuserInstance.is_active = True
             custoMuserInstance.save()
-        #borrar usuario
+        # borrar usuario
         elif event == "3" and custoMuserInstance:
-            #borrar
+            # borrar
             if custoMuserInstance:
                 # Borra el usuario
                 custoMuserInstance.delete()
-        #cambiar contraseña
-        elif event == "4" and custoMuserInstance:    
+        # cambiar contraseña
+        elif event == "4" and custoMuserInstance:
             nuevaContrasena = str(random.randint(100000, 999999))
             custoMuserInstance.set_password(nuevaContrasena)
             custoMuserInstance.save()
-            
+
             return render(request, 'userDetails.html', {
-                    'CustomUser': request.user,
-                    'year': datetime.now(),
-                    'userI':infoUserInstance,
-                    'tiposDoc':tipos_documento,
-                    'estadosC': estados_civiles,
-                    'sexos': sexos,
-                    'etnias': etnias,
-                    'regimenes': regimenes,
-                    'eps': EPSS,
-                    'editable': True,
-                    'btnClass': "btn btn-warning",
-                    'btnText': 'Actualizar usuario',
-                    'passUser': custoMuserInstance.username,
-                    'newPass': nuevaContrasena})
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'userI': infoUserInstance,
+                'tiposDoc': tipos_documento,
+                'estadosC': estados_civiles,
+                'sexos': sexos,
+                'etnias': etnias,
+                'regimenes': regimenes,
+                'eps': EPSS,
+                'editable': True,
+                'btnClass': "btn btn-warning",
+                'btnText': 'Actualizar usuario',
+                'passUser': custoMuserInstance.username,
+                'newPass': nuevaContrasena})
         else:
             pass
-        
+
         return redirect(reverse('adminuser'))
     else:
         return redirect(reverse('adminuser'))
-    
+
+
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
@@ -1755,32 +1812,32 @@ def adminuser(request):
         users = InfoMiembros.objects.all()
         form = FiltroUsuarios(request.GET)  # Instancia del formulario
         usuarios_por_pagina = 10
-        
 
-        #Filtrado
+        # Filtrado
         if form.is_valid():
             nombre = form.cleaned_data.get('nombre')
             id_usuario = form.cleaned_data.get('id_usuario')
             documento_usuario = form.cleaned_data.get('documento_usuario')
-            
+
             if nombre:
                 normalized_term = unidecode(nombre.lower())
-                users = users.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
+                users = users.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=[
+                                    '%' + normalized_term + '%'])
 
             if id_usuario:
                 users = users.filter(id_usuario=id_usuario)
             if documento_usuario:
                 users = users.filter(documento=documento_usuario)
-        
-        #paginación
+
+        # paginación
         paginator = Paginator(users, usuarios_por_pagina)
         page = request.GET.get('page', 1)
-        
+
         try:
             users = paginator.page(page)
         except:
             users = paginator.page(page)
-        
+
         return render(request, 'AdminUser.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
@@ -1791,8 +1848,10 @@ def adminuser(request):
         return redirect(reverse('home'))
 
 # @login_required
+
+
 def adminregister(request):
-    #Super Proteger Ruta
+    # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
         form = CustomUserRegistrationForm(request.POST)
         if request.method == "POST":
@@ -1800,44 +1859,45 @@ def adminregister(request):
                 if request.POST['password'] == request.POST['password2']:
                     try:
                         user = form.save(commit=False)
-                        user.username = request.POST['username'].lower().strip()
+                        user.username = request.POST['username'].lower(
+                        ).strip()
                         user.set_password(request.POST['password'])
                         user.save()
 
                         info_miembros, created = InfoMiembros.objects.get_or_create(
                             id_usuario=user)
-                        
+
                         if created:
                             info_miembros.save()  # Solo guardar si es un objeto nuevo
                             return render(request, 'AdminRegister.html', {
-                            'CustomUser': request.user,
-                            'form': form,
-                            "error": SUCCESS_102,
-                            "name": request.POST['username'],
-                            "pass": request.POST['password']
-                        })
+                                'CustomUser': request.user,
+                                'form': form,
+                                "error": SUCCESS_102,
+                                "name": request.POST['username'],
+                                "pass": request.POST['password']
+                            })
                         else:
                             return render(request, 'AdminRegister.html', {
-                            'CustomUser': request.user,
-                            'form': form,
-                            "error": ERROR_203,
-                            'year': datetime.now(),
-                        })
-                   
+                                'CustomUser': request.user,
+                                'form': form,
+                                "error": ERROR_203,
+                                'year': datetime.now(),
+                            })
+
                     except IntegrityError:
                         return render(request, 'AdminRegister.html', {
                             'CustomUser': request.user,
                             'form': form,
                             'year': datetime.now(),
                             "error": ERROR_102
-                        })                        
+                        })
                 else:
                     return render(request, 'AdminRegister.html', {
                         'CustomUser': request.user,
                         'form': form,
                         'year': datetime.now(),
                         "error": ERROR_100
-                    })     
+                    })
             else:
                 return render(request, 'AdminRegister.html', {
                     'CustomUser': request.user,
@@ -1850,14 +1910,15 @@ def adminregister(request):
                 'CustomUser': request.user,
                 'form': form,
                 'year': datetime.now(),
-            })     
+            })
     else:
         return redirect(reverse('home'))
-    
+
+
 @login_required
 def admininformes(request):
     # Super Proteger Ruta
-    if request.user.tipo_usuario_id in adminOnly: 
+    if request.user.tipo_usuario_id in adminOnly:
         if request.method == 'POST':
             form = InformesForm(request.POST)
             if form.is_valid():
@@ -1866,121 +1927,127 @@ def admininformes(request):
                 mes = form.cleaned_data['mes']
 
                 # Utilizar la función reverse para generar la URL basada en el nombre de la vista
-                url_generar_pdf = reverse('generar_pdf', kwargs={'anio': anio, 'mes': mes})
+                url_generar_pdf = reverse('generar_pdf', kwargs={
+                                          'anio': anio, 'mes': mes})
                 return redirect(url_generar_pdf)
         else:
             form = InformesForm()
 
         return render(request, 'AdminInformes.html', {'form': form})
-            
-            
+
+
 @login_required
 def pacientesView(request):
     pacientes = InfoPacientes.objects.all()
     form = FiltroPacientes(request.GET)
     pacientes_por_pagina = 10
-    
-    #filtrado
+
+    # filtrado
     if form.is_valid():
         nombre = form.cleaned_data.get('nombre')
         documento_paciente = form.cleaned_data.get('documento_paciente')
-        
+
         if nombre:
             normalized_term = unidecode(nombre.lower())
-            pacientes = pacientes.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=['%' + normalized_term + '%'])
-        
+            pacientes = pacientes.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=[
+                                        '%' + normalized_term + '%'])
+
         if documento_paciente and documento_paciente != "":
             pacientes = pacientes.filter(documento=documento_paciente)
-            
-        #paginacion 
+
+        # paginacion
         paginator = Paginator(pacientes, pacientes_por_pagina)
         page = request.GET.get('page', 1)
-    
+
         try:
             pacientes = paginator.page(page)
         except:
             pacientes = paginator.page(page)
-    
-    
-    
-    return render(request, 'pacientesView.html',{
+
+    return render(request, 'pacientesView.html', {
         'pacientes': pacientes,
         'CustomUser': request.user,
         'year': datetime.now(),
         'form': form
-    })    
+    })
+
 
 @login_required
 def detallespaciente(request):
-    
-    
+
     documento = request.GET.get('pacienteId', '0')
-    
+
     if documento and documento != 0:
         pacienteInstance = get_object_or_404(InfoPacientes, pk=documento)
-        
+
         if pacienteInstance:
             fecha_nacimiento = pacienteInstance.fecha_nacimiento
             if fecha_nacimiento and fecha_nacimiento != None and fecha_nacimiento != "":
                 edad = calcular_edad(fecha_nacimiento)
             else:
                 edad = "Fecha de nacimiento no proporcionada"
-            
-            return render(request, 'detallespaciente.html',{
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'found': True,
-            'paciente':pacienteInstance,
-            'edadActual': edad,
-            
-            'pobVulnerable': poblacion_vulnerable,
-            'epss': EPSS,
-            'escolaridad': escolaridades,
-            'estadoC':estados_civiles,
-            'etnia': etnias,
-            'lecto': lectoescritura1,
-            'lecto2': lectoescritura2,
-            'municipios':municipios,
-            'ocupaciones': ocupaciones,
-            
-            'razonamientos': razonamiento,
-            'regimen':regimenes,
-            'sexos': sexos,
-            'tpDoc': tipos_documento
+
+            return render(request, 'detallespaciente.html', {
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'found': True,
+                'paciente': pacienteInstance,
+                'edadActual': edad,
+
+                'pobVulnerable': poblacion_vulnerable,
+                'epss': EPSS,
+                'escolaridad': escolaridades,
+                'estadoC': estados_civiles,
+                'etnia': etnias,
+                'lecto': lectoescritura1,
+                'lecto2': lectoescritura2,
+                'municipios': municipios,
+                'ocupaciones': ocupaciones,
+
+                'razonamientos': razonamiento,
+                'regimen': regimenes,
+                'sexos': sexos,
+                'tpDoc': tipos_documento
             })
-            
+
         else:
-            return render(request, 'detallespaciente.html',{
-            'CustomUser': request.user,
-            'year': datetime.now(),
-            'found': False,
-                })
+            return render(request, 'detallespaciente.html', {
+                'CustomUser': request.user,
+                'year': datetime.now(),
+                'found': False,
+            })
     else:
-        return render(request, 'detallespaciente.html',{
+        return render(request, 'detallespaciente.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
             'found': False
         })
-    
+
 # 404 VISTAS
+
+
 @login_required
 def restricted_area_404(request):
     if request.method == "GET":
         return render(request, '404_restricted_area.html')
 
+
 @login_required
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
-    
+
+
 @login_required
 def generar_pdf(request, anio, mes):
     if 1 <= mes <= 12:
-        citas = HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
-        llamadas = PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
-        
+        citas = HPC.objects.filter(
+            fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+        llamadas = PsiLlamadas.objects.filter(
+            fecha_llamada__year=anio, fecha_llamada__month=mes)
+
         # Obtener el nombre del mes
-        
+
         nombre_mes = meses[mes]
         nombre_mes = nombre_mes.capitalize()
 
@@ -1989,13 +2056,55 @@ def generar_pdf(request, anio, mes):
         center_x = width / 2
         center_y = height / 2
         informe_mensual = f"Informe Mensual: {nombre_mes} - {anio}"
-        
-        #Pagina 2: cantidades
+
+        # Pagina 2: cantidades
         cantidad_citas = citas.count()
         cantidad_llamadas = llamadas.count()
         
-        #Pagina 3 Top Empleados
-        #LLAMADAS
+        seguimientos_llamadas_no_realizados = llamadas.filter(
+            seguimiento24__isnull=False, seguimiento24__exact='',
+            seguimiento48__isnull=False, seguimiento48__exact='',
+            seguimiento72__isnull=False, seguimiento72__exact=''
+        ).count()
+
+        seguimientos_llamadas_incompletas = llamadas.filter(
+            ~Q(seguimiento24__isnull=False, seguimiento24__exact='') |
+            ~Q(seguimiento48__isnull=False, seguimiento48__exact='') |
+            ~Q(seguimiento72__isnull=False, seguimiento72__exact='')
+        ).exclude(Q(
+            ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+            ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+            ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
+        )).count()
+
+        seguimientos_llamadas_completas = llamadas.filter(
+            ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+            ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+            ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
+        ).count()
+        
+        #citas
+        seguimientos_citas_no_realizados = citas.filter(
+            seguimiento1__isnull=False, seguimiento1__exact='',
+            seguimiento2__isnull=False, seguimiento2__exact=''
+        ).count()
+        
+        seguimientos_citas_incompletos = citas.filter(
+            ~Q(seguimiento1__isnull=False, seguimiento1__exact='') |
+            ~Q(seguimiento2__isnull=False, seguimiento2__exact='') 
+        ).exclude(Q(
+            ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+            ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
+        )).count()
+        
+        seguimientos_citas_completos = citas.filter(
+            ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+            ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
+        ).count()
+        
+
+        # Pagina 3 Top Empleados
+        # LLAMADAS
         query = """
             SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
             FROM "main_psillamadas"
@@ -2011,7 +2120,7 @@ def generar_pdf(request, anio, mes):
             cursor.execute(query, [anio, mes])
             top_psicologos_llamadas = cursor.fetchall()
 
-        #CITAS
+        # CITAS
         query = """
         SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
             FROM "main_hpc"
@@ -2022,34 +2131,40 @@ def generar_pdf(request, anio, mes):
             ORDER BY total_citas DESC
             LIMIT 10
         """
-        
+
         with connection.cursor() as cursor:
             cursor.execute(query, [anio, mes])
             top_psicologos_citas = cursor.fetchall()
-        
-        #Pagina 4: sexos - escolaridad
-        #llamadas
+
+        # Pagina 4: sexos - escolaridad
+        # llamadas
         mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
-        mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3:'Secundaria', 4: 'Técnica', 5:'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
-        sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-        escolaridad_llamadas = llamadas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
-        escolaridad_llamadas_cantidad = [0,0,0,0,0,0,0]
+        mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria',
+                             4: 'Técnica', 5: 'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
+        mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles', 3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
         
+        sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
+        escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(
+            total=Count('documento__escolaridad'))
+        dias_llamadas = llamadas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
+        horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
+        dias_llamadas_cantidad = [0] * len(mapeo_dias)
+        escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
         sexos_llamadas_cantidad = [0] * len(mapeo_generos)
 
         for s in sexos_llamadas:
             genero = s['sexo']
             total = s['total']
-            
-            
+
             if genero in mapeo_generos:
                 index = genero - 1  # Ajuste para el índice de la lista
                 sexos_llamadas_cantidad[index] = total
-        
+
         for e in escolaridad_llamadas:
-            escolaridad_id = e['cedula_usuario__escolaridad']
+            escolaridad_id = e['documento__escolaridad']
             total = e['total']
-            
+
             if escolaridad_id == 1:
                 escolaridad_llamadas_cantidad[0] = total
             elif escolaridad_id == 2:
@@ -2064,19 +2179,30 @@ def generar_pdf(request, anio, mes):
                 escolaridad_llamadas_cantidad[5] = total
             elif escolaridad_id == 7:
                 escolaridad_llamadas_cantidad[6] = total
-                
-                
-        #citas
-        generos_citas = citas.values('cedula_usuario__sexo').annotate(total=Count('cedula_usuario__sexo'))
-        escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
+
+        for d in dias_llamadas:
+            dia = d['dia_semana_id']
+            total = d['total']
+            
+            if dia in mapeo_dias:
+                dias_llamadas_cantidad[dia] = total
+            
+        # citas
+        generos_citas = citas.values('cedula_usuario__sexo').annotate(
+            total=Count('cedula_usuario__sexo'))
+        escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
+            total=Count('cedula_usuario__escolaridad'))
+        dias_citas = citas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
+        horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
         
+        dias_citas_cantidad = [0] * len(mapeo_dias)
         generos_citas_cantidad = [0, 0, 0]
-        escolaridad_citas_cantidad = [0,0,0,0,0,0,0]
-        
+        escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
+
         for e in escolaridad_citas:
             escolaridad_id = e['cedula_usuario__escolaridad']
             total = e['total']
-            
+
             if escolaridad_id == 1:
                 escolaridad_citas_cantidad[0] = total
             elif escolaridad_id == 2:
@@ -2091,85 +2217,169 @@ def generar_pdf(request, anio, mes):
                 escolaridad_citas_cantidad[5] = total
             elif escolaridad_id == 7:
                 escolaridad_citas_cantidad[6] = total
-                
-                
+
         for genero_cita in generos_citas:
             genero_id = genero_cita['cedula_usuario__sexo']
             total = genero_cita['total']
-            
+
             if genero_id == 1:
                 generos_citas_cantidad[0] = total
             elif genero_id == 2:
                 generos_citas_cantidad[1] = total
             elif genero_id == 3:
                 generos_citas_cantidad[2] = total
-                
+
+        for d in dias_citas:
+            dia = d['dia_semana_id']
+            total = d['total']
+            
+            if dia in mapeo_dias:
+                dias_citas_cantidad[dia] = total
         
-        #Construir el PDF
+        # Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
         response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
         p = canvas.Canvas(response)
-        
-        #pagina 1
+
+        # pagina 1
         p.setFont("Helvetica-Bold", 16)
         text_width = p.stringWidth(informe_mensual, "Helvetica-Bold", 16)
         x_position = center_x - (text_width / 2)
         y_position = center_y - 8
         p.drawString(x_position, y_position, informe_mensual)
-        
-        #Pagina 2
+
+        # Pagina 2
         p.showPage()
         p.setFont("Helvetica", 12)
-        p.drawString(120, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
         p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
         p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
-
-        #Pagina 3
+        
+        texto = (
+                f"De {cantidad_llamadas} llamadas este mes:\n"
+                f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
+                f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
+                f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento."
+            )
+        tamaño_fuente = 12
+        x, y = 100, 670
+        for linea in texto.split('\n'):
+            p.drawString(x, y, linea)
+            y -= tamaño_fuente
+            
+        #Citas
+        texto = (
+            f"De {cantidad_citas} citas este mes:\n"
+            f"{seguimientos_citas_completos} citas tienen sus seguimientos completos\n"
+            f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
+            f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento"
+        )    
+        y -= 20
+        
+        for linea in texto.split('\n'):
+            p.drawString(x, y, linea)
+            y -= tamaño_fuente
+        
+        # Pagina 3
         p.showPage()
-        p.drawString(100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes}")
+        p.drawString(
+            100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
         y_position = 730
         for psicologo in top_psicologos_llamadas:
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
-        
-        p.drawString(100, 350, f"Psicologos que más citas atendieron en {nombre_mes}")
+
+        p.drawString(
+            100, 350, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
         y_position = 330
         for psicologo in top_psicologos_citas:
             p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
             y_position -= 20
-        
+
         # Pagina 4: sexos
         p.showPage()
-        p.drawString(100, 750, f"Usuarios de llamadas por sexo en {nombre_mes}")
+        p.drawString(
+            100, 750, f"Usuarios de llamadas por sexo en {nombre_mes} - {anio}")
         y_position = 730
         for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
             p.drawString(120, y_position, f"{genero}: {total}")
             y_position -= 20
-            
-        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes}")
+
+        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
         p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
         p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
         p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
+
+        p.drawString(
+            100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes} - {anio}")
+        p.drawString(
+            120, 430, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
+        p.drawString(
+            120, 410, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
+        p.drawString(
+            120, 390, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
+        p.drawString(
+            120, 370, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
+        p.drawString(
+            120, 350, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
+        p.drawString(
+            120, 330, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
+        p.drawString(
+            120, 310, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
+
+        p.drawString(
+            100, 270, f"Escolaridades de los usuarios de citas en {nombre_mes} - {anio}")
+        p.drawString(
+            120, 250, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
+        p.drawString(
+            120, 230, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
+        p.drawString(
+            120, 210, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
+        p.drawString(
+            120, 190, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
+        p.drawString(
+            120, 170, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
+        p.drawString(
+            120, 150, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
+        p.drawString(
+            120, 130, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
+
+        #pagina 5:días 
+        p.showPage()
+        p.drawString(100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
+        y_position = 730
+        for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
+            p.drawString(120, y_position, f"{dia}: {total}")
+            y_position -= 20
+            
+        p.drawString(
+            100, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
+        y_position = 530
+        for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
+            p.drawString(120, y_position, f"{dia}: {total}")
+            y_position -= 20
+
+        #pagina 6: Horas - llamadas
+        p.showPage()
+        p.drawString(100, 750, f"Llamadas por horas en {nombre_mes} - {anio}")
+        y_position = 730
+        for h in horas_llamadas:
+            hora = h['hora']
+            cantidad = h['cantidad']
+            p.drawString(120, y_position, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
+            y_position -= 20
         
-        p.drawString(100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes}")
-        p.drawString(120, 430, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
-        p.drawString(120, 410, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
-        p.drawString(120, 390, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
-        p.drawString(120, 370, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
-        p.drawString(120, 350, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
-        p.drawString(120, 330, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
-        p.drawString(120, 310, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
-        
-        p.drawString(100, 270, f"Escolaridades de los usuarios de citas en {nombre_mes}")
-        p.drawString(120, 250, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
-        p.drawString(120, 230, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
-        p.drawString(120, 210, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
-        p.drawString(120, 190, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
-        p.drawString(120, 170, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
-        p.drawString(120, 150, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
-        p.drawString(120, 130, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
-        
-        #datos totales
+        #pagina 7: Horas - citas
+        p.showPage()
+        p.drawString(100, 750, f"Citas por horas en {nombre_mes} - {anio}")
+        y_position = 730
+        for h in horas_citas:
+            hora = h['hora']
+            cantidad = h['cantidad']
+            p.drawString(120, y_position, f"Hora: {hora}, Cantidad de citas: {cantidad}")
+            y_position -= 20
+            
+        # datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
         # p.showPage()
@@ -2179,10 +2389,8 @@ def generar_pdf(request, anio, mes):
         # for psicologo in top_psicologos_citas:
         #     p.drawString(120, y_position, f"{psicologo.nombre}: {psicologo.cantidad}")
         #     y_position -= 20
-       
+
         p.save()
         return response
     else:
         return redirect(reverse('home'))
-
-    
