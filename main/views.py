@@ -320,7 +320,7 @@ def sm_llamadas(request):
         try:
             llamada = request.GET.get('llamada', 0)
             llamadaWithPaciente = PsiLlamadas.objects.get(id=llamada)
-            documento_paciente = llamadaWithPaciente.documento
+            documento_paciente = llamadaWithPaciente.documento_id
             paciente = InfoPacientes.objects.get(documento=documento_paciente)
 
             motivs = PsiLlamadasMotivos.objects.filter(
@@ -2062,27 +2062,25 @@ def generar_pdf(request, anio, mes):
         cantidad_llamadas = llamadas.count()
         
         seguimientos_llamadas_no_realizados = llamadas.filter(
-            (
-                (Q(seguimiento24__isnull=False) & ~Q(seguimiento24__exact='')) |
-                (Q(seguimiento48__isnull=False) & ~Q(seguimiento48__exact='')) |
-                (Q(seguimiento72__isnull=False) & ~Q(seguimiento72__exact=''))
-            ) &
-            ~Q(seguimiento24__isnull=False, seguimiento48__isnull=False, seguimiento72__isnull=False)
+            seguimiento24__isnull=False, seguimiento24__exact='',
+            seguimiento48__isnull=False, seguimiento48__exact='',
+            seguimiento72__isnull=False, seguimiento72__exact=''
         ).count()
-        
+
         seguimientos_llamadas_incompletas = llamadas.filter(
-            (
-                (Q(seguimiento24__isnull=False) | Q(seguimiento24__exact='')) |
-                (Q(seguimiento48__isnull=False) | Q(seguimiento48__exact='')) |
-                (Q(seguimiento72__isnull=False) | Q(seguimiento72__exact=''))
-            ) &
-            ~Q(seguimiento24__isnull=False, seguimiento48__isnull=False, seguimiento72__isnull=False)
-        ).count()
-        
+            ~Q(seguimiento24__isnull=False, seguimiento24__exact='') |
+            ~Q(seguimiento48__isnull=False, seguimiento48__exact='') |
+            ~Q(seguimiento72__isnull=False, seguimiento72__exact='')
+        ).exclude(Q(
+            ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+            ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+            ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
+        )).count()
+
         seguimientos_llamadas_completas = llamadas.filter(
-            seguimiento24__isnull=False, 
-            seguimiento48__isnull=False, 
-            seguimiento72__isnull=False
+            ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+            ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+            ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
         ).count()
 
         # Pagina 3 Top Empleados
@@ -2347,6 +2345,7 @@ def generar_pdf(request, anio, mes):
             cantidad = h['cantidad']
             p.drawString(120, y_position, f"Hora: {hora}, Cantidad de citas: {cantidad}")
             y_position -= 20
+            
         # datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
