@@ -426,6 +426,7 @@ class HPC(models.Model):
     fecha_asesoria = models.DateTimeField(default=timezone.now)
     lugar = models.TextField(max_length=150, null=True)
     edad_usuario_actual = models.IntegerField(null=True)
+    dia_semana = models.ForeignKey(DiaNombre, null=True, on_delete=models.CASCADE)
     diag_trans_mental = models.TextField(
         max_length=300, null=True, default=models.SET_NULL)
     diag_categoria = models.TextField(
