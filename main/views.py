@@ -46,6 +46,10 @@ mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria',
 mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
               3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
 
+#PDF
+HEADER_POS_STANDARD = 750
+Y_POS_STANDARD = 710
+
 # Instancias de modelos
 paises = Pais.objects.all()
 departamentos = Departamento.objects.all()
@@ -2293,7 +2297,7 @@ def generar_pdf(request, anio, mes):
         p = canvas.Canvas(response)
 
         # pagina 1
-        p.setFont("Helvetica-Bold", 16)
+        p.setFont("Helvetica-Bold", 20)
         text_width = p.stringWidth(informe_mensual, "Helvetica-Bold", 16)
         x_position = center_x - (text_width / 2)
         y_position = center_y - 8
@@ -2301,11 +2305,20 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 2
         p.showPage()
-        p.setFont("Helvetica", 12)
-        p.drawString(
-            100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
-        p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
-        p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
+        header = "Servicios y seguimientos"
+        text_width = p.stringWidth(header, 'Helvetica-Bold', 18)
+        x_pos = center_x -(text_width / 2)
+        y_pos = HEADER_POS_STANDARD
+        p.drawString(x_pos, y_pos, header)
+        
+        FONT_SIZE = 14
+        p.setFont("Helvetica", FONT_SIZE)
+        y_position = Y_POS_STANDARD
+        
+        p.drawString(100, y_position, f"Recuento de servicios en {nombre_mes} - {anio}")
+        p.drawString(120, y_position, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(120, y_position, f"Cantidad de Citas: {cantidad_citas}")
+        p.drawString(120, y_position, f"Cantidad de Llamadas: {cantidad_llamadas}")
 
         texto = (
             f"De {cantidad_llamadas} llamadas este mes:\n"
