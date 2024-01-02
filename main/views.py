@@ -39,6 +39,13 @@ meses = {1: 'Enero', 2: 'Febrero',
          9: 'Septiembre', 10: 'Octubre',
          11: 'Noviembre', 12: 'Diciembre'}
 
+# Mapping
+mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
+mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria',
+                        4: 'Técnica', 5: 'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
+mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
+              3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
+
 # Instancias de modelos
 paises = Pais.objects.all()
 departamentos = Departamento.objects.all()
@@ -400,6 +407,8 @@ def get_municipios(request):
     return JsonResponse([], safe=False)
 
 # LOGIN
+
+
 def signin(request):
     # Check if the request method is POST (form submission)
     if request.method == 'POST':
@@ -2039,17 +2048,118 @@ def not_deployed_404(request):
 
 
 @login_required
+def getDocsData(anio, mes):
+
+    citas = HPC.objects.filter(
+        fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+    llamadas = PsiLlamadas.objects.filter(
+        fecha_llamada__year=anio, fecha_llamada__month=mes)
+
+    seguimientos_llamadas_no_realizados = llamadas.filter(
+        seguimiento24__isnull=False, seguimiento24__exact='',
+        seguimiento48__isnull=False, seguimiento48__exact='',
+        seguimiento72__isnull=False, seguimiento72__exact=''
+    ).count()
+
+    seguimientos_llamadas_incompletas = llamadas.filter(
+        ~Q(seguimiento24__isnull=False, seguimiento24__exact='') |
+        ~Q(seguimiento48__isnull=False, seguimiento48__exact='') |
+        ~Q(seguimiento72__isnull=False, seguimiento72__exact='')
+    ).exclude(Q(
+        ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+        ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+        ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
+    )).count()
+
+    seguimientos_llamadas_completas = llamadas.filter(
+        ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+        ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+        ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
+    ).count()
+
+    seguimientos_citas_no_realizados = citas.filter(
+        seguimiento1__isnull=False, seguimiento1__exact='',
+        seguimiento2__isnull=False, seguimiento2__exact=''
+    ).count()
+
+    seguimientos_citas_incompletos = citas.filter(
+        ~Q(seguimiento1__isnull=False, seguimiento1__exact='') |
+        ~Q(seguimiento2__isnull=False, seguimiento2__exact='')
+    ).exclude(Q(
+        ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+        ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
+    )).count()
+
+    seguimientos_citas_completos = citas.filter(
+        ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+        ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
+    ).count()
+
+    # LLAMADAS
+    query = """
+        SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
+        FROM "main_psillamadas"
+        JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+        WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
+        AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
+        GROUP BY "main_infomiembros"."nombre"
+        ORDER BY total_llamadas DESC
+        LIMIT 10
+    """
+    # Ejecutar la consulta SQL cruda
+    with connection.cursor() as cursor:
+        cursor.execute(query, [anio, mes])
+        top_psicologos_llamadas = cursor.fetchall()
+
+    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
+                FROM "main_hpc"
+                JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+                WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
+                AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
+                GROUP BY "main_infomiembros"."nombre"
+                ORDER BY total_citas DESC
+                LIMIT 10 """
+
+    with connection.cursor() as cursor:
+        cursor.execute(query, [anio, mes])
+        top_psicologos_citas = cursor.fetchall()
+
+    sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
+    escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(
+        total=Count('documento__escolaridad'))
+    dias_llamadas = llamadas.values('dia_semana_id').annotate(
+        total=Count('dia_semana_id'))
+    horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values(
+        'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
+    data = {
+        'cantidad_citas': citas.count(),
+        'cantidad_llamadas': llamadas.count(),
+        'seg_llamadas_nr': seguimientos_llamadas_no_realizados,
+        'seg_llamadas_in': seguimientos_llamadas_incompletas,
+        'seg_llamadas_com': seguimientos_llamadas_completas,
+        'seg_citas_nr': seguimientos_citas_no_realizados,
+        'seg_citas_in': seguimientos_citas_incompletos,
+        'seg_citas_com': seguimientos_citas_completos,
+        'top_psi_llam': top_psicologos_llamadas,
+        'top_psi_citas': top_psicologos_citas,
+        'sx_llam': sexos_llamadas,
+        'es_llam': escolaridad_llamadas,
+        'dias_llam': dias_llamadas,
+        'hs_llam': horas_llamadas,
+    }
+
+    return data
+
+
+@login_required
 def generar_pdf(request, anio, mes):
     if 1 <= mes <= 12:
-        citas = HPC.objects.filter(
-            fecha_asesoria__year=anio, fecha_asesoria__month=mes)
-        llamadas = PsiLlamadas.objects.filter(
-            fecha_llamada__year=anio, fecha_llamada__month=mes)
-
-        # Obtener el nombre del mes
-
         nombre_mes = meses[mes]
         nombre_mes = nombre_mes.capitalize()
+
+        # Obtener el nombre del mes
+        data = getDocsData(anio, mes)
 
         # Página 1: Informe Mensual
         width, height = letter
@@ -2058,96 +2168,29 @@ def generar_pdf(request, anio, mes):
         informe_mensual = f"Informe Mensual: {nombre_mes} - {anio}"
 
         # Pagina 2: cantidades
-        cantidad_citas = citas.count()
-        cantidad_llamadas = llamadas.count()
-        
-        seguimientos_llamadas_no_realizados = llamadas.filter(
-            seguimiento24__isnull=False, seguimiento24__exact='',
-            seguimiento48__isnull=False, seguimiento48__exact='',
-            seguimiento72__isnull=False, seguimiento72__exact=''
-        ).count()
-
-        seguimientos_llamadas_incompletas = llamadas.filter(
-            ~Q(seguimiento24__isnull=False, seguimiento24__exact='') |
-            ~Q(seguimiento48__isnull=False, seguimiento48__exact='') |
-            ~Q(seguimiento72__isnull=False, seguimiento72__exact='')
-        ).exclude(Q(
-            ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
-            ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
-            ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
-        )).count()
-
-        seguimientos_llamadas_completas = llamadas.filter(
-            ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
-            ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
-            ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
-        ).count()
-        
-        #citas
-        seguimientos_citas_no_realizados = citas.filter(
-            seguimiento1__isnull=False, seguimiento1__exact='',
-            seguimiento2__isnull=False, seguimiento2__exact=''
-        ).count()
-        
-        seguimientos_citas_incompletos = citas.filter(
-            ~Q(seguimiento1__isnull=False, seguimiento1__exact='') |
-            ~Q(seguimiento2__isnull=False, seguimiento2__exact='') 
-        ).exclude(Q(
-            ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
-            ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
-        )).count()
-        
-        seguimientos_citas_completos = citas.filter(
-            ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
-            ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
-        ).count()
-        
+        cantidad_citas = data['cantidad_citas']
+        cantidad_llamadas = data['cantidad_llamadas']
+        # llamadas
+        seguimientos_llamadas_no_realizados = data['seg_llamadas_nr']
+        seguimientos_llamadas_incompletas = data['seg_llamadas_in']
+        seguimientos_llamadas_completas = data['seg_llamadas_com']
+        # citas
+        seguimientos_citas_no_realizados = data['seg_citas_nr']
+        seguimientos_citas_incompletos = data['seg_citas_in']
+        seguimientos_citas_completos = data['seg_citas_com']
 
         # Pagina 3 Top Empleados
-        # LLAMADAS
-        query = """
-            SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
-            FROM "main_psillamadas"
-            JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
-            WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
-            AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
-            GROUP BY "main_infomiembros"."nombre"
-            ORDER BY total_llamadas DESC
-            LIMIT 10
-        """
-        # Ejecutar la consulta SQL cruda
-        with connection.cursor() as cursor:
-            cursor.execute(query, [anio, mes])
-            top_psicologos_llamadas = cursor.fetchall()
-
+        top_psicologos_llamadas = data['top_psi_llam']
+        top_psicologos_citas = data['top_psi_citas']
         # CITAS
-        query = """
-        SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
-            FROM "main_hpc"
-            JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
-            WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
-            AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
-            GROUP BY "main_infomiembros"."nombre"
-            ORDER BY total_citas DESC
-            LIMIT 10
-        """
-
-        with connection.cursor() as cursor:
-            cursor.execute(query, [anio, mes])
-            top_psicologos_citas = cursor.fetchall()
 
         # Pagina 4: sexos - escolaridad
         # llamadas
-        mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
-        mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria',
-                             4: 'Técnica', 5: 'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
-        mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles', 3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
-        
-        sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-        escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(
-            total=Count('documento__escolaridad'))
-        dias_llamadas = llamadas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
-        horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
+        sexos_llamadas = data['sx_llam']
+        escolaridad_llamadas = data['es_llam']
+        dias_llamadas = data['dias_llam']
+        horas_llamadas = data['hs_llam']
 
         dias_llamadas_cantidad = [0] * len(mapeo_dias)
         escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
@@ -2183,18 +2226,20 @@ def generar_pdf(request, anio, mes):
         for d in dias_llamadas:
             dia = d['dia_semana_id']
             total = d['total']
-            
+
             if dia in mapeo_dias:
                 dias_llamadas_cantidad[dia] = total
-            
+
         # citas
         generos_citas = citas.values('cedula_usuario__sexo').annotate(
             total=Count('cedula_usuario__sexo'))
         escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
             total=Count('cedula_usuario__escolaridad'))
-        dias_citas = citas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
-        horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
-        
+        dias_citas = citas.values('dia_semana_id').annotate(
+            total=Count('dia_semana_id'))
+        horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values(
+            'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
         dias_citas_cantidad = [0] * len(mapeo_dias)
         generos_citas_cantidad = [0, 0, 0]
         escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
@@ -2232,10 +2277,10 @@ def generar_pdf(request, anio, mes):
         for d in dias_citas:
             dia = d['dia_semana_id']
             total = d['total']
-            
+
             if dia in mapeo_dias:
                 dias_citas_cantidad[dia] = total
-        
+
         # Construir el PDF
         response = HttpResponse(content_type='applicaton/pdf')
         response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
@@ -2251,35 +2296,36 @@ def generar_pdf(request, anio, mes):
         # Pagina 2
         p.showPage()
         p.setFont("Helvetica", 12)
-        p.drawString(100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(
+            100, 750, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
         p.drawString(120, 730, f"Cantidad de Citas: {cantidad_citas}")
         p.drawString(120, 710, f"Cantidad de Llamadas: {cantidad_llamadas}")
-        
+
         texto = (
-                f"De {cantidad_llamadas} llamadas este mes:\n"
-                f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
-                f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
-                f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento."
-            )
+            f"De {cantidad_llamadas} llamadas este mes:\n"
+            f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
+            f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
+            f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento."
+        )
         tamaño_fuente = 12
         x, y = 100, 670
         for linea in texto.split('\n'):
             p.drawString(x, y, linea)
             y -= tamaño_fuente
-            
-        #Citas
+
+        # Citas
         texto = (
             f"De {cantidad_citas} citas este mes:\n"
             f"{seguimientos_citas_completos} citas tienen sus seguimientos completos\n"
             f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
             f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento"
-        )    
+        )
         y -= 20
-        
+
         for linea in texto.split('\n'):
             p.drawString(x, y, linea)
             y -= tamaño_fuente
-        
+
         # Pagina 3
         p.showPage()
         p.drawString(
@@ -2305,7 +2351,8 @@ def generar_pdf(request, anio, mes):
             p.drawString(120, y_position, f"{genero}: {total}")
             y_position -= 20
 
-        p.drawString(100, 550, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
+        p.drawString(
+            100, 550, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
         p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
         p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
         p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
@@ -2344,14 +2391,15 @@ def generar_pdf(request, anio, mes):
         p.drawString(
             120, 130, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
 
-        #pagina 5:días 
+        # pagina 5:días
         p.showPage()
-        p.drawString(100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
+        p.drawString(
+            100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
         y_position = 730
         for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
             p.drawString(120, y_position, f"{dia}: {total}")
             y_position -= 20
-            
+
         p.drawString(
             100, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
         y_position = 530
@@ -2359,26 +2407,28 @@ def generar_pdf(request, anio, mes):
             p.drawString(120, y_position, f"{dia}: {total}")
             y_position -= 20
 
-        #pagina 6: Horas - llamadas
+        # pagina 6: Horas - llamadas
         p.showPage()
         p.drawString(100, 750, f"Llamadas por horas en {nombre_mes} - {anio}")
         y_position = 730
         for h in horas_llamadas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(120, y_position, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
+            p.drawString(120, y_position,
+                         f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
             y_position -= 20
-        
-        #pagina 7: Horas - citas
+
+        # pagina 7: Horas - citas
         p.showPage()
         p.drawString(100, 750, f"Citas por horas en {nombre_mes} - {anio}")
         y_position = 730
         for h in horas_citas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(120, y_position, f"Hora: {hora}, Cantidad de citas: {cantidad}")
+            p.drawString(120, y_position,
+                         f"Hora: {hora}, Cantidad de citas: {cantidad}")
             y_position -= 20
-            
+
         # datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
         # top_psicologos_citas = InfoMiembros.objects.annotate(cantidad=F('contador_asesorias_psicologicas')).order_by('-cantidad')[:10]
