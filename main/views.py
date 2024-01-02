@@ -47,8 +47,8 @@ mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
               3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
 
 #PDF
-HEADER_POS_STANDARD = 750
-Y_POS_STANDARD = 710
+Y_POS_INITIAL_H = 750
+Y_POS_INITAL_P = 710
 X_POS_P = 120
 X_POS_H = 100
 FONT_FAMILY = "Helvetica"
@@ -56,6 +56,7 @@ FONT_FAMILY_BOLD = "Helvetica-Bold"
 FONT_SIZE_P = 14
 FONT_SIZE_M = 16
 FONT_SIZE_H = 18
+PARRAPH_DIVIDER = FONT_SIZE_P * 2
 
 # Instancias de modelos
 paises = Pais.objects.all()
@@ -2315,32 +2316,38 @@ def generar_pdf(request, anio, mes):
         header = "Servicios y seguimientos"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_pos = center_x -(text_width / 2)
-        y_pos = HEADER_POS_STANDARD
+        y_pos = Y_POS_INITIAL_H
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
         p.drawString(x_pos, y_pos, header)
         
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
-        y_position = Y_POS_STANDARD
+        y = Y_POS_INITAL_P
         
-        p.drawString(X_POS_H, y_position, f"Recuento de servicios en {nombre_mes} - {anio}")
+        p.drawString(X_POS_H, y, f"Recuento de servicios en {nombre_mes} - {anio}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y_position, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(X_POS_P, y, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y_position, f"Cantidad de Citas: {cantidad_citas}")
+        p.drawString(X_POS_P, y, f"Cantidad de Citas: {cantidad_citas}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y_position, f"Cantidad de Llamadas: {cantidad_llamadas}")
+        p.drawString(X_POS_P, y, f"Cantidad de Llamadas: {cantidad_llamadas}")
+
 
         texto = (
             f"De {cantidad_llamadas} llamadas este mes:\n"
             f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
             f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
-            f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento."
-        )
+            f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento.")
         
-        
-        x, y = 100, 670
-        for linea in texto.split('\n'):
-            p.drawString(x, y, linea)
-            y -= FONT_SIZE
+        y -= PARRAPH_DIVIDER
+        for i, linea in enumerate(texto.split('\n')):
+            if i == 0:   
+                p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+                p.drawString(X_POS_H, y , linea)
+                y -= FONT_SIZE_M
+            else: 
+                p.setFont(FONT_FAMILY, FONT_SIZE_P)
+                p.drawString(X_POS_P, y, linea)
+                y-=FONT_SIZE_P
 
         # Citas
         texto = (
@@ -2349,11 +2356,17 @@ def generar_pdf(request, anio, mes):
             f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
             f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento"
         )
-        y -= 20
-
-        for linea in texto.split('\n'):
-            p.drawString(x, y, linea)
-            y -= tamaño_fuente
+        
+        y-= PARRAPH_DIVIDER
+        for i, linea in enumerate(texto.split('\n')):
+            if i == 0:
+                p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+                p.drawString(X_POS_H, y , linea)
+                y -= FONT_SIZE_M
+            else: 
+                p.setFont(FONT_FAMILY, FONT_SIZE_P)
+                p.drawString(X_POS_P, y, linea)
+                y-=FONT_SIZE_P
 
         # Pagina 3
         p.showPage()
