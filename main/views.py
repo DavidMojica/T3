@@ -2393,52 +2393,70 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 4: sexos
         p.showPage()
-        p.drawString(
-            100, 750, f"Usuarios de llamadas por sexo en {nombre_mes} - {anio}")
-        y_position = 730
+        y = Y_POS_INITAL_P
+        header = f"Sociodemograficos: Sexo y escolaridad"
+        text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
+        x_pos = center_x -(text_width / 2)
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
+        p.drawString(x_pos, Y_POS_INITIAL_H, header)
+        
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Usuarios de llamadas por sexo en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
+        
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
-            p.drawString(120, y_position, f"{genero}: {total}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"{genero}: {total}")
+            y -= FONT_SIZE_P
 
-        p.drawString(
-            100, 550, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
-        p.drawString(120, 530, f"Hombres: {generos_citas_cantidad[0]}")
-        p.drawString(120, 510, f"Mujeres: {generos_citas_cantidad[1]}")
-        p.drawString(120, 490, f"Otro: {generos_citas_cantidad[2]}")
+        y -= PARRAPH_DIVIDER
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M 
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
+        p.drawString(X_POS_P, y, f"Hombres: {generos_citas_cantidad[0]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"Mujeres: {generos_citas_cantidad[1]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"Otro: {generos_citas_cantidad[2]}")
 
-        p.drawString(
-            100, 450, f"Escolaridades de los usuarios de llamadas en {nombre_mes} - {anio}")
-        p.drawString(
-            120, 430, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
-        p.drawString(
-            120, 410, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
-        p.drawString(
-            120, 390, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
-        p.drawString(
-            120, 370, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
-        p.drawString(
-            120, 350, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
-        p.drawString(
-            120, 330, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
-        p.drawString(
-            120, 310, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
+        y -= PARRAPH_DIVIDER
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Escolaridades de los usuarios de llamadas en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M 
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
 
-        p.drawString(
-            100, 270, f"Escolaridades de los usuarios de citas en {nombre_mes} - {anio}")
-        p.drawString(
-            120, 250, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
-        p.drawString(
-            120, 230, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
-        p.drawString(
-            120, 210, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
-        p.drawString(
-            120, 190, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
-        p.drawString(
-            120, 170, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
-        p.drawString(
-            120, 150, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
-        p.drawString(
-            120, 130, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
+        y -= PARRAPH_DIVIDER
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Escolaridades de los usuarios de citas en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M 
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
 
         # pagina 5:días
         p.showPage()
@@ -2446,14 +2464,14 @@ def generar_pdf(request, anio, mes):
             100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
         y_position = 730
         for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
-            p.drawString(120, y_position, f"{dia}: {total}")
+            p.drawString(X_POS_P, y_position, f"{dia}: {total}")
             y_position -= 20
 
         p.drawString(
             100, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
         y_position = 530
         for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
-            p.drawString(120, y_position, f"{dia}: {total}")
+            p.drawString(X_POS_P, y_position, f"{dia}: {total}")
             y_position -= 20
 
         # pagina 6: Horas - llamadas
@@ -2463,7 +2481,7 @@ def generar_pdf(request, anio, mes):
         for h in horas_llamadas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(120, y_position,
+            p.drawString(X_POS_P, y_position,
                          f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
             y_position -= 20
 
@@ -2474,7 +2492,7 @@ def generar_pdf(request, anio, mes):
         for h in horas_citas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(120, y_position,
+            p.drawString(X_POS_P, y_position,
                          f"Hora: {hora}, Cantidad de citas: {cantidad}")
             y_position -= 20
 
