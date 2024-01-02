@@ -2048,8 +2048,8 @@ def not_deployed_404(request):
 
 
 @login_required
-def getDocsData(anio, mes):
-
+def getDocsData(request, anio, mes):
+    
     citas = HPC.objects.filter(
         fecha_asesoria__year=anio, fecha_asesoria__month=mes)
     llamadas = PsiLlamadas.objects.filter(
@@ -2106,7 +2106,6 @@ def getDocsData(anio, mes):
         ORDER BY total_llamadas DESC
         LIMIT 10
     """
-    # Ejecutar la consulta SQL cruda
     with connection.cursor() as cursor:
         cursor.execute(query, [anio, mes])
         top_psicologos_llamadas = cursor.fetchall()
@@ -2132,6 +2131,15 @@ def getDocsData(anio, mes):
     horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values(
         'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
 
+    generos_citas = citas.values('cedula_usuario__sexo').annotate(
+            total=Count('cedula_usuario__sexo'))
+    escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
+        total=Count('cedula_usuario__escolaridad'))
+    dias_citas = citas.values('dia_semana_id').annotate(
+        total=Count('dia_semana_id'))
+    horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values(
+        'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
     data = {
         'cantidad_citas': citas.count(),
         'cantidad_llamadas': llamadas.count(),
@@ -2147,6 +2155,10 @@ def getDocsData(anio, mes):
         'es_llam': escolaridad_llamadas,
         'dias_llam': dias_llamadas,
         'hs_llam': horas_llamadas,
+        'sx_citas': generos_citas,
+        'es_citas': escolaridad_citas,
+        'dias_citas': dias_citas,
+        'hs_citas': horas_citas
     }
 
     return data
@@ -2159,7 +2171,7 @@ def generar_pdf(request, anio, mes):
         nombre_mes = nombre_mes.capitalize()
 
         # Obtener el nombre del mes
-        data = getDocsData(anio, mes)
+        data = getDocsData(request, anio, mes)
 
         # Página 1: Informe Mensual
         width, height = letter
@@ -2178,19 +2190,22 @@ def generar_pdf(request, anio, mes):
         seguimientos_citas_no_realizados = data['seg_citas_nr']
         seguimientos_citas_incompletos = data['seg_citas_in']
         seguimientos_citas_completos = data['seg_citas_com']
-
         # Pagina 3 Top Empleados
         top_psicologos_llamadas = data['top_psi_llam']
         top_psicologos_citas = data['top_psi_citas']
+        
         # CITAS
-
         # Pagina 4: sexos - escolaridad
-        # llamadas
-
         sexos_llamadas = data['sx_llam']
         escolaridad_llamadas = data['es_llam']
         dias_llamadas = data['dias_llam']
         horas_llamadas = data['hs_llam']
+
+        generos_citas = data['sx_citas']
+        escolaridad_citas = data['es_citas']
+        dias_citas = data['dias_citas']
+        horas_citas = data['hs_citas']
+
 
         dias_llamadas_cantidad = [0] * len(mapeo_dias)
         escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
@@ -2231,15 +2246,6 @@ def generar_pdf(request, anio, mes):
                 dias_llamadas_cantidad[dia] = total
 
         # citas
-        generos_citas = citas.values('cedula_usuario__sexo').annotate(
-            total=Count('cedula_usuario__sexo'))
-        escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
-            total=Count('cedula_usuario__escolaridad'))
-        dias_citas = citas.values('dia_semana_id').annotate(
-            total=Count('dia_semana_id'))
-        horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values(
-            'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
-
         dias_citas_cantidad = [0] * len(mapeo_dias)
         generos_citas_cantidad = [0, 0, 0]
         escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
