@@ -48,7 +48,7 @@ mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
 
 #PDF
 Y_POS_INITIAL_H = 750
-Y_POS_INITAL_P = 710
+Y_POS_INITIAL_P = 710
 X_POS_P = 120
 X_POS_H = 100
 FONT_FAMILY = "Helvetica"
@@ -2313,7 +2313,7 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 2
         p.showPage()
-        y = Y_POS_INITAL_P
+        y = Y_POS_INITIAL_P
         
         header = "Servicios y seguimientos"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
@@ -2366,7 +2366,7 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 3
         p.showPage()
-        y = Y_POS_INITAL_P
+        y = Y_POS_INITIAL_P
         header = f"Top de Psicólogos en {nombre_mes} - {anio}"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_pos = center_x -(text_width / 2)
@@ -2393,7 +2393,7 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 4: sexos
         p.showPage()
-        y = Y_POS_INITAL_P
+        y = Y_POS_INITIAL_P
         header = f"Sociodemograficos: Sexo y escolaridad"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_pos = center_x -(text_width / 2)
@@ -2460,23 +2460,32 @@ def generar_pdf(request, anio, mes):
 
         # pagina 5:días
         p.showPage()
-        p.drawString(
-            100, 750, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
-        y_position = 730
+        y = Y_POS_INITIAL_P
+        header = "Sociodemograficas: Días de la semana"
+        text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
+        x_pos = center_x -(text_width / 2)
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
+        p.drawString(x_pos, Y_POS_INITIAL_H, header)
+        
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
+        
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
-            p.drawString(X_POS_P, y_position, f"{dia}: {total}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"{dia}: {total}")
+            y -= FONT_SIZE_P
 
-        p.drawString(
-            100, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
-        y_position = 530
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
         for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
-            p.drawString(X_POS_P, y_position, f"{dia}: {total}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"{dia}: {total}")
+            y -= FONT_SIZE_P
 
         # pagina 6: Horas - llamadas
         p.showPage()
-        p.drawString(100, 750, f"Llamadas por horas en {nombre_mes} - {anio}")
+        p.drawString(X_POS_H, y, f"Llamadas por horas en {nombre_mes} - {anio}")
         y_position = 730
         for h in horas_llamadas:
             hora = h['hora']
@@ -2487,7 +2496,7 @@ def generar_pdf(request, anio, mes):
 
         # pagina 7: Horas - citas
         p.showPage()
-        p.drawString(100, 750, f"Citas por horas en {nombre_mes} - {anio}")
+        p.drawString(X_POS_H, y, f"Citas por horas en {nombre_mes} - {anio}")
         y_position = 730
         for h in horas_citas:
             hora = h['hora']
