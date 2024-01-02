@@ -2303,6 +2303,7 @@ def generar_pdf(request, anio, mes):
         response = HttpResponse(content_type='applicaton/pdf')
         response['Content-Disposition'] = 'attachment; filename="datos.pdf"'
         p = canvas.Canvas(response)
+        p.setTitle(f"{nombre_mes} - {anio} SALUD MENTAL")
 
         # pagina 1
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
@@ -2476,34 +2477,48 @@ def generar_pdf(request, anio, mes):
             p.drawString(X_POS_P, y, f"{dia}: {total}")
             y -= FONT_SIZE_P
 
+        y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, 550, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
+        p.drawString(X_POS_H, y, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
+        
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
             p.drawString(X_POS_P, y, f"{dia}: {total}")
             y -= FONT_SIZE_P
 
         # pagina 6: Horas - llamadas
         p.showPage()
+        y = Y_POS_INITIAL_P
+        
+        header = "Sociodemograficas: Horas de los servicios"
+        text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
+        x_pos = center_x -(text_width / 2)
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
+        p.drawString(x_pos, Y_POS_INITIAL_H, header)
+        
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
         p.drawString(X_POS_H, y, f"Llamadas por horas en {nombre_mes} - {anio}")
-        y_position = 730
+        y -= FONT_SIZE_M
+        
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for h in horas_llamadas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(X_POS_P, y_position,
-                         f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
+            y -= FONT_SIZE_P
 
-        # pagina 7: Horas - citas
-        p.showPage()
+        y -= PARRAPH_DIVIDER
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
         p.drawString(X_POS_H, y, f"Citas por horas en {nombre_mes} - {anio}")
-        y_position = 730
+        y -= FONT_SIZE_M
+        
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for h in horas_citas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(X_POS_P, y_position,
-                         f"Hora: {hora}, Cantidad de citas: {cantidad}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"Hora: {hora}, Cantidad de citas: {cantidad}")
+            y -= FONT_SIZE_P
 
         # datos totales
         # top_psicologos_llamadas = InfoMiembros.objects.annotate(cantidad=F('contador_llamadas_psicologicas')).order_by('-cantidad')[:10]
