@@ -49,6 +49,13 @@ mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
 #PDF
 HEADER_POS_STANDARD = 750
 Y_POS_STANDARD = 710
+X_POS_P = 120
+X_POS_H = 100
+FONT_FAMILY = "Helvetica"
+FONT_FAMILY_BOLD = "Helvetica-Bold"
+FONT_SIZE_P = 14
+FONT_SIZE_M = 16
+FONT_SIZE_H = 18
 
 # Instancias de modelos
 paises = Pais.objects.all()
@@ -2297,8 +2304,8 @@ def generar_pdf(request, anio, mes):
         p = canvas.Canvas(response)
 
         # pagina 1
-        p.setFont("Helvetica-Bold", 20)
-        text_width = p.stringWidth(informe_mensual, "Helvetica-Bold", 16)
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
+        text_width = p.stringWidth(informe_mensual, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_position = center_x - (text_width / 2)
         y_position = center_y - 8
         p.drawString(x_position, y_position, informe_mensual)
@@ -2306,19 +2313,21 @@ def generar_pdf(request, anio, mes):
         # Pagina 2
         p.showPage()
         header = "Servicios y seguimientos"
-        text_width = p.stringWidth(header, 'Helvetica-Bold', 18)
+        text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_pos = center_x -(text_width / 2)
         y_pos = HEADER_POS_STANDARD
         p.drawString(x_pos, y_pos, header)
         
-        FONT_SIZE = 14
-        p.setFont("Helvetica", FONT_SIZE)
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         y_position = Y_POS_STANDARD
         
-        p.drawString(100, y_position, f"Recuento de servicios en {nombre_mes} - {anio}")
-        p.drawString(120, y_position, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
-        p.drawString(120, y_position, f"Cantidad de Citas: {cantidad_citas}")
-        p.drawString(120, y_position, f"Cantidad de Llamadas: {cantidad_llamadas}")
+        p.drawString(X_POS_H, y_position, f"Recuento de servicios en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y_position, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y_position, f"Cantidad de Citas: {cantidad_citas}")
+        y -= FONT_SIZE_P
+        p.drawString(X_POS_P, y_position, f"Cantidad de Llamadas: {cantidad_llamadas}")
 
         texto = (
             f"De {cantidad_llamadas} llamadas este mes:\n"
@@ -2326,11 +2335,12 @@ def generar_pdf(request, anio, mes):
             f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
             f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento."
         )
-        tamaño_fuente = 12
+        
+        
         x, y = 100, 670
         for linea in texto.split('\n'):
             p.drawString(x, y, linea)
-            y -= tamaño_fuente
+            y -= FONT_SIZE
 
         # Citas
         texto = (
