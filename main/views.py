@@ -2313,27 +2313,25 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 2
         p.showPage()
+        y = Y_POS_INITAL_P
+        
         header = "Servicios y seguimientos"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_pos = center_x -(text_width / 2)
-        y_pos = Y_POS_INITIAL_H
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
-        p.drawString(x_pos, y_pos, header)
+        p.drawString(x_pos, Y_POS_INITIAL_H, header)
         
-        p.setFont(FONT_FAMILY, FONT_SIZE_P)
-        y = Y_POS_INITAL_P
-        
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
         p.drawString(X_POS_H, y, f"Recuento de servicios en {nombre_mes} - {anio}")
-        y -= FONT_SIZE_P
+        y -= FONT_SIZE_M
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         p.drawString(X_POS_P, y, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
         y -= FONT_SIZE_P
         p.drawString(X_POS_P, y, f"Cantidad de Citas: {cantidad_citas}")
         y -= FONT_SIZE_P
         p.drawString(X_POS_P, y, f"Cantidad de Llamadas: {cantidad_llamadas}")
 
-
-        texto = (
-            f"De {cantidad_llamadas} llamadas este mes:\n"
+        texto = (f"De {cantidad_llamadas} llamadas este mes:\n"
             f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
             f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
             f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento.")
@@ -2350,12 +2348,10 @@ def generar_pdf(request, anio, mes):
                 y-=FONT_SIZE_P
 
         # Citas
-        texto = (
-            f"De {cantidad_citas} citas este mes:\n"
+        texto = (f"De {cantidad_citas} citas este mes:\n"
             f"{seguimientos_citas_completos} citas tienen sus seguimientos completos\n"
             f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
-            f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento"
-        )
+            f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento")
         
         y-= PARRAPH_DIVIDER
         for i, linea in enumerate(texto.split('\n')):
@@ -2370,19 +2366,30 @@ def generar_pdf(request, anio, mes):
 
         # Pagina 3
         p.showPage()
-        p.drawString(
-            100, 750, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
-        y_position = 730
+        y = Y_POS_INITAL_P
+        header = f"Top de Psicólogos en {nombre_mes} - {anio}"
+        text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
+        x_pos = center_x -(text_width / 2)
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
+        p.drawString(x_pos, Y_POS_INITIAL_H, header)
+        
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
+        
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_llamadas:
-            p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}")
+            y -= FONT_SIZE_P
 
-        p.drawString(
-            100, 350, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
-        y_position = 330
+        y -= PARRAPH_DIVIDER
+        p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+        p.drawString(X_POS_H, y, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M 
+        p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_citas:
-            p.drawString(120, y_position, f"{psicologo[0]}: {psicologo[1]}")
-            y_position -= 20
+            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}")
+            y -= FONT_SIZE_P
 
         # Pagina 4: sexos
         p.showPage()
