@@ -42,4 +42,5 @@ urlpatterns = [
     path('detallespaciente/', views.detallespaciente, name="detallespaciente"),
     path('informes/', views.admininformes, name='informes'),
     path('generar_pdf/<int:anio>/<int:mes>/', views.generar_pdf, name='generar_pdf'),
+    path('generar_excel/<int:anio>/<int:mes>/', views.generar_excel, name='generar_excel'),
 ]
