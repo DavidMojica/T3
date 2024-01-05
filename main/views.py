@@ -2583,6 +2583,8 @@ def generar_excel(request, anio, mes):
     sexos_llamadas_cantidad = [0] * len(mapeo_generos)
     escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
+    dias_llamadas_cantidad = [0] * len(mapeo_dias)
+    dias_citas_cantidad = [0] * len(mapeo_dias)
     
     for s in sexos_llamadas:
             genero = s['sexo']
@@ -2641,8 +2643,6 @@ def generar_excel(request, anio, mes):
         elif escolaridad_id == 7:
             escolaridad_llamadas_cantidad[6] = total
             
-            
-    
     hoja3.append(["Sexo/Servicios", "Llamadas", "Citas"])
     for i, (genero, total_llamadas) in enumerate(zip(mapeo_generos.values(), sexos_llamadas_cantidad)):
         generos_citas_cantidad_actual = generos_citas_cantidad[i] if i < len(generos_citas_cantidad) else 0
@@ -2656,13 +2656,45 @@ def generar_excel(request, anio, mes):
             escolaridad_citas_cantidad[key - 1]
         ]
         hoja3.append(fila)
+        
+    hoja4 = libro.create_sheet(title="Dias y horas")
     
+    for d in dias_llamadas:
+            dia = d['dia_semana_id']
+            total = d['total']
 
-    # hoja3.append(["Sexo/servicios", "Citas", "Llamadas"],
-    #              ["Hombre", generos_citas_cantidad[0]])
+            if dia in mapeo_dias:
+                dias_llamadas_cantidad[dia] = total
     
+    for d in dias_citas:
+        dia = d['dia_semana_id']
+        total = d['total']
+
+        if dia in mapeo_dias:
+            dias_citas_cantidad[dia] = total
     
-            
+    hoja4.append(['Llamadas por dias'])
+    for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
+        hoja4.append([dia, total])
+    
+    hoja4.append(['Citas por dias'])
+    for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
+        hoja4.append([dia, total])
+        
+    hoja4.append(['Distribucion de llamadas por horas'])
+    hoja4.append(['Hora', 'Cantidad'])
+    for h in horas_llamadas:
+        hora = h['hora']
+        cantidad = h['cantidad']
+        hoja4.append([hora, cantidad])
+        
+    hoja4.append(['Distribucion de citas por horas'])
+    hoja4.append(['Hora', 'Cantidad'])
+    for h in horas_citas:
+        hora = h['hora']
+        cantidad = h['cantidad']
+        hoja4.append([hora, cantidad])
+    
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=archivo_excel.xlsx'
     libro.save(response)
