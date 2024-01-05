@@ -2521,6 +2521,23 @@ def generar_excel(request, anio, mes):
     nombre_mes = nombre_mes.capitalize()
 
     data = getDocsData(request, anio, mes)
+    cantidad_citas = data['cantidad_citas']
+    cantidad_llamadas = data['cantidad_llamadas']
+    # llamadas
+    seguimientos_llamadas_no_realizados = data['seg_llamadas_nr']
+    seguimientos_llamadas_incompletas = data['seg_llamadas_in']
+    seguimientos_llamadas_completas = data['seg_llamadas_com']
+    # citas
+    seguimientos_citas_no_realizados = data['seg_citas_nr']
+    seguimientos_citas_incompletos = data['seg_citas_in']
+    seguimientos_citas_completos = data['seg_citas_com']
+    
+    sheet1Data = [['Cantidad de servicios', 'Cantidad de citas', 'Cantidad de llamadas'],
+                  [cantidad_citas+cantidad_llamadas, cantidad_citas, cantidad_llamadas],
+                  ['Seguimientos', 'Completos', 'Incompletos', 'No realizados'],
+                  ['Llamadas', ]]
+    
+    
     datos = [['Nombre', 'Edad'], ['Juan', 25], ['María', 30], ['Carlos', 28]]
 
     libro = Workbook()
