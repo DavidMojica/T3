@@ -2533,7 +2533,16 @@ def generar_excel(request, anio, mes):
     #Sheet2
     top_psicologos_llamadas = data['top_psi_llam']
     top_psicologos_citas = data['top_psi_citas']
-    
+    #sheet3
+    sexos_llamadas = data['sx_llam']
+    escolaridad_llamadas = data['es_llam']
+    dias_llamadas = data['dias_llam']
+    horas_llamadas = data['hs_llam']
+
+    generos_citas = data['sx_citas']
+    escolaridad_citas = data['es_citas']
+    dias_citas = data['dias_citas']
+    horas_citas = data['hs_citas']
     
     sheet1Data = [['Cantidad de servicios', 'Cantidad de citas', 'Cantidad de llamadas'],
                   [cantidad_citas+cantidad_llamadas, cantidad_citas, cantidad_llamadas],
@@ -2554,16 +2563,39 @@ def generar_excel(request, anio, mes):
     hoja2.append(['Top Llamadas'])
     hoja2.append(headersSheet2)
     for psicologo in top_psicologos_llamadas:
-        hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+        if psicologo[0] is None or psicologo[0] == "":
+            hoja2.append(["No diligenciado", psicologo[1], psicologo[2]])
+        else:
+            hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
         
     hoja2.append([])
     hoja2.append(['Top Citas'])
     hoja2.append(headersSheet2)
     
     for psicologo in top_psicologos_citas:
-        hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+        if psicologo[0] is None or psicologo[0] == "":
+            hoja2.append(["No diligenciado", psicologo[1], psicologo[2]])
+        else:
+            hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
     
+    hoja3 = libro.create_sheet(title = "Sexo y escolaridad")
+    generos_citas_cantidad = [0, 0, 0]
+    escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     
+    for genero_cita in generos_citas:
+        genero_id = genero_cita['cedula_usuario__sexo']
+        total = genero_cita['total']
+
+        if genero_id == 1:
+            generos_citas_cantidad[0] = total
+        elif genero_id == 2:
+            generos_citas_cantidad[1] = total
+        elif genero_id == 3:
+            generos_citas_cantidad[2] = total
+            
+    hoja3.append(["Sexo/servicios", "Citas", "Llamadas"],
+                 ["Hombre", generos_citas_cantidad[0]])
+            
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=archivo_excel.xlsx'
     libro.save(response)
