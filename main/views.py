@@ -2580,8 +2580,18 @@ def generar_excel(request, anio, mes):
     
     hoja3 = libro.create_sheet(title = "Sexo y escolaridad")
     generos_citas_cantidad = [0, 0, 0]
+    sexos_llamadas_cantidad = [0] * len(mapeo_generos)
     escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
+    escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     
+    for s in sexos_llamadas:
+            genero = s['sexo']
+            total = s['total']
+
+            if genero in mapeo_generos:
+                index = genero - 1  # Ajuste para el índice de la lista
+                sexos_llamadas_cantidad[index] = total
+                
     for genero_cita in generos_citas:
         genero_id = genero_cita['cedula_usuario__sexo']
         total = genero_cita['total']
@@ -2593,8 +2603,65 @@ def generar_excel(request, anio, mes):
         elif genero_id == 3:
             generos_citas_cantidad[2] = total
             
-    hoja3.append(["Sexo/servicios", "Citas", "Llamadas"],
-                 ["Hombre", generos_citas_cantidad[0]])
+    for e in escolaridad_citas:
+        escolaridad_id = e['cedula_usuario__escolaridad']
+        total = e['total']
+
+        if escolaridad_id == 1:
+            escolaridad_citas_cantidad[0] = total
+        elif escolaridad_id == 2:
+            escolaridad_citas_cantidad[1] = total
+        elif escolaridad_id == 3:
+            escolaridad_citas_cantidad[2] = total
+        elif escolaridad_id == 4:
+            escolaridad_citas_cantidad[3] = total
+        elif escolaridad_id == 5:
+            escolaridad_citas_cantidad[4] = total
+        elif escolaridad_id == 6:
+            escolaridad_citas_cantidad[5] = total
+        elif escolaridad_id == 7:
+            escolaridad_citas_cantidad[6] = total
+            
+    for e in escolaridad_llamadas:
+        escolaridad_id = e['documento__escolaridad']
+        total = e['total']
+
+        if escolaridad_id == 1:
+            escolaridad_llamadas_cantidad[0] = total
+        elif escolaridad_id == 2:
+            escolaridad_llamadas_cantidad[1] = total
+        elif escolaridad_id == 3:
+            escolaridad_llamadas_cantidad[2] = total
+        elif escolaridad_id == 4:
+            escolaridad_llamadas_cantidad[3] = total
+        elif escolaridad_id == 5:
+            escolaridad_llamadas_cantidad[4] = total
+        elif escolaridad_id == 6:
+            escolaridad_llamadas_cantidad[5] = total
+        elif escolaridad_id == 7:
+            escolaridad_llamadas_cantidad[6] = total
+            
+            
+    
+    hoja3.append(["Sexo/Servicios", "Llamadas", "Citas"])
+    for i, (genero, total_llamadas) in enumerate(zip(mapeo_generos.values(), sexos_llamadas_cantidad)):
+        generos_citas_cantidad_actual = generos_citas_cantidad[i] if i < len(generos_citas_cantidad) else 0
+        hoja3.append([genero, total_llamadas, generos_citas_cantidad_actual])
+    hoja3.append(["Escolaridad de los usuarios"])    
+    hoja3.append(["Escolaridad", "Llamadas", "Citas"])
+    for key, value in mapeo_escolaridad.items():
+        fila = [
+            value,
+            escolaridad_citas_cantidad[key - 1],
+            escolaridad_citas_cantidad[key - 1]
+        ]
+        hoja3.append(fila)
+    
+
+    # hoja3.append(["Sexo/servicios", "Citas", "Llamadas"],
+    #              ["Hombre", generos_citas_cantidad[0]])
+    
+    
             
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=archivo_excel.xlsx'
