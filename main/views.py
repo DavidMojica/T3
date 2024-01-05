@@ -2089,12 +2089,12 @@ def getDocsData(request, anio, mes):
 
     # LLAMADAS
     query = """
-        SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
+        SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas, "main_infomiembros"."id_usuario_id" AS id_usuario
         FROM "main_psillamadas"
         JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
         WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
         AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
-        GROUP BY "main_infomiembros"."nombre"
+        GROUP BY "main_infomiembros"."id_usuario_id"
         ORDER BY total_llamadas DESC
         LIMIT 10
     """
@@ -2102,12 +2102,12 @@ def getDocsData(request, anio, mes):
         cursor.execute(query, [anio, mes])
         top_psicologos_llamadas = cursor.fetchall()
 
-    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
+    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas, "main_infomiembros"."id_usuario_id" AS id_usuario
                 FROM "main_hpc"
                 JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
                 WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
                 AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
-                GROUP BY "main_infomiembros"."nombre"
+                GROUP BY "main_infomiembros"."id_usuario_id"
                 ORDER BY total_citas DESC
                 LIMIT 10 """
 
@@ -2359,7 +2359,7 @@ def generar_pdf(request, anio, mes):
         
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_llamadas:
-            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}")
+            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
             y -= FONT_SIZE_P
 
         y -= PARRAPH_DIVIDER
@@ -2368,7 +2368,7 @@ def generar_pdf(request, anio, mes):
         y -= FONT_SIZE_M 
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_citas:
-            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}")
+            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
             y -= FONT_SIZE_P
 
         # Pagina 4: sexos
@@ -2521,31 +2521,49 @@ def generar_excel(request, anio, mes):
     nombre_mes = nombre_mes.capitalize()
 
     data = getDocsData(request, anio, mes)
+    #sheet1
     cantidad_citas = data['cantidad_citas']
     cantidad_llamadas = data['cantidad_llamadas']
-    # llamadas
     seguimientos_llamadas_no_realizados = data['seg_llamadas_nr']
     seguimientos_llamadas_incompletas = data['seg_llamadas_in']
     seguimientos_llamadas_completas = data['seg_llamadas_com']
-    # citas
     seguimientos_citas_no_realizados = data['seg_citas_nr']
     seguimientos_citas_incompletos = data['seg_citas_in']
     seguimientos_citas_completos = data['seg_citas_com']
+    #Sheet2
+    top_psicologos_llamadas = data['top_psi_llam']
+    top_psicologos_citas = data['top_psi_citas']
+    
     
     sheet1Data = [['Cantidad de servicios', 'Cantidad de citas', 'Cantidad de llamadas'],
                   [cantidad_citas+cantidad_llamadas, cantidad_citas, cantidad_llamadas],
                   ['Seguimientos', 'Completos', 'Incompletos', 'No realizados'],
-                  ['Llamadas', ]]
+                  ['Llamadas', seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados],
+                  ['Citas', seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_citas_no_realizados]]
     
-    
-    datos = [['Nombre', 'Edad'], ['Juan', 25], ['María', 30], ['Carlos', 28]]
 
     libro = Workbook()
-    hoja = libro.active
+    hoja1 = libro.active
+    hoja1.title = "Servicios"
 
-    for fila in datos:
-        hoja.append(fila)
-
+    for fila in sheet1Data:
+        hoja1.append(fila)
+        
+    hoja2 = libro.create_sheet(title="Top de Psicologos")
+    headersSheet2 = ['Nombre', 'Cantidad', 'ID']
+    hoja2.append(['Top Llamadas'])
+    hoja2.append(headersSheet2)
+    for psicologo in top_psicologos_llamadas:
+        hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+        
+    hoja2.append([])
+    hoja2.append(['Top Citas'])
+    hoja2.append(headersSheet2)
+    
+    for psicologo in top_psicologos_citas:
+        hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+    
+    
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=archivo_excel.xlsx'
     libro.save(response)
