@@ -5,7 +5,8 @@
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Descargar</button>
+        <button type="submit" class="btn btn-danger" name="pdf">Descargar en PDF</button>
+        <button type="submit" class="btn btn-success" name="excel">Descargar en Excel</button>
     </form>
 
 </main>

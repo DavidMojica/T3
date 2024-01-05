@@ -15,8 +15,9 @@ from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from openpyxl import Workbook
 import random
-import calendar
+
 ######### Errors related to register ##########
 ERROR_100 = "Las contraseñas no coinciden."
 ERROR_101 = "Formulario inválido."
@@ -93,7 +94,6 @@ def calcular_edad(fecha_nacimiento):
     edad = hoy.year - fecha_nacimiento.year - \
         ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
     return edad
-
 
 # Create your views here.
 
@@ -387,7 +387,6 @@ def sm_llamadas(request):
                                                         'escolaridades': escolaridades,
                                                         })
 
-
 def get_departamentos(request):
     pais_id = request.GET.get('pais_id')
     if pais_id:
@@ -401,7 +400,6 @@ def get_departamentos(request):
             return JsonResponse([], safe=False)
 
     return JsonResponse([], safe=False)
-
 
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
@@ -419,8 +417,6 @@ def get_municipios(request):
     return JsonResponse([], safe=False)
 
 # LOGIN
-
-
 def signin(request):
     # Check if the request method is POST (form submission)
     if request.method == 'POST':
@@ -496,7 +492,6 @@ def register(request):
         return render(request, 'register.html', {'form': form,
                                                  'year': datetime.now(), })
 
-
 @login_required
 def autodata(request):
     userId = str(request.user.id)
@@ -529,7 +524,6 @@ def autodata(request):
         'year': datetime.now(),
         'form': form
     })
-
 
 @login_required
 def signout(request):
@@ -578,7 +572,6 @@ def edit_account(request):
             'pass_event': pass_event,
             'year': datetime.now(),
             'CustomUser': request.user})
-
 
 @login_required
 def sm_HPC(request):
@@ -1526,7 +1519,6 @@ def sm_HPC(request):
             'step': 0
         })
 
-
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
@@ -1572,7 +1564,6 @@ def sm_historial_llamadas(request):
         'form': form,
         'llamadas': llamadas,
     })
-
 
 @login_required
 def sm_historial_citas(request):
@@ -1622,7 +1613,6 @@ def sm_historial_citas(request):
         'citas': citas,
         'form': form
     })
-
 
 # Admin
 @login_required
@@ -1775,7 +1765,6 @@ def detallesusuario(request):
     else:
         return redirect(reverse('home'))
 
-
 @login_required
 def eventHandler(request):
     if request.method == "GET":
@@ -1825,7 +1814,6 @@ def eventHandler(request):
     else:
         return redirect(reverse('adminuser'))
 
-
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
@@ -1869,7 +1857,6 @@ def adminuser(request):
         return redirect(reverse('home'))
 
 # @login_required
-
 
 def adminregister(request):
     # Super Proteger Ruta
@@ -1935,7 +1922,6 @@ def adminregister(request):
     else:
         return redirect(reverse('home'))
 
-
 @login_required
 def admininformes(request):
     # Super Proteger Ruta
@@ -1943,19 +1929,17 @@ def admininformes(request):
         if request.method == 'POST':
             form = InformesForm(request.POST)
             if form.is_valid():
-                # Acceder a form.cleaned_data aquí, después de la validación del formulario
                 anio = form.cleaned_data['anio']
                 mes = form.cleaned_data['mes']
 
-                # Utilizar la función reverse para generar la URL basada en el nombre de la vista
-                url_generar_pdf = reverse('generar_pdf', kwargs={
-                                          'anio': anio, 'mes': mes})
-                return redirect(url_generar_pdf)
+                if 'pdf' in request.POST:
+                    return redirect(reverse('generar_pdf', kwargs={'anio': anio, 'mes': mes}))
+                elif 'excel' in request.POST:
+                    return redirect(reverse('generar_excel', kwargs={'anio': anio, 'mes':mes}))
         else:
             form = InformesForm()
 
         return render(request, 'AdminInformes.html', {'form': form})
-
 
 @login_required
 def pacientesView(request):
@@ -1991,7 +1975,6 @@ def pacientesView(request):
         'year': datetime.now(),
         'form': form
     })
-
 
 @login_required
 def detallespaciente(request):
@@ -2046,18 +2029,15 @@ def detallespaciente(request):
 
 # 404 VISTAS
 
-
 @login_required
 def restricted_area_404(request):
     if request.method == "GET":
         return render(request, '404_restricted_area.html')
 
-
 @login_required
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
-
 
 @login_required
 def getDocsData(request, anio, mes):
@@ -2109,12 +2089,12 @@ def getDocsData(request, anio, mes):
 
     # LLAMADAS
     query = """
-        SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas
+        SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas, "main_infomiembros"."id_usuario_id" AS id_usuario
         FROM "main_psillamadas"
         JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
         WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
         AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
-        GROUP BY "main_infomiembros"."nombre"
+        GROUP BY "main_infomiembros"."id_usuario_id"
         ORDER BY total_llamadas DESC
         LIMIT 10
     """
@@ -2122,12 +2102,12 @@ def getDocsData(request, anio, mes):
         cursor.execute(query, [anio, mes])
         top_psicologos_llamadas = cursor.fetchall()
 
-    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas
+    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas, "main_infomiembros"."id_usuario_id" AS id_usuario
                 FROM "main_hpc"
                 JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
                 WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
                 AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
-                GROUP BY "main_infomiembros"."nombre"
+                GROUP BY "main_infomiembros"."id_usuario_id"
                 ORDER BY total_citas DESC
                 LIMIT 10 """
 
@@ -2174,7 +2154,6 @@ def getDocsData(request, anio, mes):
     }
 
     return data
-
 
 @login_required
 def generar_pdf(request, anio, mes):
@@ -2380,7 +2359,7 @@ def generar_pdf(request, anio, mes):
         
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_llamadas:
-            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}")
+            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
             y -= FONT_SIZE_P
 
         y -= PARRAPH_DIVIDER
@@ -2389,7 +2368,7 @@ def generar_pdf(request, anio, mes):
         y -= FONT_SIZE_M 
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_citas:
-            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}")
+            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
             y -= FONT_SIZE_P
 
         # Pagina 4: sexos
@@ -2535,3 +2514,189 @@ def generar_pdf(request, anio, mes):
         return response
     else:
         return redirect(reverse('home'))
+
+@login_required
+def generar_excel(request, anio, mes):
+    nombre_mes = meses[mes]
+    nombre_mes = nombre_mes.capitalize()
+
+    data = getDocsData(request, anio, mes)
+    #sheet1
+    cantidad_citas = data['cantidad_citas']
+    cantidad_llamadas = data['cantidad_llamadas']
+    seguimientos_llamadas_no_realizados = data['seg_llamadas_nr']
+    seguimientos_llamadas_incompletas = data['seg_llamadas_in']
+    seguimientos_llamadas_completas = data['seg_llamadas_com']
+    seguimientos_citas_no_realizados = data['seg_citas_nr']
+    seguimientos_citas_incompletos = data['seg_citas_in']
+    seguimientos_citas_completos = data['seg_citas_com']
+    #Sheet2
+    top_psicologos_llamadas = data['top_psi_llam']
+    top_psicologos_citas = data['top_psi_citas']
+    #sheet3
+    sexos_llamadas = data['sx_llam']
+    escolaridad_llamadas = data['es_llam']
+    dias_llamadas = data['dias_llam']
+    horas_llamadas = data['hs_llam']
+
+    generos_citas = data['sx_citas']
+    escolaridad_citas = data['es_citas']
+    dias_citas = data['dias_citas']
+    horas_citas = data['hs_citas']
+    
+    sheet1Data = [['Cantidad de servicios', 'Cantidad de citas', 'Cantidad de llamadas'],
+                  [cantidad_citas+cantidad_llamadas, cantidad_citas, cantidad_llamadas],
+                  ['Seguimientos', 'Completos', 'Incompletos', 'No realizados'],
+                  ['Llamadas', seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados],
+                  ['Citas', seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_citas_no_realizados]]
+    
+
+    libro = Workbook()
+    hoja1 = libro.active
+    hoja1.title = "Servicios"
+
+    for fila in sheet1Data:
+        hoja1.append(fila)
+        
+    hoja2 = libro.create_sheet(title="Top de Psicologos")
+    headersSheet2 = ['Nombre', 'Cantidad', 'ID']
+    hoja2.append(['Top Llamadas'])
+    hoja2.append(headersSheet2)
+    for psicologo in top_psicologos_llamadas:
+        if psicologo[0] is None or psicologo[0] == "":
+            hoja2.append(["No diligenciado", psicologo[1], psicologo[2]])
+        else:
+            hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+        
+    hoja2.append([])
+    hoja2.append(['Top Citas'])
+    hoja2.append(headersSheet2)
+    
+    for psicologo in top_psicologos_citas:
+        if psicologo[0] is None or psicologo[0] == "":
+            hoja2.append(["No diligenciado", psicologo[1], psicologo[2]])
+        else:
+            hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+    
+    hoja3 = libro.create_sheet(title = "Sexo y escolaridad")
+    generos_citas_cantidad = [0, 0, 0]
+    sexos_llamadas_cantidad = [0] * len(mapeo_generos)
+    escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
+    escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
+    dias_llamadas_cantidad = [0] * len(mapeo_dias)
+    dias_citas_cantidad = [0] * len(mapeo_dias)
+    
+    for s in sexos_llamadas:
+            genero = s['sexo']
+            total = s['total']
+
+            if genero in mapeo_generos:
+                index = genero - 1  # Ajuste para el índice de la lista
+                sexos_llamadas_cantidad[index] = total
+                
+    for genero_cita in generos_citas:
+        genero_id = genero_cita['cedula_usuario__sexo']
+        total = genero_cita['total']
+
+        if genero_id == 1:
+            generos_citas_cantidad[0] = total
+        elif genero_id == 2:
+            generos_citas_cantidad[1] = total
+        elif genero_id == 3:
+            generos_citas_cantidad[2] = total
+            
+    for e in escolaridad_citas:
+        escolaridad_id = e['cedula_usuario__escolaridad']
+        total = e['total']
+
+        if escolaridad_id == 1:
+            escolaridad_citas_cantidad[0] = total
+        elif escolaridad_id == 2:
+            escolaridad_citas_cantidad[1] = total
+        elif escolaridad_id == 3:
+            escolaridad_citas_cantidad[2] = total
+        elif escolaridad_id == 4:
+            escolaridad_citas_cantidad[3] = total
+        elif escolaridad_id == 5:
+            escolaridad_citas_cantidad[4] = total
+        elif escolaridad_id == 6:
+            escolaridad_citas_cantidad[5] = total
+        elif escolaridad_id == 7:
+            escolaridad_citas_cantidad[6] = total
+            
+    for e in escolaridad_llamadas:
+        escolaridad_id = e['documento__escolaridad']
+        total = e['total']
+
+        if escolaridad_id == 1:
+            escolaridad_llamadas_cantidad[0] = total
+        elif escolaridad_id == 2:
+            escolaridad_llamadas_cantidad[1] = total
+        elif escolaridad_id == 3:
+            escolaridad_llamadas_cantidad[2] = total
+        elif escolaridad_id == 4:
+            escolaridad_llamadas_cantidad[3] = total
+        elif escolaridad_id == 5:
+            escolaridad_llamadas_cantidad[4] = total
+        elif escolaridad_id == 6:
+            escolaridad_llamadas_cantidad[5] = total
+        elif escolaridad_id == 7:
+            escolaridad_llamadas_cantidad[6] = total
+            
+    hoja3.append(["Sexo/Servicios", "Llamadas", "Citas"])
+    for i, (genero, total_llamadas) in enumerate(zip(mapeo_generos.values(), sexos_llamadas_cantidad)):
+        generos_citas_cantidad_actual = generos_citas_cantidad[i] if i < len(generos_citas_cantidad) else 0
+        hoja3.append([genero, total_llamadas, generos_citas_cantidad_actual])
+    hoja3.append(["Escolaridad de los usuarios"])    
+    hoja3.append(["Escolaridad", "Llamadas", "Citas"])
+    for key, value in mapeo_escolaridad.items():
+        fila = [
+            value,
+            escolaridad_citas_cantidad[key - 1],
+            escolaridad_citas_cantidad[key - 1]
+        ]
+        hoja3.append(fila)
+        
+    hoja4 = libro.create_sheet(title="Dias y horas")
+    
+    for d in dias_llamadas:
+            dia = d['dia_semana_id']
+            total = d['total']
+
+            if dia in mapeo_dias:
+                dias_llamadas_cantidad[dia] = total
+    
+    for d in dias_citas:
+        dia = d['dia_semana_id']
+        total = d['total']
+
+        if dia in mapeo_dias:
+            dias_citas_cantidad[dia] = total
+    
+    hoja4.append(['Llamadas por dias'])
+    for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
+        hoja4.append([dia, total])
+    
+    hoja4.append(['Citas por dias'])
+    for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
+        hoja4.append([dia, total])
+        
+    hoja4.append(['Distribucion de llamadas por horas'])
+    hoja4.append(['Hora', 'Cantidad'])
+    for h in horas_llamadas:
+        hora = h['hora']
+        cantidad = h['cantidad']
+        hoja4.append([hora, cantidad])
+        
+    hoja4.append(['Distribucion de citas por horas'])
+    hoja4.append(['Hora', 'Cantidad'])
+    for h in horas_citas:
+        hora = h['hora']
+        cantidad = h['cantidad']
+        hoja4.append([hora, cantidad])
+    
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=archivo_excel.xlsx'
+    libro.save(response)
+
+    return response
