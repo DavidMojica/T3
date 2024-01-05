@@ -12,17 +12,32 @@ class InformesForm(forms.Form):
 
     opciones_año = [(año, str(año)) for año in range(año_minimo, año_actual + 1)]
 
-    # Definir el campo de año con las opciones generadas
-    anio = forms.ChoiceField(choices=opciones_año, label='Año', widget=forms.Select(attrs={'class': 'form-select'}), required=True)
+    # Obtener el mes actual
+    mes_actual = datetime.datetime.now().month
 
-    # Definir el campo de mes con opciones fijas para todos los meses
+    # Definir el campo de año con las opciones generadas
+    anio = forms.ChoiceField(
+        choices=opciones_año,
+        label='Año',
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        initial=año_actual, 
+        required=True
+    )
+
+    
     opciones_mes = [
         ('1', 'Enero'), ('2', 'Febrero'), ('3', 'Marzo'), ('4', 'Abril'),
         ('5', 'Mayo'), ('6', 'Junio'), ('7', 'Julio'), ('8', 'Agosto'),
         ('9', 'Septiembre'), ('10', 'Octubre'), ('11', 'Noviembre'), ('12', 'Diciembre')
     ]
 
-    mes = forms.ChoiceField(choices=opciones_mes, label='Mes', widget=forms.Select(attrs={'class': 'form-select'}), required=True)
+    mes = forms.ChoiceField(
+        choices=opciones_mes,
+        label='Mes',
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        initial=str(mes_actual),  
+        required=True
+    )
 
 class FiltroUsuarios(forms.Form):
     nombre = forms.CharField(
