@@ -1939,7 +1939,10 @@ def admininformes(request):
         else:
             form = InformesForm()
 
-        return render(request, 'AdminInformes.html', {'form': form})
+        return render(request, 'AdminInformes.html', {
+            'form': form,
+            'year': datetime.now()
+            })
 
 @login_required
 def pacientesView(request):
@@ -2696,7 +2699,7 @@ def generar_excel(request, anio, mes):
         hoja4.append([hora, cantidad])
     
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=archivo_excel.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=salud_mental.xlsx'
     libro.save(response)
 
     return response

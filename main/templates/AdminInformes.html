@@ -3,10 +3,13 @@
 <main class="main-expanded">
 
     <form method="post" action="">
+        <h3 class="text-primary font-weight-bold">Exportar información de Salud Mental</h3>
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-danger" name="pdf">Descargar en PDF</button>
-        <button type="submit" class="btn btn-success" name="excel">Descargar en Excel</button>
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-danger mx-auto" name="pdf">Descargar en PDF</button>
+            <button type="submit" class="btn btn-success mx-auto" name="excel">Descargar en Excel</button>
+        </div>        
     </form>
 
 </main>
