@@ -2561,27 +2561,26 @@ def generar_excel(request, anio, mes):
     for fila in sheet1Data:
         hoja1.append(fila)
         
-    hoja2 = libro.create_sheet(title="Top de Psicologos")
+    
     headersSheet2 = ['Nombre', 'Cantidad', 'ID']
-    hoja2.append(['Top Llamadas'])
-    hoja2.append(headersSheet2)
+    hoja1.append(['Top Llamadas'])
+    hoja1.append(headersSheet2)
     for psicologo in top_psicologos_llamadas:
         if psicologo[0] is None or psicologo[0] == "":
-            hoja2.append(["No diligenciado", psicologo[1], psicologo[2]])
+            hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
         else:
-            hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+            hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
         
-    hoja2.append([])
-    hoja2.append(['Top Citas'])
-    hoja2.append(headersSheet2)
+    hoja1.append([])
+    hoja1.append(['Top Citas'])
+    hoja1.append(headersSheet2)
     
     for psicologo in top_psicologos_citas:
         if psicologo[0] is None or psicologo[0] == "":
-            hoja2.append(["No diligenciado", psicologo[1], psicologo[2]])
+            hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
         else:
-            hoja2.append([psicologo[0], psicologo[1], psicologo[2]])
+            hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
     
-    hoja3 = libro.create_sheet(title = "Sexo y escolaridad")
     generos_citas_cantidad = [0, 0, 0]
     sexos_llamadas_cantidad = [0] * len(mapeo_generos)
     escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
@@ -2646,28 +2645,26 @@ def generar_excel(request, anio, mes):
         elif escolaridad_id == 7:
             escolaridad_llamadas_cantidad[6] = total
             
-    hoja3.append(["Sexo/Servicios", "Llamadas", "Citas"])
+    hoja1.append(["Sexo/Servicios", "Llamadas", "Citas"])
     for i, (genero, total_llamadas) in enumerate(zip(mapeo_generos.values(), sexos_llamadas_cantidad)):
         generos_citas_cantidad_actual = generos_citas_cantidad[i] if i < len(generos_citas_cantidad) else 0
-        hoja3.append([genero, total_llamadas, generos_citas_cantidad_actual])
-    hoja3.append(["Escolaridad de los usuarios"])    
-    hoja3.append(["Escolaridad", "Llamadas", "Citas"])
+        hoja1.append([genero, total_llamadas, generos_citas_cantidad_actual])
+    hoja1.append(["Escolaridad de los usuarios"])    
+    hoja1.append(["Escolaridad", "Llamadas", "Citas"])
     for key, value in mapeo_escolaridad.items():
         fila = [
             value,
             escolaridad_citas_cantidad[key - 1],
             escolaridad_citas_cantidad[key - 1]
         ]
-        hoja3.append(fila)
-        
-    hoja4 = libro.create_sheet(title="Dias y horas")
+        hoja1.append(fila)
     
     for d in dias_llamadas:
-            dia = d['dia_semana_id']
-            total = d['total']
+        dia = d['dia_semana_id']
+        total = d['total']
 
-            if dia in mapeo_dias:
-                dias_llamadas_cantidad[dia] = total
+        if dia in mapeo_dias:
+            dias_llamadas_cantidad[dia] = total
     
     for d in dias_citas:
         dia = d['dia_semana_id']
@@ -2676,27 +2673,27 @@ def generar_excel(request, anio, mes):
         if dia in mapeo_dias:
             dias_citas_cantidad[dia] = total
     
-    hoja4.append(['Llamadas por dias'])
+    hoja1.append(['Llamadas por dias'])
     for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
-        hoja4.append([dia, total])
+        hoja1.append([dia, total])
     
-    hoja4.append(['Citas por dias'])
+    hoja1.append(['Citas por dias'])
     for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
-        hoja4.append([dia, total])
+        hoja1.append([dia, total])
         
-    hoja4.append(['Distribucion de llamadas por horas'])
-    hoja4.append(['Hora', 'Cantidad'])
+    hoja1.append(['Distribucion de llamadas por horas'])
+    hoja1.append(['Hora', 'Cantidad'])
     for h in horas_llamadas:
         hora = h['hora']
         cantidad = h['cantidad']
-        hoja4.append([hora, cantidad])
+        hoja1.append([hora, cantidad])
         
-    hoja4.append(['Distribucion de citas por horas'])
-    hoja4.append(['Hora', 'Cantidad'])
+    hoja1.append(['Distribucion de citas por horas'])
+    hoja1.append(['Hora', 'Cantidad'])
     for h in horas_citas:
         hora = h['hora']
         cantidad = h['cantidad']
-        hoja4.append([hora, cantidad])
+        hoja1.append([hora, cantidad])
     
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=salud_mental.xlsx'
