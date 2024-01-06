@@ -2547,11 +2547,32 @@ def generar_excel(request, anio, mes):
     dias_citas = data['dias_citas']
     horas_citas = data['hs_citas']
     
-    sheet1Data = [['Cantidad de servicios', 'Cantidad de citas', 'Cantidad de llamadas'],
-                  [cantidad_citas+cantidad_llamadas, cantidad_citas, cantidad_llamadas],
-                  ['Seguimientos', 'Completos', 'Incompletos', 'No realizados'],
-                  ['Llamadas', seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados],
-                  ['Citas', seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_citas_no_realizados]]
+    generos_citas_cantidad = [0, 0, 0]
+    sexos_llamadas_cantidad = [0] * len(mapeo_generos)
+    
+    for s in sexos_llamadas:
+        genero = s['sexo']
+        total = s['total']
+
+        if genero in mapeo_generos:
+            index = genero - 1  # Ajuste para el índice de la lista
+            sexos_llamadas_cantidad[index] = total
+
+    for genero_cita in generos_citas:
+        genero_id = genero_cita['cedula_usuario__sexo']
+        total = genero_cita['total']
+
+        if genero_id == 1:
+            generos_citas_cantidad[0] = total
+        elif genero_id == 2:
+            generos_citas_cantidad[1] = total
+        elif genero_id == 3:
+            generos_citas_cantidad[2] = total
+    
+    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados','Genero Hombres', 'Genero Mujeres', 'Genero Otros'],
+                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0],sexos_llamadas_cantidad[1],sexos_llamadas_cantidad[2]],
+                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_llamadas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2]],
+                  ]
     
 
     libro = Workbook()
@@ -2561,7 +2582,7 @@ def generar_excel(request, anio, mes):
     for fila in sheet1Data:
         hoja1.append(fila)
         
-    
+    hoja1.append([])
     headersSheet2 = ['Nombre', 'Cantidad', 'ID']
     hoja1.append(['Top Llamadas'])
     hoja1.append(headersSheet2)
@@ -2581,31 +2602,15 @@ def generar_excel(request, anio, mes):
         else:
             hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
     
-    generos_citas_cantidad = [0, 0, 0]
-    sexos_llamadas_cantidad = [0] * len(mapeo_generos)
+    
     escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     dias_llamadas_cantidad = [0] * len(mapeo_dias)
     dias_citas_cantidad = [0] * len(mapeo_dias)
     
-    for s in sexos_llamadas:
-            genero = s['sexo']
-            total = s['total']
 
-            if genero in mapeo_generos:
-                index = genero - 1  # Ajuste para el índice de la lista
-                sexos_llamadas_cantidad[index] = total
                 
-    for genero_cita in generos_citas:
-        genero_id = genero_cita['cedula_usuario__sexo']
-        total = genero_cita['total']
 
-        if genero_id == 1:
-            generos_citas_cantidad[0] = total
-        elif genero_id == 2:
-            generos_citas_cantidad[1] = total
-        elif genero_id == 3:
-            generos_citas_cantidad[2] = total
             
     for e in escolaridad_citas:
         escolaridad_id = e['cedula_usuario__escolaridad']
@@ -2645,10 +2650,6 @@ def generar_excel(request, anio, mes):
         elif escolaridad_id == 7:
             escolaridad_llamadas_cantidad[6] = total
             
-    hoja1.append(["Sexo/Servicios", "Llamadas", "Citas"])
-    for i, (genero, total_llamadas) in enumerate(zip(mapeo_generos.values(), sexos_llamadas_cantidad)):
-        generos_citas_cantidad_actual = generos_citas_cantidad[i] if i < len(generos_citas_cantidad) else 0
-        hoja1.append([genero, total_llamadas, generos_citas_cantidad_actual])
     hoja1.append(["Escolaridad de los usuarios"])    
     hoja1.append(["Escolaridad", "Llamadas", "Citas"])
     for key, value in mapeo_escolaridad.items():
