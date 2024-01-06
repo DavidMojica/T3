@@ -2613,15 +2613,23 @@ def generar_excel(request, anio, mes):
     dias_llamadas_cantidad = [0] * len(mapeo_dias)
     dias_citas_cantidad = [0] * len(mapeo_dias)
     
-    for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
-        hoja1.append([dia, total])
+    for d in dias_llamadas:
+        dia = d['dia_semana_id']
+        total = d['total']
+
+        if dia in mapeo_dias:
+            dias_llamadas_cantidad[dia] = total
     
-    for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
-        hoja1.append([dia, total])
+    for d in dias_citas:
+        dia = d['dia_semana_id']
+        total = d['total']
+
+        if dia in mapeo_dias:
+            dias_citas_cantidad[dia] = total
     
-    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados','Genero Hombres', 'Genero Mujeres', 'Genero Otros', f"Escolaridad: {mapeo_escolaridad[1]}", mapeo_escolaridad[2], mapeo_escolaridad[3], mapeo_escolaridad[4], mapeo_escolaridad[5], mapeo_escolaridad[6], mapeo_escolaridad[7]],
-                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0],sexos_llamadas_cantidad[1],sexos_llamadas_cantidad[2], escolaridad_llamadas_cantidad[0], escolaridad_llamadas_cantidad[1], escolaridad_llamadas_cantidad[2], escolaridad_llamadas_cantidad[3], escolaridad_llamadas_cantidad[4], escolaridad_llamadas_cantidad[5], escolaridad_llamadas_cantidad[6]],
-                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_llamadas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2], escolaridad_citas_cantidad[0], escolaridad_citas_cantidad[1], escolaridad_citas_cantidad[2], escolaridad_citas_cantidad[3], escolaridad_citas_cantidad[4], escolaridad_citas_cantidad[5], escolaridad_citas_cantidad[6]],
+    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados','Genero Hombres', 'Genero Mujeres', 'Genero Otros', f"Escolaridad: {mapeo_escolaridad[1]}", mapeo_escolaridad[2], mapeo_escolaridad[3], mapeo_escolaridad[4], mapeo_escolaridad[5], mapeo_escolaridad[6], mapeo_escolaridad[7], mapeo_dias[0], mapeo_dias[1], mapeo_dias[2], mapeo_dias[3], mapeo_dias[4], mapeo_dias[5], mapeo_dias[6]],
+                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0],sexos_llamadas_cantidad[1],sexos_llamadas_cantidad[2], escolaridad_llamadas_cantidad[0], escolaridad_llamadas_cantidad[1], escolaridad_llamadas_cantidad[2], escolaridad_llamadas_cantidad[3], escolaridad_llamadas_cantidad[4], escolaridad_llamadas_cantidad[5], escolaridad_llamadas_cantidad[6], dias_llamadas_cantidad[0], dias_llamadas_cantidad[1], dias_llamadas_cantidad[2], dias_llamadas_cantidad[3], dias_llamadas_cantidad[4], dias_llamadas_cantidad[5], dias_llamadas_cantidad[6]],
+                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_llamadas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2], escolaridad_citas_cantidad[0], escolaridad_citas_cantidad[1], escolaridad_citas_cantidad[2], escolaridad_citas_cantidad[3], escolaridad_citas_cantidad[4], escolaridad_citas_cantidad[5], escolaridad_citas_cantidad[6], dias_citas_cantidad[0], dias_citas_cantidad[1], dias_citas_cantidad[2], dias_citas_cantidad[3], dias_citas_cantidad[4], dias_citas_cantidad[5], dias_citas_cantidad[6]],
                   ]
     
 
@@ -2656,19 +2664,7 @@ def generar_excel(request, anio, mes):
     
 
     
-    for d in dias_llamadas:
-        dia = d['dia_semana_id']
-        total = d['total']
-
-        if dia in mapeo_dias:
-            dias_llamadas_cantidad[dia] = total
     
-    for d in dias_citas:
-        dia = d['dia_semana_id']
-        total = d['total']
-
-        if dia in mapeo_dias:
-            dias_citas_cantidad[dia] = total
     
         
     hoja1.append(['Distribucion de llamadas por horas'])
