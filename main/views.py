@@ -2568,50 +2568,9 @@ def generar_excel(request, anio, mes):
             generos_citas_cantidad[1] = total
         elif genero_id == 3:
             generos_citas_cantidad[2] = total
-    
-    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados','Genero Hombres', 'Genero Mujeres', 'Genero Otros'],
-                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0],sexos_llamadas_cantidad[1],sexos_llamadas_cantidad[2]],
-                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_llamadas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2]],
-                  ]
-    
-
-    libro = Workbook()
-    hoja1 = libro.active
-    hoja1.title = "Servicios"
-
-    for fila in sheet1Data:
-        hoja1.append(fila)
-        
-    hoja1.append([])
-    headersSheet2 = ['Nombre', 'Cantidad', 'ID']
-    hoja1.append(['Top Llamadas'])
-    hoja1.append(headersSheet2)
-    for psicologo in top_psicologos_llamadas:
-        if psicologo[0] is None or psicologo[0] == "":
-            hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
-        else:
-            hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
-        
-    hoja1.append([])
-    hoja1.append(['Top Citas'])
-    hoja1.append(headersSheet2)
-    
-    for psicologo in top_psicologos_citas:
-        if psicologo[0] is None or psicologo[0] == "":
-            hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
-        else:
-            hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
-    
-    
+            
     escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
-    dias_llamadas_cantidad = [0] * len(mapeo_dias)
-    dias_citas_cantidad = [0] * len(mapeo_dias)
-    
-
-                
-
-            
     for e in escolaridad_citas:
         escolaridad_id = e['cedula_usuario__escolaridad']
         total = e['total']
@@ -2649,16 +2608,44 @@ def generar_excel(request, anio, mes):
             escolaridad_llamadas_cantidad[5] = total
         elif escolaridad_id == 7:
             escolaridad_llamadas_cantidad[6] = total
-            
-    hoja1.append(["Escolaridad de los usuarios"])    
-    hoja1.append(["Escolaridad", "Llamadas", "Citas"])
-    for key, value in mapeo_escolaridad.items():
-        fila = [
-            value,
-            escolaridad_citas_cantidad[key - 1],
-            escolaridad_citas_cantidad[key - 1]
-        ]
+    
+    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados','Genero Hombres', 'Genero Mujeres', 'Genero Otros', f"Escolaridad: {mapeo_escolaridad[1]}", mapeo_escolaridad[2], mapeo_escolaridad[3], mapeo_escolaridad[4], mapeo_escolaridad[5], mapeo_escolaridad[6], mapeo_escolaridad[7]],
+                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0],sexos_llamadas_cantidad[1],sexos_llamadas_cantidad[2], escolaridad_llamadas_cantidad[0], escolaridad_llamadas_cantidad[1], escolaridad_llamadas_cantidad[2], escolaridad_llamadas_cantidad[3], escolaridad_llamadas_cantidad[4], escolaridad_llamadas_cantidad[5], escolaridad_llamadas_cantidad[6]],
+                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_llamadas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2], escolaridad_citas_cantidad[0], escolaridad_citas_cantidad[1], escolaridad_citas_cantidad[2], escolaridad_citas_cantidad[3], escolaridad_citas_cantidad[4], escolaridad_citas_cantidad[5], escolaridad_citas_cantidad[6]],
+                  ]
+    
+
+    libro = Workbook()
+    hoja1 = libro.active
+    hoja1.title = "Servicios"
+
+    for fila in sheet1Data:
         hoja1.append(fila)
+        
+    hoja1.append([])
+    headersSheet2 = ['Nombre', 'Cantidad', 'ID']
+    hoja1.append(['Top Llamadas'])
+    hoja1.append(headersSheet2)
+    for psicologo in top_psicologos_llamadas:
+        if psicologo[0] is None or psicologo[0] == "":
+            hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
+        else:
+            hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
+        
+    hoja1.append([])
+    hoja1.append(['Top Citas'])
+    hoja1.append(headersSheet2)
+    
+    for psicologo in top_psicologos_citas:
+        if psicologo[0] is None or psicologo[0] == "":
+            hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
+        else:
+            hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
+    
+    
+    
+    dias_llamadas_cantidad = [0] * len(mapeo_dias)
+    dias_citas_cantidad = [0] * len(mapeo_dias)
     
     for d in dias_llamadas:
         dia = d['dia_semana_id']
