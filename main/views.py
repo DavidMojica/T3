@@ -220,8 +220,7 @@ def sm_llamadas(request):
                     llamadaInstance.save()
 
                 with transaction.atomic():
-                    PsiLlamadasConductas.objects.filter(
-                        id_llamada=numLlamada).delete()
+                    PsiLlamadasConductas.objects.filter(id_llamada=numLlamada).delete()
                     for conducta in ConductasASeguir.objects.all():
                         checkbox_name = f'cond_{conducta.id}'
                         if checkbox_name in request.POST:
@@ -233,15 +232,16 @@ def sm_llamadas(request):
 
                             llamada_conducta = PsiLlamadasConductas(
                                 id_llamada=llamadaInstance,
-                                id_conducta=conducta_instance
-                            )
+                                id_conducta=conducta_instance)
+                            
                             llamada_conducta.save()
 
                 with transaction.atomic():
                     PsiLlamadasMotivos.objects.filter(id_llamada=numLlamada).delete()
-                    for motivo in PsiMotivos.objects.all():
+                    for motivo in HPCSituacionContacto.objects.all():
                         checkbox_name = f'mot_{motivo.id}'
                         if checkbox_name in request.POST:
+                            print(f"{checkbox_name} <-------")
                             try:
                                 motivo_instace = HPCSituacionContacto.objects.get(
                                     id=motivo.id)
