@@ -146,8 +146,7 @@ def sm_llamadas(request):
             sexo_instance = None
 
         try:
-            tipo_documento_instance = TipoDocumento.objects.get(
-                id=tipo_documento)
+            tipo_documento_instance = TipoDocumento.objects.get(id=tipo_documento)
         except TipoDocumento.DoesNotExist:
             tipo_documento_instance = None
 
@@ -173,8 +172,7 @@ def sm_llamadas(request):
             escolaridad_instance = None
 
         if ban:
-            paciente_existe = InfoPacientes.objects.filter(
-                documento=documento).first()
+            paciente_existe = InfoPacientes.objects.filter(documento=documento).first()
 
             if paciente_existe:
                 # Si el paciente existe se actualizan los datos
@@ -183,9 +181,8 @@ def sm_llamadas(request):
                 paciente_existe.sexo = sexo_instance if sexo_instance is not None else paciente_existe.sexo
                 paciente_existe.edad = edad if edad else paciente_existe.edad
                 paciente_existe.eps = eps_instance if eps_instance is not None else paciente_existe.eps
-                paciente_existe.escolaridad = escolaridad_instance if escolaridad_instance is not None else paciente.escolaridad
-                paciente_existe.direccion = direccion.lower(
-                ) if direccion else paciente_existe.direccion
+                paciente_existe.escolaridad = escolaridad_instance if escolaridad_instance is not None else paciente_existe.escolaridad
+                paciente_existe.direccion = direccion.lower() if direccion else paciente_existe.direccion
                 paciente_existe.municipio = municipio_instance if municipio_instance is not None else paciente_existe.municipio
                 paciente_existe.poblacion_vulnerable = pob_vulnerable_instance if pob_vulnerable is not None else paciente_existe.poblacion_vulnerable
                 paciente_existe.celular = telefono if telefono else paciente_existe.celular
@@ -241,8 +238,7 @@ def sm_llamadas(request):
                             llamada_conducta.save()
 
                 with transaction.atomic():
-                    PsiLlamadasMotivos.objects.filter(
-                        id_llamada=numLlamada).delete()
+                    PsiLlamadasMotivos.objects.filter(id_llamada=numLlamada).delete()
                     for motivo in PsiMotivos.objects.all():
                         checkbox_name = f'mot_{motivo.id}'
                         if checkbox_name in request.POST:
@@ -2760,28 +2756,46 @@ def generar_excel2(request, anio, mes):
     llamadas = getLlamadasPorMes(request, anio, mes)
 
     for i in llamadas:
-        motivos = PsiLlamadasMotivos.objects.filter(pk=i.id).values_list('id_motivo__description', flat=True)
-        conductas = PsiLlamadasConductas.objects.filter(pk=i.id).values_list('id_conducta__description', flat=True)
+        motivos = PsiLlamadasMotivos.objects.filter(id_llamada=i.id).values_list('id_motivo__description', flat=True)
+        conductas = PsiLlamadasConductas.objects.filter(id_llamada=i.id).values_list('id_conducta__description', flat=True)
+
+        motivos_str = ', '.join(map(str, motivos)) if motivos and any(motivos) else "No proporcionado"
+        conductas_str = ', '.join(map(str, conductas)) if conductas and any(conductas) else "No proporcionado"
+
+        nombre_paciente = i.nombre_paciente if i.nombre_paciente else "No proporcionado"
+        documento_id = i.documento_id if i.documento_id else "No proporcionado"
+        sexo_description = i.sexo.description if i.sexo and i.sexo.description else "No proporcionado"
+        edad = i.edad if i.edad else "No proporcionado"
+        eps_description = i.documento.eps.description if i.documento and i.documento.eps and i.documento.eps.description else "No proporcionado"
+        direccion = i.documento.direccion if i.documento.direccion else "No proporcionado"
+        municipio = i.documento.municipio if i.documento.municipio else "No proporcionado"
+        celular = i.documento.celular if i.documento.celular else "No proporcionado"
+        poblacion_vulnerable_description = i.documento.poblacion_vulnerable.description if i.documento.poblacion_vulnerable and i.documento.poblacion_vulnerable.description else "No proporcionado"
+        id_psicologo_nombre = i.id_psicologo.nombre if i.id_psicologo and i.id_psicologo.nombre else "No proporcionado"
+        observaciones = i.observaciones if i.observaciones else "No proporcionado"
 
         hoja1.append([
-            i.nombre_paciente,
+            nombre_paciente,
             i.fecha_llamada.strftime('%Y-%m-%d'),
+            mapeo_dias[i.fecha_llamada.weekday()],
             i.fecha_llamada.strftime('%H:%M:%S'),
-            i.documento,
-            i.sexo.description,
-            i.edad,
-            i.documento.eps.description,
-            i.documento.direccion,
-            i.documento.municipio,
-            i.documento.celular,
-            i.documento.poblacion_vulnerable.description,
-
-            i.id_psicologo.nombre,
-            i.observaciones,
+            documento_id,
+            sexo_description,
+            edad,
+            eps_description,
+            direccion,
+            municipio,
+            celular,
+            poblacion_vulnerable_description,
+            motivos_str,
+            conductas_str,
+            id_psicologo_nombre,
+            observaciones,
             i.seguimiento24,
             i.seguimiento48,
             i.seguimiento72
         ])
+
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=salud_mental.xlsx'
     libro.save(response)
