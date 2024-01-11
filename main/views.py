@@ -33,21 +33,14 @@ SUCCESS_101 = "Datos guardados correctamente."
 SUCCESS_102 = "Cuenta creada exitosamente"
 
 adminOnly = [1, 10]
-meses = {1: 'Enero', 2: 'Febrero',
-         3: 'Marzo', 4: 'Abril',
-         5: 'Mayo', 6: 'Junio',
-         7: 'Julio', 8: 'Agosto',
-         9: 'Septiembre', 10: 'Octubre',
-         11: 'Noviembre', 12: 'Diciembre'}
+meses = {1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril', 5: 'Mayo', 6: 'Junio', 7: 'Julio', 8: 'Agosto', 9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'}
 
 # Mapping
 mapeo_generos = {1: 'Hombres', 2: 'Mujeres', 3: 'Otros'}
-mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria',
-                        4: 'Técnica', 5: 'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
-mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
-              3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
+mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria', 4: 'Técnica', 5: 'Tecnología', 6: 'Profesional', 7: 'Posgrado'}
+mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles', 3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
 
-# PDF
+# Configuraciones del PFDF
 Y_POS_INITIAL_H = 750
 Y_POS_INITIAL_P = 710
 X_POS_P = 120
@@ -59,7 +52,7 @@ FONT_SIZE_M = 16
 FONT_SIZE_H = 18
 PARRAPH_DIVIDER = FONT_SIZE_P * 2
 
-# Instancias de modelos
+# Instancias de modelos para evitar la reiteración del código
 paises = Pais.objects.all()
 departamentos = Departamento.objects.all()
 municipios = Municipio.objects.all()
@@ -86,18 +79,123 @@ spa = SPA.objects.all()
 snn = SiNoNunca.objects.all()
 ep = EstatusPersona.objects.all()
 
-# Extra Functions
+#-------------------Funciones----------------------#
+"""
+Esta funcion calcula la edad a partir de una fecha dada.
+Regresa la edad como entero
+"""
+def calcular_edad(fecha_nacimiento): 
+    return datetime.now().year - fecha_nacimiento.year - ((datetime.now().month, datetime.now().day) < (fecha_nacimiento.month, fecha_nacimiento.day))
 
+"""
+Regresa el nombre (str) del mes a partir de un numero dado.
 
-def calcular_edad(fecha_nacimiento):
-    hoy = datetime.now()
-    edad = hoy.year - fecha_nacimiento.year - \
-        ((hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
-    return edad
+"""
+def getNombreMes(mes):
+    return meses[mes].capitalize()
+
+"""Obtiene y regresa los datos perfilados para usarse en los archivos de PDF y Excel
+
+Returns:
+    _type_: _description_
+"""
+@login_required
+def getDocsData(request, anio, mes):
+    citas = getCitasPorMes(request, anio, mes)
+    llamadas = getLlamadasPorMes(request, anio, mes)
+
+    seguimientos_llamadas_no_realizados = llamadas.filter(
+        seguimiento24__isnull=False, seguimiento24__exact='',
+        seguimiento48__isnull=False, seguimiento48__exact='',
+        seguimiento72__isnull=False, seguimiento72__exact='').count()
+
+    seguimientos_llamadas_incompletas = llamadas.filter(
+        ~Q(seguimiento24__isnull=False, seguimiento24__exact='') |
+        ~Q(seguimiento48__isnull=False, seguimiento48__exact='') |
+        ~Q(seguimiento72__isnull=False, seguimiento72__exact='')).exclude(Q(
+        ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+        ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+        ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact=''))).count()
+
+    seguimientos_llamadas_completas = llamadas.filter(
+        ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
+        ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
+        ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')).count()
+
+    seguimientos_citas_no_realizados = citas.filter(
+        seguimiento1__isnull=False, seguimiento1__exact='',
+        seguimiento2__isnull=False, seguimiento2__exact='').count()
+
+    seguimientos_citas_incompletos = citas.filter(
+        ~Q(seguimiento1__isnull=False, seguimiento1__exact='') |
+        ~Q(seguimiento2__isnull=False, seguimiento2__exact='')).exclude(Q(
+        ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+        ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact=''))).count()
+
+    seguimientos_citas_completos = citas.filter(
+        ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
+        ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')).count()
+
+    # LLAMADAS
+    query = """SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas, "main_infomiembros"."id_usuario_id" AS id_usuario
+        FROM "main_psillamadas"
+        JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+        WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
+        AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
+        GROUP BY "main_infomiembros"."id_usuario_id"
+        ORDER BY total_llamadas DESC
+        LIMIT 10""" 
+        
+    with connection.cursor() as cursor:
+        cursor.execute(query, [anio, mes])
+        top_psicologos_llamadas = cursor.fetchall()
+
+    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas, "main_infomiembros"."id_usuario_id" AS id_usuario
+                FROM "main_hpc"
+                JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
+                WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
+                AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
+                GROUP BY "main_infomiembros"."id_usuario_id"
+                ORDER BY total_citas DESC
+                LIMIT 10 """
+
+    with connection.cursor() as cursor:
+        cursor.execute(query, [anio, mes])
+        top_psicologos_citas = cursor.fetchall()
+
+    sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
+    escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(total=Count('documento__escolaridad'))
+    dias_llamadas = llamadas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
+    horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+    generos_citas = citas.values('cedula_usuario__sexo').annotate(total=Count('cedula_usuario__sexo'))
+    escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(total=Count('cedula_usuario__escolaridad'))
+    dias_citas = citas.values('dia_semana_id').annotate(total=Count('dia_semana_id'))
+    horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values('hora').annotate(cantidad=Count('id')).order_by('-cantidad')
+
+    data = {
+        'cantidad_citas': citas.count(),
+        'cantidad_llamadas': llamadas.count(),
+        'seg_llamadas_nr': seguimientos_llamadas_no_realizados,
+        'seg_llamadas_in': seguimientos_llamadas_incompletas,
+        'seg_llamadas_com': seguimientos_llamadas_completas,
+        'seg_citas_nr': seguimientos_citas_no_realizados,
+        'seg_citas_in': seguimientos_citas_incompletos,
+        'seg_citas_com': seguimientos_citas_completos,
+        'top_psi_llam': top_psicologos_llamadas,
+        'top_psi_citas': top_psicologos_citas,
+        'sx_llam': sexos_llamadas,
+        'es_llam': escolaridad_llamadas,
+        'dias_llam': dias_llamadas,
+        'hs_llam': horas_llamadas,
+        'sx_citas': generos_citas,
+        'es_citas': escolaridad_citas,
+        'dias_citas': dias_citas,
+        'hs_citas': horas_citas
+    }
+
+    return data
 
 # Create your views here.
-
-
 @login_required
 def sm_llamadas(request):
     if request.method == "POST":
@@ -2043,8 +2141,7 @@ def detallespaciente(request):
         return render(request, 'detallespaciente.html', {
             'CustomUser': request.user,
             'year': datetime.now(),
-            'found': False
-        })
+            'found': False })
 
 # 404 VISTAS
 
@@ -2071,118 +2168,6 @@ def getCitasPorMes(request, anio, mes):
     return HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
 
 
-@login_required
-def getDocsData(request, anio, mes):
-    citas = getCitasPorMes(request, anio, mes)
-    llamadas = getLlamadasPorMes(request, anio, mes)
-
-    seguimientos_llamadas_no_realizados = llamadas.filter(
-        seguimiento24__isnull=False, seguimiento24__exact='',
-        seguimiento48__isnull=False, seguimiento48__exact='',
-        seguimiento72__isnull=False, seguimiento72__exact=''
-    ).count()
-
-    seguimientos_llamadas_incompletas = llamadas.filter(
-        ~Q(seguimiento24__isnull=False, seguimiento24__exact='') |
-        ~Q(seguimiento48__isnull=False, seguimiento48__exact='') |
-        ~Q(seguimiento72__isnull=False, seguimiento72__exact='')
-    ).exclude(Q(
-        ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
-        ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
-        ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
-    )).count()
-
-    seguimientos_llamadas_completas = llamadas.filter(
-        ~Q(seguimiento24__isnull=True) & ~Q(seguimiento24__exact=''),
-        ~Q(seguimiento48__isnull=True) & ~Q(seguimiento48__exact=''),
-        ~Q(seguimiento72__isnull=True) & ~Q(seguimiento72__exact='')
-    ).count()
-
-    seguimientos_citas_no_realizados = citas.filter(
-        seguimiento1__isnull=False, seguimiento1__exact='',
-        seguimiento2__isnull=False, seguimiento2__exact=''
-    ).count()
-
-    seguimientos_citas_incompletos = citas.filter(
-        ~Q(seguimiento1__isnull=False, seguimiento1__exact='') |
-        ~Q(seguimiento2__isnull=False, seguimiento2__exact='')
-    ).exclude(Q(
-        ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
-        ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
-    )).count()
-
-    seguimientos_citas_completos = citas.filter(
-        ~Q(seguimiento1__isnull=True) & ~Q(seguimiento1__exact=''),
-        ~Q(seguimiento2__isnull=True) & ~Q(seguimiento2__exact='')
-    ).count()
-
-    # LLAMADAS
-    query = """
-        SELECT "main_infomiembros"."nombre", COUNT("main_psillamadas"."id_psicologo_id") AS total_llamadas, "main_infomiembros"."id_usuario_id" AS id_usuario
-        FROM "main_psillamadas"
-        JOIN "main_infomiembros" ON CAST("main_psillamadas"."id_psicologo_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
-        WHERE EXTRACT(YEAR FROM "main_psillamadas"."fecha_llamada") = %s
-        AND EXTRACT(MONTH FROM "main_psillamadas"."fecha_llamada") = %s
-        GROUP BY "main_infomiembros"."id_usuario_id"
-        ORDER BY total_llamadas DESC
-        LIMIT 10
-    """
-    with connection.cursor() as cursor:
-        cursor.execute(query, [anio, mes])
-        top_psicologos_llamadas = cursor.fetchall()
-
-    query = """SELECT "main_infomiembros"."nombre", COUNT("main_hpc"."id_profesional_id") AS total_citas, "main_infomiembros"."id_usuario_id" AS id_usuario
-                FROM "main_hpc"
-                JOIN "main_infomiembros" ON CAST("main_hpc"."id_profesional_id" AS BIGINT) = "main_infomiembros"."id_usuario_id"
-                WHERE EXTRACT(YEAR FROM "main_hpc"."fecha_asesoria") = %s
-                AND EXTRACT(MONTH FROM "main_hpc"."fecha_asesoria") = %s
-                GROUP BY "main_infomiembros"."id_usuario_id"
-                ORDER BY total_citas DESC
-                LIMIT 10 """
-
-    with connection.cursor() as cursor:
-        cursor.execute(query, [anio, mes])
-        top_psicologos_citas = cursor.fetchall()
-
-    sexos_llamadas = llamadas.values('sexo').annotate(total=Count('sexo'))
-    escolaridad_llamadas = llamadas.values('documento__escolaridad').annotate(
-        total=Count('documento__escolaridad'))
-    dias_llamadas = llamadas.values('dia_semana_id').annotate(
-        total=Count('dia_semana_id'))
-    horas_llamadas = PsiLlamadas.objects.annotate(hora=ExtractHour('fecha_llamada')).values(
-        'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
-
-    generos_citas = citas.values('cedula_usuario__sexo').annotate(
-        total=Count('cedula_usuario__sexo'))
-    escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
-        total=Count('cedula_usuario__escolaridad'))
-    dias_citas = citas.values('dia_semana_id').annotate(
-        total=Count('dia_semana_id'))
-    horas_citas = HPC.objects.annotate(hora=ExtractHour('fecha_asesoria')).values(
-        'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
-
-    data = {
-        'cantidad_citas': citas.count(),
-        'cantidad_llamadas': llamadas.count(),
-        'seg_llamadas_nr': seguimientos_llamadas_no_realizados,
-        'seg_llamadas_in': seguimientos_llamadas_incompletas,
-        'seg_llamadas_com': seguimientos_llamadas_completas,
-        'seg_citas_nr': seguimientos_citas_no_realizados,
-        'seg_citas_in': seguimientos_citas_incompletos,
-        'seg_citas_com': seguimientos_citas_completos,
-        'top_psi_llam': top_psicologos_llamadas,
-        'top_psi_citas': top_psicologos_citas,
-        'sx_llam': sexos_llamadas,
-        'es_llam': escolaridad_llamadas,
-        'dias_llam': dias_llamadas,
-        'hs_llam': horas_llamadas,
-        'sx_citas': generos_citas,
-        'es_citas': escolaridad_citas,
-        'dias_citas': dias_citas,
-        'hs_citas': horas_citas
-    }
-
-    return data
 
 
 @login_required
@@ -2575,8 +2560,7 @@ def generar_pdf(request, anio, mes):
         return redirect(reverse('home'))
 
 
-def getNombreMes(mes):
-    return meses[mes].capitalize()
+
 
 
 @login_required
