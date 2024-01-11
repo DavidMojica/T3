@@ -47,7 +47,7 @@ mapeo_escolaridad = {1: 'Ninguna', 2: 'Primaria', 3: 'Secundaria',
 mapeo_dias = {0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
               3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'}
 
-#PDF
+# PDF
 Y_POS_INITIAL_H = 750
 Y_POS_INITIAL_P = 710
 X_POS_P = 120
@@ -96,6 +96,7 @@ def calcular_edad(fecha_nacimiento):
     return edad
 
 # Create your views here.
+
 
 @login_required
 def sm_llamadas(request):
@@ -387,6 +388,7 @@ def sm_llamadas(request):
                                                         'escolaridades': escolaridades,
                                                         })
 
+
 def get_departamentos(request):
     pais_id = request.GET.get('pais_id')
     if pais_id:
@@ -400,6 +402,7 @@ def get_departamentos(request):
             return JsonResponse([], safe=False)
 
     return JsonResponse([], safe=False)
+
 
 def get_municipios(request):
     departamento_id = request.GET.get('departamento_id')
@@ -417,6 +420,8 @@ def get_municipios(request):
     return JsonResponse([], safe=False)
 
 # LOGIN
+
+
 def signin(request):
     # Check if the request method is POST (form submission)
     if request.method == 'POST':
@@ -492,6 +497,7 @@ def register(request):
         return render(request, 'register.html', {'form': form,
                                                  'year': datetime.now(), })
 
+
 @login_required
 def autodata(request):
     userId = str(request.user.id)
@@ -524,6 +530,7 @@ def autodata(request):
         'year': datetime.now(),
         'form': form
     })
+
 
 @login_required
 def signout(request):
@@ -572,6 +579,7 @@ def edit_account(request):
             'pass_event': pass_event,
             'year': datetime.now(),
             'CustomUser': request.user})
+
 
 @login_required
 def sm_HPC(request):
@@ -1519,6 +1527,7 @@ def sm_HPC(request):
             'step': 0
         })
 
+
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
@@ -1564,6 +1573,7 @@ def sm_historial_llamadas(request):
         'form': form,
         'llamadas': llamadas,
     })
+
 
 @login_required
 def sm_historial_citas(request):
@@ -1615,6 +1625,8 @@ def sm_historial_citas(request):
     })
 
 # Admin
+
+
 @login_required
 def detallesusuario(request):
     # Super Proteger Ruta
@@ -1765,6 +1777,7 @@ def detallesusuario(request):
     else:
         return redirect(reverse('home'))
 
+
 @login_required
 def eventHandler(request):
     if request.method == "GET":
@@ -1814,6 +1827,7 @@ def eventHandler(request):
     else:
         return redirect(reverse('adminuser'))
 
+
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
@@ -1857,6 +1871,7 @@ def adminuser(request):
         return redirect(reverse('home'))
 
 # @login_required
+
 
 def adminregister(request):
     # Super Proteger Ruta
@@ -1922,6 +1937,7 @@ def adminregister(request):
     else:
         return redirect(reverse('home'))
 
+
 @login_required
 def admininformes(request):
     # Super Proteger Ruta
@@ -1935,14 +1951,17 @@ def admininformes(request):
                 if 'pdf' in request.POST:
                     return redirect(reverse('generar_pdf', kwargs={'anio': anio, 'mes': mes}))
                 elif 'excel' in request.POST:
-                    return redirect(reverse('generar_excel', kwargs={'anio': anio, 'mes':mes}))
+                    return redirect(reverse('generar_excel', kwargs={'anio': anio, 'mes': mes}))
+                elif 'excelCualitativa' in request.POST:
+                    return redirect(reverse('generar_excel2', kwargs={'anio': anio, 'mes': mes}))
         else:
             form = InformesForm()
 
         return render(request, 'AdminInformes.html', {
             'form': form,
             'year': datetime.now()
-            })
+        })
+
 
 @login_required
 def pacientesView(request):
@@ -1978,6 +1997,7 @@ def pacientesView(request):
         'year': datetime.now(),
         'form': form
     })
+
 
 @login_required
 def detallespaciente(request):
@@ -2032,23 +2052,33 @@ def detallespaciente(request):
 
 # 404 VISTAS
 
+
 @login_required
 def restricted_area_404(request):
     if request.method == "GET":
         return render(request, '404_restricted_area.html')
+
 
 @login_required
 def not_deployed_404(request):
     if request.method == "GET":
         return render(request, '404_not_deployed.html')
 
+
+@login_required
+def getLlamadasPorMes(request, anio, mes):
+    return PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
+
+
+@login_required
+def getCitasPorMes(request, anio, mes):
+    return HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+
+
 @login_required
 def getDocsData(request, anio, mes):
-    
-    citas = HPC.objects.filter(
-        fecha_asesoria__year=anio, fecha_asesoria__month=mes)
-    llamadas = PsiLlamadas.objects.filter(
-        fecha_llamada__year=anio, fecha_llamada__month=mes)
+    citas = getCitasPorMes(request, anio, mes)
+    llamadas = getLlamadasPorMes(request, anio, mes)
 
     seguimientos_llamadas_no_realizados = llamadas.filter(
         seguimiento24__isnull=False, seguimiento24__exact='',
@@ -2127,7 +2157,7 @@ def getDocsData(request, anio, mes):
         'hora').annotate(cantidad=Count('id')).order_by('-cantidad')
 
     generos_citas = citas.values('cedula_usuario__sexo').annotate(
-            total=Count('cedula_usuario__sexo'))
+        total=Count('cedula_usuario__sexo'))
     escolaridad_citas = citas.values('cedula_usuario__escolaridad').annotate(
         total=Count('cedula_usuario__escolaridad'))
     dias_citas = citas.values('dia_semana_id').annotate(
@@ -2158,6 +2188,7 @@ def getDocsData(request, anio, mes):
 
     return data
 
+
 @login_required
 def generar_pdf(request, anio, mes):
     if 1 <= mes <= 12:
@@ -2187,7 +2218,7 @@ def generar_pdf(request, anio, mes):
         # Pagina 3 Top Empleados
         top_psicologos_llamadas = data['top_psi_llam']
         top_psicologos_citas = data['top_psi_citas']
-        
+
         # CITAS
         # Pagina 4: sexos - escolaridad
         sexos_llamadas = data['sx_llam']
@@ -2199,7 +2230,6 @@ def generar_pdf(request, anio, mes):
         escolaridad_citas = data['es_citas']
         dias_citas = data['dias_citas']
         horas_citas = data['hs_citas']
-
 
         dias_llamadas_cantidad = [0] * len(mapeo_dias)
         escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
@@ -2289,7 +2319,8 @@ def generar_pdf(request, anio, mes):
 
         # pagina 1
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
-        text_width = p.stringWidth(informe_mensual, FONT_FAMILY_BOLD, FONT_SIZE_H)
+        text_width = p.stringWidth(
+            informe_mensual, FONT_FAMILY_BOLD, FONT_SIZE_H)
         x_position = center_x - (text_width / 2)
         y_position = center_y - 8
         p.drawString(x_position, y_position, informe_mensual)
@@ -2297,81 +2328,87 @@ def generar_pdf(request, anio, mes):
         # Pagina 2
         p.showPage()
         y = Y_POS_INITIAL_P
-        
+
         header = "Servicios y seguimientos"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
-        x_pos = center_x -(text_width / 2)
+        x_pos = center_x - (text_width / 2)
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
         p.drawString(x_pos, Y_POS_INITIAL_H, header)
-        
+
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Recuento de servicios en {nombre_mes} - {anio}")
+        p.drawString(
+            X_POS_H, y, f"Recuento de servicios en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
-        p.drawString(X_POS_P, y, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
+        p.drawString(
+            X_POS_P, y, f"Cantidad de Servicios: {cantidad_citas + cantidad_llamadas}")
         y -= FONT_SIZE_P
         p.drawString(X_POS_P, y, f"Cantidad de Citas: {cantidad_citas}")
         y -= FONT_SIZE_P
         p.drawString(X_POS_P, y, f"Cantidad de Llamadas: {cantidad_llamadas}")
 
         texto = (f"De {cantidad_llamadas} llamadas este mes:\n"
-            f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
-            f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
-            f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento.")
-        
-        y -= PARRAPH_DIVIDER
-        for i, linea in enumerate(texto.split('\n')):
-            if i == 0:   
-                p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-                p.drawString(X_POS_H, y , linea)
-                y -= FONT_SIZE_M
-            else: 
-                p.setFont(FONT_FAMILY, FONT_SIZE_P)
-                p.drawString(X_POS_P, y, linea)
-                y-=FONT_SIZE_P
+                 f"{seguimientos_llamadas_completas} llamadas tienen sus seguimientos completos\n"
+                 f"{seguimientos_llamadas_incompletas} llamadas tienen sus seguimientos incompletos\n"
+                 f"{seguimientos_llamadas_no_realizados} llamadas no tienen ningún seguimiento.")
 
-        # Citas
-        texto = (f"De {cantidad_citas} citas este mes:\n"
-            f"{seguimientos_citas_completos} citas tienen sus seguimientos completos\n"
-            f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
-            f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento")
-        
-        y-= PARRAPH_DIVIDER
+        y -= PARRAPH_DIVIDER
         for i, linea in enumerate(texto.split('\n')):
             if i == 0:
                 p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-                p.drawString(X_POS_H, y , linea)
+                p.drawString(X_POS_H, y, linea)
                 y -= FONT_SIZE_M
-            else: 
+            else:
                 p.setFont(FONT_FAMILY, FONT_SIZE_P)
                 p.drawString(X_POS_P, y, linea)
-                y-=FONT_SIZE_P
+                y -= FONT_SIZE_P
+
+        # Citas
+        texto = (f"De {cantidad_citas} citas este mes:\n"
+                 f"{seguimientos_citas_completos} citas tienen sus seguimientos completos\n"
+                 f"{seguimientos_citas_incompletos} citas tienen sus seguimientos incompletos\n"
+                 f"{seguimientos_citas_no_realizados} citas no tienen ningun seguimiento")
+
+        y -= PARRAPH_DIVIDER
+        for i, linea in enumerate(texto.split('\n')):
+            if i == 0:
+                p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
+                p.drawString(X_POS_H, y, linea)
+                y -= FONT_SIZE_M
+            else:
+                p.setFont(FONT_FAMILY, FONT_SIZE_P)
+                p.drawString(X_POS_P, y, linea)
+                y -= FONT_SIZE_P
 
         # Pagina 3
         p.showPage()
         y = Y_POS_INITIAL_P
         header = f"Top de Psicólogos en {nombre_mes} - {anio}"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
-        x_pos = center_x -(text_width / 2)
+        x_pos = center_x - (text_width / 2)
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
         p.drawString(x_pos, Y_POS_INITIAL_H, header)
-        
+
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
+        p.drawString(
+            X_POS_H, y, f"Psicologos que más llamadas atendieron en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
-        
+
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_llamadas:
-            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
+            p.drawString(
+                X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
             y -= FONT_SIZE_P
 
         y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
-        y -= FONT_SIZE_M 
+        p.drawString(
+            X_POS_H, y, f"Psicologos que más citas atendieron en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for psicologo in top_psicologos_citas:
-            p.drawString(X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
+            p.drawString(
+                X_POS_P, y, f"{psicologo[0]}: {psicologo[1]}. ID: {psicologo[2]}")
             y -= FONT_SIZE_P
 
         # Pagina 4: sexos
@@ -2379,14 +2416,15 @@ def generar_pdf(request, anio, mes):
         y = Y_POS_INITIAL_P
         header = f"Sociodemograficos: Sexo y escolaridad"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
-        x_pos = center_x -(text_width / 2)
+        x_pos = center_x - (text_width / 2)
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
         p.drawString(x_pos, Y_POS_INITIAL_H, header)
-        
+
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Usuarios de llamadas por sexo en {nombre_mes} - {anio}")
+        p.drawString(
+            X_POS_H, y, f"Usuarios de llamadas por sexo en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
-        
+
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for genero, total in zip(mapeo_generos.values(), sexos_llamadas_cantidad):
             p.drawString(X_POS_P, y, f"{genero}: {total}")
@@ -2394,8 +2432,9 @@ def generar_pdf(request, anio, mes):
 
         y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
-        y -= FONT_SIZE_M 
+        p.drawString(
+            X_POS_H, y, f"Usuarios de citas por sexo en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         p.drawString(X_POS_P, y, f"Hombres: {generos_citas_cantidad[0]}")
         y -= FONT_SIZE_P
@@ -2405,55 +2444,72 @@ def generar_pdf(request, anio, mes):
 
         y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Escolaridades de los usuarios de llamadas en {nombre_mes} - {anio}")
-        y -= FONT_SIZE_M 
+        p.drawString(
+            X_POS_H, y, f"Escolaridades de los usuarios de llamadas en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[0]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[2]}: {escolaridad_llamadas_cantidad[1]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[3]}: {escolaridad_llamadas_cantidad[2]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_llamadas_cantidad[3]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[5]}: {escolaridad_llamadas_cantidad[4]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[6]}: {escolaridad_llamadas_cantidad[5]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[7]}: {escolaridad_llamadas_cantidad[6]}")
 
         y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Escolaridades de los usuarios de citas en {nombre_mes} - {anio}")
-        y -= FONT_SIZE_M 
+        p.drawString(
+            X_POS_H, y, f"Escolaridades de los usuarios de citas en {nombre_mes} - {anio}")
+        y -= FONT_SIZE_M
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[1]}: {escolaridad_citas_cantidad[0]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[2]}: {escolaridad_citas_cantidad[1]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[3]}: {escolaridad_citas_cantidad[2]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[4]}: {escolaridad_citas_cantidad[3]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[5]}: {escolaridad_citas_cantidad[4]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[6]}: {escolaridad_citas_cantidad[5]}")
         y -= FONT_SIZE_P
-        p.drawString(X_POS_P, y, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
+        p.drawString(
+            X_POS_P, y, f"{mapeo_escolaridad[7]}: {escolaridad_citas_cantidad[6]}")
 
         # pagina 5:días
         p.showPage()
         y = Y_POS_INITIAL_P
         header = "Sociodemograficas: Días de la semana"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
-        x_pos = center_x -(text_width / 2)
+        x_pos = center_x - (text_width / 2)
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
         p.drawString(x_pos, Y_POS_INITIAL_H, header)
-        
+
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
+        p.drawString(
+            X_POS_H, y, f"Cantidad de llamadas por días en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
-        
+
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for dia, total in zip(mapeo_dias.values(), dias_llamadas_cantidad):
             p.drawString(X_POS_P, y, f"{dia}: {total}")
@@ -2461,9 +2517,10 @@ def generar_pdf(request, anio, mes):
 
         y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
+        p.drawString(
+            X_POS_H, y, f"Cantidad de citas por dias en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
-        
+
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for dia, total in zip(mapeo_dias.values(), dias_citas_cantidad):
             p.drawString(X_POS_P, y, f"{dia}: {total}")
@@ -2472,34 +2529,37 @@ def generar_pdf(request, anio, mes):
         # pagina 6: Horas - llamadas
         p.showPage()
         y = Y_POS_INITIAL_P
-        
+
         header = "Sociodemograficas: Horas de los servicios"
         text_width = p.stringWidth(header, FONT_FAMILY_BOLD, FONT_SIZE_H)
-        x_pos = center_x -(text_width / 2)
+        x_pos = center_x - (text_width / 2)
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_H)
         p.drawString(x_pos, Y_POS_INITIAL_H, header)
-        
+
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
-        p.drawString(X_POS_H, y, f"Llamadas por horas en {nombre_mes} - {anio}")
+        p.drawString(
+            X_POS_H, y, f"Llamadas por horas en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
-        
+
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for h in horas_llamadas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(X_POS_P, y, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
+            p.drawString(
+                X_POS_P, y, f"Hora: {hora}, Cantidad de llamadas: {cantidad}")
             y -= FONT_SIZE_P
 
         y -= PARRAPH_DIVIDER
         p.setFont(FONT_FAMILY_BOLD, FONT_SIZE_M)
         p.drawString(X_POS_H, y, f"Citas por horas en {nombre_mes} - {anio}")
         y -= FONT_SIZE_M
-        
+
         p.setFont(FONT_FAMILY, FONT_SIZE_P)
         for h in horas_citas:
             hora = h['hora']
             cantidad = h['cantidad']
-            p.drawString(X_POS_P, y, f"Hora: {hora}, Cantidad de citas: {cantidad}")
+            p.drawString(
+                X_POS_P, y, f"Hora: {hora}, Cantidad de citas: {cantidad}")
             y -= FONT_SIZE_P
 
         # datos totales
@@ -2518,13 +2578,15 @@ def generar_pdf(request, anio, mes):
     else:
         return redirect(reverse('home'))
 
+
+def getNombreMes(mes):
+    return meses[mes].capitalize()
+
+
 @login_required
 def generar_excel(request, anio, mes):
-    nombre_mes = meses[mes]
-    nombre_mes = nombre_mes.capitalize()
-
     data = getDocsData(request, anio, mes)
-    #sheet1
+    # sheet1
     cantidad_citas = data['cantidad_citas']
     cantidad_llamadas = data['cantidad_llamadas']
     seguimientos_llamadas_no_realizados = data['seg_llamadas_nr']
@@ -2533,10 +2595,10 @@ def generar_excel(request, anio, mes):
     seguimientos_citas_no_realizados = data['seg_citas_nr']
     seguimientos_citas_incompletos = data['seg_citas_in']
     seguimientos_citas_completos = data['seg_citas_com']
-    #Sheet2
+    # Sheet2
     top_psicologos_llamadas = data['top_psi_llam']
     top_psicologos_citas = data['top_psi_citas']
-    #sheet3
+    # sheet3
     sexos_llamadas = data['sx_llam']
     escolaridad_llamadas = data['es_llam']
     dias_llamadas = data['dias_llam']
@@ -2546,10 +2608,10 @@ def generar_excel(request, anio, mes):
     escolaridad_citas = data['es_citas']
     dias_citas = data['dias_citas']
     horas_citas = data['hs_citas']
-    
+
     generos_citas_cantidad = [0, 0, 0]
     sexos_llamadas_cantidad = [0] * len(mapeo_generos)
-    
+
     for s in sexos_llamadas:
         genero = s['sexo']
         total = s['total']
@@ -2568,7 +2630,7 @@ def generar_excel(request, anio, mes):
             generos_citas_cantidad[1] = total
         elif genero_id == 3:
             generos_citas_cantidad[2] = total
-            
+
     escolaridad_citas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     escolaridad_llamadas_cantidad = [0, 0, 0, 0, 0, 0, 0]
     for e in escolaridad_citas:
@@ -2589,7 +2651,7 @@ def generar_excel(request, anio, mes):
             escolaridad_citas_cantidad[5] = total
         elif escolaridad_id == 7:
             escolaridad_citas_cantidad[6] = total
-            
+
     for e in escolaridad_llamadas:
         escolaridad_id = e['documento__escolaridad']
         total = e['total']
@@ -2608,31 +2670,28 @@ def generar_excel(request, anio, mes):
             escolaridad_llamadas_cantidad[5] = total
         elif escolaridad_id == 7:
             escolaridad_llamadas_cantidad[6] = total
-    
-    
+
     dias_llamadas_cantidad = [0] * len(mapeo_dias)
     dias_citas_cantidad = [0] * len(mapeo_dias)
-    
+
     for d in dias_llamadas:
         dia = d['dia_semana_id']
         total = d['total']
 
         if dia in mapeo_dias:
             dias_llamadas_cantidad[dia] = total
-    
+
     for d in dias_citas:
         dia = d['dia_semana_id']
         total = d['total']
 
         if dia in mapeo_dias:
             dias_citas_cantidad[dia] = total
-    
-    
-        
-    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados','Genero Hombres', 'Genero Mujeres', 'Genero Otros', f"Escolaridad: {mapeo_escolaridad[1]}", mapeo_escolaridad[2], mapeo_escolaridad[3], mapeo_escolaridad[4], mapeo_escolaridad[5], mapeo_escolaridad[6], mapeo_escolaridad[7], mapeo_dias[0], mapeo_dias[1], mapeo_dias[2], mapeo_dias[3], mapeo_dias[4], mapeo_dias[5], mapeo_dias[6]],
-                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0],sexos_llamadas_cantidad[1],sexos_llamadas_cantidad[2], escolaridad_llamadas_cantidad[0], escolaridad_llamadas_cantidad[1], escolaridad_llamadas_cantidad[2], escolaridad_llamadas_cantidad[3], escolaridad_llamadas_cantidad[4], escolaridad_llamadas_cantidad[5], escolaridad_llamadas_cantidad[6], dias_llamadas_cantidad[0], dias_llamadas_cantidad[1], dias_llamadas_cantidad[2], dias_llamadas_cantidad[3], dias_llamadas_cantidad[4], dias_llamadas_cantidad[5], dias_llamadas_cantidad[6]],
-                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_llamadas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2], escolaridad_citas_cantidad[0], escolaridad_citas_cantidad[1], escolaridad_citas_cantidad[2], escolaridad_citas_cantidad[3], escolaridad_citas_cantidad[4], escolaridad_citas_cantidad[5], escolaridad_citas_cantidad[6], dias_citas_cantidad[0], dias_citas_cantidad[1], dias_citas_cantidad[2], dias_citas_cantidad[3], dias_citas_cantidad[4], dias_citas_cantidad[5], dias_citas_cantidad[6]]]
-    
+
+    sheet1Data = [['Servicios', 'Cantidad', 'Seguimientos completos', 'Seguimientos incompletos', 'Seguimientos no realizados', 'Genero Hombres', 'Genero Mujeres', 'Genero Otros', f"Escolaridad: {mapeo_escolaridad[1]}", mapeo_escolaridad[2], mapeo_escolaridad[3], mapeo_escolaridad[4], mapeo_escolaridad[5], mapeo_escolaridad[6], mapeo_escolaridad[7], mapeo_dias[0], mapeo_dias[1], mapeo_dias[2], mapeo_dias[3], mapeo_dias[4], mapeo_dias[5], mapeo_dias[6]],
+                  ['Llamadas', cantidad_llamadas, seguimientos_llamadas_completas, seguimientos_llamadas_incompletas, seguimientos_llamadas_no_realizados, sexos_llamadas_cantidad[0], sexos_llamadas_cantidad[1], sexos_llamadas_cantidad[2], escolaridad_llamadas_cantidad[0], escolaridad_llamadas_cantidad[1], escolaridad_llamadas_cantidad[2],
+                      escolaridad_llamadas_cantidad[3], escolaridad_llamadas_cantidad[4], escolaridad_llamadas_cantidad[5], escolaridad_llamadas_cantidad[6], dias_llamadas_cantidad[0], dias_llamadas_cantidad[1], dias_llamadas_cantidad[2], dias_llamadas_cantidad[3], dias_llamadas_cantidad[4], dias_llamadas_cantidad[5], dias_llamadas_cantidad[6]],
+                  ['Citas', cantidad_citas, seguimientos_citas_completos, seguimientos_citas_incompletos, seguimientos_citas_no_realizados, generos_citas_cantidad[0], generos_citas_cantidad[1], generos_citas_cantidad[2], escolaridad_citas_cantidad[0], escolaridad_citas_cantidad[1], escolaridad_citas_cantidad[2], escolaridad_citas_cantidad[3], escolaridad_citas_cantidad[4], escolaridad_citas_cantidad[5], escolaridad_citas_cantidad[6], dias_citas_cantidad[0], dias_citas_cantidad[1], dias_citas_cantidad[2], dias_citas_cantidad[3], dias_citas_cantidad[4], dias_citas_cantidad[5], dias_citas_cantidad[6]]]
 
     libro = Workbook()
     hoja1 = libro.active
@@ -2640,7 +2699,7 @@ def generar_excel(request, anio, mes):
 
     for fila in sheet1Data:
         hoja1.append(fila)
-        
+
     hoja1.append([])
     hoja1.append([])
     headersSheet2 = ['Nombre', 'Cantidad', 'ID']
@@ -2651,12 +2710,12 @@ def generar_excel(request, anio, mes):
             hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
         else:
             hoja1.append([psicologo[0], psicologo[1], psicologo[2]])
-        
+
     hoja1.append([])
     hoja1.append([])
     hoja1.append(['Top Citas'])
     hoja1.append(headersSheet2)
-    
+
     for psicologo in top_psicologos_citas:
         if psicologo[0] is None or psicologo[0] == "":
             hoja1.append(["No diligenciado", psicologo[1], psicologo[2]])
@@ -2671,7 +2730,7 @@ def generar_excel(request, anio, mes):
         hora = h['hora']
         cantidad = h['cantidad']
         hoja1.append([hora, cantidad])
-    
+
     hoja1.append([])
     hoja1.append([])
     hoja1.append(['Distribucion de citas por horas'])
@@ -2680,7 +2739,49 @@ def generar_excel(request, anio, mes):
         hora = h['hora']
         cantidad = h['cantidad']
         hoja1.append([hora, cantidad])
-    
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=salud_mental.xlsx'
+    libro.save(response)
+
+    return response
+
+
+@login_required
+def generar_excel2(request, anio, mes):
+    libro = Workbook()
+    hoja1 = libro.active
+    hoja1.title = getNombreMes(mes)
+
+    header = ['NOMBRE', 'FECHA', 'DIA DE LA SEMANA', 'HORA', 'DOCUMENTO DE INDENTIDAD', 'SEXO', 'EDAD', 'EPS', 'DIRECCIÓN', 'MINICIPIO', 'TELEFONO', 'POBLACIÓN VULNERABLE','MOTIVO DE LA LLAMADA', 'CONDUCTA A SEGUIR', 'PSICOLOGO QUE TOMA EL CASO', 'OBSERVACIONES', 'SEGUIMIENTO 24 HORAS', 'SEGUIMIENTO 48 HORAS', 'SEGUIMIENTO 72 HORAS']
+    hoja1.append(header)
+
+    llamadas = getLlamadasPorMes(request, anio, mes)
+
+    for i in llamadas:
+        motivos = PsiLlamadasMotivos.objects.filter(pk=i.id).values_list('id_motivo__description', flat=True)
+        conductas = PsiLlamadasConductas.objects.filter(pk=i.id).values_list('id_conducta__description', flat=True)
+
+        hoja1.append([
+            i.nombre_paciente,
+            i.fecha_llamada.strftime('%Y-%m-%d'),
+            i.fecha_llamada.strftime('%H:%M:%S'),
+            i.documento,
+            i.sexo.description,
+            i.edad,
+            i.documento.eps.description,
+            i.documento.direccion,
+            i.documento.municipio,
+            i.documento.celular,
+            i.documento.poblacion_vulnerable.description,
+
+            i.id_psicologo.nombre,
+            i.observaciones,
+            i.seguimiento24,
+            i.seguimiento48,
+            i.seguimiento72
+        ])
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=salud_mental.xlsx'
     libro.save(response)
