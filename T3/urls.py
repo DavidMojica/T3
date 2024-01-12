@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import handler404
 from main import views
 
 urlpatterns = [
@@ -27,8 +28,6 @@ urlpatterns = [
     path('sm_llamadas/',views.sm_llamadas, name="sm_llamadas"),
     path('sm_historial_citas/', views.sm_historial_citas, name="sm_historial_citas"),
     path('sm_historial_llamadas/', views.sm_historial_llamadas, name="sm_historial_llamadas"),
-    path('404_restricted_area/', views.restricted_area_404, name="404_restricted_area"),
-    path('404_not_deployed/', views.not_deployed_404, name="404_not_deployed"),
     path('adminuser/', views.adminuser, name="adminuser"),
     path('adminregister/', views.adminregister, name="adminregister"),
     path('eventHandler', views.eventHandler, name="eventHandler"),
@@ -44,3 +43,5 @@ urlpatterns = [
     path('generar_excel/<int:anio>/<int:mes>/', views.generar_excel, name='generar_excel'),
     path('generar_excel2/<int:anio>/<int:mes>/', views.generar_excel2, name='generar_excel2'), 
 ]
+
+handler404 = views.error_404

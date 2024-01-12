@@ -2699,11 +2699,5 @@ def generar_excel2(request, anio, mes):
 
 # 404 VISTAS
 @login_required
-def restricted_area_404(request):
-    if request.method == "GET":
-        return render(request, '404_restricted_area.html')
-
-@login_required
-def not_deployed_404(request):
-    if request.method == "GET":
-        return render(request, '404_not_deployed.html')
+def error_404(request, exception):
+    return render(request, 'error_404.html', status=404)
