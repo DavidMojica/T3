@@ -94,10 +94,28 @@ Regresa el nombre (str) del mes a partir de un numero dado.
 def getNombreMes(mes):
     return meses[mes].capitalize()
 
-"""Obtiene y regresa los datos perfilados para usarse en los archivos de PDF y Excel
+"""Obtiene y regresa las llamadas registradas durante el mes y el año dados
 
 Returns:
-    _type_: _description_
+    List: Llamadas
+"""
+@login_required
+def getLlamadasPorMes(request, anio, mes):
+    return PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
+
+"""Obtiene y regresa las citas durante el mes y año dados
+
+Returns:
+    List: Citas
+"""
+@login_required
+def getCitasPorMes(request, anio, mes):
+    return HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
+
+
+"""Obtiene y regresa los datos perfilados para usarse en los archivos de PDF y Excel
+Returns:
+    Dictionary: DataSet
 """
 @login_required
 def getDocsData(request, anio, mes):
@@ -195,7 +213,34 @@ def getDocsData(request, anio, mes):
 
     return data
 
+"""Obtiene y regresa los departamentos del país seleccionado"""
+def get_departamentos(request):
+    pais_id = request.GET.get('pais_id')
+    if pais_id:
+        try:
+            pais = get_object_or_404(Pais, id=pais_id)
+            departamentos = Departamento.objects.filter(pertenece_pais_id=pais)
+            data = [{'id': departamento.id, 'description': departamento.description} for departamento in departamentos]
+            return JsonResponse(data, safe=False)
+        except Pais.DoesNotExist:
+            return JsonResponse([], safe=False)
+    return JsonResponse([], safe=False)
+
+"""Obtiene y regresa los municipios del departamento seleccionado"""
+def get_municipios(request):
+    departamento_id = request.GET.get('departamento_id')
+    if departamento_id:
+        try:
+            departamento = get_object_or_404(Departamento, id=departamento_id)
+            municipios = Municipio.objects.filter(pertenece_departamento_id=departamento)
+            data = [{'id': municipio.id, 'description': municipio.description}for municipio in municipios]
+            return JsonResponse(data, safe=False)
+        except Departamento.DoesNotExist:
+            return JsonResponse([], safe=False)
+    return JsonResponse([], safe=False)
+
 # Create your views here.
+"""Vista de las llamadas de salud mental"""
 @login_required
 def sm_llamadas(request):
     if request.method == "POST":
@@ -301,8 +346,7 @@ def sm_llamadas(request):
                     municipio=municipio_instance,
                     poblacion_vulnerable=pob_vulnerable_instance,
                     celular=telefono,
-                    cant_llamadas=1
-                )
+                    cant_llamadas=1 )
                 nuevo_paciente.save()
 
             if "secretKey" in request.POST:
@@ -323,15 +367,11 @@ def sm_llamadas(request):
                         checkbox_name = f'cond_{conducta.id}'
                         if checkbox_name in request.POST:
                             try:
-                                conducta_instance = ConductasASeguir.objects.get(
-                                    id=conducta.id)
+                                conducta_instance = ConductasASeguir.objects.get(id=conducta.id)
                             except ConductasASeguir.DoesNotExist:
                                 conducta_instance = None
-
-                            llamada_conducta = PsiLlamadasConductas(
-                                id_llamada=llamadaInstance,
-                                id_conducta=conducta_instance)
-                            
+                                
+                            llamada_conducta = PsiLlamadasConductas(id_llamada=llamadaInstance,id_conducta=conducta_instance)
                             llamada_conducta.save()
 
                 with transaction.atomic():
@@ -339,22 +379,18 @@ def sm_llamadas(request):
                     for motivo in HPCSituacionContacto.objects.all():
                         checkbox_name = f'mot_{motivo.id}'
                         if checkbox_name in request.POST:
-                            print(f"{checkbox_name} <-------")
                             try:
-                                motivo_instace = HPCSituacionContacto.objects.get(
-                                    id=motivo.id)
+                                motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
                             except PsiMotivos.DoesNotExist:
                                 motivo_instace = None
 
                             llamada_motivo = PsiLlamadasMotivos(
                                 id_llamada=llamadaInstance,
-                                id_motivo=motivo_instace
-                            )
+                                id_motivo=motivo_instace )
                             llamada_motivo.save()
             else:
                 try:
-                    documento_instance = InfoPacientes.objects.get(
-                        documento=documento)
+                    documento_instance = InfoPacientes.objects.get(documento=documento)
                 except:
                     documento_instance = None
                 # crear nueva llamada
@@ -374,8 +410,7 @@ def sm_llamadas(request):
                     id_llamada = llamada.id
 
                     try:
-                        psi_llamada_instance = PsiLlamadas.objects.get(
-                            id=id_llamada)
+                        psi_llamada_instance = PsiLlamadas.objects.get(id=id_llamada)
                     except PsiLlamadas.DoesNotExist:
                         psi_llamada_instance = None
 
@@ -384,30 +419,26 @@ def sm_llamadas(request):
                         checkbox_name = f'cond_{conducta.id}'
                         if checkbox_name in request.POST:
                             try:
-                                conducta_instance = ConductasASeguir.objects.get(
-                                    id=conducta.id)
+                                conducta_instance = ConductasASeguir.objects.get(id=conducta.id)
                             except ConductasASeguir.DoesNotExist:
                                 conducta_instance = None
 
                             llamada_conducta = PsiLlamadasConductas(
                                 id_llamada=psi_llamada_instance,
-                                id_conducta=conducta_instance
-                            )
+                                id_conducta=conducta_instance)
                             llamada_conducta.save()
 
                     for motivo in PsiMotivos.objects.all():
                         checkbox_name = f'mot_{motivo.id}'
                         if checkbox_name in request.POST:
                             try:
-                                motivo_instace = HPCSituacionContacto.objects.get(
-                                    id=motivo.id)
+                                motivo_instace = HPCSituacionContacto.objects.get(id=motivo.id)
                             except PsiMotivos.DoesNotExist:
                                 motivo_instace = None
 
                             llamada_motivo = PsiLlamadasMotivos(
                                 id_llamada=psi_llamada_instance,
-                                id_motivo=motivo_instace
-                            )
+                                id_motivo=motivo_instace)
                             llamada_motivo.save()
 
                     # Contador de llamadas del psicologo
@@ -416,7 +447,6 @@ def sm_llamadas(request):
                     psicologo.save()
 
             return redirect(reverse('sm_historial_llamadas'))
-
         else:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
@@ -436,12 +466,8 @@ def sm_llamadas(request):
             llamadaWithPaciente = PsiLlamadas.objects.get(id=llamada)
             documento_paciente = llamadaWithPaciente.documento_id
             paciente = InfoPacientes.objects.get(documento=documento_paciente)
-
-            motivs = PsiLlamadasMotivos.objects.filter(
-                id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
-            conducts = PsiLlamadasConductas.objects.filter(
-                id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
-
+            motivs = PsiLlamadasMotivos.objects.filter(id_llamada_id=llamada).values_list('id_motivo_id', flat=True)
+            conducts = PsiLlamadasConductas.objects.filter(id_llamada_id=llamada).values_list('id_conducta_id', flat=True)
             return render(request, 'sm_llamadas.html', {
                 'year': datetime.now(),
                 'CustomUser': request.user,
@@ -462,8 +488,7 @@ def sm_llamadas(request):
                 'secretName': "secretKey",
                 'motivs': motivs,
                 'conducts': conducts,
-                'escolaridades': escolaridades,
-            })
+                'escolaridades': escolaridades, })
         except:
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
@@ -479,43 +504,9 @@ def sm_llamadas(request):
                                                         'conductas': conductas,
                                                         'btnClass': "btn-success",
                                                         'btnText': "Guardar llamada",
-                                                        'escolaridades': escolaridades,
-                                                        })
+                                                        'escolaridades': escolaridades,})
 
-
-def get_departamentos(request):
-    pais_id = request.GET.get('pais_id')
-    if pais_id:
-        try:
-            pais = get_object_or_404(Pais, id=pais_id)
-            departamentos = Departamento.objects.filter(pertenece_pais_id=pais)
-            data = [{'id': departamento.id, 'description': departamento.description}
-                    for departamento in departamentos]
-            return JsonResponse(data, safe=False)
-        except Pais.DoesNotExist:
-            return JsonResponse([], safe=False)
-
-    return JsonResponse([], safe=False)
-
-
-def get_municipios(request):
-    departamento_id = request.GET.get('departamento_id')
-    if departamento_id:
-        try:
-            departamento = get_object_or_404(Departamento, id=departamento_id)
-            municipios = Municipio.objects.filter(
-                pertenece_departamento_id=departamento)
-            data = [{'id': municipio.id, 'description': municipio.description}
-                    for municipio in municipios]
-            return JsonResponse(data, safe=False)
-        except Departamento.DoesNotExist:
-            return JsonResponse([], safe=False)
-
-    return JsonResponse([], safe=False)
-
-# LOGIN
-
-
+"""Vista del login de la aplicación"""
 def signin(request):
     # Check if the request method is POST (form submission)
     if request.method == 'POST':
@@ -535,63 +526,17 @@ def signin(request):
     else:
         return render(request, 'signin.html', {'year': datetime.now()})
 
-
+"""Vista del Index de la aplicación"""
 def home(request):
     if request.user.is_authenticated:
-        # El usuario está autenticado
+        # usuarios autenticados
         return render(request, 'home.html', {'year': datetime.now(),
                                              'CustomUser': request.user})
     else:
-        # El usuario no está autenticado
+        # usuarios no autenticados
         return render(request, 'home.html', {'year': datetime.now()})
 
-
-@login_required
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserRegistrationForm(request.POST)
-        if form.is_valid():
-            if request.POST['password'] == request.POST['password2']:
-                try:
-                    user = form.save(commit=False).strip()
-                    user.username = request.POST['username'].lower().strip()
-                    user.set_password(request.POST['password']).strip()
-                    user.save()
-
-                    info_miembros, created = InfoMiembros.objects.get_or_create(
-                        id_usuario=user)
-
-                    if created:
-                        info_miembros.save()  # Solo guardar si es un objeto nuevo
-
-                    return redirect(reverse('signin'))
-                except IntegrityError:
-                    return render(request, 'register.html', {
-                        'CustomUser': request.user,
-                        'form': form,
-                        "error": ERROR_102,
-                        'year': datetime.now(),
-                    })
-            else:
-                return render(request, 'register.html', {
-                    'CustomUser': request.user,
-                    'year': datetime.now(),
-                    'form': form,
-                    "error": ERROR_101
-                })
-        else:
-            return render(request, 'register.html', {
-                'CustomUser': request.user,
-                'year': datetime.now(),
-                'form': form,
-                "error": ERROR_100
-            })
-    else:
-        form = CustomUserRegistrationForm()  # Crear una instancia del formulario
-        return render(request, 'register.html', {'form': form,
-                                                 'year': datetime.now(), })
-
-
+"""Vista del formulario de autodata"""
 @login_required
 def autodata(request):
     userId = str(request.user.id)
@@ -625,13 +570,13 @@ def autodata(request):
         'form': form
     })
 
-
+"""Función para cerrar sesión"""
 @login_required
 def signout(request):
     logout(request)
     return redirect(reverse('home'))
 
-
+"""Vista del editor de cuenta"""
 @login_required
 def edit_account(request):
     user = get_object_or_404(CustomUser, pk=request.user.id)
@@ -674,7 +619,7 @@ def edit_account(request):
             'year': datetime.now(),
             'CustomUser': request.user})
 
-
+"""Vista de la hoja de primer contacto"""
 @login_required
 def sm_HPC(request):
     documento = ""
@@ -1621,7 +1566,7 @@ def sm_HPC(request):
             'step': 0
         })
 
-
+"""Historial de llamadas"""
 @login_required
 def sm_historial_llamadas(request):
     llamadas = PsiLlamadas.objects.all().order_by('-fecha_llamada')
@@ -1668,7 +1613,7 @@ def sm_historial_llamadas(request):
         'llamadas': llamadas,
     })
 
-
+"""Historial de citas"""
 @login_required
 def sm_historial_citas(request):
     citas_with_pacientes = HPC.objects.select_related(
@@ -1718,9 +1663,8 @@ def sm_historial_citas(request):
         'form': form
     })
 
-# Admin
-
-
+# Admin  Vistas para los usuarios con permisos avanzados
+"""Vista de los detalles de los usuarios"""
 @login_required
 def detallesusuario(request):
     # Super Proteger Ruta
@@ -1871,7 +1815,7 @@ def detallesusuario(request):
     else:
         return redirect(reverse('home'))
 
-
+"""Manejador de eventos para las opciones de los usuarios"""
 @login_required
 def eventHandler(request):
     if request.method == "GET":
@@ -1921,7 +1865,7 @@ def eventHandler(request):
     else:
         return redirect(reverse('adminuser'))
 
-
+"""Vista de los usuarios"""
 @login_required
 def adminuser(request):
     # Super Proteger Ruta
@@ -1964,9 +1908,8 @@ def adminuser(request):
     else:
         return redirect(reverse('home'))
 
-# @login_required
-
-
+"""Vista para registrar usuarios"""
+@login_required
 def adminregister(request):
     # Super Proteger Ruta
     if request.user.tipo_usuario_id in adminOnly:
@@ -2031,7 +1974,7 @@ def adminregister(request):
     else:
         return redirect(reverse('home'))
 
-
+"""Vista para generar los informes de salud mental"""
 @login_required
 def admininformes(request):
     # Super Proteger Ruta
@@ -2056,7 +1999,7 @@ def admininformes(request):
             'year': datetime.now()
         })
 
-
+"""Ver los pacientes y su información"""
 @login_required
 def pacientesView(request):
     pacientes = InfoPacientes.objects.all()
@@ -2089,15 +2032,12 @@ def pacientesView(request):
         'pacientes': pacientes,
         'CustomUser': request.user,
         'year': datetime.now(),
-        'form': form
-    })
+        'form': form })
 
-
+"""Detalles de los pacientes"""
 @login_required
 def detallespaciente(request):
-
     documento = request.GET.get('pacienteId', '0')
-
     if documento and documento != 0:
         pacienteInstance = get_object_or_404(InfoPacientes, pk=documento)
 
@@ -2143,33 +2083,7 @@ def detallespaciente(request):
             'year': datetime.now(),
             'found': False })
 
-# 404 VISTAS
-
-
-@login_required
-def restricted_area_404(request):
-    if request.method == "GET":
-        return render(request, '404_restricted_area.html')
-
-
-@login_required
-def not_deployed_404(request):
-    if request.method == "GET":
-        return render(request, '404_not_deployed.html')
-
-
-@login_required
-def getLlamadasPorMes(request, anio, mes):
-    return PsiLlamadas.objects.filter(fecha_llamada__year=anio, fecha_llamada__month=mes)
-
-
-@login_required
-def getCitasPorMes(request, anio, mes):
-    return HPC.objects.filter(fecha_asesoria__year=anio, fecha_asesoria__month=mes)
-
-
-
-
+"""Generar Archivo PDF"""
 @login_required
 def generar_pdf(request, anio, mes):
     if 1 <= mes <= 12:
@@ -2559,10 +2473,7 @@ def generar_pdf(request, anio, mes):
     else:
         return redirect(reverse('home'))
 
-
-
-
-
+"""Generar archivo excel 1 - Cuantitativa"""
 @login_required
 def generar_excel(request, anio, mes):
     data = getDocsData(request, anio, mes)
@@ -2727,7 +2638,7 @@ def generar_excel(request, anio, mes):
 
     return response
 
-
+"""Generar archivo excel 2 - Cualitativas"""
 @login_required
 def generar_excel2(request, anio, mes):
     libro = Workbook()
@@ -2785,3 +2696,14 @@ def generar_excel2(request, anio, mes):
     libro.save(response)
 
     return response
+
+# 404 VISTAS
+@login_required
+def restricted_area_404(request):
+    if request.method == "GET":
+        return render(request, '404_restricted_area.html')
+
+@login_required
+def not_deployed_404(request):
+    if request.method == "GET":
+        return render(request, '404_not_deployed.html')
