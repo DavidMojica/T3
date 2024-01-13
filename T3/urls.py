@@ -16,20 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import handler404
+from django.conf import settings
 from main import views
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name="home"),
-    path('register/', views.register, name="register"),
     path('signin/', views.signin, name="signin"),
     path('signout/', views.signout, name="signout"),
     path('sm_HPC/', views.sm_HPC, name="sm_HPC"),
     path('sm_llamadas/',views.sm_llamadas, name="sm_llamadas"),
     path('sm_historial_citas/', views.sm_historial_citas, name="sm_historial_citas"),
     path('sm_historial_llamadas/', views.sm_historial_llamadas, name="sm_historial_llamadas"),
-    path('404_restricted_area/', views.restricted_area_404, name="404_restricted_area"),
-    path('404_not_deployed/', views.not_deployed_404, name="404_not_deployed"),
     path('adminuser/', views.adminuser, name="adminuser"),
     path('adminregister/', views.adminregister, name="adminregister"),
     path('eventHandler', views.eventHandler, name="eventHandler"),
@@ -45,3 +45,8 @@ urlpatterns = [
     path('generar_excel/<int:anio>/<int:mes>/', views.generar_excel, name='generar_excel'),
     path('generar_excel2/<int:anio>/<int:mes>/', views.generar_excel2, name='generar_excel2'), 
 ]
+
+handler404 = views.error_404
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
