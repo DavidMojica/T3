@@ -448,6 +448,7 @@ def sm_llamadas(request):
 
             return redirect(reverse('sm_historial_llamadas'))
         else:
+            print(paises)
             return render(request, 'sm_llamadas.html', {'year': datetime.now(),
                                                         'CustomUser': request.user,
                                                         'paises': paises,
@@ -1631,8 +1632,10 @@ def sm_historial_citas(request):
         if id_cita:
             citas_with_pacientes = citas_with_pacientes.filter(id=id_cita)
         if id_profesional:
-            citas_with_pacientes = citas_with_pacientes.filter(Q(id_profesional_id=Cast(
-                Value(id_profesional), CharField())) | Q(id_profesional_id=None))
+            id_profesional_int = int(id_profesional) 
+            citas_with_pacientes = citas_with_pacientes.filter(
+                Q(id_profesional_id=id_profesional_int) | Q(id_profesional_id=None)
+            )
         if documento_paciente:
             citas_with_pacientes = citas_with_pacientes.filter(
                 cedula_usuario__documento=documento_paciente)
@@ -1640,10 +1643,9 @@ def sm_historial_citas(request):
             citas_with_pacientes = citas_with_pacientes.filter(
                 fecha_asesoria__date=fecha_cita)
         if solo_hechas_por_mi:
-            user_id = str(request.user.id)
+            user_id = int(request.user.id)
             citas_with_pacientes = citas_with_pacientes.filter(
-                Q(id_profesional_id=Cast(Value(user_id), CharField())) | Q(
-                    id_profesional_id=None)
+                Q(id_profesional_id=user_id) | Q(id_profesional_id=None)
             )
 
     # Paginación
@@ -2638,6 +2640,14 @@ def generar_excel(request, anio, mes):
 
     return response
 
+def obtener_valor(o, attr, default="No proporcionado"):
+    try:
+        for attr_part in attr.split('.'):
+            o = getattr(o, attr_part)
+        return o if o else default
+    except AttributeError:
+        return default
+
 """Generar archivo excel 2 - Cualitativas"""
 @login_required
 def generar_excel2(request, anio, mes):
@@ -2651,23 +2661,26 @@ def generar_excel2(request, anio, mes):
     llamadas = getLlamadasPorMes(request, anio, mes)
 
     for i in llamadas:
+        # Obtener motivos y conductas
         motivos = PsiLlamadasMotivos.objects.filter(id_llamada=i.id).values_list('id_motivo__description', flat=True)
         conductas = PsiLlamadasConductas.objects.filter(id_llamada=i.id).values_list('id_conducta__description', flat=True)
 
+        # Convertir a cadena o proporcionar valor por defecto
         motivos_str = ', '.join(map(str, motivos)) if motivos and any(motivos) else "No proporcionado"
         conductas_str = ', '.join(map(str, conductas)) if conductas and any(conductas) else "No proporcionado"
 
-        nombre_paciente = i.nombre_paciente if i.nombre_paciente else "No proporcionado"
-        documento_id = i.documento_id if i.documento_id else "No proporcionado"
-        sexo_description = i.sexo.description if i.sexo and i.sexo.description else "No proporcionado"
-        edad = i.edad if i.edad else "No proporcionado"
-        eps_description = i.documento.eps.description if i.documento and i.documento.eps and i.documento.eps.description else "No proporcionado"
-        direccion = i.documento.direccion if i.documento.direccion else "No proporcionado"
-        municipio = i.documento.municipio if i.documento.municipio else "No proporcionado"
-        celular = i.documento.celular if i.documento.celular else "No proporcionado"
-        poblacion_vulnerable_description = i.documento.poblacion_vulnerable.description if i.documento.poblacion_vulnerable and i.documento.poblacion_vulnerable.description else "No proporcionado"
-        id_psicologo_nombre = i.id_psicologo.nombre if i.id_psicologo and i.id_psicologo.nombre else "No proporcionado"
-        observaciones = i.observaciones if i.observaciones else "No proporcionado"
+        # Utilizar la función auxiliar para obtener los valores
+        nombre_paciente = obtener_valor(i, 'nombre_paciente')
+        documento_id = obtener_valor(i, 'documento_id')
+        sexo_description = obtener_valor(i, 'sexo.description')
+        edad = obtener_valor(i, 'edad')
+        eps_description = obtener_valor(i, 'documento.eps.description')
+        direccion = obtener_valor(i, 'documento.direccion')
+        municipio = obtener_valor(i, 'documento.municipio.description')
+        celular = obtener_valor(i, 'documento.celular')
+        poblacion_vulnerable_description = obtener_valor(i, 'documento.poblacion_vulnerable.description')
+        id_psicologo_nombre = obtener_valor(i, 'id_psicologo.nombre')
+        observaciones = obtener_valor(i, 'observaciones')
 
         hoja1.append([
             nombre_paciente,

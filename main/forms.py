@@ -1,8 +1,7 @@
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+from django.contrib.auth.forms import AuthenticationForm
 from .models import EPS, CustomUser, TipoUsuario, InfoMiembros, TipoDocumento, EstadoCivil, RegimenSeguridad, Sexo, Etnia
 from django import forms
 import datetime
-from django.utils.html import format_html
 
 
 class InformesForm(forms.Form):
@@ -64,9 +63,6 @@ class FiltroPacientes(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
-
-    
-    
 
 class FiltroLlamadasForm(forms.Form):
     id_llamada = forms.IntegerField(
@@ -210,7 +206,6 @@ class AutodataForm(forms.ModelForm):
         model = InfoMiembros
         fields = ('nombre', 'tipo_documento', 'documento', 'estado_civil', 'numero_hijos', 'etnia',
                   'direccion', 'barrio', 'celular', 'sisben', 'eps', 'regimen_seguridad', 'sexo',)
-
 
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.CharField(
