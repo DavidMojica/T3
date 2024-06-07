@@ -1,2 +1,5 @@
-reportlab
-openpyxl
+pip install django-compressor
+pip install psycopg2
+pip install reportlab
+pip install openpyxl
+pip install unidecode
