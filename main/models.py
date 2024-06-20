@@ -387,9 +387,10 @@ Aquí se guarda la información proveniente de las llamadas psicologicas.
 class PsiLlamadas(models.Model):
     id = models.AutoField(primary_key=True)
     documento = models.ForeignKey(
-        InfoPacientes,null=True, on_delete=models.DO_NOTHING)
+        InfoPacientes,null=True,  on_delete=models.DO_NOTHING)
     nombre_paciente = models.CharField(null=True, max_length=100)
-    id_psicologo = models.ForeignKey(InfoMiembros,null=True, db_column='id_psicologo_id', on_delete=models.CASCADE)
+    id_psicologo = models.ForeignKey(
+        InfoMiembros,null=True, db_column='id_psicologo_id', on_delete=models.CASCADE)
     fecha_llamada = models.DateTimeField(default=timezone.now)
     dia_semana = models.ForeignKey(DiaNombre, null=True, on_delete=models.CASCADE)
     sexo = models.ForeignKey(Sexo, null=True, on_delete=models.CASCADE)

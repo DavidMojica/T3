@@ -248,14 +248,11 @@ insert into main_estatuspersona(description) values('Vive solo');
 insert into main_estatuspersona(description) values('Divorciado');
 insert into main_estatuspersona(description) values('Desempleado');
 
-
-
-
-
-
+CREATE EXTENSION unaccent;
 
 -- select * from main_tipodocumento
 -- delete from main_tipodocumento
 -- ALTER SEQUENCE main_eps_id_seq RESTART WITH 1;
 -- select * from main_customuser
 -- select * from main_infomiembros
+-- ALTER SEQUENCE main_customuser_id_seq RESTART WITH 1;
