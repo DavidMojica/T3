@@ -1,5 +1,12 @@
+pip install virtual env
+virtualenv venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\venv\Scripts\Activate 
+
+pip install django
 pip install django-compressor
 pip install psycopg2
 pip install reportlab
 pip install openpyxl
 pip install unidecode
+

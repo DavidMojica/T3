@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage
 from unidecode import unidecode
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from django.utils import timezone
 from openpyxl import Workbook
 import random
 
@@ -1583,19 +1584,24 @@ def sm_historial_llamadas(request):
 
         if id_llamada:
             llamadas = llamadas.filter(id=id_llamada)
-        if id_profesional:
-            llamadas = llamadas.filter(Q(id_psicologo_id=Cast(
-                Value(id_profesional), CharField())) | Q(id_psicologo_id=None))
+
         if documento_paciente:
             llamadas = llamadas.filter(documento=documento_paciente)
         if fecha_llamada:
             llamadas = llamadas.filter(fecha_llamada__date=fecha_llamada)
-        if solo_hechas_por_mi:
-            user_id = str(request.user.id)
+        
+        if id_profesional:
+            id_profesional_str = str(id_profesional)
+            
             llamadas = llamadas.filter(
-                Q(id_psicologo_id=Cast(Value(user_id), CharField())) | Q(
-                    id_psicologo_id=None)
+                Q(id_psicologo_id=id_profesional_str) | Q(id_psicologo_id=None)
             )
+            
+        # if solo_hechas_por_mi:
+        #     user_id = int(request.user.id)
+        #     llamadas = llamadas.filter(
+        #         Q(id_psicologo_id=user_id) | Q(id_psicologo_id=None)
+        #     )
 
     # Paginación
     llamadas_por_pagina = 10
@@ -1631,17 +1637,20 @@ def sm_historial_citas(request):
 
         if id_cita:
             citas_with_pacientes = citas_with_pacientes.filter(id=id_cita)
-        if id_profesional:
-            id_profesional_int = int(id_profesional) 
-            citas_with_pacientes = citas_with_pacientes.filter(
-                Q(id_profesional_id=id_profesional_int) | Q(id_profesional_id=None)
-            )
+        
         if documento_paciente:
             citas_with_pacientes = citas_with_pacientes.filter(
                 cedula_usuario__documento=documento_paciente)
         if fecha_cita:
             citas_with_pacientes = citas_with_pacientes.filter(
                 fecha_asesoria__date=fecha_cita)
+            
+        if id_profesional:
+            id_profesional_int = int(id_profesional) 
+            citas_with_pacientes = citas_with_pacientes.filter(
+                Q(id_profesional_id=id_profesional_int) | Q(id_profesional_id=None)
+            )
+
         if solo_hechas_por_mi:
             user_id = int(request.user.id)
             citas_with_pacientes = citas_with_pacientes.filter(
@@ -1884,8 +1893,8 @@ def adminuser(request):
 
             if nombre:
                 normalized_term = unidecode(nombre.lower())
-                users = users.extra(where=["unaccent(lower(nombre)) ILIKE unaccent(%s)"], params=[
-                                    '%' + normalized_term + '%'])
+                users = users.extra(where=["unaccent(lower(nombre::text)) ILIKE unaccent(%s)"],
+                                            params=['%' + normalized_term + '%'])
 
             if id_usuario:
                 users = users.filter(id_usuario=id_usuario)
@@ -2681,12 +2690,15 @@ def generar_excel2(request, anio, mes):
         poblacion_vulnerable_description = obtener_valor(i, 'documento.poblacion_vulnerable.description')
         id_psicologo_nombre = obtener_valor(i, 'id_psicologo.nombre')
         observaciones = obtener_valor(i, 'observaciones')
+        
+        fecha_llamada = i.fecha_llamada
+        fecha_llamada_gmt5 = fecha_llamada.astimezone(timezone.get_current_timezone())
 
         hoja1.append([
             nombre_paciente,
-            i.fecha_llamada.strftime('%Y-%m-%d'),
+            fecha_llamada_gmt5.strftime('%Y-%m-%d'),
             mapeo_dias[i.fecha_llamada.weekday()],
-            i.fecha_llamada.strftime('%H:%M:%S'),
+            fecha_llamada_gmt5.strftime('%H:%M:%S'),
             documento_id,
             sexo_description,
             edad,
